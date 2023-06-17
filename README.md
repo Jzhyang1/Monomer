@@ -243,7 +243,7 @@ Node <|-- IdentifierNode: See Below
 Node <|-- OperatorNode: See Below
 Node <|-- LiteralNode: See Below
 VariableKey <|-- FunctionKey
-VariableKey o--
+VariableKey o-- InterpretVariable
 InterpretVariable o-- InterpretValue
 ```
 
@@ -285,6 +285,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTU2NDM1NjQzNywxNTg2NjM3MzQzLC04Mz
+eyJoaXN0b3J5IjpbMjA1NTc2NjI3MCwxNTg2NjM3MzQzLC04Mz
 YwNjU5MTldfQ==
 -->
