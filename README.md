@@ -238,12 +238,10 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 ```mermaid
 classDiagram
-Node <|-- ModuleNode
-Node <|-- IdentifierNode
-Node <|-- OperatorNode
-Node <|-- LiteralNode
-OperatorNode .. OperatorDiagram: See Below
-LiteralNode .. LiteralDiagram: See Below
+Node <|-- ModuleNode: See Below
+Node <|-- IdentifierNode: See Below
+Node <|-- OperatorNode: See Below
+Node <|-- LiteralNode: See Below
 VariableKey <|-- FunctionKey
 ```
 
@@ -285,5 +283,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgzNjA2NTkxOV19
+eyJoaXN0b3J5IjpbMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
 -->
