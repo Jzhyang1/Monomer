@@ -243,6 +243,8 @@ Node <|-- IdentifierNode: See Below
 Node <|-- OperatorNode: See Below
 Node <|-- LiteralNode: See Below
 VariableKey <|-- FunctionKey
+VariableKey o--
+InterpretVariable o-- InterpretValue
 ```
 
 ```mermaid
@@ -283,5 +285,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
+eyJoaXN0b3J5IjpbMTU2NDM1NjQzNywxNTg2NjM3MzQzLC04Mz
+YwNjU5MTldfQ==
 -->
