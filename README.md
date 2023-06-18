@@ -246,8 +246,9 @@ IdentifierNode <|-- ModuleNode
 IdentifierNode *-- VariableKey
 VariableKey <|-- FunctionKey
 VariableKey *-- CompileMemory
-VariableKey *-- InterpretValue
-InterpretVariable o-- InterpretValue
+VariableKey o-- InterpretValue
+BuiltinVariableKey o-- InterpretValue
+InterpretVariable *-- InterpretValue
 CompileSize o-- CompileValue
 ```
 
@@ -289,6 +290,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzg5MzAyMTk3LDIwNTU3NjYyNzAsMTU4Nj
-YzNzM0MywtODM2MDY1OTE5XX0=
+eyJoaXN0b3J5IjpbMjI1ODY4MzI0LDc4OTMwMjE5NywyMDU1Nz
+Y2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
 -->
