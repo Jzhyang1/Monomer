@@ -238,9 +238,9 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 ```mermaid
 classDiagram
-Node <|-- IdentifierNode
 Node <|-- OperatorNode: See Below
 Node <|-- LiteralNode: See Below
+Node <|-- IdentifierNode
 Node o-- InterpretVariable
 IdentifierNode <|-- ModuleNode
 IdentifierNode *-- VariableKey
@@ -251,8 +251,7 @@ VariableKey <|-- BuiltinTypeKey
 BuiltinTypeKey *-- InterpretValue
 InterpretVariable *-- InterpretValue
 InterpretVariable *-- VariableKey
-Node o-- CompileMemory
-Node o-- CompileSize
+CompileValue *-- CompileSize
 Node o-- CompileValue
 ```
 
@@ -294,6 +293,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTg5OTMyOTM4MCw3ODkzMDIxOTcsMjA1NT
-c2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTldfQ==
+eyJoaXN0b3J5IjpbLTE1MTY5ODkzMDYsNzg5MzAyMTk3LDIwNT
+U3NjYyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
 -->
