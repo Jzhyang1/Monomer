@@ -249,7 +249,7 @@ VariableKey *-- CompileMemory
 VariableKey <|-- BuiltinTypeKey
 BuiltinTypeKey *-- InterpretValue
 VariableKey o-- InterpretValue
-InterpretVariable *-- VariableKey
+InterpretVariable <|.. VariableKey
 CompileValue *-- CompileSize
 Node o-- CompileValue
 InterpretVariable *-- InterpretValue
@@ -325,7 +325,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExMzgwODU5MSw0MTk3MTMzMSw3ODkzMD
+eyJoaXN0b3J5IjpbMTU4MjA5NzY1NSw0MTk3MTMzMSw3ODkzMD
 IxOTcsMjA1NTc2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTld
 fQ==
 -->
