@@ -270,10 +270,16 @@ Node: matchTypes()
 Node: interpretVariable() InterpretVariable
 Node: interpretValue() interpretValue
 Node: compileMemory() CompileMemory
-Node: compileValue() compileValue
-Node: compileSize() compileSize
+Node: compileValue() CompileValue
+Node: compileSize() CompileSize
 
-IdentifierNode: VariableKey 
+IdentifierNode: VariableKey key
+IdentifierNode: interpretVariable() InterpretVariable
+IdentifierNode: interpretValue() interpretValue
+IdentifierNode: compileMemory() CompileMemory
+Node: compileValue() CompileValue
+Node: compileSize() CompileSize
+
 ```
 
 ```mermaid
@@ -314,6 +320,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQwMTgzNTI4LDc4OTMwMjE5NywyMDU1Nz
-Y2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
+eyJoaXN0b3J5IjpbLTExODA4MjkwNDEsNzg5MzAyMTk3LDIwNT
+U3NjYyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
 -->
