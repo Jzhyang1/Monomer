@@ -246,13 +246,15 @@ IdentifierNode <|-- ModuleNode
 IdentifierNode *-- VariableKey
 VariableKey <|-- FunctionKey
 VariableKey *-- CompileMemory
-VariableKey o-- InterpretValue
 VariableKey <|-- BuiltinTypeKey
 BuiltinTypeKey *-- InterpretValue
-InterpretVariable *-- InterpretValue
+VariableKey o-- InterpretValue
 InterpretVariable *-- VariableKey
 CompileValue *-- CompileSize
 Node o-- CompileValue
+InterpretVariable *-- InterpretValue
+
+
 ```
 
 ```mermaid
@@ -293,6 +295,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1MTY5ODkzMDYsNzg5MzAyMTk3LDIwNT
-U3NjYyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
+eyJoaXN0b3J5IjpbNTIxNDc5NjU4LDc4OTMwMjE5NywyMDU1Nz
+Y2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
 -->
