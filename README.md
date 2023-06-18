@@ -256,7 +256,7 @@ CompileValue *-- CompileSize
 Node o-- CompileValue
 
 Token: String name
-Token: enum{operator,int,float,char,string
+Token: enum{operator,int,float,char,string, group, word} usage
 
 Node: get String name
 Node: get enum{operator,literal,identifier} usage
@@ -332,7 +332,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM4NjgwMjMwLDQxOTcxMzMxLDc4OTMwMj
-E5NywyMDU1NzY2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
-
+eyJoaXN0b3J5IjpbLTM3MzQyNzI2OSw0MTk3MTMzMSw3ODkzMD
+IxOTcsMjA1NTc2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTld
+fQ==
 -->
