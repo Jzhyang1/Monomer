@@ -251,7 +251,9 @@ VariableKey <|-- BuiltinTypeKey
 BuiltinTypeKey *-- InterpretValue
 InterpretVariable *-- InterpretValue
 InterpretVariable *-- VariableKey
-CompileSize o-- CompileValue
+Node o-- CompileMemory
+Node o-- CompileSize
+Node o-- CompileValue
 ```
 
 ```mermaid
@@ -292,6 +294,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjMxNTQ0MzY0LDc4OTMwMjE5NywyMDU1Nz
-Y2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
+eyJoaXN0b3J5IjpbMTg5OTMyOTM4MCw3ODkzMDIxOTcsMjA1NT
+c2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTldfQ==
 -->
