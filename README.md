@@ -260,6 +260,10 @@ Node: Node parent
 Node: Node[] children
 Node: Map<String, VariableKey> variables
 Node: LineContext context
+Node: VariableKey getType()
+Node: LocateVariables()
+Node: matchVariables()
+Node: matchTypes()
 ```
 
 ```mermaid
@@ -300,6 +304,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjI5NDU3ODYsNzg5MzAyMTk3LDIwNTU3Nj
-YyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
+eyJoaXN0b3J5IjpbMjEzODMzNzgwMCw3ODkzMDIxOTcsMjA1NT
+c2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTldfQ==
 -->
