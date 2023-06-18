@@ -254,7 +254,8 @@ CompileValue *-- CompileSize
 Node o-- CompileValue
 InterpretVariable *-- InterpretValue
 
-
+Node: String name
+Node: enum 
 ```
 
 ```mermaid
@@ -295,6 +296,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTIxNDc5NjU4LDc4OTMwMjE5NywyMDU1Nz
-Y2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
+eyJoaXN0b3J5IjpbMTQxOTUzNDE0MSw3ODkzMDIxOTcsMjA1NT
+c2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTldfQ==
 -->
