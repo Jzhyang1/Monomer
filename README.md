@@ -256,7 +256,10 @@ InterpretVariable *-- InterpretValue
 
 Node: String name
 Node: enum{operator,literal,identifier} usage
-
+Node: Node parent
+Node: Node[] children
+Node: Map<String, VariableKey> variables
+Node: LineContext context
 ```
 
 ```mermaid
@@ -297,6 +300,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDg0ODM3OTc4LDc4OTMwMjE5NywyMDU1Nz
-Y2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
+eyJoaXN0b3J5IjpbNjI5NDU3ODYsNzg5MzAyMTk3LDIwNTU3Nj
+YyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
 -->
