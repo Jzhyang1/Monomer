@@ -274,11 +274,14 @@ Node: compileValue() CompileValue
 Node: compileSize() CompileSize
 
 IdentifierNode: VariableKey key
-IdentifierNode: interpretVariable() InterpretVariable
-IdentifierNode: interpretValue() interpretValue
-IdentifierNode: compileMemory() CompileMemory
-Node: compileValue() CompileValue
-Node: compileSize() CompileSize
+IdentifierNode: LocateVariables() over
+IdentifierNode: matchVariables() over
+IdentifierNode: matchTypes() over
+IdentifierNode: interpretVariable() InterpretVariable over
+IdentifierNode: interpretValue() interpretValue over
+IdentifierNode: compileMemory() CompileMemory over
+IdentifierNode: compileValue() CompileValue over
+IdentifierNode: compileSize() CompileSize over
 
 ```
 
@@ -320,6 +323,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExODA4MjkwNDEsNzg5MzAyMTk3LDIwNT
-U3NjYyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
+eyJoaXN0b3J5IjpbLTU0MjQ1NzE3MCw3ODkzMDIxOTcsMjA1NT
+c2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTldfQ==
 -->
