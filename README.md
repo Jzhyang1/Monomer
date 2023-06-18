@@ -252,7 +252,7 @@ VariableKey o-- InterpretValue
 InterpretVariable <|.. VariableKey
 CompileValue *-- CompileSize
 Node o-- CompileValue
-InterpretVariable *-- InterpretValue
+Node *-- InterpretValue
 
 Node: get String name
 Node: get enum{operator,literal,identifier} usage
@@ -325,7 +325,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTU4MjA5NzY1NSw0MTk3MTMzMSw3ODkzMD
-IxOTcsMjA1NTc2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTld
-fQ==
+eyJoaXN0b3J5IjpbMTQxNzY4ODgsNDE5NzEzMzEsNzg5MzAyMT
+k3LDIwNTU3NjYyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
+
 -->
