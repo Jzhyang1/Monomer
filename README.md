@@ -253,24 +253,26 @@ InterpretVariable <|.. VariableKey
 CompileValue *-- CompileSize
 Node o-- CompileValue
 
-Node: get String name
-Node: get enum{operator,literal,identifier} usage
-Node: getset Node parent
-Node: Node[] children
-Node: Map<String, VariableKey> variables
-Node: LineContext context
-Node: getType() VariableKey
-Node: getVariable(String) VariableKey
-Node: putVariable(String,VariableKey)
-Node: add(Node)
-Node: LocateVariables()
-Node: matchVariables()
-Node: matchTypes()
-Node: interpretVariable() InterpretVariable
-Node: interpretValue() interpretValue
-Node: compileMemory() CompileMemory
-Node: compileValue() CompileValue
-Node: compileSize() CompileSize
+class Node{
+	Node: get String name
+	Node: get enum{operator,literal,identifier} usage
+	Node: getset Node parent
+	Node: Node[] children
+	Node: Map<String, VariableKey> variables
+	Node: LineContext context
+	Node: getType() VariableKey
+	Node: getVariable(String) VariableKey
+	Node: putVariable(String,VariableKey)
+	Node: add(Node)
+	Node: LocateVariables()
+	Node: matchVariables()
+	Node: matchTypes()
+	Node: interpretVariable() InterpretVariable
+	Node: interpretValue() interpretValue
+	Node: compileMemory() CompileMemory
+	Node: compileValue() CompileValue
+	Node: compileSize() CompileSize
+}
 
 IdentifierNode: VariableKey key
 IdentifierNode: LocateVariables() over
@@ -324,7 +326,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQxNTcwNzI2Niw0MTk3MTMzMSw3ODkzMD
-IxOTcsMjA1NTc2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTld
-fQ==
+eyJoaXN0b3J5IjpbLTE2MTA3NjMwMDYsNDE5NzEzMzEsNzg5Mz
+AyMTk3LDIwNTU3NjYyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5
+XX0=
 -->
