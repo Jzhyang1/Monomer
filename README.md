@@ -254,24 +254,24 @@ CompileValue *-- CompileSize
 Node o-- CompileValue
 
 class Node{
-	Node: get String name
-	Node: get enum{operator,literal,identifier} usage
-	Node: getset Node parent
-	Node: Node[] children
-	Node: Map<String, VariableKey> variables
-	Node: LineContext context
-	Node: getType() VariableKey
-	Node: getVariable(String) VariableKey
-	Node: putVariable(String,VariableKey)
-	Node: add(Node)
-	Node: LocateVariables()
-	Node: matchVariables()
-	Node: matchTypes()
-	Node: interpretVariable() InterpretVariable
-	Node: interpretValue() interpretValue
-	Node: compileMemory() CompileMemory
-	Node: compileValue() CompileValue
-	Node: compileSize() CompileSize
+	-get String name
+	-get enum{operator,literal,identifier} usage
+	-getset Node parent
+	-Node[] children
+	-Map<String, VariableKey> variables
+	-LineContext context
+	+getType() VariableKey
+	+getVariable(String) VariableKey
+	+putVariable(String,VariableKey)
+	+add(Node)
+	+LocateVariables()
+	+matchVariables()
+	+matchTypes()
+	+interpretVariable() InterpretVariable
+	+interpretValue() interpretValue
+	+compileMemory() CompileMemory
+	+compileValue() CompileValue
+	+compileSize() CompileSize
 }
 
 IdentifierNode: VariableKey key
@@ -326,7 +326,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2MTA3NjMwMDYsNDE5NzEzMzEsNzg5Mz
-AyMTk3LDIwNTU3NjYyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5
-XX0=
+eyJoaXN0b3J5IjpbNzE1NDc5OTM0LDQxOTcxMzMxLDc4OTMwMj
+E5NywyMDU1NzY2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
+
 -->
