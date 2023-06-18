@@ -266,6 +266,8 @@ Node: matchVariables()
 Node: matchTypes()
 Node: interpretVariable() InterpretVariable
 Node: interpretValue() interpretValue
+Node: compileMemory() CompileMemory
+Node: compileValue() interpretValue
 ```
 
 ```mermaid
@@ -306,6 +308,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1Nzk2MzYyNjgsNzg5MzAyMTk3LDIwNT
-U3NjYyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
+eyJoaXN0b3J5IjpbODk5ODg1Mjk2LDc4OTMwMjE5NywyMDU1Nz
+Y2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
 -->
