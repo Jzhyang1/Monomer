@@ -282,6 +282,9 @@ IdentifierNode: compileMemory() CompileMemory over
 IdentifierNode: compileValue() CompileValue over
 IdentifierNode: compileSize() CompileSize over
 
+<<interface>> InterpretValue
+<<interface>> InterpretVariable
+
 VariableKey: interpretValue
 VariableKey: VariableKey parent
 ```
@@ -324,7 +327,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQxNTcwNzI2Niw0MTk3MTMzMSw3ODkzMD
-IxOTcsMjA1NTc2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTld
-fQ==
+eyJoaXN0b3J5IjpbLTE1NDkwNTYwMzMsNDE5NzEzMzEsNzg5Mz
+AyMTk3LDIwNTU3NjYyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5
+XX0=
 -->
