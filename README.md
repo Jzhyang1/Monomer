@@ -257,6 +257,9 @@ Node o-- CompileValue
 
 Token: String name
 Token: enum{operator,int,float,char,string, group, word} usage
+Token: Token[] children
+Token: LineContext context
+Token: makeNode() Node
 
 Node: get String name
 Node: get enum{operator,literal,identifier} usage
@@ -332,7 +335,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM3MzQyNzI2OSw0MTk3MTMzMSw3ODkzMD
+eyJoaXN0b3J5IjpbMTc3Mzg5MTM5Myw0MTk3MTMzMSw3ODkzMD
 IxOTcsMjA1NTc2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTld
 fQ==
 -->
