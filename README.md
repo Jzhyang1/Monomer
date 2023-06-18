@@ -254,14 +254,16 @@ CompileValue *-- CompileSize
 Node o-- CompileValue
 InterpretVariable *-- InterpretValue
 
-Node: String name
-Node: enum{operator,literal,identifier} usage
-Node: Node parent
+Node: get String name
+Node: get enum{operator,literal,identifier} usage
+Node: getset Node parent
 Node: Node[] children
 Node: Map<String, VariableKey> variables
 Node: LineContext context
 Node: getType() VariableKey
 Node: getVariable(String) VariableKey
+Node: putVariable(String,VariableKey)
+Node: add(Node)
 Node: LocateVariables()
 Node: matchVariables()
 Node: matchTypes()
@@ -310,6 +312,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ1MjAyNzIsNzg5MzAyMTk3LDIwNTU3Nj
-YyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
+eyJoaXN0b3J5IjpbLTg3NDc2ODY5OCw3ODkzMDIxOTcsMjA1NT
+c2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTldfQ==
 -->
