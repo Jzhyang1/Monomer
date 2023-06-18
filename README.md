@@ -242,17 +242,16 @@ Node <|-- OperatorNode: See Below
 Node <|-- LiteralNode: See Below
 Node <|-- IdentifierNode
 Node o-- InterpretVariable
+Node o-- InterpretValue
 IdentifierNode <|-- ModuleNode
 IdentifierNode *-- VariableKey
 VariableKey <|-- FunctionKey
 VariableKey *-- CompileMemory
 VariableKey <|-- BuiltinTypeKey
-BuiltinTypeKey *-- InterpretValue
-VariableKey o-- InterpretValue
+InterpretValue <
 InterpretVariable <|.. VariableKey
 CompileValue *-- CompileSize
 Node o-- CompileValue
-Node *-- InterpretValue
 
 Node: get String name
 Node: get enum{operator,literal,identifier} usage
@@ -325,7 +324,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQxNzY4ODgsNDE5NzEzMzEsNzg5MzAyMT
-k3LDIwNTU3NjYyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
+eyJoaXN0b3J5IjpbLTE4NzUwMzM1LDQxOTcxMzMxLDc4OTMwMj
+E5NywyMDU1NzY2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
 
 -->
