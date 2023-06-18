@@ -284,6 +284,7 @@ IdentifierNode: compileValue() CompileValue over
 IdentifierNode: compileSize() CompileSize over
 
 VariableKey: interpretValue
+VariableKey: VariableKey parent
 ```
 
 ```mermaid
@@ -324,6 +325,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDE5NzEzMzEsNzg5MzAyMTk3LDIwNTU3Nj
-YyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
+eyJoaXN0b3J5IjpbLTExMzgwODU5MSw0MTk3MTMzMSw3ODkzMD
+IxOTcsMjA1NTc2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTld
+fQ==
 -->
