@@ -261,13 +261,15 @@ Node: Node[] children
 Node: Map<String, VariableKey> variables
 Node: LineContext context
 Node: getType() VariableKey
+Node: getVariable(String) VariableKey
 Node: LocateVariables()
 Node: matchVariables()
 Node: matchTypes()
 Node: interpretVariable() InterpretVariable
 Node: interpretValue() interpretValue
 Node: compileMemory() CompileMemory
-Node: compileValue() interpretValue
+Node: compileValue() compileValue
+Node: compileSize() compileSize
 ```
 
 ```mermaid
@@ -308,6 +310,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODk5ODg1Mjk2LDc4OTMwMjE5NywyMDU1Nz
-Y2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
+eyJoaXN0b3J5IjpbLTQ1MjAyNzIsNzg5MzAyMTk3LDIwNTU3Nj
+YyNzAsMTU4NjYzNzM0MywtODM2MDY1OTE5XX0=
 -->
