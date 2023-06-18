@@ -272,6 +272,8 @@ Node: interpretValue() interpretValue
 Node: compileMemory() CompileMemory
 Node: compileValue() compileValue
 Node: compileSize() compileSize
+
+IdentifierNode: VariableKey 
 ```
 
 ```mermaid
@@ -312,6 +314,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTg3NDc2ODY5OCw3ODkzMDIxOTcsMjA1NT
-c2NjI3MCwxNTg2NjM3MzQzLC04MzYwNjU5MTldfQ==
+eyJoaXN0b3J5IjpbLTQwMTgzNTI4LDc4OTMwMjE5NywyMDU1Nz
+Y2MjcwLDE1ODY2MzczNDMsLTgzNjA2NTkxOV19
 -->
