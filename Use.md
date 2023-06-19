@@ -37,7 +37,7 @@ Below are additional options that can be appended to the command.
 ### Interpreter
 The interpreter runs code from a file directly, which is advantageous in testing as it will start faster than if run from the compiler. However the code should be compiled for release. To interpret scripts, enter any of the following into the command line.
 
-    mono inter [file names]
+    mono interpret [file names]
     mono i [file names]
 
 > The interpreter will interpret the list of files in order.
@@ -47,8 +47,16 @@ Below are additional options that can be appended to the command.
  - `-version [number]` or `-v [number]` to use a specific version
 
 ### Compiler
-The compile converts the code from a file directly, which is advantageous in testing as it will start faster than if run from the compiler. However the code should be compiled for release. To interpret scripts, enter any of the following into the command line.
+The compile converts the code to an executable, which is advantageous for distribution. To compile scripts, enter any of the following into the command line.
+
+    mono compile [file names]
+    mono c [file names]
+
+Below are additional options that can be appended to the command.
+
+ - List item
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzU5MDk4MzQsLTE1ODYyMTI2ODMsNzMwOT
-k4MTE2XX0=
+eyJoaXN0b3J5IjpbNzkyODkyOTk0LC0xNTg2MjEyNjgzLDczMD
+k5ODExNl19
 -->
