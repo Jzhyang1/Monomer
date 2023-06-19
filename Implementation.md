@@ -132,6 +132,7 @@ OperatorNode <|-- ControlNode
 ```mermaid
 classDiagram
 LiteralNode <|-- LambdaNode
+LiteralNode <|-- RawLiteralNode
 LiteralNode <|-- CharNode
 LiteralNode <|-- IntNode
 LiteralNode <|-- FloatNode
@@ -143,6 +144,7 @@ LiteralNode <|-- RangeNode
 LiteralNode <|-- EnumNode
 LiteralNode <|-- TupleNode
 LiteralNode <|-- SequenceNode
+LiteralNode <|-- StructureNode
 ```
 
 And this will produce a flow chart:
@@ -155,5 +157,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2MDU0ODYyMTAsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbODM5NTAwMzUyLDE2MzMyOTIwNzhdfQ==
 -->
