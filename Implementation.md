@@ -132,6 +132,11 @@ OperatorNode <|-- ControlNode
 ```mermaid
 classDiagram
 LiteralNode <|-- RawLiteralNode
+RawLiteralNode <|-- CharNode
+RawLiteralNode <|-- IntNode
+RawLiteralNode <|-- FloatNode
+RawLiteralNode <|-- StringNode
+
 LiteralNode <|-- LambdaNode
 LiteralNode <|-- SetNode
 LiteralNode <|-- MapNode
@@ -140,11 +145,6 @@ LiteralNode <|-- RangeNode
 LiteralNode <|-- TupleNode
 LiteralNode <|-- SequenceNode
 LiteralNode <|-- StructureNode
-
-RawLiteralNode <|-- CharNode
-RawLiteralNode <|-- IntNode
-RawLiteralNode <|-- FloatNode
-RawLiteralNode <|-- StringNode
 
 StructureNode <|-- EnumNode
 ```
@@ -159,5 +159,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTcwMTA5ODM2MiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbMTg0NTE4MTYyNiwxNjMzMjkyMDc4XX0=
 -->
