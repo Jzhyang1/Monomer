@@ -12,7 +12,7 @@ To initiate a shell environment, enter the following into the command line.
 
 Additional options include
 
- - `-multiline` for several lines of shell script, to be executed at the entry of 
+ - `-multiline` for several lines of shell script, to be executed at the entry of the character produced when typing *ctrl+Z*. This will 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODgzODMwNzg1LDczMDk5ODExNl19
+eyJoaXN0b3J5IjpbMTE3NDg0OTYyMiw3MzA5OTgxMTZdfQ==
 -->
