@@ -8,7 +8,7 @@ The command line interface can be used for [shell scripts](#Shell%20Scripts), ex
 ### Shell Scripts
 The shell environment is where code can be inputted into the command line and the command line will respond directly (after each line is entered, unless multiline is used). To initiate a shell environment, enter the following into the command line.
 
-    Mono shell
+    mono shell
 
 Additional options include
 
@@ -16,10 +16,13 @@ Additional options include
  - `-file [file names]` or `-f [file names]` for starting the shell environment after executing the list of files. Any variables will be accessable in the shell.
 
 ### Interpreter
-The interpreter runs code from a file directly, which is advantageous in testing as it will start faster than if run from the compiler. However the code should be compiled for release. To interpret a script, 
+The interpreter runs code from a file directly, which is advantageous in testing as it will start faster than if run from the compiler. However the code should be compiled for release. To interpret a script, enter the following into the command line.
+
+    mono inter [file name]
+
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyNzY2MTQ4NzQsLTE1ODYyMTI2ODMsNz
-MwOTk4MTE2XX0=
+eyJoaXN0b3J5IjpbMTczNzI0MTE5NiwtMTU4NjIxMjY4Myw3Mz
+A5OTgxMTZdfQ==
 -->
