@@ -112,6 +112,7 @@ IdentifierNode: compileSize() CompileSize over
 
 <<interface>> InterpretValue
 <<interface>> InterpretVariable
+InterpretVariable: setValue(InterpretValue)
 
 VariableKey: interpretValue
 VariableKey: VariableKey parent
@@ -161,5 +162,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTkwMTM4MTU2OSwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbNzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
 -->
