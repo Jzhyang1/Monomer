@@ -54,9 +54,10 @@ The compile converts the code to an executable, which is advantageous for distri
 
 Below are additional options that can be appended to the command.
 
- - `[output name]` to rename the output to a specific name. The default is the original file with an  extension 
+ - `[output name]` to rename the output to a specific name. The default is the original file with an executable extension. Extensions are NOT automatically added to the output name.
+ - `-o` to output the intermediate output f
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTc2NTQ3MjIwOSwtMTU4NjIxMjY4Myw3Mz
-A5OTgxMTZdfQ==
+eyJoaXN0b3J5IjpbLTEyNTg2OTMzMTMsLTE1ODYyMTI2ODMsNz
+MwOTk4MTE2XX0=
 -->
