@@ -8,8 +8,9 @@ The command line interface can be used for shell scripts, executing a Monomer fi
 ### Shell Scripts
 To initiate a shell environment, enter the following into the command line.
 
-    Mon
+    Mono -shell
 
+Additional options include `-
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4MjQwODA1LDczMDk5ODExNl19
+eyJoaXN0b3J5IjpbNjk3ODEwNzE5LDczMDk5ODExNl19
 -->
