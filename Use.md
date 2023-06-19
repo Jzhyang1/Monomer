@@ -6,23 +6,24 @@ Monomer can be executed via command line interface (CLI) or through visual inter
 The command line interface can be used for [shell scripts](#Shell%20Scripts), executing a Monomer file via [interpreter](###Interpreter), or compiling a Monomer file
 
 ### Shell Scripts
-The shell environment is where code can be inputted into the command line and the command line will respond directly (after each line is entered, unless multiline is used). To initiate a shell environment, enter the following into the command line.
+The shell environment is where code can be inputted into the command line and the command line will respond directly (after each line is entered, unless multiline is used). To initiate a shell environment, enter any of the following into the command line.
 
     mono shell
+    mono s
 
-Additional options include
+Below are additional options that can be appended to the command.
 
  - `-multiline` or `-ml` for several lines of shell script, to be executed at the entry of the character produced by typing *ctrl+Z*. This will also exit the shell environment immediately after.
  - `-file [file names]` or `-f [file names]` for starting the shell environment after executing the list of files. Any variables will be accessable in the shell.
 
 ### Interpreter
-The interpreter runs code from a file directly, which is advantageous in testing as it will start faster than if run from the compiler. However the code should be compiled for release. To interpret a script, enter the following into the command line.
+The interpreter runs code from a file directly, which is advantageous in testing as it will start faster than if run from the compiler. However the code should be compiled for release. To interpret a script, enter any of the following into the command line.
 
-    mono inter [file name]
+    mono inter [file names]
+    mono i [file names]
 
-
-
+The interpreter will interpret 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTczNzI0MTE5NiwtMTU4NjIxMjY4Myw3Mz
-A5OTgxMTZdfQ==
+eyJoaXN0b3J5IjpbLTEzOTMwMTA1ODAsLTE1ODYyMTI2ODMsNz
+MwOTk4MTE2XX0=
 -->
