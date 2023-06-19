@@ -62,10 +62,15 @@ Buffer *-- BufferLine
 
 Buffer: Queue buffer
 Buffer: Reader file
-Buffer: getLine
+Buffer: getLine() BufferLine
+Buffer: ungetLine(BufferLine)
+Buffer: eof() bool
 
 BufferLine: int location
 BufferLine: getFullLine() String
+BufferLine: peek() char
+BufferLine: get() char
+BufferLine: matche() char
 ```
 
 ```mermaid
@@ -178,6 +183,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NzM1MDE4MjYsNzg3MDcxMDkyLDE2Mz
+eyJoaXN0b3J5IjpbLTE1NTY5MTExNjIsNzg3MDcxMDkyLDE2Mz
 MyOTIwNzhdfQ==
 -->
