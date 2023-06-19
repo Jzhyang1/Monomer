@@ -3,7 +3,7 @@
 Monomer can be executed via command line interface (CLI) or through visual interface.
 
 ## CLI
-The command line interface can be used for [shell scripts](#Shell%20Scripts), executing a Monomer file via interpreter, or compiling a Monomer file
+The command line interface can be used for [shell scripts](#Shell%20Scripts), executing a Monomer file via [interpreter](###Interrp, or compiling a Monomer file
 
 ### Shell Scripts
 To initiate a shell environment, enter the following into the command line.
@@ -12,7 +12,9 @@ To initiate a shell environment, enter the following into the command line.
 
 Additional options include
 
- - `-multiline` for several lines of shell script, to be executed at the entry of the character produced when typing *ctrl+Z*. This will 
+ - `-multiline` or `-ml` for several lines of shell script, to be executed at the entry of the character produced by typing *ctrl+Z*. This will also exit the shell environment immediately after.
+
+### Interpreter
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE3NDg0OTYyMiw3MzA5OTgxMTZdfQ==
+eyJoaXN0b3J5IjpbLTg2NDg2NzY0Myw3MzA5OTgxMTZdfQ==
 -->
