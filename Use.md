@@ -6,7 +6,7 @@ Monomer can be executed via command line interface (CLI) or through visual inter
 The command line interface can be used for [shell scripts](#Shell%20Scripts), executing a Monomer file via [interpreter](###Interpreter), or compiling a Monomer file
 
 ### Shell Scripts
-To initiate a shell environment, enter the following into the command line.
+The shell environment is where code can be inputted into the command line and the command line will respond  To initiate a shell environment, enter the following into the command line.
 
     Mono shell
 
@@ -18,6 +18,6 @@ Additional options include
 ### Interpreter
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMwMDg2MjYsLTE1ODYyMTI2ODMsNzMwOT
-k4MTE2XX0=
+eyJoaXN0b3J5IjpbMzA0OTk0MDc0LC0xNTg2MjEyNjgzLDczMD
+k5ODExNl19
 -->
