@@ -17,13 +17,18 @@ Below are additional options that can be appended to the command.
  - `-file [file names]` or `-f [file names]` for starting the shell environment after executing the list of files. Any variables will be accessable in the shell.
 
 ### Interpreter
-The interpreter runs code from a file directly, which is advantageous in testing as it will start faster than if run from the compiler. However the code should be compiled for release. To interpret a script, enter any of the following into the command line.
+The interpreter runs code from a file directly, which is advantageous in testing as it will start faster than if run from the compiler. However the code should be compiled for release. To interpret scripts, enter any of the following into the command line.
 
     mono inter [file names]
     mono i [file names]
 
-The interpreter will interpret 
+> The interpreter will interpret the list of files in order.
+
+Below are additional options that can be appended to the command.
+
+ - `
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzOTMwMTA1ODAsLTE1ODYyMTI2ODMsNz
-MwOTk4MTE2XX0=
+eyJoaXN0b3J5IjpbMTE1NDk0MzU4OSwtMTU4NjIxMjY4Myw3Mz
+A5OTgxMTZdfQ==
 -->
