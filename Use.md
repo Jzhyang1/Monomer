@@ -55,11 +55,12 @@ The compile converts the code to an executable, which is advantageous for distri
 Below are additional options that can be appended to the command.
 
  - `[output name]` to rename the output to a specific name. The default is the original file with an executable extension. Extensions are NOT automatically added to the output name.
+ - `-version [number]` or `-v [number]` to use a specific version
  - `-o [object file name]`or `-o` to output the intermediate object file.
  - `-a [assembly file name]` or `-a` to output the intermediate assembly file.
 
 ### Libraries
-External libraries can be installed into Monomer. They can either be installed globally (to be used anywhere after initial installation) or locally (to be used within the particular folder after installation). To install libraries, enter any of the following into the command line.
+External libraries can be installed into Monomer. They can either be installed globally (to be used anywhere after initial installation) or locally (to be used within the particular folder after installation). To install/update libraries, enter any of the following into the command line.
 
     mono library [library names]
     mono l [library names]
@@ -71,6 +72,6 @@ Below are additional options that can be appended to the command.
  - `-uninstall` or `-u` to uninstall
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDczMDM0OTI5LC0xNTg2MjEyNjgzLDczMD
-k5ODExNl19
+eyJoaXN0b3J5IjpbLTY4MjAzNDEzMiwtMTU4NjIxMjY4Myw3Mz
+A5OTgxMTZdfQ==
 -->
