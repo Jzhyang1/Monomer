@@ -139,7 +139,8 @@ RawLiteralNode <|-- StringNode
 
 LiteralNode <|-- LambdaNode
 LiteralNode <|-- SetNode
-LiteralNode <|-- MapNode
+SetNode <|-- MapNode
+
 LiteralNode <|-- ListNode
 LiteralNode <|-- RangeNode
 LiteralNode <|-- TupleNode
@@ -159,5 +160,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTg0NTE4MTYyNiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbMTU4Mjc1ODMyOSwxNjMzMjkyMDc4XX0=
 -->
