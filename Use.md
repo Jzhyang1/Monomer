@@ -16,8 +16,8 @@ Additional options include
  - `-file [file names]` or `-f [file names]` for starting the shell environment after executing the list of files. Any variables will be accessable in the shell.
 
 ### Interpreter
-The interpreter runs the 
+The interpreter runs code from a file directly, which is advantageous in testing as it will start faster
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyNTI1NzU5NywtMTU4NjIxMjY4Myw3Mz
+eyJoaXN0b3J5IjpbMTY1NjA1NTcyMCwtMTU4NjIxMjY4Myw3Mz
 A5OTgxMTZdfQ==
 -->
