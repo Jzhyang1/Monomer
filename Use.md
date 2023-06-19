@@ -3,7 +3,7 @@
 Monomer can be executed via command line interface (CLI) or through visual interface.
 
 ## CLI
-The command line interface can be used for [shell scripts](###Shell%20Scripts), executing a Monomer file via [interpreter](###Interpreter), or compiling a Monomer file
+The command line interface can be used for [shell scripts](#shell-scripts), executing a Monomer file via [interpreter](#interpreter), or compiling a Monomer file
 
 ### Updates
 Run any of the following in the command line to check the installed Monomer CLI version.
@@ -46,8 +46,9 @@ Below are additional options that can be appended to the command.
 
  - `-version [number]` or `-v [number]` to use a specific version
 
-### Compile
+### Compiler
+The compile converts the code from a file directly, which is advantageous in testing as it will start faster than if run from the compiler. However the code should be compiled for release. To interpret scripts, enter any of the following into the command line.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNzU0NDEyNCwtMTU4NjIxMjY4Myw3Mz
-A5OTgxMTZdfQ==
+eyJoaXN0b3J5IjpbNzU5MDk4MzQsLTE1ODYyMTI2ODMsNzMwOT
+k4MTE2XX0=
 -->
