@@ -61,9 +61,16 @@ Below are additional options that can be appended to the command.
 ### Libraries
 External libraries can be installed into Monomer. They can either be installed globally (to be used anywhere after initial installation) or locally (to be used within the particular folder after installation). To install libraries, enter any of the following into the command line.
 
-    mono librar
+    mono library [library names]
+    mono l [library names]
+
+Below are additional options that can be appended to the command.
+
+ - `-global` or `-g` to install globally
+ - `-local` or `-l` to install locally
+ - `-uninstall` or `-u` to uninstall
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjA4OTgyNDg0LC0xNTg2MjEyNjgzLDczMD
+eyJoaXN0b3J5IjpbNDczMDM0OTI5LC0xNTg2MjEyNjgzLDczMD
 k5ODExNl19
 -->
