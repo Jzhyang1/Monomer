@@ -59,8 +59,8 @@ Below are additional options that can be appended to the command.
  - `-a [assembly file name]` or `-a` to output the intermediate assembly file.
 
 ### Libraries
-Libraries 
+External libraries can be installed into Monomer. They can either be installed globally (to be used anywhere after initial installation) or locally (to be used within the particular 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM5ODk1NTkwMywtMTU4NjIxMjY4Myw3Mz
+eyJoaXN0b3J5IjpbLTUwNjg2NjU1MCwtMTU4NjIxMjY4Myw3Mz
 A5OTgxMTZdfQ==
 -->
