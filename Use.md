@@ -49,14 +49,14 @@ Below are additional options that can be appended to the command.
 ### Compiler
 The compile converts the code to an executable, which is advantageous for distribution. To compile scripts, enter any of the following into the command line.
 
-    mono compile [file names]
-    mono c [file names]
+    mono compile [file name]
+    mono c [file name]
 
 Below are additional options that can be appended to the command.
 
- - List item
+ - `[output name]` to rename the output to a specific name. The default is the original file with an  extension 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzkyODkyOTk0LC0xNTg2MjEyNjgzLDczMD
-k5ODExNl19
+eyJoaXN0b3J5IjpbMTc2NTQ3MjIwOSwtMTU4NjIxMjY4Myw3Mz
+A5OTgxMTZdfQ==
 -->
