@@ -71,7 +71,8 @@ VariableKey <|-- FunctionKey
 VariableKey <|-- BuiltinTypeKey
 VariableKey *-- CompileMemory
 InterpretValue <|-- InterpretVariable
-InterpretVariable <|.. VariableKey
+InterpretValue <|-- TemporaryValue
+InterpretVariable <|-- VariableKey
 CompileValue *-- CompileSize
 Node o-- CompileValue
 
@@ -110,13 +111,11 @@ IdentifierNode: compileMemory() CompileMemory over
 IdentifierNode: compileValue() CompileValue over
 IdentifierNode: compileSize() CompileSize over
 
-<<interface>> InterpretValue
 InterpretValue: Map<String, InterpretValue> children
 InterpretValue: put(String, InterpretValue)
 InterpretValue: get(String) InterpretValue
 InterpretValue: setValue(InterpretValue)
 InterpretValue: valueString() String
-<<interface>> InterpretVariable
 
 VariableKey: interpretValue
 VariableKey: VariableKey parent
@@ -166,6 +165,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQyNDA1OTg5MCw3ODcwNzEwOTIsMTYzMz
+eyJoaXN0b3J5IjpbMTkyODA0Mzg4NSw3ODcwNzEwOTIsMTYzMz
 I5MjA3OF19
 -->
