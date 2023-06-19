@@ -6,11 +6,18 @@ Monomer can be executed via command line interface (CLI) or through visual inter
 The command line interface can be used for [shell scripts](#Shell%20Scripts), executing a Monomer file via [interpreter](###Interpreter), or compiling a Monomer file
 
 ### Updates
-Run the following in the command line to check the installed Monomer CLI version.
+Run any of the following in the command line to check the installed Monomer CLI version.
 
+    mono -version
     mono -v
 
-Run the following in the command line to check the latest 
+Run the following in the command line to check the latest Monomer CLI version.
+
+    mono -latest
+
+Run the following in the command line to update Monomer and the CLI.
+
+    mono update
 
 ### Shell Scripts
 The shell environment is where code can be inputted into the command line and the command line will respond directly (after each line is entered, unless multiline is used). To initiate a shell environment, enter any of the following into the command line.
@@ -36,6 +43,6 @@ Below are additional options that can be appended to the command.
  - `-version [number]` or `-v [number]` to use a specific version
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTgwNjkyNTM1MCwtMTU4NjIxMjY4Myw3Mz
+eyJoaXN0b3J5IjpbMTcxODYzMTI2OCwtMTU4NjIxMjY4Myw3Mz
 A5OTgxMTZdfQ==
 -->
