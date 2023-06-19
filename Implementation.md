@@ -58,10 +58,14 @@
 ```mermaid
 classDiagram
 Tokenizer o-- Buffer
-Buffer o-- BufferLine
+Buffer *-- BufferLine
+
+Buffer: Queue buffer
+Buffer: Reader file
+Buffer: getLine
 
 BufferLine: int location
-BufferLine: getFullLine
+BufferLine: getFullLine() String
 ```
 
 ```mermaid
@@ -174,6 +178,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIyNTgwODg2NSw3ODcwNzEwOTIsMTYzMz
-I5MjA3OF19
+eyJoaXN0b3J5IjpbLTE1NzM1MDE4MjYsNzg3MDcxMDkyLDE2Mz
+MyOTIwNzhdfQ==
 -->
