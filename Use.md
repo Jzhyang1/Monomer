@@ -26,9 +26,9 @@ The interpreter runs code from a file directly, which is advantageous in testing
 
 Below are additional options that can be appended to the command.
 
- - `
+ - `-version [number]` or `-v [number]` 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE1NDk0MzU4OSwtMTU4NjIxMjY4Myw3Mz
-A5OTgxMTZdfQ==
+eyJoaXN0b3J5IjpbMjA4OTkzMzgyLC0xNTg2MjEyNjgzLDczMD
+k5ODExNl19
 -->
