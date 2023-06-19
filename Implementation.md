@@ -55,10 +55,14 @@
 
 
 ## UML diagrams
+```mermaid
+classDiagram
+Tokenizer o-- Buffer
+```
 
 ```mermaid
 classDiagram
-Tokenizer
+Tokenizer o-- Token
 Node --o Token
 
 Node <|-- OperatorNode: See Below
@@ -166,6 +170,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTMwNjYwNTEzNSw3ODcwNzEwOTIsMTYzMz
-I5MjA3OF19
+eyJoaXN0b3J5IjpbNDkzMTAyMzE1LDc4NzA3MTA5MiwxNjMzMj
+kyMDc4XX0=
 -->
