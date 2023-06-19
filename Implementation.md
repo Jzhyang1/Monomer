@@ -111,8 +111,8 @@ IdentifierNode: compileValue() CompileValue over
 IdentifierNode: compileSize() CompileSize over
 
 <<interface>> InterpretValue
-InterpretValue: InterpretValue[ children
-InterpretValue: setValue(InterpretValue)
+InterpretValue: Map<String, InterpretValue> children
+InterpretValue: getsetValue(InterpretValue)
 <<interface>> InterpretVariable
 
 VariableKey: interpretValue
@@ -163,6 +163,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwNDg1NTcyOTksNzg3MDcxMDkyLDE2Mz
-MyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbMTg2NTQxMDk0MSw3ODcwNzEwOTIsMTYzMz
+I5MjA3OF19
 -->
