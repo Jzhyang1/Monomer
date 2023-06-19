@@ -70,7 +70,7 @@ BufferLine: int location
 BufferLine: getFullLine() String
 BufferLine: peek() char
 BufferLine: get() char
-BufferLine: matche() char
+BufferLine: matchNext(String[]) String|null
 ```
 
 ```mermaid
@@ -183,6 +183,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NTY5MTExNjIsNzg3MDcxMDkyLDE2Mz
-MyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbLTU0Njc1MjU5OSw3ODcwNzEwOTIsMTYzMz
+I5MjA3OF19
 -->
