@@ -42,6 +42,7 @@
 |EnumNode||
 |TupleNode|a structured list with any type children|
 |SequenceNode|a flat list|
+|StructureNode|a block of code enclosed by braces (`{}`) that stores local variables as fields|
 |VariableKey|the Key of a variable that is shared between identifiers referring to the same variable. Doubles as the type, and, during interpretation, the value|
 |FunctionKey||
 |InterpretVariable|requested from nodes for interpreter actions that require variable modification|
@@ -154,5 +155,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbLTE2MDU0ODYyMTAsMTYzMzI5MjA3OF19
 -->
