@@ -55,9 +55,10 @@ The compile converts the code to an executable, which is advantageous for distri
 Below are additional options that can be appended to the command.
 
  - `[output name]` to rename the output to a specific name. The default is the original file with an executable extension. Extensions are NOT automatically added to the output name.
- - `-o` to output the intermediate output f
+ - `-o [object file name]`or `-o` to output the intermediate object file.
+ - `-a [assembly file name]` or `-a` to output the intermediate assembly file.
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyNTg2OTMzMTMsLTE1ODYyMTI2ODMsNz
+eyJoaXN0b3J5IjpbLTE5MTA2Mzk2NzksLTE1ODYyMTI2ODMsNz
 MwOTk4MTE2XX0=
 -->
