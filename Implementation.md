@@ -58,8 +58,8 @@
 
 ```mermaid
 classDiagram
-direction L
-Token o-- Node
+Tokenizer
+Node --o Token
 
 Node <|-- OperatorNode: See Below
 Node <|-- LiteralNode: See Below
@@ -166,6 +166,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMDIwMjgzMDEsNzg3MDcxMDkyLDE2Mz
-MyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbMTMwNjYwNTEzNSw3ODcwNzEwOTIsMTYzMz
+I5MjA3OF19
 -->
