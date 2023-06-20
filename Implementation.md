@@ -227,9 +227,9 @@ F --> H[[Compile]]
 
 CLI Input
 ```mermaid
-graph TD
+graph LR
 subgraph sg1["main function"]
-	direction TD
+	direction TB
 	A[String inputs] --> B[Toogle config bools]
 	B ..-> C(Get string input from console)
 	C --> D[Create buffer]
@@ -244,8 +244,8 @@ subgraph sg1["main function"]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYwNDYyNDQwNywtOTcwNTM5NTUwLDMwOT
-k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
-LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
-EwOTIsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbNzE5MjA0NDksLTk3MDUzOTU1MCwzMDk5Nj
+kyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDczMyw2
+MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MDcxMD
+kyLDE2MzMyOTIwNzhdfQ==
 -->
