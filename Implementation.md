@@ -74,6 +74,7 @@ BufferLine: peek() char
 BufferLine: get() char
 BufferLine: matchNext(Collection<String>) String|null
 BufferLine: startingSpaces() int
+BufferLine: skipSpaces()
 ```
 
 ```mermaid
@@ -257,6 +258,7 @@ end
 ```mermaid
 graph LR
 subgraph sg1["Tokenize"]
+	direction LR
 	A[For BufferLine line in Buffer] --> B[Get number of starting spaces of this line]
 	 --> C[Variables strbuild, tokens]
 	 --> D[For char, pos in line] 
@@ -283,7 +285,7 @@ subgraph sg1["Tokenize"]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ2MDU1ODA1NSwxNTU2NTY2OTk2LC05Nz
+eyJoaXN0b3J5IjpbMTQ2NjIwNDI0MSwxNTU2NTY2OTk2LC05Nz
 A1Mzk1NTAsMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAz
 LDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2Nz
 UyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
