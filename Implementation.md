@@ -260,6 +260,7 @@ end
 graph LR
 subgraph sg1["Tokenize"]
 	A[For BufferLine line in Buffer] --> B[Get number of starting spaces of this line]
+	--> 
 	 --> C[Variables strbuild, tokens]
 	 --> D[For char, pos in line] 
 	 --> E{char is space?}
@@ -289,9 +290,9 @@ subgraph sg1["Tokenize"]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5MDAxNDcxOTYsMTM1OTc4MzM2LDE1NT
-Y1NjY5OTYsLTk3MDUzOTU1MCwzMDk5NjkyMDIsLTE0MDcxNDUw
-Niw2Mzk1MTA2MDMsMTkyMDMxMDczMyw2MzY2NjIzMjIsMzgyMT
-gyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhd
-fQ==
+eyJoaXN0b3J5IjpbLTQzMDMwNzk0NCwxMzU5NzgzMzYsMTU1Nj
+U2Njk5NiwtOTcwNTM5NTUwLDMwOTk2OTIwMiwtMTQwNzE0NTA2
+LDYzOTUxMDYwMywxOTIwMzEwNzMzLDYzNjY2MjMyMiwzODIxOD
+I0NDksLTU0Njc1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
+
 -->
