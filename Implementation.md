@@ -160,6 +160,8 @@ OperatorNode: staticMap<String,Supplier<OperatorNode>> defs
 
 GenericOperatorNode: Supplier<InterpretValue> interpretValue
 GenericOperatorNode: Supplier<InterpretVariable> interpretVariable
+
+De
 ```
 
 ```mermaid
@@ -194,6 +196,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2Nz
-UyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbMTEyMzcxNDU3Myw2MzY2NjIzMjIsMzgyMT
+gyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhd
+fQ==
 -->
