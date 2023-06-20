@@ -257,12 +257,10 @@ end
 ```mermaid
 graph LR
 subgraph sg1["Tokenize"]
-	A[For BufferLine line in Buffer] --> B{Start of line}
-	B -- Y --> C[Get number of starting spaces]
-	C --> X
-	B -- N --> X[strbuild, tokens]
-	X --> D[For char, pos in line] 
-	D --> E{char is space}
+	A[For BufferLine line in Buffer] --> B[Get number of starting spaces of this line]
+	 --> C[strbuild, tokens]
+	 --> D[For char, pos in line] 
+	 --> E{char is space}
 	E -- Y --> Y["tokens.push(strbuild) strbuild.clear()"]
 	E -- N --> F["buffer.match(OperatorNode.symbolOperators())"]
 	F --> G{null?}
@@ -283,8 +281,8 @@ subgraph sg1["Tokenize"]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTU1NjU2Njk5NiwtOTcwNTM5NTUwLDMwOT
-k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
-LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
-EwOTIsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbLTMxNjM2Mjg4LDE1NTY1NjY5OTYsLTk3MD
+UzOTU1MCwzMDk5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMs
+MTkyMDMxMDczMyw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NT
+I1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
 -->
