@@ -149,6 +149,8 @@ OperatorNode <|-- ToNode
 OperatorNode <|-- AsNode
 OperatorNode <|-- CallNode
 OperatorNode <|-- ControlNode
+
+Operator
 ```
 
 ```mermaid
@@ -183,6 +185,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTU0Njc1MjU5OSw3ODcwNzEwOTIsMTYzMz
-I5MjA3OF19
+eyJoaXN0b3J5IjpbLTIxMDI5NzE1ODMsLTU0Njc1MjU5OSw3OD
+cwNzEwOTIsMTYzMzI5MjA3OF19
 -->
