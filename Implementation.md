@@ -272,7 +272,8 @@ subgraph sg1["Tokenize"]
 	E -- Newline --> E2["append(';') getLine()"]
 	--> EA{Count spaces?}
 	EA -- "same as before" --> EA1[clear spaces]
-	EA -- "fewer" --> return
+	EA -- "fewer" --> EA2[return]
+	EA -- "more" --> EA3["append(tokenize(buffer))"]
 	E -- Space --> E3["append(strbuild) clear()"]
 	E -- Other --> F["buffer.match(OperatorNode.symbolOperators())"]
 	F --> G{null?}
@@ -297,7 +298,7 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjYwMzAwNTc2LC01MjU5NDc2NiwtNjcxOD
+eyJoaXN0b3J5IjpbNDc4MTAzNTk3LC01MjU5NDc2NiwtNjcxOD
 g3MDk4LDEzNTk3ODMzNiwxNTU2NTY2OTk2LC05NzA1Mzk1NTAs
 MzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAzLDE5MjAzMT
 A3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5LDc4
