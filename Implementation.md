@@ -139,6 +139,10 @@ InterpretValue: typeContains(Type) bool
 
 VariableKey: interpretValue
 VariableKey: VariableKey parent
+
+<<interface>> Type
+Type: typeContains(Type) bool
+Type: getFields() Map<String,Type>
 ```
 
 ```mermaid
@@ -188,6 +192,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5MjAzOTE0ODksMzgyMTgyNDQ5LC01ND
-Y3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbMTE1MTg1OTk5NSwzODIxODI0NDksLTU0Nj
+c1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
 -->
