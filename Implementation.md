@@ -134,6 +134,7 @@ InterpretValue: put(String, InterpretValue)
 InterpretValue: get(String) InterpretValue
 InterpretValue: setValue(InterpretValue)
 InterpretValue: valueString() String
+InterpretValue: getType() Type
 
 VariableKey: interpretValue
 VariableKey: VariableKey parent
@@ -186,6 +187,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MD
-cxMDkyLDE2MzMyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbLTM0OTcwOTAwLDM4MjE4MjQ0OSwtNTQ2Nz
+UyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
 -->
