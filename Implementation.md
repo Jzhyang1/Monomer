@@ -150,11 +150,11 @@ Type: getFields() Map<String,Type>
 ```mermaid
 classDiagram
 OperatorNode <|-- GenericOperatorNode
-OperatorNode <|-- AsNode
-AsNode <|-- ToNode
 OperatorNode <|-- AssignNode
 OperatorNode <|-- DefineNode
 OperatorNode <|-- FieldNode
+OperatorNode <|-- AsNode
+AsNode <|-- ToNode
 OperatorNode <|-- CallNode
 OperatorNode <|-- ControlNode
 ControlNode *-- IfNode
@@ -206,7 +206,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTkyMDMxMDczMyw2MzY2NjIzMjIsMzgyMT
-gyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhd
-fQ==
+eyJoaXN0b3J5IjpbNjM5NTEwNjAzLDE5MjAzMTA3MzMsNjM2Nj
+YyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MTA5Miwx
+NjMzMjkyMDc4XX0=
 -->
