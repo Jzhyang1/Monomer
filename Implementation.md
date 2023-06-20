@@ -139,6 +139,7 @@ InterpretValue: typeContains(Type) bool
 
 VariableKey: interpretValue
 VariableKey: VariableKey parent
+VariableKey: copy() VariableKey
 
 <<interface>> Type
 Type: typeContains(Type) bool
@@ -198,7 +199,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3OTk0NjU1NSw2MzY2NjIzMjIsMzgyMT
+eyJoaXN0b3J5IjpbMTAxMTY0NzA1NSw2MzY2NjIzMjIsMzgyMT
 gyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhd
 fQ==
 -->
