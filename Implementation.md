@@ -229,6 +229,7 @@ CLI Input
 ```mermaid
 graph TD
 subgraph sg1["main function"]
+	direction TD
 	A[String inputs] --> B[Toogle config bools]
 	B ..-> C(Get string input from console)
 	C --> D[Create buffer]
@@ -237,11 +238,13 @@ subgraph sg1["main function"]
 	F --> G[Locate Variables]
 	G --> H[Match Variables]
 	H --> I[Match Types]
-	I --> J[]
+	I --> J{Config set to}
+	J -- Interpret --> K[Run]
+	J -- Compile --> L[Compile]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTczNjMyMjY0MiwtOTcwNTM5NTUwLDMwOT
+eyJoaXN0b3J5IjpbLTYwNDYyNDQwNywtOTcwNTM5NTUwLDMwOT
 k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
 LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
 EwOTIsMTYzMzI5MjA3OF19
