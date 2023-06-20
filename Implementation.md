@@ -233,17 +233,18 @@ subgraph sg1["main function"]
 	B --> C{Check input format}
 	C -- Run --> H[Start IDE]
 	C -- CLI --> D{Console Input?}
-	D -- Yes --> E(Get string input from console)
-	D -- No --> I[Create buffer, Tokenize, Make tree, etc]
-	E --> I
+	D -- Yes --> E[Get string input from console]
+	D -- No --> F[Get file]
+	E --> I[Create buffer, Tokenize, Make tree, etc]
+	F --> I
 	I --> J{Config set to}
 	J -- Interpret --> K[Run]
 	J -- Compile --> L[Compile]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTExNDcyNTE4MywtOTcwNTM5NTUwLDMwOT
-k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
-LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
-EwOTIsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbLTE3OTU1NjYzOTgsLTk3MDUzOTU1MCwzMD
+k5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDcz
+Myw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MD
+cxMDkyLDE2MzMyOTIwNzhdfQ==
 -->
