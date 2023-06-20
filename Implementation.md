@@ -90,6 +90,7 @@ VariableKey <|-- BuiltinTypeKey
 VariableKey *-- CompileMemory
 InterpretValue <|-- InterpretVariable
 InterpretValue <|-- TemporaryValue
+Type <|.. InterpretValue
 InterpretVariable <|-- VariableKey
 CompileValue *-- CompileSize
 Node o-- CompileValue
@@ -134,7 +135,7 @@ InterpretValue: put(String, InterpretValue)
 InterpretValue: get(String) InterpretValue
 InterpretValue: setValue(InterpretValue)
 InterpretValue: valueString() String
-InterpretValue: getType() Type
+InterpretValue: typeContains(Type) bool
 
 VariableKey: interpretValue
 VariableKey: VariableKey parent
@@ -187,6 +188,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM0OTcwOTAwLDM4MjE4MjQ0OSwtNTQ2Nz
-UyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbLTE5MjAzOTE0ODksMzgyMTgyNDQ5LC01ND
+Y3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
 -->
