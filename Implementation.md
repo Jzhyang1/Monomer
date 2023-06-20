@@ -213,7 +213,7 @@ StructureNode <|-- EnumNode
 The general program flowchart:
 
 ```mermaid
-graph TD
+graph LR
 X[[CLI Input]] --> A
 Y[[IDE Direct Call]] --> A
 A[[Buffer]] --> B[[Tokenize]]
@@ -229,23 +229,17 @@ CLI Input
 ```mermaid
 graph LR
 subgraph sg1["main function"]
-	direction TB
 	A[String inputs] --> B[Toogle config bools]
 	B ..-> C(Get string input from console)
-	C --> D[Create buffer]
-	D --> E[Tokenize]
-	E --> F[Make Tree]
-	F --> G[Locate Variables]
-	G --> H[Match Variables]
-	H --> I[Match Types]
+	C --> I[Create buffer, Tokenize, Make tree, etc]
 	I --> J{Config set to}
 	J -- Interpret --> K[Run]
 	J -- Compile --> L[Compile]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzE5MjA0NDksLTk3MDUzOTU1MCwzMDk5Nj
-kyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDczMyw2
-MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MDcxMD
-kyLDE2MzMyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbMTY2Nzk3OTA0MywtOTcwNTM5NTUwLDMwOT
+k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
+LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
+EwOTIsMTYzMzI5MjA3OF19
 -->
