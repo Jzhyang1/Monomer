@@ -231,7 +231,8 @@ graph LR
 subgraph sg1["main function"]
 	A[String inputs] --> B[Toogle config bools]
 	B --> C{Check input format}
-	C .- Run .-> D(Get string input from console)
+	C -- Run --> E[Start IDE]
+	C -- CLI .-> D{}(Get string input from console)
 	D --> I[Create buffer, Tokenize, Make tree, etc]
 	I --> J{Config set to}
 	J -- Interpret --> K[Run]
@@ -239,8 +240,8 @@ subgraph sg1["main function"]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkxODU4MTc5NSwtOTcwNTM5NTUwLDMwOT
-k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
-LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
-EwOTIsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbOTc3NDU3MzE2LC05NzA1Mzk1NTAsMzA5OT
+Y5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAzLDE5MjAzMTA3MzMs
+NjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MT
+A5MiwxNjMzMjkyMDc4XX0=
 -->
