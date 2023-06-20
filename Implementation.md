@@ -219,10 +219,12 @@ B --> C[[Make Tree]]
 C --> D[[Locate Variables]]
 D --> E[[Match Variables]]
 E --> F[[Match Types]]
+F --> G[[Run]]
+F --> H[[Compile]]
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIxOTc1ODA5NiwtOTcwNTM5NTUwLDMwOT
-k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
-LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
-EwOTIsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbNzgxMjc2NzMxLC05NzA1Mzk1NTAsMzA5OT
+Y5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAzLDE5MjAzMTA3MzMs
+NjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MT
+A5MiwxNjMzMjkyMDc4XX0=
 -->
