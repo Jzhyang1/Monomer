@@ -60,6 +60,8 @@ classDiagram
 Tokenizer o-- Buffer
 Buffer *-- BufferLine
 
+Tokenizer: tokenize(Buffer) Token
+
 Buffer: Queue buffer
 Buffer: Reader file
 Buffer: getLine() BufferLine
@@ -70,7 +72,8 @@ BufferLine: int location
 BufferLine: getFullLine() String
 BufferLine: peek() char
 BufferLine: get() char
-BufferLine: matchNext(String[]) String|null
+BufferLine: matchNext(Collection<String>) String|null
+BufferLine: startingSpaces() int
 ```
 
 ```mermaid
@@ -225,7 +228,6 @@ F --> G[[Run]]
 F --> H[[Compile]]
 ```
 
-Command prompt
 ```mermaid
 graph LR
 subgraph sg1["main function"]
@@ -242,9 +244,47 @@ subgraph sg1["main function"]
 	J -- Compile --> L[Compile]
 end
 ```
+```mermaid
+graph LR
+subgraph sg1["buffer"]
+	A[FileReader] --> C
+	B[String] --> C[Scanner]
+	C --> D[Read first N lines as BufferLines]
+	D --track n--> E[As more lines are taken from the buffer, clear and reload the N-line buffer]
+	D --> F["Unget by setting n to n-1"]
+end
+```
+```mermaid
+graph LR
+subgraph sg1["Tokenize"]
+	A[For BufferLine line in Buffer] --> B{Start of line}
+	B -- Y --> C[Get number of starting spaces]
+	C --> X
+	B -- N --> X[strbuild, tokens]
+	X --> D[For char, pos in line] 
+	D --> E{char is space}
+	E -- Y --> Y["tokens.push(strbuild) strbuild.clear()"]
+	E -- N --> F["buffer.match(OperatorNode.symbolOperators())"]
+	F --> G{null?}
+	G -- Y --> H["strbuild.push(char)"]
+	G -- N --> Z{what is it?}
+	Z -- quote --> J["tokens.push(strbuild) strbuild.clear()"]
+	J --> P[while not endquote] 
+	P --> Q{escape char?}
+	Q -- Y --> R{what is it?}
+	R -- "open parneth" --> T["unget(...) tokenize(...)"]
+	R -- "quote, b-slash" --> S
+	Q -- N --> S["strbuild.push(char)"]
+	Z -- "open group" --> AA
+	Z -- dot --> K{"is strbuild[0] a number?"}
+	K -- Y --> L["strbuild.push(char)"]
+	K -- N --> I
+	Z -- other --> I["tokens.push(strbuild) strbuild.clear() tokens.push(operatorSymbol)"]
+end
+```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3OTU1NjYzOTgsLTk3MDUzOTU1MCwzMD
-k5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDcz
-Myw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MD
-cxMDkyLDE2MzMyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbMTU1NjU2Njk5NiwtOTcwNTM5NTUwLDMwOT
+k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
+LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
+EwOTIsMTYzMzI5MjA3OF19
 -->
