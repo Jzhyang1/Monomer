@@ -231,12 +231,15 @@ graph TD
 subgraph sg1["main function"]
 	A[String inputs] --> B[Toogle config bools]
 	B ..-> C(Get string input from console)
-	C --> D[[Create buffer]]
-	
+	C --> D[Create buffer]
+	D --> E[Tokenize]
+	E --> F[Make Tree]
+	F --> G[Locate Variables]
+	G --> H[Tokenize]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY1NzUwMDQ2NCwtOTcwNTM5NTUwLDMwOT
+eyJoaXN0b3J5IjpbLTM0MzQzNDQ5MywtOTcwNTM5NTUwLDMwOT
 k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
 LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
 EwOTIsMTYzMzI5MjA3OF19
