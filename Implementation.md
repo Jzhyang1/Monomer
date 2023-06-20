@@ -174,7 +174,7 @@ GenericOperatorNode: inpterpretValue() InterpretValue
 GenericOperatorNode: interpretVariable() InterpretVariable
 GenericOperatorNode: getType() Type
 
-AssignNode: matchType()
+AssignNode: matchTypes()
 
 DefineNode: Map<String,VariableKey> variables
 DefineNode: putVariable(String, VariableKey)
@@ -217,7 +217,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTc4Mzk0NjY4NywtMTQwNzE0NTA2LDYzOT
+eyJoaXN0b3J5IjpbLTQ5MTU5MTc1NiwtMTQwNzE0NTA2LDYzOT
 UxMDYwMywxOTIwMzEwNzMzLDYzNjY2MjMyMiwzODIxODI0NDks
 LTU0Njc1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
 -->
