@@ -230,8 +230,8 @@ Command prompt
 graph LR
 subgraph sg1["main function"]
 	A[String inputs] --> B[Toogle config bools]
-	B --> C
-	C ..-> D(Get string input from console)
+	B --> C{Check input format}
+	C .- Run .-> D(Get string input from console)
 	D --> I[Create buffer, Tokenize, Make tree, etc]
 	I --> J{Config set to}
 	J -- Interpret --> K[Run]
@@ -239,7 +239,7 @@ subgraph sg1["main function"]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM4MDI4NTg4MCwtOTcwNTM5NTUwLDMwOT
+eyJoaXN0b3J5IjpbLTkxODU4MTc5NSwtOTcwNTM5NTUwLDMwOT
 k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
 LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
 EwOTIsMTYzMzI5MjA3OF19
