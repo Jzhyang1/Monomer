@@ -235,11 +235,13 @@ subgraph sg1["main function"]
 	D --> E[Tokenize]
 	E --> F[Make Tree]
 	F --> G[Locate Variables]
-	G --> H[Tokenize]
+	G --> H[Match Variables]
+	H --> I[Match Types]
+	I --> J[]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM0MzQzNDQ5MywtOTcwNTM5NTUwLDMwOT
+eyJoaXN0b3J5IjpbMTczNjMyMjY0MiwtOTcwNTM5NTUwLDMwOT
 k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
 LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
 EwOTIsMTYzMzI5MjA3OF19
