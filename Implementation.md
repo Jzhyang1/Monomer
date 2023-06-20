@@ -107,7 +107,7 @@ Node: getset Node parent
 Node: Node[] children
 Node: Map<String, VariableKey> variables
 Node: LineContext context
-Node: getType() VariableKey
+Node: getType() Ty
 Node: getVariable(String) VariableKey
 Node: putVariable(String,VariableKey)
 Node: add(Node)
@@ -137,9 +137,10 @@ InterpretValue: setValue(InterpretValue)
 InterpretValue: valueString() String
 InterpretValue: typeContains(Type) bool
 
+InterpretVariable: copy() VariableKey
+
 VariableKey: interpretValue
 VariableKey: VariableKey parent
-VariableKey: copy() VariableKey
 
 <<interface>> Type
 Type: typeContains(Type) bool
@@ -199,7 +200,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAxMTY0NzA1NSw2MzY2NjIzMjIsMzgyMT
+eyJoaXN0b3J5IjpbLTkzMTMxMjg1Nyw2MzY2NjIzMjIsMzgyMT
 gyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhd
 fQ==
 -->
