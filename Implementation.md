@@ -267,9 +267,9 @@ subgraph sg1["Tokenize"]
 	 --> E{what is char?}
 	E -- Escape --> E1{followed by?}
 	E1 --"Open Parenthesis"--> E11["readMultilineComment(Buffer)"]
-	E1 --"b-slash"--> E12["next line"]
-	E1 --"new 
-	E -- Newline --> E2
+	E1 --"b-slash"--> E12[next line]
+	E1 --"New line"--> E13[clear new line and spaces]
+	E -- Newline --> E2["append(';') next line"]
 	E -- Space --> E3["append(strbuild) clear()"]
 	E -- Other --> F["buffer.match(OperatorNode.symbolOperators())"]
 	F --> G{null?}
@@ -294,9 +294,9 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyMzgwODQ4ODksLTUyNTk0NzY2LC02Nz
-E4ODcwOTgsMTM1OTc4MzM2LDE1NTY1NjY5OTYsLTk3MDUzOTU1
-MCwzMDk5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMD
-MxMDczMyw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTks
-Nzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbMTQ1NDI2NDE5MiwtNTI1OTQ3NjYsLTY3MT
+g4NzA5OCwxMzU5NzgzMzYsMTU1NjU2Njk5NiwtOTcwNTM5NTUw
+LDMwOTk2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMz
+EwNzMzLDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3
+ODcwNzEwOTIsMTYzMzI5MjA3OF19
 -->
