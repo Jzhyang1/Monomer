@@ -103,6 +103,7 @@ Token: String name
 Token: enum{operator,int,float,char,string, group, word} usage
 Token: Token[] children
 Token: LineContext context
+Token: with(String name) Token
 Token: makeNode() Node
 
 Node: get String name
@@ -262,30 +263,35 @@ subgraph sg1["Tokenize"]
 	 --> C[Variables strbuild, tokens]
 	 --> D[For char, pos in line] 
 	 --> E{char is space?}
-	E -- Y --> Y["tokens.push(strbuild) strbuild.clear()"]
+	E -- Y --> Y["append(strbuild) clear()"]
 	E -- N --> F["buffer.match(OperatorNode.symbolOperators())"]
 	F --> G{null?}
-	G -- Y --> H["strbuild.push(char)"]
+	G -- Y --> H["push(char)"]
 	G -- N --> Z{what is it?}
-	Z -- quote --> J["tokens.push(strbuild) strbuild.clear()"]
+	Z -- quote --> J["append(strbuild) clear()"]
 	J --> P[while not endquote] 
 	P --> Q{escape char?}
 	Q -- Y --> R{what is it?}
-	R -- "open parneth" --> T["unget(...) tokenize(...)"]
+	R -- "open parneth" --> T["unget(line) append(tokenize(buffer))"]
 	R -- "quote, b-slash" --> S
-	Q -- N --> S["strbuild.push(char)"]
-	Z -- "open group" --> AA["strbuild.push(char)"]
+	Q -- N --> S["push(char)"]
+	Z -- "open group"
 	--> AB{End of line?}
-	AB
+	AB -- Y --> AC["append(tokenize(buffer).with(char))"]
+	AB -- N --> AD["unget(line)"]
+	--> AC
+	Z -- "close group" --> BA["append(strbuild) unget(line)"]
+	--> BB[return tokens]
 	Z -- dot --> K{"is strbuild[0] a number?"}
 	K -- Y --> L["strbuild.push(char)"]
 	K -- N --> I
-	Z -- other --> I["tokens.push(strbuild) strbuild.clear() tokens.push(operatorSymbol)"]
+	Z -- other --> I["append(strbuild) append(operatorSymbol) clear()"]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM1OTc4MzM2LDE1NTY1NjY5OTYsLTk3MD
-UzOTU1MCwzMDk5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMs
-MTkyMDMxMDczMyw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NT
-I1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbLTE5MDAxNDcxOTYsMTM1OTc4MzM2LDE1NT
+Y1NjY5OTYsLTk3MDUzOTU1MCwzMDk5NjkyMDIsLTE0MDcxNDUw
+Niw2Mzk1MTA2MDMsMTkyMDMxMDczMyw2MzY2NjIzMjIsMzgyMT
+gyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhd
+fQ==
 -->
