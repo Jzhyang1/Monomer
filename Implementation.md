@@ -108,6 +108,7 @@ Node: Node[] children
 Node: Map<String, VariableKey> variables
 Node: LineContext context
 Node: getType() Type
+Node: setType(Type)
 Node: getVariable(String) VariableKey
 Node: putVariable(String,VariableKey)
 Node: add(Node)
@@ -219,7 +220,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjEwNDc3MTQwOSwtMTQwNzE0NTA2LDYzOT
-UxMDYwMywxOTIwMzEwNzMzLDYzNjY2MjMyMiwzODIxODI0NDks
-LTU0Njc1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NT
+EwNjAzLDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwt
+NTQ2NzUyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
 -->
