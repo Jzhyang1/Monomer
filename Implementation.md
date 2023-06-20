@@ -214,14 +214,13 @@ And this will produce a flow chart:
 
 ```mermaid
 graph TD
-A[[Compiler]] -- Link text --> B((Circle))
-A --> C(Round Rect)
-B --> D{Rhombus}
-C --> D
+A[[Buffer]] --> B[[Tokenize]]
+B --> C[[Make Tree]]
+C --> D[[
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk3MDUzOTU1MCwzMDk5NjkyMDIsLTE0MD
-cxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDczMyw2MzY2NjIzMjIs
-MzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOT
-IwNzhdfQ==
+eyJoaXN0b3J5IjpbMTA3OTkzOTg5NywtOTcwNTM5NTUwLDMwOT
+k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
+LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
+EwOTIsMTYzMzI5MjA3OF19
 -->
