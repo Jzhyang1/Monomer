@@ -107,7 +107,7 @@ Node: getset Node parent
 Node: Node[] children
 Node: Map<String, VariableKey> variables
 Node: LineContext context
-Node: getType() Ty
+Node: getType() Type
 Node: getVariable(String) VariableKey
 Node: putVariable(String,VariableKey)
 Node: add(Node)
@@ -157,6 +157,7 @@ OperatorNode <|-- ToNode
 OperatorNode <|-- AsNode
 OperatorNode <|-- CallNode
 OperatorNode <|-- ControlNode
+ControlNode 
 
 OperatorNode: staticMap<String,Supplier<OperatorNode>> defs
 
@@ -200,7 +201,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkzMTMxMjg1Nyw2MzY2NjIzMjIsMzgyMT
-gyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhd
-fQ==
+eyJoaXN0b3J5IjpbLTE4MzI4ODcyODEsNjM2NjYyMzIyLDM4Mj
+E4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4
+XX0=
 -->
