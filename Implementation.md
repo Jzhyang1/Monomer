@@ -216,10 +216,12 @@ And this will produce a flow chart:
 graph TD
 A[[Buffer]] --> B[[Tokenize]]
 B --> C[[Make Tree]]
-C --> D[[
+C --> D[[Locate Variables]]
+D --> E[[Match Variables]]
+E --> F[[Match Types]]
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA3OTkzOTg5NywtOTcwNTM5NTUwLDMwOT
+eyJoaXN0b3J5IjpbMTIxOTc1ODA5NiwtOTcwNTM5NTUwLDMwOT
 k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
 LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
 EwOTIsMTYzMzI5MjA3OF19
