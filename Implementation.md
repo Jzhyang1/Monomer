@@ -225,9 +225,14 @@ F --> G[[Run]]
 F --> H[[Compile]]
 ```
 
+CLI Input
+```mermaid
+graph TD
+
+subgraph main
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3MzI0MTU4NDAsLTk3MDUzOTU1MCwzMD
+eyJoaXN0b3J5IjpbLTE0MzQwMzk1MjAsLTk3MDUzOTU1MCwzMD
 k5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDcz
 Myw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MD
 cxMDkyLDE2MzMyOTIwNzhdfQ==
