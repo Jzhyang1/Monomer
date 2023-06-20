@@ -157,7 +157,12 @@ OperatorNode <|-- ToNode
 OperatorNode <|-- AsNode
 OperatorNode <|-- CallNode
 OperatorNode <|-- ControlNode
-ControlNode 
+ControlNode *-- IfNode
+ControlNode *-- RepeatNode
+ControlNode *-- WhileNode
+ControlNode *-- ForNode
+ControlNode *-- ElseNode
+ControlNode *-- AnyNode
 
 OperatorNode: staticMap<String,Supplier<OperatorNode>> defs
 
@@ -201,7 +206,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4MzI4ODcyODEsNjM2NjYyMzIyLDM4Mj
-E4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4
-XX0=
+eyJoaXN0b3J5IjpbMTUxMTQ2MTk0OSw2MzY2NjIzMjIsMzgyMT
+gyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhd
+fQ==
 -->
