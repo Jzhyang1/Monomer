@@ -150,7 +150,8 @@ OperatorNode <|-- AsNode
 OperatorNode <|-- CallNode
 OperatorNode <|-- ControlNode
 
-Operator
+GenericOperatorNode: Supplier<InterpretValue> interpretValue
+GenericOperatorNode: Supplier<InterpretVariable> interpretVariable
 ```
 
 ```mermaid
@@ -185,6 +186,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIxMDI5NzE1ODMsLTU0Njc1MjU5OSw3OD
-cwNzEwOTIsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MD
+cxMDkyLDE2MzMyOTIwNzhdfQ==
 -->
