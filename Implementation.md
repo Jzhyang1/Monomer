@@ -269,7 +269,9 @@ subgraph sg1["Tokenize"]
 	E1 --"Open Parenthesis"--> E11["readMultilineComment(Buffer)"]
 	E1 --"b-slash"--> E12[next line]
 	E1 --"New line"--> E13[clear new line and spaces]
-	E -- Newline --> E2["append(';') next line"]
+	E -- Newline --> E2["append(';') getLine()"]
+	--> EA{Count spaces?}
+	EA -- same -->
 	E -- Space --> E3["append(strbuild) clear()"]
 	E -- Other --> F["buffer.match(OperatorNode.symbolOperators())"]
 	F --> G{null?}
@@ -294,7 +296,7 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ1NDI2NDE5MiwtNTI1OTQ3NjYsLTY3MT
+eyJoaXN0b3J5IjpbLTU1MTEwNjI4MywtNTI1OTQ3NjYsLTY3MT
 g4NzA5OCwxMzU5NzgzMzYsMTU1NjU2Njk5NiwtOTcwNTM5NTUw
 LDMwOTk2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMz
 EwNzMzLDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3
