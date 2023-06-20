@@ -170,9 +170,11 @@ OperatorNode: staticMap<String,Supplier<OperatorNode>> defs
 
 GenericOperatorNode: Supplier<InterpretValue> interpretValue
 GenericOperatorNode: Supplier<InterpretVariable> interpretVariable
-GenericOperatorNode: inpterpretValue() interpretValue
+GenericOperatorNode: inpterpretValue() InterpretValue
+GenericOperatorNode: interpretVariable() InterpretVariable
 GenericOperatorNode: getType() Type
-GenericOperatorNode: getType() Type
+
+AssignNode: matchType()
 
 DefineNode: Map<String,VariableKey> variables
 DefineNode: putVariable(String, VariableKey)
@@ -215,7 +217,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzODM1MzQzNDgsLTE0MDcxNDUwNiw2Mz
-k1MTA2MDMsMTkyMDMxMDczMyw2MzY2NjIzMjIsMzgyMTgyNDQ5
-LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbLTc4Mzk0NjY4NywtMTQwNzE0NTA2LDYzOT
+UxMDYwMywxOTIwMzEwNzMzLDYzNjY2MjMyMiwzODIxODI0NDks
+LTU0Njc1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
 -->
