@@ -174,6 +174,8 @@ GenericOperatorNode: Supplier<InterpretVariable> interpretVariable
 DefineNode: Map<String,VariableKey> variables
 DefineNode: putVariable(String, VariableKey)
 DefineNode: getVariable(String) VariableKey
+
+ControlNode: Map<String,VariableKey> variables
 ```
 
 ```mermaid
@@ -208,7 +210,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjgyMDgwOTk4LDYzOTUxMDYwMywxOTIwMz
-EwNzMzLDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3
-ODcwNzEwOTIsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbLTIwMjY0OTkzOTgsNjM5NTEwNjAzLDE5Mj
+AzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5
+LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
 -->
