@@ -260,8 +260,9 @@ end
 graph LR
 subgraph sg1["Tokenize"]
 	A[For BufferLine line in Buffer] --> B[Get number of starting spaces of this line]
-	--> 
-	 --> C[Variables strbuild, tokens]
+	--> C1{end of line}
+	C1 -- Y --> C2["return tokenize(buffer)"]
+	C1 -- N --> C[Variables strbuild, tokens]
 	 --> D[For char, pos in line] 
 	 --> E{char is space?}
 	E -- Y --> Y["append(strbuild) clear()"]
@@ -277,10 +278,7 @@ subgraph sg1["Tokenize"]
 	R -- "quote, b-slash" --> S
 	Q -- N --> S["push(char)"]
 	Z -- "open group"
-	--> AB{End of line?}
-	AB -- Y --> AC["append(tokenize(buffer).with(char))"]
-	AB -- N --> AD["unget(line)"]
-	--> AC
+	 --> AC["append(tokenize(buffer).with(char))"]
 	Z -- "close group" --> BA["append(strbuild) unget(line)"]
 	--> BB[return tokens]
 	Z -- dot --> K{"is strbuild[0] a number?"}
@@ -290,7 +288,7 @@ subgraph sg1["Tokenize"]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQzMDMwNzk0NCwxMzU5NzgzMzYsMTU1Nj
+eyJoaXN0b3J5IjpbLTY3MTg4NzA5OCwxMzU5NzgzMzYsMTU1Nj
 U2Njk5NiwtOTcwNTM5NTUwLDMwOTk2OTIwMiwtMTQwNzE0NTA2
 LDYzOTUxMDYwMywxOTIwMzEwNzMzLDYzNjY2MjMyMiwzODIxOD
 I0NDksLTU0Njc1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
