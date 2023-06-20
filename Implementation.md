@@ -265,7 +265,8 @@ subgraph sg1["Tokenize"]
 	C1 -- N --> C[Variables strbuild, tokens]
 	 --> D[For char, pos in line] 
 	 --> E{what is char?}
-	E -- Escape --> E1
+	E -- Escape --> E1{followed by?}
+	--"Open Parenthesis"--> E11[read]
 	E -- Newline --> E2
 	E -- Space --> E3["append(strbuild) clear()"]
 	E -- Other --> F["buffer.match(OperatorNode.symbolOperators())"]
@@ -291,7 +292,7 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjE5Njg5Mzk4LC01MjU5NDc2NiwtNjcxOD
+eyJoaXN0b3J5IjpbMzM0ODYxOTU3LC01MjU5NDc2NiwtNjcxOD
 g3MDk4LDEzNTk3ODMzNiwxNTU2NTY2OTk2LC05NzA1Mzk1NTAs
 MzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAzLDE5MjAzMT
 A3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5LDc4
