@@ -275,6 +275,7 @@ subgraph sg1["Tokenize"]
 	Q -- N --> S["strbuild.push(char)"]
 	Z -- "open group" --> AA["strbuild.push(char)"]
 	--> AB{End of line?}
+	AB
 	Z -- dot --> K{"is strbuild[0] a number?"}
 	K -- Y --> L["strbuild.push(char)"]
 	K -- N --> I
@@ -282,8 +283,8 @@ subgraph sg1["Tokenize"]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2MzIzNzY2NzYsMTU1NjU2Njk5NiwtOT
-cwNTM5NTUwLDMwOTk2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYw
-MywxOTIwMzEwNzMzLDYzNjY2MjMyMiwzODIxODI0NDksLTU0Nj
-c1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbMTQ2MDU1ODA1NSwxNTU2NTY2OTk2LC05Nz
+A1Mzk1NTAsMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAz
+LDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2Nz
+UyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
 -->
