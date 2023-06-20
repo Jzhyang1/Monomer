@@ -210,7 +210,7 @@ LiteralNode <|-- StructureNode
 StructureNode <|-- EnumNode
 ```
 
-And this will produce a flow chart:
+The general program flowchart:
 
 ```mermaid
 graph TD
@@ -224,9 +224,11 @@ E --> F[[Match Types]]
 F --> G[[Run]]
 F --> H[[Compile]]
 ```
+
+```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDA1MTQ2NjEzLC05NzA1Mzk1NTAsMzA5OT
-Y5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAzLDE5MjAzMTA3MzMs
-NjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MT
-A5MiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbLTE3MzI0MTU4NDAsLTk3MDUzOTU1MCwzMD
+k5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDcz
+Myw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MD
+cxMDkyLDE2MzMyOTIwNzhdfQ==
 -->
