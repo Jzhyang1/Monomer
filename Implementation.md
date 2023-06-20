@@ -152,18 +152,19 @@ classDiagram
 OperatorNode <|-- GenericOperatorNode
 OperatorNode <|-- AssignNode
 OperatorNode <|-- DefineNode
-OperatorNode <|-- FieldNode
 OperatorNode <|-- AsNode
 AsNode <|-- ToNode
+OperatorNode <|-- FieldNode
 OperatorNode <|-- CallNode
 OperatorNode <|-- ControlNode
-ControlNode <|-- ControlChildNode
-ControlChildNode *-- IfNode
-ControlChildNode *-- RepeatNode
-ControlChildNode *-- WhileNode
-ControlChildNode *-- ForNode
-ControlChildNode *-- ElseNode
-ControlChildNode *-- AnyNode
+ControlNode *-- ControlChildNode
+Node <|-- ControlChildNode
+ControlChildNode <|-- IfNode
+ControlChildNode <|-- RepeatNode
+ControlChildNode <|-- WhileNode
+ControlChildNode <|-- ForNode
+ControlChildNode <|-- ElseNode
+ControlChildNode <|-- AnyNode
 
 OperatorNode: staticMap<String,Supplier<OperatorNode>> defs
 
@@ -207,7 +208,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI5NjczNDc3MSw2Mzk1MTA2MDMsMTkyMD
-MxMDczMyw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTks
-Nzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbNjgyMDgwOTk4LDYzOTUxMDYwMywxOTIwMz
+EwNzMzLDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3
+ODcwNzEwOTIsMTYzMzI5MjA3OF19
 -->
