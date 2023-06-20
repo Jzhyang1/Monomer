@@ -214,6 +214,8 @@ And this will produce a flow chart:
 
 ```mermaid
 graph TD
+X[[CLI input]] --> A
+Y[[IDE 
 A[[Buffer]] --> B[[Tokenize]]
 B --> C[[Make Tree]]
 C --> D[[Locate Variables]]
@@ -223,8 +225,8 @@ F --> G[[Run]]
 F --> H[[Compile]]
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzgxMjc2NzMxLC05NzA1Mzk1NTAsMzA5OT
-Y5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAzLDE5MjAzMTA3MzMs
-NjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MT
-A5MiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbLTE2NjQ1MTQ2MDksLTk3MDUzOTU1MCwzMD
+k5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDcz
+Myw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MD
+cxMDkyLDE2MzMyOTIwNzhdfQ==
 -->
