@@ -229,11 +229,12 @@ CLI Input
 ```mermaid
 graph TD
 subgraph sg1["main function"]
-	A[String Inputs] --> B[Toogle config bools]
+	A[String inputs] --> B[Toogle config bools]
+	B ..-> C(Get string input from console)
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTc5MDkzMjc1NCwtOTcwNTM5NTUwLDMwOT
+eyJoaXN0b3J5IjpbLTg2NzY4MzE5NywtOTcwNTM5NTUwLDMwOT
 k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
 LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
 EwOTIsMTYzMzI5MjA3OF19
