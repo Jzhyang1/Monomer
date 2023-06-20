@@ -264,8 +264,9 @@ subgraph sg1["Tokenize"]
 	C1 -- Y --> C2["return tokenize(buffer)"]
 	C1 -- N --> C[Variables strbuild, tokens]
 	 --> D[For char, pos in line] 
-	 --> E{char is space?}
-	E -- Y --> Y["append(strbuild) clear()"]
+	 --> E{char is space or newline?}
+	E -- Newline --> Z[""]
+	E -- Space --> Y["append(strbuild) clear()"]
 	E -- N --> F["buffer.match(OperatorNode.symbolOperators())"]
 	F --> G{null?}
 	G -- Y --> H["push(char)"]
@@ -289,9 +290,9 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTUyNTk0NzY2LC02NzE4ODcwOTgsMTM1OT
-c4MzM2LDE1NTY1NjY5OTYsLTk3MDUzOTU1MCwzMDk5NjkyMDIs
-LTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDczMyw2MzY2Nj
-IzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2
-MzMyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbLTE1OTM1NzgxMDMsLTUyNTk0NzY2LC02Nz
+E4ODcwOTgsMTM1OTc4MzM2LDE1NTY1NjY5OTYsLTk3MDUzOTU1
+MCwzMDk5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMD
+MxMDczMyw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTks
+Nzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
 -->
