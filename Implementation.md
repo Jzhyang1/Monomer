@@ -213,14 +213,15 @@ StructureNode <|-- EnumNode
 And this will produce a flow chart:
 
 ```mermaid
-graph LR
-A[Square Rect] -- Link text --> B((Circle))
+graph TD
+A[Compiler] -- Link text --> B((Circle))
 A --> C(Round Rect)
 B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NT
-EwNjAzLDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwt
-NTQ2NzUyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbLTYyODY1Mzg1OCwzMDk5NjkyMDIsLTE0MD
+cxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDczMyw2MzY2NjIzMjIs
+MzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOT
+IwNzhdfQ==
 -->
