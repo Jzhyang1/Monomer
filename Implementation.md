@@ -156,7 +156,7 @@ OperatorNode <|-- AsNode
 OperatorNode <|-- CallNode
 OperatorNode <|-- ControlNode
 
-OperatorNode: Map<String,Supplier<>>
+OperatorNode: staticMap<String,Supplier<OperatorNode>> defs
 
 GenericOperatorNode: Supplier<InterpretValue> interpretValue
 GenericOperatorNode: Supplier<InterpretVariable> interpretVariable
@@ -194,6 +194,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2NDcyNzYyMzQsMzgyMTgyNDQ5LC01ND
-Y3NTI1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbNjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2Nz
+UyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
 -->
