@@ -176,6 +176,8 @@ DefineNode: putVariable(String, VariableKey)
 DefineNode: getVariable(String) VariableKey
 
 ControlNode: Map<String,VariableKey> variables
+
+ControlChildNode: Map<String,VariableKey> variables
 ```
 
 ```mermaid
@@ -210,7 +212,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMjY0OTkzOTgsNjM5NTEwNjAzLDE5Mj
-AzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5
-LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMD
+MxMDczMyw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTks
+Nzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
 -->
