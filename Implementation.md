@@ -225,20 +225,21 @@ F --> G[[Run]]
 F --> H[[Compile]]
 ```
 
-CLI Input
+Command prompt
 ```mermaid
 graph LR
 subgraph sg1["main function"]
 	A[String inputs] --> B[Toogle config bools]
-	B ..-> C(Get string input from console)
-	C --> I[Create buffer, Tokenize, Make tree, etc]
+	B --> C
+	C ..-> D(Get string input from console)
+	D --> I[Create buffer, Tokenize, Make tree, etc]
 	I --> J{Config set to}
 	J -- Interpret --> K[Run]
 	J -- Compile --> L[Compile]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY2Nzk3OTA0MywtOTcwNTM5NTUwLDMwOT
+eyJoaXN0b3J5IjpbLTM4MDI4NTg4MCwtOTcwNTM5NTUwLDMwOT
 k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
 LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
 EwOTIsMTYzMzI5MjA3OF19
