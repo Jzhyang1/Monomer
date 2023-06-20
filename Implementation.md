@@ -228,13 +228,13 @@ F --> H[[Compile]]
 CLI Input
 ```mermaid
 graph TD
-	A --> B
 subgraph sg1["main function"]
-	A --> B
+	A[String Inputs] --> B[]
+end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjQ2NjQxMDY3LC05NzA1Mzk1NTAsMzA5OT
-Y5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAzLDE5MjAzMTA3MzMs
-NjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MT
-A5MiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbMTA1NTI2MjExMywtOTcwNTM5NTUwLDMwOT
+k2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMz
+LDYzNjY2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNz
+EwOTIsMTYzMzI5MjA3OF19
 -->
