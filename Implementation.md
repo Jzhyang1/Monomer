@@ -168,10 +168,12 @@ ControlChildNode <|-- AnyNode
 
 OperatorNode: staticMap<String,Supplier<OperatorNode>> defs
 
+GenericOperatorNode: Type type
 GenericOperatorNode: Supplier<InterpretValue> interpretValue
 GenericOperatorNode: Supplier<InterpretVariable> interpretVariable
 GenericOperatorNode: inpterpretValue() InterpretValue
 GenericOperatorNode: interpretVariable() InterpretVariable
+GenericOperatorNode: setType(Type)
 GenericOperatorNode: getType() Type
 
 AssignNode: matchTypes()
@@ -217,7 +219,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ5MTU5MTc1NiwtMTQwNzE0NTA2LDYzOT
+eyJoaXN0b3J5IjpbMjEwNDc3MTQwOSwtMTQwNzE0NTA2LDYzOT
 UxMDYwMywxOTIwMzEwNzMzLDYzNjY2MjMyMiwzODIxODI0NDks
 LTU0Njc1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
 -->
