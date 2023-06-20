@@ -258,7 +258,6 @@ end
 ```mermaid
 graph LR
 subgraph sg1["Tokenize"]
-	direction LR
 	A[For BufferLine line in Buffer] --> B[Get number of starting spaces of this line]
 	 --> C[Variables strbuild, tokens]
 	 --> D[For char, pos in line] 
@@ -285,8 +284,8 @@ subgraph sg1["Tokenize"]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ2NjIwNDI0MSwxNTU2NTY2OTk2LC05Nz
-A1Mzk1NTAsMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAz
-LDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2Nz
-UyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbMTM1OTc4MzM2LDE1NTY1NjY5OTYsLTk3MD
+UzOTU1MCwzMDk5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMs
+MTkyMDMxMDczMyw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NT
+I1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
 -->
