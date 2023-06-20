@@ -270,8 +270,8 @@ subgraph sg1["Tokenize"]
 	F --> G{null?}
 	G -- Y --> H["push(char)"]
 	G -- N --> Z{what is it?}
-	Z -- quote --> J["append(strbuild) clear()"]
-	J --> P[while not endquote] 
+	Z -- quote --> J["append(strbuild) clear() unget(line)"]
+	J --> P["readString(buffer)"] 
 	P --> Q{escape char?}
 	Q -- Y --> R{what is it?}
 	R -- "open parneth" --> T["unget(line) append(tokenize(buffer))"]
@@ -285,12 +285,14 @@ subgraph sg1["Tokenize"]
 	K -- Y --> L["strbuild.push(char)"]
 	K -- N --> I
 	Z -- other --> I["append(strbuild) append(operatorSymbol) clear()"]
+
+AP
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY3MTg4NzA5OCwxMzU5NzgzMzYsMTU1Nj
-U2Njk5NiwtOTcwNTM5NTUwLDMwOTk2OTIwMiwtMTQwNzE0NTA2
-LDYzOTUxMDYwMywxOTIwMzEwNzMzLDYzNjY2MjMyMiwzODIxOD
-I0NDksLTU0Njc1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
-
+eyJoaXN0b3J5IjpbLTMzMjc1NTgwOCwtNjcxODg3MDk4LDEzNT
+k3ODMzNiwxNTU2NTY2OTk2LC05NzA1Mzk1NTAsMzA5OTY5MjAy
+LC0xNDA3MTQ1MDYsNjM5NTEwNjAzLDE5MjAzMTA3MzMsNjM2Nj
+YyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MTA5Miwx
+NjMzMjkyMDc4XX0=
 -->
