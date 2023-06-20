@@ -258,9 +258,9 @@ end
 graph LR
 subgraph sg1["Tokenize"]
 	A[For BufferLine line in Buffer] --> B[Get number of starting spaces of this line]
-	 --> C[strbuild, tokens]
+	 --> C[Variables strbuild, tokens]
 	 --> D[For char, pos in line] 
-	 --> E{char is space}
+	 --> E{char is space?}
 	E -- Y --> Y["tokens.push(strbuild) strbuild.clear()"]
 	E -- N --> F["buffer.match(OperatorNode.symbolOperators())"]
 	F --> G{null?}
@@ -281,7 +281,7 @@ subgraph sg1["Tokenize"]
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMxNjM2Mjg4LDE1NTY1NjY5OTYsLTk3MD
+eyJoaXN0b3J5IjpbMjE3OTE3OTMwLDE1NTY1NjY5OTYsLTk3MD
 UzOTU1MCwzMDk5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMs
 MTkyMDMxMDczMyw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NT
 I1OTksNzg3MDcxMDkyLDE2MzMyOTIwNzhdfQ==
