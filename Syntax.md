@@ -162,7 +162,10 @@ Tuples are structured literals by order. These are useful for destructuring for 
 ## Operators
 
 <sub>For more detail, see [Operators](Operators.md)</sub>
-Operators are inline manipulators that come with a pre-defined functionality and are able to be overloaded to 
+Operators are inline manipulators that come with a pre-defined functionality and are able to be overloaded to suit different data types. They also obey a fixed order of precedence. Below is a summary of the types of operators in Monomer.
+
+### Arithmetic
+The positive (`+a`), addition (
 
 
 ## Variables
@@ -204,5 +207,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTcxMTcyNzkzMiwxMTIyNTI1OTUxXX0=
+eyJoaXN0b3J5IjpbMTkwODk1MzE2OCwxMTIyNTI1OTUxXX0=
 -->
