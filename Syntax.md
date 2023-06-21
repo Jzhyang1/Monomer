@@ -161,7 +161,8 @@ Tuples are structured literals by order. These are useful for destructuring for 
 
 ## Operators
 
-For more detail, see [Operators](Operators.md)
+<sub>For more detail, see [Operators](Operators.md)</sub>
+Operators are inline manipulators that come with a pre-defined functionality and are able to be overloaded to 
 
 
 ## Variables
@@ -203,5 +204,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk0MzMyODUxLDExMjI1MjU5NTFdfQ==
+eyJoaXN0b3J5IjpbLTcxMTcyNzkzMiwxMTIyNTI1OTUxXX0=
 -->
