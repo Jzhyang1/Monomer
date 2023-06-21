@@ -73,6 +73,9 @@ Invalid int literals include
  
 
 ### char
+
+Char literals are denoted by a character enclosed by single quotes (`'.'`). These are numbers corresponding to the ASCII/
+
 ### string
 
 Strings are a collection of characters that form any length of symbols or words that are taken as-is. Strings are contained by quotation marks (`"..."`). 
@@ -190,5 +193,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgwOTg3ODY4NCwxMTIyNTI1OTUxXX0=
+eyJoaXN0b3J5IjpbLTkwNzAxMTYwLDExMjI1MjU5NTFdfQ==
 -->
