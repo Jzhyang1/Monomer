@@ -2,27 +2,27 @@
 
 The syntax of Monomer includes 6 main structural types:
 
- 1. Basic Literals
- 2. Operators
- 3. Variables
- 4. Groups
- 5. Structured Values 
- 6. Comments
+ 1. [Basic Literals](#
+ 2. [Operators](#
+ 3. [Variables](#
+ 4. [Groups](#
+ 5. [Structured Values](#
+ 6. [Comments](#
 
 ## Basic Literals
 
 Monomer has 10 built-in literal constructions:
 
- 1. [int]
- 2. [float]
- 3. [char]
- 4. [string]
- 5. [list](
- 6. [set](
- 7. [map](
- 8. [range](
- 9. [enum](
- 10. [tuple](
+ 1. [int](#int)
+ 2. [float](#float)
+ 3. [char](#char)
+ 4. [string](#string)
+ 5. [list](#list)
+ 6. [set](#set)
+ 7. [map](#map)
+ 8. [range](#range)
+ 9. [enum](#enum)
+ 10. [tuple](#tuple)
 
 ### int
 
@@ -244,6 +244,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzM4NDY3ODY5LC0yNzA0MzgzNjEsMTA5NT
-U3NDkxMiwxMTIyNTI1OTUxXX0=
+eyJoaXN0b3J5IjpbMTI2MTY0NDQ1OSwtMjcwNDM4MzYxLDEwOT
+U1NzQ5MTIsMTEyMjUyNTk1MV19
 -->
