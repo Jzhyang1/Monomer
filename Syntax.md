@@ -175,6 +175,12 @@ The supported comparison operators are: *less than* (`a<b`), *greater than* (`a>
  - The *related by* operator returns a value of `greater`, `equal`, or
    `lesser`.
 
+### Collections
+The supported collection operators are: *cardinality* (`#a`), *cross product* (`a><b`), *less than or equal to* (`a<=b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
+
+ - The *related by* operator returns a value of `greater`, `equal`, or
+   `lesser`.
+
 ### Types
 The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`), *match from* (`a:b`), *field* (`a b`), and *organize structure* (`a{EXPRESSIONS}`). 
 
@@ -230,6 +236,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3MzQxMTU2NzMsMTA5NTU3NDkxMiwxMT
+eyJoaXN0b3J5IjpbLTIwMjg1NDg4OTAsMTA5NTU3NDkxMiwxMT
 IyNTI1OTUxXX0=
 -->
