@@ -184,10 +184,9 @@ The supported collection operators are: *cardinality* (`#a`), *concatenate* (`a|
  - The *tie* operator combines every element of each of the two collections with the element in the corresponding position of the other into a tuple, preserving order.
    
 ### Bool
-The supported bool operators are: *is* (`?a`), *not* (`!a`), *cross product* (`a><b`), *and* (`a&b`), *or* (`a|b`), *xor* (`a^b`),  and *xnor* (`a?=b`). 
+The supported bool operators are: *is* (`?a`), *not* (`!a`), *cross product* (`a><b`), *and* (`a&b`), *or* (`a|b`), *xor* (`a^b`), *nor* (`a~|b`), and *xnor* (`a~^b`). 
 
- - The *related by* operator returns a value of `greater`, `equal`, or
-   `lesser`.
+ - The *is* operator returns if.
 
 ### Types
 The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`), *match from* (`a:b`), *field* (`a b`), and *organize structure* (`a{EXPRESSIONS}`). 
@@ -244,6 +243,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTg4MDkwMzEyNSwtMjcwNDM4MzYxLDEwOT
-U1NzQ5MTIsMTEyMjUyNTk1MV19
+eyJoaXN0b3J5IjpbMzM1NjY4MjM3LC0yNzA0MzgzNjEsMTA5NT
+U3NDkxMiwxMTIyNTI1OTUxXX0=
 -->
