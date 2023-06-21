@@ -57,14 +57,16 @@ Invalid int literals include
 
 ### float
 
-Float literals are used to store fractional values. They contain a decimal point and/or the letter "E", which indicates scientific notation (1e3 = 1x10^3). Valid float literals include
+Float literals are used to store fractional values. They contain a decimal point ( and/or the letter `E`, which indicates scientific notation (1e3 = 1x10^3). Non base-10 float literals are not supported. Valid float literals include
 
     .99
     1e7
     2.998e8
 
+Invalid int literals include
 
-> The last case, 0x.99
+    0x.99
+    .0.1
  
 
 ### char
@@ -185,5 +187,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY5MTgzMjU2LDExMjI1MjU5NTFdfQ==
+eyJoaXN0b3J5IjpbMTU2NjE0MDE1MywxMTIyNTI1OTUxXX0=
 -->
