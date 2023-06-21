@@ -160,6 +160,10 @@ Tuples are structured literals by order. These are useful for destructuring for 
     (a,(b,c))
 
 ## Operators
+
+For more detail, see [Operators](Operators.md)
+
+
 ## Variables
 ## Groups
 
@@ -199,5 +203,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwNzA2NDE1OTEsMTEyMjUyNTk1MV19
+eyJoaXN0b3J5IjpbMTk0MzMyODUxLDExMjI1MjU5NTFdfQ==
 -->
