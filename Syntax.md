@@ -171,7 +171,7 @@ The supported arithmetic operators are: *positive* (`+a`), *negative* (`-a`), *a
 The supported comparison operators are: *less than* (`a<b`), *greater than* (`a>b`), *less than or equal to* (`a<=b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). The *related by* operator returns a value of `greater`, `equal`, or `lesser`.
 
 ### Types
-The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`), *match from* (`a:b`), and *organize structure* (`a{b}`). The *convert to* operator creates an object using the value of `a` with the structure of `b` as reference such that modifying the result will not affect the original `a`. The *match from* is the *convert to* operator in reverse, using `b` for the value and `a` for the structure. operator returns a value of `greater`, `equal`, or `lesser`.
+The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`), *match from* (`a:b`), and *organize structure* (`a{b}`). The *convert to* operator creates an object using the value of `a` with the structure of `b` as reference such that modifying the result will not affect the original `a`. The *match from* is the *convert to* operator in reverse, using `b` for the value and `a` for the structure. The *organize structure* operator will add `b` as a field of `a` if `b` is not externally defined.
 
 ## Variables
 ## Groups
@@ -212,6 +212,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0MTY4MDkzMjksMTA5NTU3NDkxMiwxMT
-IyNTI1OTUxXX0=
+eyJoaXN0b3J5IjpbLTU3NTAwMTcxMiwxMDk1NTc0OTEyLDExMj
+I1MjU5NTFdfQ==
 -->
