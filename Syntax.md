@@ -58,7 +58,8 @@ Invalid int literals include
 ### float
 
 Float literals are used to store fractional values. They are numbers that also contain a decimal point (`.`) and/or the letter `E`, which indicates scientific notation (`1e3` is the same as `1x10^3`). 
-The general form of the float literal is `[NUMBER1].[NUMBER2]e[NUMBER3]` where one of `NUMBER1` or `NUMBER2` can be omitted, and the entire `e[NUMBER3]` Non base-10 float literals are not supported. Valid float literals include
+The general form of the float literal is `[NUMBER1].[NUMBER2]e[NUMBER3]` where each number would be a valid integer literal on its own. One of `[NUMBER1]` or `[NUMBER2]` can be omitted, and the entire `e[NUMBER3]` can be omitted.
+Non base-10 float literals are not supported. Valid float literals include
 
     .99
     1e7
@@ -68,6 +69,7 @@ Invalid int literals include
 
     0x.99
     .0.1
+    2e5.5
  
 
 ### char
@@ -188,5 +190,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY2OTc5Nzk0MSwxMTIyNTI1OTUxXX0=
+eyJoaXN0b3J5IjpbLTgwOTg3ODY4NCwxMTIyNTI1OTUxXX0=
 -->
