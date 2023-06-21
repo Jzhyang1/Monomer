@@ -166,7 +166,7 @@ Operators are inline manipulators that come with a pre-defined functionality and
 
 ### Assignment
 
-
+The supported assignment operators are: *assign* (`a=b`), *increase* (`a+=b`)
 
 ### Arithmetic
 The supported arithmetic operators are: *positive* (`+a`), *negative* (`-a`), *addition* (`a+b`), *subtraction* (`a-b`), *multiplication* (`a*b`), *division* (`a/b`),  *power* (`a**b`), *root* (`a*/b`), *modulo* (`a%b`), *absolute value* (`|a|`), and *parallel* (`a||b`). 
@@ -248,6 +248,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExNTY1NzQ3NzQsLTI0NjM0MDEwMCwtMj
-cwNDM4MzYxLDEwOTU1NzQ5MTIsMTEyMjUyNTk1MV19
+eyJoaXN0b3J5IjpbMTk3NzUwMzE3LC0yNDYzNDAxMDAsLTI3MD
+QzODM2MSwxMDk1NTc0OTEyLDExMjI1MjU5NTFdfQ==
 -->
