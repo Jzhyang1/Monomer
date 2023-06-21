@@ -180,11 +180,11 @@ The supported collection operators are: *cardinality* (`#a`), *concatenate* (`a|
 
  - The *cardinality* operator returns the number of elements in the first level of a collection.
  - The *concatenate* operator combines all elements of the two collections into one collection, preserving order if possible.
- - The *cross* operator combines every element of each of the two collections with another, preserving order if possible.
- - The *tie* operator combines every element of each of the two collections with the element in the corresponding position of the other, preserving order if possible.
+ - The *cross* operator combines every element of each of the two collections with another into a tuple, preserving order if possible.
+ - The *tie* operator combines every element of each of the two collections with the element in the corresponding position of the other into a tuple, preserving order.
    
 ### Bool
-The supported bool operators are: *is* (`?a`), *not* (`!a`), *cross product* (`a><b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
+The supported bool operators are: *is* (`?a`), *not* (`!a`), *cross product* (`a><b`), *and* (`a&b`), *or* (`a|b`), *xor* (`a^b`),  and *xnor* (`a?=b`). 
 
  - The *related by* operator returns a value of `greater`, `equal`, or
    `lesser`.
@@ -244,6 +244,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIxMzkwMDA0MjcsLTI3MDQzODM2MSwxMD
-k1NTc0OTEyLDExMjI1MjU5NTFdfQ==
+eyJoaXN0b3J5IjpbMTg4MDkwMzEyNSwtMjcwNDM4MzYxLDEwOT
+U1NzQ5MTIsMTEyMjUyNTk1MV19
 -->
