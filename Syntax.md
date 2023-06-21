@@ -171,7 +171,7 @@ The supported arithmetic operators are: *positive* (`+a`), *negative* (`-a`), *a
 The supported comparison operators are: *less than* (`a<b`), *greater than* (`a>b`), *less than or equal to* (`a<=b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). The *related by* operator returns a value of `greater`, `equal`, or `lesser`.
 
 ### Types
-The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`), *match from* (`a:b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). The *related by* operator returns a value of `greater`, `equal`, or `lesser`.
+The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`), *match from* (`a:b`), and *organize structure* (`a{b}`). The *convert to* operator convThe *match from* is the *convert to* operator in reverse. operator returns a value of `greater`, `equal`, or `lesser`.
 
 ## Variables
 ## Groups
@@ -212,6 +212,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzk4MTQ1MTEsMTA5NTU3NDkxMiwxMTIyNT
-I1OTUxXX0=
+eyJoaXN0b3J5IjpbLTE4MDExNzg0MDUsMTA5NTU3NDkxMiwxMT
+IyNTI1OTUxXX0=
 -->
