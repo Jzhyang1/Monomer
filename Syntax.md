@@ -55,6 +55,9 @@ Invalid int literals include
 > *0xH99* is invalid because *H* is not a hexadecimal digit (the same restrictions also apply to octal and binary numbers)
 
 ### float
+
+Float literals are used to store fractional values. 
+
 ### char
 ### string
 
@@ -173,5 +176,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTEyMjUyNTk1MV19
+eyJoaXN0b3J5IjpbMTg2MDA2MzA2MywxMTIyNTI1OTUxXX0=
 -->
