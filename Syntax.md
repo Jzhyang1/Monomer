@@ -74,7 +74,11 @@ Invalid int literals include
 
 ### char
 
-Char literals are denoted by a character enclosed by single quotes (`'.'`). These are numbers corresponding to the ASCII/
+Char literals are denoted by a character enclosed by single quotes (`'.'`). These are numbers corresponding to the ANSI/ASCII/UNICODE equivalent of the character. Valid examples include
+
+    'a'
+    '_'
+    '☺'
 
 ### string
 
@@ -193,5 +197,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkwNzAxMTYwLDExMjI1MjU5NTFdfQ==
+eyJoaXN0b3J5IjpbMTE4NTQwMTY5NywxMTIyNTI1OTUxXX0=
 -->
