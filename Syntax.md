@@ -176,13 +176,12 @@ The supported comparison operators are: *less than* (`a<b`), *greater than* (`a>
    `lesser`.
 
 ### Collections
-The supported collection operators are: *concatenate* (`a~b`), *cardinality* (`#a`), *cross product* (`a><b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
+The supported collection operators are: *concatenate* (`a|b`), *cardinality* (`#a`), *cross product* (`a><b`), and *tie* (`a||b`). 
 
- - The *related by* operator returns a value of `greater`, `equal`, or
-   `lesser`.
+ - The *concatenate* operator combines two coll.
    
 ### Bool
-The supported bool operators are: *is* (`?a`), *not* (`#a`), *cross product* (`a><b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
+The supported bool operators are: *is* (`?a`), *not* (`!a`), *cross product* (`a><b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
 
  - The *related by* operator returns a value of `greater`, `equal`, or
    `lesser`.
@@ -242,6 +241,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTUwNzQ5NTEyNywtMjcwNDM4MzYxLDEwOT
-U1NzQ5MTIsMTEyMjUyNTk1MV19
+eyJoaXN0b3J5IjpbNzg1ODU3NjExLC0yNzA0MzgzNjEsMTA5NT
+U3NDkxMiwxMTIyNTI1OTUxXX0=
 -->
