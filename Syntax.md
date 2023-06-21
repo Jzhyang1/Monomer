@@ -2,12 +2,12 @@
 
 The syntax of Monomer includes 6 main structural types:
 
- 1. [Basic Literals](#
- 2. [Operators](#
- 3. [Variables](#
- 4. [Groups](#
- 5. [Structured Values](#
- 6. [Comments](#
+ 1. [Basic Literals](#basic-literals)
+ 2. [Operators](#operators)
+ 3. [Variables](#variables)
+ 4. [Groups](#groups)
+ 5. [Structured Values](#structured-values)
+ 6. [Comments](#comments)
 
 ## Basic Literals
 
@@ -244,6 +244,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI2MTY0NDQ1OSwtMjcwNDM4MzYxLDEwOT
+eyJoaXN0b3J5IjpbLTI0NjM0MDEwMCwtMjcwNDM4MzYxLDEwOT
 U1NzQ5MTIsMTEyMjUyNTk1MV19
 -->
