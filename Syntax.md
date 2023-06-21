@@ -165,13 +165,19 @@ Tuples are structured literals by order. These are useful for destructuring for 
 Operators are inline manipulators that come with a pre-defined functionality and are able to be overloaded to suit different data types. They also obey a fixed order of precedence. Below is a summary of the types of operators in Monomer.
 
 ### Arithmetic
-The supported arithmetic operators are: *positive* (`+a`), *negative* (`-a`), *addition* (`a+b`), *subtraction* (`a-b`), *multiplication* (`a*b`), *division* (`a/b`),  *power* (`a**b`), *root* (`a*/b`), *modulo* (`a%b`), and *parallel* (`a||b`). The `parallel` operator returns half of the harmonic mean.
+The supported arithmetic operators are: *positive* (`+a`), *negative* (`-a`), *addition* (`a+b`), *subtraction* (`a-b`), *multiplication* (`a*b`), *division* (`a/b`),  *power* (`a**b`), *root* (`a*/b`), *modulo* (`a%b`), and *parallel* (`a||b`). 
+
+ - The `parallel` operator returns half of the harmonic mean.
 
 ### Comparison
-The supported comparison operators are: *less than* (`a<b`), *greater than* (`a>b`), *less than or equal to* (`a<=b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). The *related by* operator returns a value of `greater`, `equal`, or `lesser`.
+The supported comparison operators are: *less than* (`a<b`), *greater than* (`a>b`), *less than or equal to* (`a<=b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
+The *related by* operator returns a value of `greater`, `equal`, or `lesser`.
 
 ### Types
-The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`), *match from* (`a:b`), *field* (`a b`), and *organize structure* (`a{EXPRESSIONS}`). The *convert to* operator creates an object using the value of `a` with the structure of `b` as reference such that modifying the result will not affect the original `a`. The *match from* is the *convert to* operator in reverse, using `b` for the value and `a` for the structure. The *field* operator accesses field `b` from `a`, adding it if it does not already exist. The *organize structure* operator will add all variables found in `EXPRESSIONS` as a field of `a` if not externally defined a and return the value of the.
+The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`), *match from* (`a:b`), *field* (`a b`), and *organize structure* (`a{EXPRESSIONS}`). 
+The *convert to* operator creates an object using the value of `a` with the structure of `b` as reference such that modifying the result will not affect the original `a`. 
+The *match from* is the *convert to* operator in reverse, using `b` for the value and `a` for the structure. The *field* operator accesses field `b` from `a`, adding it if it does not already exist. 
+The *organize structure* operator will add all variables found in `EXPRESSIONS` as a field of `a` if not externally defined, as well as allow `EXPRESSIONS` to access fields of `a`, and return the value of `EXPRESSIONS`.
 
 ## Variables
 ## Groups
@@ -212,6 +218,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQyNDM0NTIyLDEwOTU1NzQ5MTIsMTEyMj
-UyNTk1MV19
+eyJoaXN0b3J5IjpbLTU5NDE1MzM1NiwxMDk1NTc0OTEyLDExMj
+I1MjU5NTFdfQ==
 -->
