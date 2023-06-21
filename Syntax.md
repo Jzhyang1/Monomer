@@ -168,7 +168,7 @@ Operators are inline manipulators that come with a pre-defined functionality and
 The supported arithmetic operators are: positive (`+a`), negative (`-a`), addition (`a+b`), subtraction(`a-b`), multiplication (`a*b`), division (`a/b`),  power (`a**b`), root (`a*/b`), modulo (`a%b`), and parallel (`a||b`). These should be intuitive enough.
 
 ### Comparison
-The supported comparison operators are: less than (`a<b`), greater than (`a>b`), addition (`a+b`), subtraction(`a-b`), multiplication (`a*b`), division (`a/b`),  power (`a**b`), root (`a*/b`), modulo (`a%b`), and parallel (`a||b`)
+The supported comparison operators are: less than (`a<b`), greater than (`a>b`), less than or equal to (`a<=b`), greater than or equal to (`a>b`), equal to (`a==b`), not equal to (`a!=b`),  and related by(`a?=b`)
 
 
 ## Variables
@@ -210,5 +210,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgwNTQ4Mjk0NSwxMTIyNTI1OTUxXX0=
+eyJoaXN0b3J5IjpbLTExODYzMTEwMjgsMTEyMjUyNTk1MV19
 -->
