@@ -44,15 +44,16 @@ Invalid int literals include
     .99
     1e7
     2.998e8
-    0x.99
     
     1,000
     
     0xH99
+    0x.99
 
 > The first 3 cases are not int literals, but float literals. 
-> *1,000* is that it has a comma. 
+> *1,000* is invalid because it has a comma. 
 > *0xH99* is invalid because *H* is not a hexadecimal digit (the same restrictions also apply to octal and binary numbers)
+> *0x.99* is invalid because it implies a float. Additionally, hexadecimal numbers can not be floats.
 
 ### float
 
@@ -61,7 +62,8 @@ Float literals are used to store fractional values. They contain a decimal point
     .99
     1e7
     2.998e8
-    0x.99
+
+
 > The last case, 0x.99
  
 
@@ -183,5 +185,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY4NjAyOTk0MiwxMTIyNTI1OTUxXX0=
+eyJoaXN0b3J5IjpbLTY5MTgzMjU2LDExMjI1MjU5NTFdfQ==
 -->
