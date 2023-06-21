@@ -178,7 +178,9 @@ The supported comparison operators are: *less than* (`a<b`), *greater than* (`a>
 ### Collections
 The supported collection operators are: *concatenate* (`a|b`), *cardinality* (`#a`), *cross product* (`a><b`), and *tie* (`a||b`). 
 
- - The *concatenate* operator combines two coll.
+ - The *concatenate* operator combines two collections into one, preserving order if possible.
+ - The *cardinality* operator returns the number of elements in the first level of a collection.
+ - The *cross product* operator combines two collections into one, preserving order if possible.
    
 ### Bool
 The supported bool operators are: *is* (`?a`), *not* (`!a`), *cross product* (`a><b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
@@ -241,6 +243,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzg1ODU3NjExLC0yNzA0MzgzNjEsMTA5NT
-U3NDkxMiwxMTIyNTI1OTUxXX0=
+eyJoaXN0b3J5IjpbLTIxMjA2MTk5NDEsLTI3MDQzODM2MSwxMD
+k1NTc0OTEyLDExMjI1MjU5NTFdfQ==
 -->
