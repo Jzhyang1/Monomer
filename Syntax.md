@@ -153,6 +153,8 @@ Invalid String literals include
 
 ### tuple
 
+Tuples are structured literals by order. These are useful for destructuring for assignment.
+
     a,b,c
     (a,b,c)
     (a,(b,c))
@@ -197,5 +199,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE4NTQwMTY5NywxMTIyNTI1OTUxXX0=
+eyJoaXN0b3J5IjpbLTIwNzA2NDE1OTEsMTEyMjUyNTk1MV19
 -->
