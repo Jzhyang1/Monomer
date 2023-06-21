@@ -13,16 +13,16 @@ The syntax of Monomer includes 6 main structural types:
 
 Monomer has 10 built-in literal constructions:
 
- 1. int
- 2. float
- 3. char
- 4. string
- 5. list
- 6. set
- 7. map
- 8. range
- 9. enum
- 10. tuple 
+ 1. [int]
+ 2. [float]
+ 3. [char]
+ 4. [string]
+ 5. [list](
+ 6. [set](
+ 7. [map](
+ 8. [range](
+ 9. [enum](
+ 10. [tuple](
 
 ### int
 
@@ -186,7 +186,8 @@ The supported collection operators are: *cardinality* (`#a`), *concatenate* (`a|
 ### Bool
 The supported bool operators are: *is* (`?a`), *not* (`!a`), *cross product* (`a><b`), *and* (`a&b`), *or* (`a|b`), *xor* (`a^b`), *nor* (`a~|b`), and *xnor* (`a~^b`). 
 
- - The *is* operator returns if.
+ - The *is* operator returns whether a value is "truthy".
+ - The *not* operator returns whether a value is "falsy".
 
 ### Types
 The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`), *match from* (`a:b`), *field* (`a b`), and *organize structure* (`a{EXPRESSIONS}`). 
@@ -243,6 +244,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzM1NjY4MjM3LC0yNzA0MzgzNjEsMTA5NT
+eyJoaXN0b3J5IjpbNzM4NDY3ODY5LC0yNzA0MzgzNjEsMTA5NT
 U3NDkxMiwxMTIyNTI1OTUxXX0=
 -->
