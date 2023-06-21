@@ -50,19 +50,19 @@ Invalid int literals include
     
     0xH99
 
-> The first 4 cases are not int literals, but float literals. 
-> The case for *1,000* is that it has a comma. 
+> The first 3 cases are not int literals, but float literals. 
+> *1,000* is that it has a comma. 
 > *0xH99* is invalid because *H* is not a hexadecimal digit (the same restrictions also apply to octal and binary numbers)
 
 ### float
 
-Float literals are used to store fractional values. They contain a decimal point and/or the letter "E" that indicates scientific notation (1e3 = 1x10^3). Valid float literals include
+Float literals are used to store fractional values. They contain a decimal point and/or the letter "E", which indicates scientific notation (1e3 = 1x10^3). Valid float literals include
 
     .99
     1e7
     2.998e8
     0x.99
-
+> The last case, 0x.99
  
 
 ### char
@@ -183,5 +183,5 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI3ODk5ODk2NCwxMTIyNTI1OTUxXX0=
+eyJoaXN0b3J5IjpbMTY4NjAyOTk0MiwxMTIyNTI1OTUxXX0=
 -->
