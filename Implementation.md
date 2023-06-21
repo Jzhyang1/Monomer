@@ -100,7 +100,7 @@ CompileValue *-- CompileSize
 Node o-- CompileValue
 
 Token: String name
-Token: enum{operator,int,float,char,string, group, word} usage
+Token: enum{operator,int,float,char,stringbuild,string,group,word} usage
 Token: Token[] children
 Token: LineContext context
 Token: with(String name) Token
@@ -301,9 +301,9 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQzNzYwODU4LDQ3ODEwMzU5NywtNTI1OT
-Q3NjYsLTY3MTg4NzA5OCwxMzU5NzgzMzYsMTU1NjU2Njk5Niwt
-OTcwNTM5NTUwLDMwOTk2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMD
-YwMywxOTIwMzEwNzMzLDYzNjY2MjMyMiwzODIxODI0NDksLTU0
-Njc1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbLTE2ODc3MDQxNDUsNDc4MTAzNTk3LC01Mj
+U5NDc2NiwtNjcxODg3MDk4LDEzNTk3ODMzNiwxNTU2NTY2OTk2
+LC05NzA1Mzk1NTAsMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NT
+EwNjAzLDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwt
+NTQ2NzUyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
 -->
