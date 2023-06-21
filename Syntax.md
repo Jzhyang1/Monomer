@@ -165,7 +165,7 @@ Tuples are structured literals by order. These are useful for destructuring for 
 Operators are inline manipulators that come with a pre-defined functionality and are able to be overloaded to suit different data types. They also obey a fixed order of precedence. Below is a summary of the types of operators in Monomer.
 
 ### Arithmetic
-The supported arithmetic operators are: *positive* (`+a`), *negative* (`-a`), *addition* (`a+b`), *subtraction* (`a-b`), *multiplication* (`a*b`), *division* (`a/b`),  *power* (`a**b`), *root* (`a*/b`), *modulo* (`a%b`), and *parallel* (`a||b`). 
+The supported arithmetic operators are: *positive* (`+a`), *negative* (`-a`), *addition* (`a+b`), *subtraction* (`a-b`), *multiplication* (`a*b`), *division* (`a/b`),  *power* (`a**b`), *root* (`a*/b`), *modulo* (`a%b`), *absolute value* (`|a| and *parallel* (`a||b`). 
 
  - The `parallel` operator returns half of the harmonic mean.
 
@@ -176,7 +176,7 @@ The supported comparison operators are: *less than* (`a<b`), *greater than* (`a>
    `lesser`.
 
 ### Collections
-The supported collection operators are: *cardinality* (`#a`), *cross product* (`a><b`), *less than or equal to* (`a<=b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
+The supported collection operators are: *append* (`a[+]b`), *cardinality* (`#a`), *cross product* (`a><b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
 
  - The *related by* operator returns a value of `greater`, `equal`, or
    `lesser`.
@@ -236,6 +236,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMjg1NDg4OTAsMTA5NTU3NDkxMiwxMT
-IyNTI1OTUxXX0=
+eyJoaXN0b3J5IjpbMzc5NTc1NTg3LDEwOTU1NzQ5MTIsMTEyMj
+UyNTk1MV19
 -->
