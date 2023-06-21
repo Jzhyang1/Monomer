@@ -180,6 +180,12 @@ The supported collection operators are: *concatenate* (`a~b`), *cardinality* (`#
 
  - The *related by* operator returns a value of `greater`, `equal`, or
    `lesser`.
+   
+### Bool
+The supported bool operators are: *is* (`?a`), *not* (`#a`), *cross product* (`a><b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
+
+ - The *related by* operator returns a value of `greater`, `equal`, or
+   `lesser`.
 
 ### Types
 The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`), *match from* (`a:b`), *field* (`a b`), and *organize structure* (`a{EXPRESSIONS}`). 
@@ -236,6 +242,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQwOTkzMjI3OCwtMjcwNDM4MzYxLDEwOT
+eyJoaXN0b3J5IjpbMTUwNzQ5NTEyNywtMjcwNDM4MzYxLDEwOT
 U1NzQ5MTIsMTEyMjUyNTk1MV19
 -->
