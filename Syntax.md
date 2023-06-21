@@ -176,7 +176,7 @@ The supported comparison operators are: *less than* (`a<b`), *greater than* (`a>
    `lesser`.
 
 ### Collections
-The supported collection operators are: *concatenate* (`a[+]b`), *cardinality* (`#a`), *cross product* (`a><b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
+The supported collection operators are: *concatenate* (`a~b`), *cardinality* (`#a`), *cross product* (`a><b`), *greater than or equal to* (`a>b`), *equal to* (`a==b`), *not equal to* (`a!=b`),  and *related by* (`a?=b`). 
 
  - The *related by* operator returns a value of `greater`, `equal`, or
    `lesser`.
@@ -236,6 +236,6 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI3MDQzODM2MSwxMDk1NTc0OTEyLDExMj
-I1MjU5NTFdfQ==
+eyJoaXN0b3J5IjpbMTQwOTkzMjI3OCwtMjcwNDM4MzYxLDEwOT
+U1NzQ5MTIsMTEyMjUyNTk1MV19
 -->
