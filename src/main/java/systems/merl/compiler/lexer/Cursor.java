@@ -9,6 +9,7 @@ import systems.merl.compiler.core.SourceCode;
 import java.util.function.Predicate;
 
 @RequiredArgsConstructor
+@Getter
 public class Cursor {
 
     private final SourceCode sourceCode;

@@ -2,6 +2,7 @@ package systems.merl.compiler.lexer;
 
 import lombok.Data;
 import systems.merl.compiler.core.CodeRange;
+import systems.merl.compiler.core.SourceCode;
 
 @Data
 public class Lexer {
@@ -15,6 +16,8 @@ public class Lexer {
 
     int stringInterpolationDepth = 0;
 
-
+    public SourceCode getSourceCode() {
+        return range.getSource().getSourceCode();
+    }
 
 }
