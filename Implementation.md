@@ -62,6 +62,7 @@ Buffer *-- BufferLine
 
 Tokenizer: tokenize(Buffer) Token
 
+Buffer: int index
 Buffer: Queue buffer
 Buffer: Scanner input
 Buffer: getLine() BufferLine
@@ -69,7 +70,8 @@ Buffer: ungetLine(BufferLine)
 Buffer: eof() bool
 Buffer: getLineNumber() int
 
-BufferLine: int location
+BufferLine: int index
+BufferLine: String line
 BufferLine: getFullLine() String
 BufferLine: peek() char
 BufferLine: get() char
@@ -83,6 +85,7 @@ BufferLine: getLineIndex() int
 classDiagram
 Tokenizer o-- Token
 Node --o Token
+Token *-- LineContext
 
 Node <|-- OperatorNode: See Below
 Node <|-- LiteralNode: See Below
@@ -303,7 +306,7 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwNjEyMjQxMTYsLTE2ODc3MDQxNDUsND
+eyJoaXN0b3J5IjpbLTEwMDY5MjIxNTUsLTE2ODc3MDQxNDUsND
 c4MTAzNTk3LC01MjU5NDc2NiwtNjcxODg3MDk4LDEzNTk3ODMz
 NiwxNTU2NTY2OTk2LC05NzA1Mzk1NTAsMzA5OTY5MjAyLC0xND
 A3MTQ1MDYsNjM5NTEwNjAzLDE5MjAzMTA3MzMsNjM2NjYyMzIy
