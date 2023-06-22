@@ -74,7 +74,8 @@ BufferLine: peek() char
 BufferLine: get() char
 BufferLine: matchNext(Collection<String>) String|null
 BufferLine: startingSpaces() int
-BufferLine: skipSpaces()
+BufferLine: skipSpaces() int
+BufferLine: getLineIndex() int
 ```
 
 ```mermaid
@@ -301,9 +302,10 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2ODc3MDQxNDUsNDc4MTAzNTk3LC01Mj
-U5NDc2NiwtNjcxODg3MDk4LDEzNTk3ODMzNiwxNTU2NTY2OTk2
-LC05NzA1Mzk1NTAsMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NT
-EwNjAzLDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwt
-NTQ2NzUyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbMTAzMzI4MDAyLC0xNjg3NzA0MTQ1LDQ3OD
+EwMzU5NywtNTI1OTQ3NjYsLTY3MTg4NzA5OCwxMzU5NzgzMzYs
+MTU1NjU2Njk5NiwtOTcwNTM5NTUwLDMwOTk2OTIwMiwtMTQwNz
+E0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMzLDYzNjY2MjMyMiwz
+ODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNzEwOTIsMTYzMzI5Mj
+A3OF19
 -->
