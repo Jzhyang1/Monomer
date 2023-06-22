@@ -211,7 +211,7 @@ The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`)
 
 ## Variables
 
-Variables store values in a referencable identifier. In Monomer, every identifier can store only one Type for their values. The 
+Variables store values in a referencable identifier. In Monomer, every identifier can store only one Type for their values. The variable is declared in the scope of its first use, and no extra keywords are necessary. Generally, a variable's first use will be some form of assignment, but simply naming a variable will suffice.
 
 ## Groups
 
@@ -251,7 +251,7 @@ Comments are used in situations where code is not self-explanatory, or the begin
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5NDA3NDg3NDgsNDI0NTg2Mzk0LDU5Mz
+eyJoaXN0b3J5IjpbLTIxNDQ1NTM4NzIsNDI0NTg2Mzk0LDU5Mz
 Y0MzQ2LC0xMjc4MzI1ODc3LC0yNDYzNDAxMDAsLTI3MDQzODM2
 MSwxMDk1NTc0OTEyLDExMjI1MjU5NTFdfQ==
 -->
