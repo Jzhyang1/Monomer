@@ -62,15 +62,16 @@ Buffer *-- BufferLine
 
 Tokenizer: tokenize(Buffer) Token
 
-Buffer: int index
+Buffer: int row
 Buffer: Queue buffer
 Buffer: Scanner input
 Buffer: getLine() BufferLine
 Buffer: ungetLine(BufferLine)
 Buffer: eof() bool
-Buffer: getLineNumber() int
+Buffer: getRowNumber() int
 
-BufferLine: int index
+BufferLine: int row
+BufferLine: int col
 BufferLine: String line
 BufferLine: getFullLine() String
 BufferLine: peek() char
@@ -78,7 +79,8 @@ BufferLine: get() char
 BufferLine: matchNext(Collection<String>) String|null
 BufferLine: startingSpaces() int
 BufferLine: skipSpaces() int
-BufferLine: getLineIndex() int
+BufferLine: getRow() int
+BufferLine: getCol() int
 ```
 
 ```mermaid
@@ -306,10 +308,10 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwMDY5MjIxNTUsLTE2ODc3MDQxNDUsND
-c4MTAzNTk3LC01MjU5NDc2NiwtNjcxODg3MDk4LDEzNTk3ODMz
-NiwxNTU2NTY2OTk2LC05NzA1Mzk1NTAsMzA5OTY5MjAyLC0xND
-A3MTQ1MDYsNjM5NTEwNjAzLDE5MjAzMTA3MzMsNjM2NjYyMzIy
-LDM4MjE4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MTA5MiwxNjMzMj
-kyMDc4XX0=
+eyJoaXN0b3J5IjpbLTYyOTE5Mjc1MiwtMTAwNjkyMjE1NSwtMT
+Y4NzcwNDE0NSw0NzgxMDM1OTcsLTUyNTk0NzY2LC02NzE4ODcw
+OTgsMTM1OTc4MzM2LDE1NTY1NjY5OTYsLTk3MDUzOTU1MCwzMD
+k5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDcz
+Myw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MD
+cxMDkyLDE2MzMyOTIwNzhdfQ==
 -->
