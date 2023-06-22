@@ -62,11 +62,13 @@ Buffer *-- BufferLine
 
 Tokenizer: tokenize(Buffer) Token
 
+Buffer
 Buffer: Queue buffer
-Buffer: Reader file
+Buffer: Scanner file
 Buffer: getLine() BufferLine
 Buffer: ungetLine(BufferLine)
 Buffer: eof() bool
+Buf
 
 BufferLine: int location
 BufferLine: getFullLine() String
@@ -302,10 +304,10 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAzMzI4MDAyLC0xNjg3NzA0MTQ1LDQ3OD
-EwMzU5NywtNTI1OTQ3NjYsLTY3MTg4NzA5OCwxMzU5NzgzMzYs
-MTU1NjU2Njk5NiwtOTcwNTM5NTUwLDMwOTk2OTIwMiwtMTQwNz
-E0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMzLDYzNjY2MjMyMiwz
-ODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNzEwOTIsMTYzMzI5Mj
-A3OF19
+eyJoaXN0b3J5IjpbLTIyNzU5MzMyMCwtMTY4NzcwNDE0NSw0Nz
+gxMDM1OTcsLTUyNTk0NzY2LC02NzE4ODcwOTgsMTM1OTc4MzM2
+LDE1NTY1NjY5OTYsLTk3MDUzOTU1MCwzMDk5NjkyMDIsLTE0MD
+cxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDczMyw2MzY2NjIzMjIs
+MzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MDcxMDkyLDE2MzMyOT
+IwNzhdfQ==
 -->
