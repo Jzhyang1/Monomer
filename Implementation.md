@@ -57,30 +57,37 @@
 ## UML diagrams
 ```mermaid
 classDiagram
-Tokenizer o-- Buffer
-Buffer *-- BufferLine
+Tokenizer o-- Source
+Source *-- SourceLine
 
-Tokenizer: tokenize(Buffer) Token
+Tokenizer: tokenize(Source) Token
 
-Buffer: Queue buffer
-Buffer: Reader file
-Buffer: getLine() BufferLine
-Buffer: ungetLine(BufferLine)
-Buffer: eof() bool
+Source: int row
+Source: Queue buffer
+Source: Scanner input
+Source: getLine() SourceLine
+Source: ungetLine(SourceLine)
+Source: eof() bool
+Source: getRow() int
 
-BufferLine: int location
-BufferLine: getFullLine() String
-BufferLine: peek() char
-BufferLine: get() char
-BufferLine: matchNext(Collection<String>) String|null
-BufferLine: startingSpaces() int
-BufferLine: skipSpaces()
+SourceLine: int row
+SourceLine: int col
+SourceLine: String line
+SourceLine: getFullLine() String
+SourceLine: peek() char
+SourceLine: get() char
+SourceLine: matchNext(Collection<String>) String|null
+SourceLine: startingSpaces() int
+SourceLine: skipSpaces() int
+SourceLine: getRow() int
+SourceLine: getCol() int
 ```
 
 ```mermaid
 classDiagram
 Tokenizer o-- Token
 Node --o Token
+Token *-- LineContext
 
 Node <|-- OperatorNode: See Below
 Node <|-- LiteralNode: See Below
@@ -115,7 +122,7 @@ Node: LineContext context
 Node: getType() Type
 Node: setType(Type)
 Node: getVariable(String) VariableKey
-Node: putVariable(String,VariableKey)
+Node: setVariable(String,VariableKey)
 Node: add(Node)
 Node: LocateVariables()
 Node: matchVariables()
@@ -186,7 +193,7 @@ GenericOperatorNode: getType() Type
 AssignNode: matchTypes()
 
 DefineNode: Map<String,VariableKey> variables
-DefineNode: putVariable(String, VariableKey)
+DefineNode: setVariable(String, VariableKey)
 DefineNode: getVariable(String) VariableKey
 
 ControlNode: Map<String,VariableKey> variables
@@ -301,9 +308,11 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2ODc3MDQxNDUsNDc4MTAzNTk3LC01Mj
-U5NDc2NiwtNjcxODg3MDk4LDEzNTk3ODMzNiwxNTU2NTY2OTk2
-LC05NzA1Mzk1NTAsMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NT
-EwNjAzLDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwt
-NTQ2NzUyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4XX0=
+eyJoaXN0b3J5IjpbODc1NjM3OTg1LDEyNDU4Njc3MDcsMTEwMz
+Q4MTM2NiwtNjI5MTkyNzUyLC0xMDA2OTIyMTU1LC0xNjg3NzA0
+MTQ1LDQ3ODEwMzU5NywtNTI1OTQ3NjYsLTY3MTg4NzA5OCwxMz
+U5NzgzMzYsMTU1NjU2Njk5NiwtOTcwNTM5NTUwLDMwOTk2OTIw
+MiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMzLDYzNj
+Y2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNzEwOTJd
+fQ==
 -->
