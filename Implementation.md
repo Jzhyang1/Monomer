@@ -57,30 +57,30 @@
 ## UML diagrams
 ```mermaid
 classDiagram
-Tokenizer o-- Buffer
-Buffer *-- BufferLine
+Tokenizer o-- Source
+Source *-- SourceLine
 
 Tokenizer: tokenize(Buffer) Token
 
-Buffer: int row
-Buffer: Queue buffer
-Buffer: Scanner input
-Buffer: getLine() BufferLine
-Buffer: ungetLine(BufferLine)
-Buffer: eof() bool
-Buffer: getRowNumber() int
+Source: int row
+Source: Queue buffer
+Source: Scanner input
+Source: getLine() BufferLine
+Source: ungetLine(BufferLine)
+Source: eof() bool
+Source: getRow() int
 
-BufferLine: int row
-BufferLine: int col
-BufferLine: String line
-BufferLine: getFullLine() String
-BufferLine: peek() char
-BufferLine: get() char
-BufferLine: matchNext(Collection<String>) String|null
-BufferLine: startingSpaces() int
-BufferLine: skipSpaces() int
-BufferLine: getRow() int
-BufferLine: getCol() int
+SourceLine: int row
+SourceLine: int col
+SourceLine: String line
+SourceLine: getFullLine() String
+SourceLine: peek() char
+SourceLine: get() char
+SourceLine: matchNext(Collection<String>) String|null
+SourceLine: startingSpaces() int
+SourceLine: skipSpaces() int
+SourceLine: getRow() int
+SourceLine: getCol() int
 ```
 
 ```mermaid
@@ -308,10 +308,10 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYyOTE5Mjc1MiwtMTAwNjkyMjE1NSwtMT
-Y4NzcwNDE0NSw0NzgxMDM1OTcsLTUyNTk0NzY2LC02NzE4ODcw
-OTgsMTM1OTc4MzM2LDE1NTY1NjY5OTYsLTk3MDUzOTU1MCwzMD
-k5NjkyMDIsLTE0MDcxNDUwNiw2Mzk1MTA2MDMsMTkyMDMxMDcz
-Myw2MzY2NjIzMjIsMzgyMTgyNDQ5LC01NDY3NTI1OTksNzg3MD
-cxMDkyLDE2MzMyOTIwNzhdfQ==
+eyJoaXN0b3J5IjpbMTEwMzQ4MTM2NiwtNjI5MTkyNzUyLC0xMD
+A2OTIyMTU1LC0xNjg3NzA0MTQ1LDQ3ODEwMzU5NywtNTI1OTQ3
+NjYsLTY3MTg4NzA5OCwxMzU5NzgzMzYsMTU1NjU2Njk5NiwtOT
+cwNTM5NTUwLDMwOTk2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYw
+MywxOTIwMzEwNzMzLDYzNjY2MjMyMiwzODIxODI0NDksLTU0Nj
+c1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
 -->
