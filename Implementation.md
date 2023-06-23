@@ -60,13 +60,13 @@ classDiagram
 Tokenizer o-- Source
 Source *-- SourceLine
 
-Tokenizer: tokenize(Buffer) Token
+Tokenizer: tokenize(Source) Token
 
 Source: int row
 Source: Queue buffer
 Source: Scanner input
-Source: getLine() BufferLine
-Source: ungetLine(BufferLine)
+Source: getLine() SourceLine
+Source: ungetLine(SourceLine)
 Source: eof() bool
 Source: getRow() int
 
@@ -308,10 +308,11 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTEwMzQ4MTM2NiwtNjI5MTkyNzUyLC0xMD
-A2OTIyMTU1LC0xNjg3NzA0MTQ1LDQ3ODEwMzU5NywtNTI1OTQ3
-NjYsLTY3MTg4NzA5OCwxMzU5NzgzMzYsMTU1NjU2Njk5NiwtOT
-cwNTM5NTUwLDMwOTk2OTIwMiwtMTQwNzE0NTA2LDYzOTUxMDYw
-MywxOTIwMzEwNzMzLDYzNjY2MjMyMiwzODIxODI0NDksLTU0Nj
-c1MjU5OSw3ODcwNzEwOTIsMTYzMzI5MjA3OF19
+eyJoaXN0b3J5IjpbMTI0NTg2NzcwNywxMTAzNDgxMzY2LC02Mj
+kxOTI3NTIsLTEwMDY5MjIxNTUsLTE2ODc3MDQxNDUsNDc4MTAz
+NTk3LC01MjU5NDc2NiwtNjcxODg3MDk4LDEzNTk3ODMzNiwxNT
+U2NTY2OTk2LC05NzA1Mzk1NTAsMzA5OTY5MjAyLC0xNDA3MTQ1
+MDYsNjM5NTEwNjAzLDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4Mj
+E4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4
+XX0=
 -->
