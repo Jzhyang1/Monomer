@@ -1,6 +1,7 @@
 package systems.merl.compiler.lexer;
 
 import lombok.RequiredArgsConstructor;
+import org.intellij.lang.annotations.Language;
 import systems.merl.compiler.core.CodeRange;
 
 import java.util.function.BiFunction;
@@ -13,7 +14,9 @@ public class RegexReader implements TokenReader {
     private final Pattern pattern;
     private final BiFunction<String, CodeRange, TokenType> tokenTypeFunction;
 
-    public RegexReader(String pattern, BiFunction<String, CodeRange, TokenType> tokenTypeFunction) {
+    public RegexReader(
+            @Language("RegExp") String pattern,
+            BiFunction<String, CodeRange, TokenType> tokenTypeFunction) {
         this(Pattern.compile(pattern), tokenTypeFunction);
     }
 

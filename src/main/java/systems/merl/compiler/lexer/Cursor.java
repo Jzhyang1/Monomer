@@ -2,13 +2,11 @@ package systems.merl.compiler.lexer;
 
 import lombok.Data;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import systems.merl.compiler.core.CodeRange;
 import systems.merl.compiler.core.SourceCode;
 
 import java.util.function.Predicate;
 
-@RequiredArgsConstructor
 @Getter
 public class Cursor {
 
@@ -17,7 +15,14 @@ public class Cursor {
     private final int lengthToRead;
 
     @Getter
-    private int currentIndex = startingIndex;
+    private int currentIndex;
+
+    public Cursor(SourceCode sourceCode, int startingIndex, int lengthToRead) {
+        this.sourceCode = sourceCode;
+        this.startingIndex = startingIndex;
+        this.lengthToRead = lengthToRead;
+        this.currentIndex = startingIndex;
+    }
 
     public int getRemainingLength() {
         return lengthToRead - (currentIndex - startingIndex);

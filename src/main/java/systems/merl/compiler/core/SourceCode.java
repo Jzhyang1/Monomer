@@ -2,6 +2,7 @@ package systems.merl.compiler.core;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import systems.merl.compiler.util.Pair;
 
 import java.util.ArrayList;
@@ -54,15 +55,21 @@ public final class SourceCode implements CharSequence {
         // binary search
         int low = 0;
         int high = newLineIndices.length - 1;
-        while (low < high) {
+        while (low <= high) {
             int mid = (low + high) / 2;
-            if (newLineIndices[mid] < index) {
+            int midValue = newLineIndices[mid];
+            if (midValue == index) {
+                int column = index - newLineIndices[mid - 1];
+                return new Pair<>(mid, column);
+            } else if (midValue < index) {
                 low = mid + 1;
             } else {
-                high = mid;
+                high = mid - 1;
             }
         }
-        return new Pair<>(low, index - newLineIndices[low] - 1);
+        int line = low;
+        int column = index - getLineStart(line) + 1;
+        return new Pair<>(line, column);
     }
 
     public int numberOfLines() {
@@ -108,6 +115,10 @@ public final class SourceCode implements CharSequence {
         return text.substring(getLineStart(lineNumber), getLineEnd(lineNumber) + 1);
     }
 
+    public CodeRange getCompleteRange() {
+        return new CodeRange(source, 0, text.length() - 1);
+    }
+
     @Override
     public int length() {
         return text.length();
@@ -120,7 +131,7 @@ public final class SourceCode implements CharSequence {
     }
 
     @Override
-    public String subSequence(int start, int end) {
+    public @NotNull String subSequence(int start, int end) {
         performIndexCheck(start);
         performIndexCheck(end);
         return (String) text.subSequence(start, end);

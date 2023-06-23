@@ -1,10 +1,10 @@
 package systems.merl.compiler.core;
 
+import java.io.File;
+
 public abstract class Source {
 
     public abstract String getName();
-
-    public abstract Module getModule();
 
     // called only once, provides text for the entire source
     protected abstract String readText();
@@ -19,5 +19,32 @@ public abstract class Source {
         return sourceCode;
     }
 
+    public static Source fromText(String name, String text) {
+        return new Source() {
+            @Override
+            public String getName() {
+                return name;
+            }
+
+            @Override
+            protected String readText() {
+                return text;
+            }
+        };
+    }
+
+    public static Source fromFile(File file) {
+        return new Source() {
+            @Override
+            public String getName() {
+                return file.getName();
+            }
+
+            @Override
+            protected String readText() {
+                return null;
+            }
+        };
+    }
 
 }

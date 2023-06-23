@@ -8,11 +8,16 @@ import systems.merl.compiler.core.SourceCode;
 public class Lexer {
 
     private final CodeRange range;
-    private final Cursor cursor = new Cursor(
-            range.getSource().getSourceCode(),
-            range.getStartIndex(),
-            range.length()
-    );
+    private final Cursor cursor;
+
+    public Lexer(CodeRange range) {
+        this.range = range;
+        this.cursor = new Cursor(
+                range.getSource().getSourceCode(),
+                range.getStartIndex(),
+                range.length()
+        );
+    }
 
     int stringInterpolationDepth = 0;
 

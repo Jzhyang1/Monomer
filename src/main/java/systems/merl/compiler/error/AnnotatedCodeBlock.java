@@ -23,6 +23,10 @@ public class AnnotatedCodeBlock {
         return new AnnotatedCodeBlock(range.getSource(), range.getStartLine(), range.getEndLine());
     }
 
+    public static AnnotatedCodeBlock from(Source source) {
+        return from(source.getSourceCode().getCompleteRange());
+    }
+
     public static AnnotatedCodeBlock from(Source source, int startLine, int endLine) {
         return new AnnotatedCodeBlock(source, startLine, endLine);
     }
@@ -66,7 +70,22 @@ public class AnnotatedCodeBlock {
         return annotate(index.toSingleRange(), message, indicator);
     }
 
-    // TODO
+    public AnnotatedCodeBlock annotate(int location, String message) {
+        return annotate(location, message, '^');
+    }
+
+    public AnnotatedCodeBlock annotate(int location, String message, char indicator) {
+        return annotate(new CodeIndex(location, source), message, indicator);
+    }
+
+    public AnnotatedCodeBlock annotate(int start, int end, String message) {
+        return annotate(start, end, message, '^');
+    }
+
+    public AnnotatedCodeBlock annotate(int start, int end, String message, char indicator) {
+        return annotate(new CodeRange(source, start, end), message, indicator);
+    }
+
     private void renderLine(StringBuilder builder, int lineNumber, int padTo, List<Annotation> annotations) {
         builder.append(String.format("%" + padTo + "d | ", lineNumber));
         String line = source.getSourceCode().readLine(lineNumber);
@@ -82,8 +101,12 @@ public class AnnotatedCodeBlock {
                 builder.append(line.charAt(lineIndex) == '\t' ? '\t' : ' ');
             }
             // add indicator
-            for (int lineIndex = annotation.range.getStartColumn() - 1; lineIndex < annotation.range.getEndColumn() - 1; lineIndex++) {
-                builder.append(line.charAt(lineIndex) == '\t' ? '\t' : annotation.getIndicator());
+            try {
+                for (int lineIndex = annotation.range.getStartColumn() - 1; lineIndex < annotation.range.getEndColumn() ; lineIndex++) {
+                    builder.append(line.charAt(lineIndex) == '\t' ? '\t' : annotation.getIndicator());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to annotate line " + lineNumber + " of " + source.getName() + " because the annotation covered a newline.", e);
             }
             builder.append(" " );
             builder.append(annotation.getMessage());
