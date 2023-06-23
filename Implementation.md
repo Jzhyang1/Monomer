@@ -122,7 +122,7 @@ Node: LineContext context
 Node: getType() Type
 Node: setType(Type)
 Node: getVariable(String) VariableKey
-Node: putVariable(String,VariableKey)
+Node: setVariable(String,VariableKey)
 Node: add(Node)
 Node: LocateVariables()
 Node: matchVariables()
@@ -193,7 +193,7 @@ GenericOperatorNode: getType() Type
 AssignNode: matchTypes()
 
 DefineNode: Map<String,VariableKey> variables
-DefineNode: putVariable(String, VariableKey)
+DefineNode: setVariable(String, VariableKey)
 DefineNode: getVariable(String) VariableKey
 
 ControlNode: Map<String,VariableKey> variables
@@ -308,11 +308,11 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI0NTg2NzcwNywxMTAzNDgxMzY2LC02Mj
-kxOTI3NTIsLTEwMDY5MjIxNTUsLTE2ODc3MDQxNDUsNDc4MTAz
-NTk3LC01MjU5NDc2NiwtNjcxODg3MDk4LDEzNTk3ODMzNiwxNT
-U2NTY2OTk2LC05NzA1Mzk1NTAsMzA5OTY5MjAyLC0xNDA3MTQ1
-MDYsNjM5NTEwNjAzLDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4Mj
-E4MjQ0OSwtNTQ2NzUyNTk5LDc4NzA3MTA5MiwxNjMzMjkyMDc4
-XX0=
+eyJoaXN0b3J5IjpbODc1NjM3OTg1LDEyNDU4Njc3MDcsMTEwMz
+Q4MTM2NiwtNjI5MTkyNzUyLC0xMDA2OTIyMTU1LC0xNjg3NzA0
+MTQ1LDQ3ODEwMzU5NywtNTI1OTQ3NjYsLTY3MTg4NzA5OCwxMz
+U5NzgzMzYsMTU1NjU2Njk5NiwtOTcwNTM5NTUwLDMwOTk2OTIw
+MiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMzLDYzNj
+Y2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNzEwOTJd
+fQ==
 -->
