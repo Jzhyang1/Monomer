@@ -9,6 +9,7 @@
 |Variable|provides the Variable Key that is shared between occurances of variable identifiers and also describes the type of the variable|
 |Interpreter|provides the classes that are used for interpretation|
 |Compiler|provides the classes that are used for compilation|
+|Error Handling|provides the classes that are used for error messages|
 
 
 ## Classes
@@ -308,11 +309,11 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODc1NjM3OTg1LDEyNDU4Njc3MDcsMTEwMz
-Q4MTM2NiwtNjI5MTkyNzUyLC0xMDA2OTIyMTU1LC0xNjg3NzA0
-MTQ1LDQ3ODEwMzU5NywtNTI1OTQ3NjYsLTY3MTg4NzA5OCwxMz
-U5NzgzMzYsMTU1NjU2Njk5NiwtOTcwNTM5NTUwLDMwOTk2OTIw
-MiwtMTQwNzE0NTA2LDYzOTUxMDYwMywxOTIwMzEwNzMzLDYzNj
-Y2MjMyMiwzODIxODI0NDksLTU0Njc1MjU5OSw3ODcwNzEwOTJd
-fQ==
+eyJoaXN0b3J5IjpbLTQ3NjM3OTIzMiw4NzU2Mzc5ODUsMTI0NT
+g2NzcwNywxMTAzNDgxMzY2LC02MjkxOTI3NTIsLTEwMDY5MjIx
+NTUsLTE2ODc3MDQxNDUsNDc4MTAzNTk3LC01MjU5NDc2NiwtNj
+cxODg3MDk4LDEzNTk3ODMzNiwxNTU2NTY2OTk2LC05NzA1Mzk1
+NTAsMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAzLDE5Mj
+AzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5
+XX0=
 -->
