@@ -119,7 +119,8 @@ class Node{
 	+setParent(Node) 
 	+getType() Type
 	+setType(Type) 
-	+add(Node)  
+	+add(Node)
+	+size() int
 	+getVariable(String) VariableKey  
 	+putVariable(String, VariableKey)  
 	+matchVariables()  
@@ -267,6 +268,6 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTMzNjA1MjIyMCwtMTA4ODgwNzAyMCwtMT
+eyJoaXN0b3J5IjpbLTI4Mzg0MDE4OCwtMTA4ODgwNzAyMCwtMT
 A4ODgwNzAyMCwtOTIyMTc2OTg2XX0=
 -->
