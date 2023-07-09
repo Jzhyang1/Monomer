@@ -13,24 +13,26 @@ note for StringBuilderNode "parts being built together will be stored in childre
 ```mermaid
 classDiagram
 
-class SourceIndex{
-	-x: int
-	-y: int
-	+SourceIndex(int x, int y)  
-	+getRow() int  
-	+getCol() int  
-	+getX() int  
-	+getY() int
-}
-class SourceContext{
-	-source: Source  
-	-start: Index  
-	-end: Index
-}
-class ErrorBlock{
-	-context: SourceContext
-	+throwError(String msg)  
-	+setContext(context)
+namespace errorHandling{
+	class SourceIndex{
+		-x: int
+		-y: int
+		+SourceIndex(int x, int y)  
+		+getRow() int  
+		+getCol() int  
+		+getX() int  
+		+getY() int
+	}
+	class SourceContext{
+		-source: Source  
+		-start: Index  
+		-end: Index
+	}
+	class ErrorBlock{
+		-context: SourceContext
+		+throwError(String msg)  
+		+setContext(context)
+	}
 }
 class Source{
 	<<abstract>>
@@ -263,5 +265,6 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwODg4MDcwMjAsLTkyMjE3Njk4Nl19
+eyJoaXN0b3J5IjpbLTUwMTE2Mzg4MCwtMTA4ODgwNzAyMCwtOT
+IyMTc2OTg2XX0=
 -->
