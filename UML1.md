@@ -363,6 +363,7 @@ Node *-- Node_Usage
 Node <-- ModuleNode
 Node <-- VariableNode
 Node <-- LiteralNode
+Node <-- OperatorNode
 
 ModuleNode <-- SourceNode
 
@@ -393,9 +394,12 @@ FieldOperatorNode <-- WhileNode
 FieldOperatorNode <-- ForNode
 
 ControlGroupNode o-- ControlOperatorNode
+
+ErrorBlock <-- Token
+ErrorBlock <-- Node
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQzMjI1OTk2MiwtNzIwMjgzMDc5LC0yOD
+eyJoaXN0b3J5IjpbMTkwNDY4NzA1NywtNzIwMjgzMDc5LC0yOD
 M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
 Njk4Nl19
 -->
