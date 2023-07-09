@@ -378,9 +378,16 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 
 ControlOperatorNode <-- FieldOperatorNode
+ControlOperatorNode <-- CastOperatorNode
+ControlOperatorNode <-- ConvertOperatorNode
+ControlOperatorNode <-- AssignOperatorNode
+ControlOperatorNode <-- ControlOperatorNode
+
+AssignOperatorNode <-- DefineOperatorNode
+AssignOperatorNode <-- DefineOperatorNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwMzQzMDE5MzMsLTcyMDI4MzA3OSwtMj
+eyJoaXN0b3J5IjpbLTE1Mzk0OTkyOTcsLTcyMDI4MzA3OSwtMj
 gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
 NzY5ODZdfQ==
 -->
