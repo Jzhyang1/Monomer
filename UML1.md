@@ -469,6 +469,8 @@ class InterpretMap{
 	+copy() VariableKey
 }
 
+Type <-- InterpretValue
+
 InterpretValue <-- InterpretBool
 InterpretValue <-- InterpretInt
 InterpretValue <-- InterpretFloat
@@ -477,9 +479,14 @@ InterpretValue <-- InterpretString
 InterpretValue <-- InterpretArray
 InterpretValue <-- InterpretSet
 InterpretValue <-- InterpretMap
+
+InterpretValue <-- VariableKey
+
+VariableNode o-- VariableKey
+FieldNode o-- VariableKey
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2MTU5MTQ4NTEsLTcyMDI4MzA3OSwtMj
-gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
-NzY5ODZdfQ==
+eyJoaXN0b3J5IjpbMjA1MTY5NzE3OCwtNzIwMjgzMDc5LC0yOD
+M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
+Njk4Nl19
 -->
