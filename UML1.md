@@ -29,8 +29,12 @@ class Node{
 	/+ compileSize() CompileSize/
  }
 
-class 
+note for Node "getVariableKey will default to null. interpretVariable and compileMemory will default to error.  
+compileMemory is the location of a variable while compileValue can also specify calculations, constant value or register location"
+
+class ModuleNode {
+}
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTk3NjUzMjk5XX0=
+eyJoaXN0b3J5IjpbLTEwODExMzczNzddfQ==
 -->
