@@ -154,7 +154,14 @@ ModuleNode <-- SourceNode
 LiteralNode <-- CharNode
 LiteralNode <-- IntNode
 LiteralNode <-- FloatNode
+LiteralNode <-- StringNode
+LiteralNode <-- StringBuilderNode
+LiteralNode <-- TupleNode
+LiteralNode <-- ListNode
+LiteralNode <-- SetNode
+LiteralNode <-- MapNode
+LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI1MTI2NTAxMl19
+eyJoaXN0b3J5IjpbMTM5MzgzODUzNV19
 -->
