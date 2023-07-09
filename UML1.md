@@ -240,6 +240,7 @@ class StructureNode{
 	+StructureNode()
 	+StructureNode(List<Node>)
 	+putVariable(String, VariableKey)
+	+matchTypes()
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
@@ -264,6 +265,6 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0NDUzNzE1MzUsLTI4Mzg0MDE4OCwtMT
-A4ODgwNzAyMCwtMTA4ODgwNzAyMCwtOTIyMTc2OTg2XX0=
+eyJoaXN0b3J5IjpbLTcyMDI4MzA3OSwtMjgzODQwMTg4LC0xMD
+g4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIxNzY5ODZdfQ==
 -->
