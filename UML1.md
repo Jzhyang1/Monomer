@@ -288,13 +288,34 @@ class GenericOperatorNode{
 	-interpret: Function<List<InterpretValue>,InterpretValue>  
 	-compileSize: CompileSize  
 	-compile: Function<List<Node>,CompileValue>
-	+ GenericOperatorNode()  
-	+ matchTypes()  
-	+ interpretValue() : InterpretValue  
-	+ compileValue()  CompileValue  
-	+ compileSize() CompileSize
+	+GenericOperatorNode()  
+	+matchTypes()  
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
 }
-class DefineOperatorNode{
+class CastOperatorNode{
+	+CastOperatorNode()  
+	+matchTypes()  
+	+interpretVariable() InterpretVariable  
+	+interpretValue() InterpretValue  
+	+compileMemory() CompileMemory  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class ConvertOperatorNode{
+	+ConvertOperatorNode()  
+	+matchTypes()  
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class ConvertOperatorNode{
+	+ConvertOperatorNode()  
+	+matchTypes()  
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
 }
 
 Node *-- Node_Usage
@@ -316,7 +337,7 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY3NDMxNDgwMywtNzIwMjgzMDc5LC0yOD
-M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
-Njk4Nl19
+eyJoaXN0b3J5IjpbLTIwODY2MDA5ODAsLTcyMDI4MzA3OSwtMj
+gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
+NzY5ODZdfQ==
 -->
