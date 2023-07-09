@@ -420,17 +420,39 @@ class InterpretValue{
 	+typeContains(Type) bool
 	+copy() VariableKey
 }
-class InterpretValue{
-	+put(String, InterpretValue)
-	+get(String) InterpretValue
-	+setValue(InterpretValue)
+class InterpretBool{
+	+setValue(Bool)
+	+valueString() String
+	+typeContains(Type) bool
+	+copy() VariableKey
+}
+class InterpretInt{
+	+setValue(Integer)
+	+valueString() String
+	+typeContains(Type) bool
+	+copy() VariableKey
+}
+class InterpretChar{
+	+setValue(Char)
+	+valueString() String
+	+typeContains(Type) bool
+	+copy() VariableKey
+}
+class InterpretFloat{
+	+setValue(Float)
+	+valueString() String
+	+typeContains(Type) bool
+	+copy() VariableKey
+}
+class InterpretArray{
+	+setValue(Integer)
 	+valueString() String
 	+typeContains(Type) bool
 	+copy() VariableKey
 }
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTc5OTUzMDc2LC03MjAyODMwNzksLTI4Mz
-g0MDE4OCwtMTA4ODgwNzAyMCwtMTA4ODgwNzAyMCwtOTIyMTc2
-OTg2XX0=
+eyJoaXN0b3J5IjpbLTE0Njc0MjMyNTgsLTcyMDI4MzA3OSwtMj
+gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
+NzY5ODZdfQ==
 -->
