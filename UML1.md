@@ -273,11 +273,11 @@ class AssignOperatorNode{
 	+compileSize() CompileSize
 }
 class DefineOperatorNode{
-	-variables: Map<String,systems.merl.monomer.variables.VariableKey>
+	-variables: Map<String,VariableKey>
 	+DefineOperatorNode()  
 	+matchTypes()  
-	+putVariable(String, systems.merl.monomer.variables.VariableKey)  
-	+getVariable(String) systems.merl.monomer.variables.VariableKey  
+	+putVariable(String, VariableKey)  
+	+getVariable(String) VariableKey  
 	+interpretVariable() InterpretVariable  
 	+interpretValue() InterpretValue  
 	+compileMemory() CompileMemory  
@@ -319,11 +319,11 @@ class ControlGroupNode{
 }
 class ControlOperatorNode{
 	<<abstract>> 
-	-variables: Map<String,systems.merl.monomer.variables.VariableKey>
+	-variables: Map<String,VariableKey>
 	+ControlOperatorNode()  
 	+matchTypes()  
-	+putVariable(String, systems.merl.monomer.variables.VariableKey)  
-	+getVariable(String) systems.merl.monomer.variables.VariableKey  
+	+putVariable(String, VariableKey)  
+	+getVariable(String) VariableKey  
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
@@ -400,66 +400,66 @@ ControlGroupNode o-- ControlOperatorNode
 ErrorBlock <-- Token
 ErrorBlock <-- Node
 
-class systems.merl.monomer.variables.VariableKey{
+class VariableKey{
 	-interpretValue: InterpretValue
-	-parent: systems.merl.monomer.variables.VariableKey
+	-parent: VariableKey
 }
-class systems.merl.monomer.variables.Type{
+class Type{
 	<<abstract>>
-	-Map<String, systems.merl.monomer.variables.Type> children
-	+put(String, systems.merl.monomer.variables.Type)
+	-Map<String, Type> children
+	+put(String, Type)
 	+get(String) InterpretValue
-	+typeContains(systems.merl.monomer.variables.Type) bool
-	+getFields() Map<String,systems.merl.monomer.variables.Type>
+	+typeContains(Type) bool
+	+getFields() Map<String,Type>
 }
 class InterpretValue{
 	+put(String, InterpretValue)
 	+get(String) InterpretValue
 	+setValue(InterpretValue)
 	+valueString() String
-	+typeContains(systems.merl.monomer.variables.Type) bool
-	+copy() systems.merl.monomer.variables.VariableKey
+	+typeContains(Type) bool
+	+copy() VariableKey
 }
 class InterpretBool{
 	+setValue(Bool)
 	+valueString() String
-	+typeContains(systems.merl.monomer.variables.Type) bool
-	+copy() systems.merl.monomer.variables.VariableKey
+	+typeContains(Type) bool
+	+copy() VariableKey
 }
 class InterpretInt{
 	+setValue(Integer)
 	+valueString() String
-	+typeContains(systems.merl.monomer.variables.Type) bool
-	+copy() systems.merl.monomer.variables.VariableKey
+	+typeContains(Type) bool
+	+copy() VariableKey
 }
 class InterpretFloat{
 	+setValue(Float)
 	+valueString() String
-	+typeContains(systems.merl.monomer.variables.Type) bool
-	+copy() systems.merl.monomer.variables.VariableKey
+	+typeContains(Type) bool
+	+copy() VariableKey
 }
 class InterpretChar{
 	+setValue(Char)
 	+valueString() String
-	+typeContains(systems.merl.monomer.variables.Type) bool
-	+copy() systems.merl.monomer.variables.VariableKey
+	+typeContains(Type) bool
+	+copy() VariableKey
 }
 class InterpretString{
 	+setValue(String)
 	+valueString() String
-	+typeContains(systems.merl.monomer.variables.Type) bool
-	+copy() systems.merl.monomer.variables.VariableKey
+	+typeContains(Type) bool
+	+copy() VariableKey
 }
 class InterpretArray{
 	+add(InterpretValue)
 	+valueString() String
-	+typeContains(systems.merl.monomer.variables.Type) bool
-	+copy() systems.merl.monomer.variables.VariableKey
+	+typeContains(Type) bool
+	+copy() VariableKey
 }
 class InterpretSet{
 	+add(InterpretValue)
 	+valueString() String
-	+typeContains(systems.merl.monomer.variables.Type) bool
+	+typeContains(Type) bool
 	+copy() systems.merl.monomer.variables.VariableKey
 }
 class InterpretMap{
@@ -486,7 +486,7 @@ VariableNode o-- VariableKey
 FieldOperatorNode o-- VariableKey
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM1MTkyOTQ1NCwxMDU5OTM2OTQsMjA1MT
-Y5NzE3OCwtNzIwMjgzMDc5LC0yODM4NDAxODgsLTEwODg4MDcw
-MjAsLTEwODg4MDcwMjAsLTkyMjE3Njk4Nl19
+eyJoaXN0b3J5IjpbMTQ5ODkyOTg2LDEwNTk5MzY5NCwyMDUxNj
+k3MTc4LC03MjAyODMwNzksLTI4Mzg0MDE4OCwtMTA4ODgwNzAy
+MCwtMTA4ODgwNzAyMCwtOTIyMTc2OTg2XX0=
 -->
