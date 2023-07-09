@@ -97,7 +97,7 @@ class Token_Usage{
 }
 
 SourceContext o-- SourceIndex
-ErrorBlock--o SourceContext
+ErrorBlock o-- SourceContext
 Source --o SourceContext
 Source <-- SourceFile
 Source <-- SourceString
@@ -486,5 +486,5 @@ VariableNode o-- VariableKey
 FieldOperatorNode o-- VariableKey
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA1OTkzNjk0XX0=
+eyJoaXN0b3J5IjpbMzYxMTAzODcyXX0=
 -->
