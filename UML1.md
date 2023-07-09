@@ -483,10 +483,10 @@ InterpretValue <-- InterpretMap
 InterpretValue <-- VariableKey
 
 VariableNode o-- VariableKey
-FieldNode o-- VariableKey
+FieldOperatorNode o-- VariableKey
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjA1MTY5NzE3OCwtNzIwMjgzMDc5LC0yOD
-M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
-Njk4Nl19
+eyJoaXN0b3J5IjpbMTA1OTkzNjk0LDIwNTE2OTcxNzgsLTcyMD
+I4MzA3OSwtMjgzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3
+MDIwLC05MjIxNzY5ODZdfQ==
 -->
