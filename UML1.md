@@ -55,10 +55,30 @@ class SourceFile{
 	+getTitle() String
 }
 class SourceString{
-	-source: String
+	-value: String
 	+SourceString(String)  
 	#bufferLines(int num)  
 	+getTitle() String
+}
+class Line{
+	-String line  
+	-int x  
+	-int y
+	+Line(String, int y)  
+	+getSourceIndex() SourceIndex  
+	+peek() char  
+	+get() chat  
+	+unget()  
+	+startingSpaces() int  
+	+skipSpaces() int  
+	+matchNext(List<String>) String  
+	+matchNext(String) boolean
+}
+class Token{
+	+enum Type  
+	-String value  
+	- List<Token> children  
+	- type: TokenType
 }
 
 class Node{
@@ -218,5 +238,5 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTcyMzQ3MDddfQ==
+eyJoaXN0b3J5IjpbLTE5MTI1MzY0NjZdfQ==
 -->
