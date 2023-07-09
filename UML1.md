@@ -445,14 +445,32 @@ class InterpretFloat{
 	+copy() VariableKey
 }
 class InterpretArray{
-	+setValue(Integer)
+	+add(InterpretValue)
 	+valueString() String
 	+typeContains(Type) bool
 	+copy() VariableKey
 }
+class InterpretSet{
+	+add(InterpretValue)
+	+valueString() String
+	+typeContains(Type) bool
+	+copy() VariableKey
+}
+class InterpretMap{
+	+add(InterpretValue)
+	+valueString() String
+	+typeContains(Type) bool
+	+copy() VariableKey
+}
+
+InterpretValue <-- InterpretArray
+InterpretValue <-- InterpretArray
+InterpretValue <-- InterpretArray
+InterpretValue <-- InterpretFloat
+InterpretValue <-- InterpretArray
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0Njc0MjMyNTgsLTcyMDI4MzA3OSwtMj
-gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
-NzY5ODZdfQ==
+eyJoaXN0b3J5IjpbLTQ1Njg2NjA4OSwtNzIwMjgzMDc5LC0yOD
+M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
+Njk4Nl19
 -->
