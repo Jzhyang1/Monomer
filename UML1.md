@@ -97,8 +97,10 @@ class Token_Usage{
 }
 
 SourceContext o-- SourceIndex
-SourceContext --o ErrorBlock
+ErrorBlock--o SourceContext
 Source --o SourceContext
+Source <-- SourceFile
+Source <-- SourceString
 
 class Node{
 	#$enum: Usage
@@ -257,5 +259,5 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5Nzc3NjYwMTNdfQ==
+eyJoaXN0b3J5IjpbMTkwMDkwNjM3OF19
 -->
