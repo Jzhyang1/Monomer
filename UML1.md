@@ -46,6 +46,14 @@ class Source{
 	+parseIdentifier()* Token  
 	+getTitle()* String
 }
+class SourceFile{
+	+reader: FileReader  
+	+file: File  
+	+fileName: String
+	+SourceFile(String path)  
+	#bufferLines(int num)  
+	+getTitle() String
+}
 
 class Node{
 	#$enum: Usage
@@ -204,5 +212,5 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4MDU2ODUxNjJdfQ==
+eyJoaXN0b3J5IjpbLTE0NzE0Nzg0NTRdfQ==
 -->
