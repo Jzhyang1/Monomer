@@ -80,8 +80,8 @@ class Token{
 	-String value  
 	-List<Token> children  
 	-type: TokenType
-	+Token(systems.merl.monomer.variables.Type, String)  
-	+Token(systems.merl.monomer.variables.Type)  
+	+Token(Type, String)  
+	+Token(Type)  
 	+toNode() Node  
 	+with(String value) this
 }
@@ -117,14 +117,14 @@ class Node{
 	+getUsage()* Usage
 	+getParent() Node
 	+setParent(Node) 
-	+getType() systems.merl.monomer.variables.Type
-	+setType(systems.merl.monomer.variables.Type) 
+	+getType() Type
+	+setType(Type) 
 	+add(Node)
 	+size() int
-	+getVariable(String) systems.merl.monomer.variables.VariableKey  
-	+putVariable(String, systems.merl.monomer.variables.VariableKey)  
+	+getVariable(String) VariableKey  
+	+putVariable(String, VariableKey)  
 	+matchVariables()  
-	+getVariableKey() systems.merl.monomer.variables.VariableKey  
+	+getVariableKey() VariableKey  
 	+matchTypes()  
 	+matchOverloads()  
 	+interpretVariable() InterpretVariable  
@@ -141,11 +141,11 @@ class Node_Usage{
 	MODULE
 }
 class VariableNode{
-	-key: systems.merl.monomer.variables.VariableKey
+	-key: VariableKey
 	+VariableNode(String)
 	+getUsage() Usage
 	+matchVariables()
-	+getVariableKey() systems.merl.monomer.variables.VariableKey  
+	+getVariableKey() VariableKey  
 	+interpretVariable() InterpretVariable  
 	+interpretValue() interpretValue  
 	+compileMemory() CompileMemory  
@@ -153,7 +153,7 @@ class VariableNode{
 	+compileSize() CompileSize
 }
 class ModuleNode{
-	-exports: Map<String,systems.merl.monomer.variables.VariableKey>
+	-exports: Map<String,VariableKey>
 	+ModuleNode(String path)
 	+getUsage() Usage
 	+interpretValue() InterpretValue  
@@ -162,7 +162,7 @@ class ModuleNode{
 	+compileSize() CompileSize
 }
 class SourceNode{
-	-exports: Map<String,systems.merl.monomer.variables.VariableKey>
+	-exports: Map<String,VariableKey>
 	+ModuleNode(String path)
 	+interpretValue() InterpretValue  
 	+compileMemory() CompileMemory  
@@ -239,7 +239,7 @@ class MapNode{
 class StructureNode{
 	+StructureNode()
 	+StructureNode(List<Node>)
-	+putVariable(String, systems.merl.monomer.variables.VariableKey)
+	+putVariable(String, VariableKey)
 	+matchTypes()
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
@@ -252,9 +252,9 @@ class OperatorNode{
 	+getSecond() Node
 }
 class FieldOperatorNode{
-	-key: systems.merl.monomer.variables.VariableKey
+	-key: VariableKey
 	+FieldOperatorNode()  
-	+getVariableKey() systems.merl.monomer.variables.VariableKey  
+	+getVariableKey() VariableKey  
 	+matchVariables()  
 	+matchTypes()  
 	+interpretVariable() InterpretVariable  
@@ -480,13 +480,13 @@ InterpretValue <-- InterpretArray
 InterpretValue <-- InterpretSet
 InterpretValue <-- InterpretMap
 
-InterpretValue <-- systems.merl.monomer.variables.VariableKey
+InterpretValue <-- VariableKey
 
-VariableNode o-- systems.merl.monomer.variables.VariableKey
-FieldOperatorNode o-- systems.merl.monomer.variables.VariableKey
+VariableNode o-- VariableKey
+FieldOperatorNode o-- VariableKey
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA1OTkzNjk0LDIwNTE2OTcxNzgsLTcyMD
-I4MzA3OSwtMjgzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3
-MDIwLC05MjIxNzY5ODZdfQ==
+eyJoaXN0b3J5IjpbMTM1MTkyOTQ1NCwxMDU5OTM2OTQsMjA1MT
+Y5NzE3OCwtNzIwMjgzMDc5LC0yODM4NDAxODgsLTEwODg4MDcw
+MjAsLTEwODg4MDcwMjAsLTkyMjE3Njk4Nl19
 -->
