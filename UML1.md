@@ -432,14 +432,20 @@ class InterpretInt{
 	+typeContains(Type) bool
 	+copy() VariableKey
 }
+class InterpretFloat{
+	+setValue(Float)
+	+valueString() String
+	+typeContains(Type) bool
+	+copy() VariableKey
+}
 class InterpretChar{
 	+setValue(Char)
 	+valueString() String
 	+typeContains(Type) bool
 	+copy() VariableKey
 }
-class InterpretFloat{
-	+setValue(Float)
+class InterpretString{
+	+setValue(String)
 	+valueString() String
 	+typeContains(Type) bool
 	+copy() VariableKey
@@ -457,20 +463,23 @@ class InterpretSet{
 	+copy() VariableKey
 }
 class InterpretMap{
-	+add(InterpretValue)
+	+add(InterpretValue,InterpretValue)
 	+valueString() String
 	+typeContains(Type) bool
 	+copy() VariableKey
 }
 
-InterpretValue <-- InterpretArray
-InterpretValue <-- InterpretArray
-InterpretValue <-- InterpretArray
+InterpretValue <-- InterpretBool
+InterpretValue <-- InterpretInt
 InterpretValue <-- InterpretFloat
+InterpretValue <-- InterpretChar
+InterpretValue <-- InterpretString
 InterpretValue <-- InterpretArray
+InterpretValue <-- InterpretSet
+InterpretValue <-- InterpretMap
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ1Njg2NjA4OSwtNzIwMjgzMDc5LC0yOD
-M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
-Njk4Nl19
+eyJoaXN0b3J5IjpbLTE2MTU5MTQ4NTEsLTcyMDI4MzA3OSwtMj
+gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
+NzY5ODZdfQ==
 -->
