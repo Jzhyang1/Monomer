@@ -32,6 +32,20 @@ class ErrorBlock{
 	+throwError(String msg)  
 	+setContext(context)
 }
+class Source{
+	+$class Line  
+	+$class Token  
+	+buffer: Deque<Line>  
+	-int y
+	+getLine() Line  
+	+ungetLine(Line)  
+	#bufferLines(int num)*  
+	+parse(): Token  
+	+parseStringLiteral() Token  
+	+parseNumberLiteral() Token  
+	+parseIdentifier()* Token  
+	+getTitle()* String
+}
 
 class Node{
 	#$enum: Usage
@@ -190,5 +204,5 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTExMjE3NDQwN119
+eyJoaXN0b3J5IjpbLTE4MDU2ODUxNjJdfQ==
 -->
