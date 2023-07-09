@@ -96,14 +96,14 @@ Node <|-- IdentifierNode
 Node o-- InterpretVariable
 Node o-- InterpretValue
 IdentifierNode <|-- ModuleNode
-IdentifierNode *-- systems.merl.monomer.variables.VariableKey
-systems.merl.monomer.variables.VariableKey <|-- FunctionKey
-systems.merl.monomer.variables.VariableKey <|-- BuiltinTypeKey
-systems.merl.monomer.variables.VariableKey *-- CompileMemory
+IdentifierNode *-- VariableKey
+VariableKey <|-- FunctionKey
+VariableKey <|-- BuiltinTypeKey
+VariableKey *-- CompileMemory
 InterpretValue <|-- InterpretVariable
 InterpretValue <|-- TemporaryValue
-systems.merl.monomer.variables.Type <|.. InterpretValue
-InterpretVariable <|-- systems.merl.monomer.variables.VariableKey
+Type <|.. InterpretValue
+InterpretVariable <|-- VariableKey
 CompileValue *-- CompileSize
 Node o-- CompileValue
 
@@ -118,12 +118,12 @@ Node: get String name
 Node: get enum{operator,literal,identifier} usage
 Node: getset Node parent
 Node: Node[] children
-Node: Map<String, systems.merl.monomer.variables.VariableKey> variables
+Node: Map<String, VariableKey> variables
 Node: SourceContext context
-Node: getType() systems.merl.monomer.variables.Type
-Node: setType(systems.merl.monomer.variables.Type)
-Node: getVariable(String) systems.merl.monomer.variables.VariableKey
-Node: setVariable(String,systems.merl.monomer.variables.VariableKey)
+Node: getType() Type
+Node: setType(Type)
+Node: getVariable(String) VariableKey
+Node: setVariable(String,variables.VariableKey)
 Node: add(Node)
 Node: LocateVariables()
 Node: matchVariables()
@@ -309,11 +309,11 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ3NjM3OTIzMiw4NzU2Mzc5ODUsMTI0NT
-g2NzcwNywxMTAzNDgxMzY2LC02MjkxOTI3NTIsLTEwMDY5MjIx
-NTUsLTE2ODc3MDQxNDUsNDc4MTAzNTk3LC01MjU5NDc2NiwtNj
-cxODg3MDk4LDEzNTk3ODMzNiwxNTU2NTY2OTk2LC05NzA1Mzk1
-NTAsMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNjM5NTEwNjAzLDE5Mj
-AzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0OSwtNTQ2NzUyNTk5
-XX0=
+eyJoaXN0b3J5IjpbLTEzNTQxODY5MjEsLTQ3NjM3OTIzMiw4Nz
+U2Mzc5ODUsMTI0NTg2NzcwNywxMTAzNDgxMzY2LC02MjkxOTI3
+NTIsLTEwMDY5MjIxNTUsLTE2ODc3MDQxNDUsNDc4MTAzNTk3LC
+01MjU5NDc2NiwtNjcxODg3MDk4LDEzNTk3ODMzNiwxNTU2NTY2
+OTk2LC05NzA1Mzk1NTAsMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNj
+M5NTEwNjAzLDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0
+OV19
 -->
