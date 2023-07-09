@@ -69,7 +69,31 @@ class SourceNode{
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
+class LiteralNode{
+	
+}
+class CharNode{
+	-value: Character
+	+CharNode(Character)
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class IntNode{
+	-value: Character
+	+CharNode(Character)
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class CharNode{
+	-value: Character
+	+CharNode(Character)
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjQzMTU5NjRdfQ==
+eyJoaXN0b3J5IjpbMTQwOTYxMzU1NF19
 -->
