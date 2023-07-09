@@ -75,10 +75,24 @@ class Line{
 	+matchNext(String) boolean
 }
 class Token{
-	+enum Type  
+	+$enum Usage
 	-String value  
-	- List<Token> children  
-	- type: TokenType
+	-List<Token> children  
+	-type: TokenType
+	+Token(Type, String)  
+	+Token(Type)  
+	+toNode() Node  
+	+with(String value) this
+}
+class Token_Usage{
+	<<enumeration>>
+	OPERATOR
+	STRING_BUILDER
+	STRING
+	CHARACTER
+	INTEGER
+	FLOAT
+	GROUP
 }
 
 class Node{
@@ -238,5 +252,5 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5MTI1MzY0NjZdfQ==
+eyJoaXN0b3J5IjpbNjcxNDYxMjY1XX0=
 -->
