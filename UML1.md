@@ -33,6 +33,7 @@ class ErrorBlock{
 	+setContext(context)
 }
 class Source{
+	<<abstract>>
 	+$class Line  
 	+$class Token  
 	+buffer: Deque<Line>  
@@ -94,6 +95,9 @@ class Token_Usage{
 	FLOAT
 	GROUP
 }
+
+SourceIndex --o SourceContext
+SourceIndex --o SourceContext
 
 class Node{
 	#$enum: Usage
@@ -252,5 +256,5 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjcxNDYxMjY1XX0=
+eyJoaXN0b3J5IjpbMTI5MDU1Mjc1NV19
 -->
