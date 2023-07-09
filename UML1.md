@@ -144,8 +144,7 @@ class VariableNode{
 	-key: VariableKey
 	+VariableNode(String)
 	+getUsage() Usage
-	+matchVariables()  
-	+matchTypes()  
+	+matchVariables()
 	+getVariableKey() VariableKey  
 	+interpretVariable() InterpretVariable  
 	+interpretValue() interpretValue  
@@ -157,8 +156,6 @@ class ModuleNode{
 	-exports: Map<String,VariableKey>
 	+ModuleNode(String path)
 	+getUsage() Usage
-	+matchVariables()  
-	+matchTypes()
 	+interpretValue() InterpretValue  
 	+compileMemory() CompileMemory  
 	+compileValue() CompileValue  
@@ -167,8 +164,6 @@ class ModuleNode{
 class SourceNode{
 	-exports: Map<String,VariableKey>
 	+ModuleNode(String path)
-	+matchVariables()  
-	+matchTypes()  
 	+interpretValue() InterpretValue  
 	+compileMemory() CompileMemory  
 	+compileValue() CompileValue  
@@ -268,6 +263,6 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI4Mzg0MDE4OCwtMTA4ODgwNzAyMCwtMT
-A4ODgwNzAyMCwtOTIyMTc2OTg2XX0=
+eyJoaXN0b3J5IjpbLTIwMDY5MTU2MzYsLTI4Mzg0MDE4OCwtMT
+A4ODgwNzAyMCwtMTA4ODgwNzAyMCwtOTIyMTc2OTg2XX0=
 -->
