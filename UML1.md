@@ -1,8 +1,11 @@
 
 
 
+note for Node "getVariableKey will default to null. interpretVariable and compileMemory will default to error. compileMemory is the location of a variable while compileValue can also specify calculations, constant value or register location"
+
 ```mermaid
 classDiagram
+
 class Node{
 	#static_enum: Usage  
 	-name: String  
@@ -30,12 +33,17 @@ class Node{
 }
 
 
-note for Node "getVariableKey will default to null. interpretVariable and compileMemory will default to error. compileMemory is the location of a variable while compileValue can also specify calculations, constant value or register location"
-
 class ModuleNode{
 	-exports: Map<String,VariableKey>
+	+ ModuleNode(String path)  
+	+ matchVariables()  
+	+ matchTypes()  
+	+ interpretValue() : InterpretValue  
+	+ compileMemory() : CompileMemory  
+	+ compileValue() : CompileValue  
+	+ compileSize() : CompileSize
 }
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI2OTk5ODk0OV19
+eyJoaXN0b3J5IjpbOTY0MjMxNzldfQ==
 -->
