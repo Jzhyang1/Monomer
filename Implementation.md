@@ -56,175 +56,9 @@
 
 
 ## UML diagrams
-```mermaid
-classDiagram
-Tokenizer o-- Source
-Source *-- SourceLine
 
-Tokenizer: tokenize(Source) Token
-
-Source: int row
-Source: Queue buffer
-Source: Scanner input
-Source: getLine() SourceLine
-Source: ungetLine(SourceLine)
-Source: eof() bool
-Source: getRow() int
-
-SourceLine: int row
-SourceLine: int col
-SourceLine: String line
-SourceLine: getFullLine() String
-SourceLine: peek() char
-SourceLine: get() char
-SourceLine: matchNext(Collection<String>) String|null
-SourceLine: startingSpaces() int
-SourceLine: skipSpaces() int
-SourceLine: getRow() int
-SourceLine: getCol() int
-```
-
-```mermaid
-classDiagram
-Tokenizer o-- Token
-Node --o Token
-Token *-- SourceContext
-
-Node <|-- OperatorNode: See Below
-Node <|-- LiteralNode: See Below
-Node <|-- IdentifierNode
-Node o-- InterpretVariable
-Node o-- InterpretValue
-IdentifierNode <|-- ModuleNode
-IdentifierNode *-- VariableKey
-VariableKey <|-- FunctionKey
-VariableKey <|-- BuiltinTypeKey
-VariableKey *-- CompileMemory
-InterpretValue <|-- InterpretVariable
-InterpretValue <|-- TemporaryValue
-Type <|.. InterpretValue
-InterpretVariable <|-- VariableKey
-CompileValue *-- CompileSize
-Node o-- CompileValue
-
-Token: String name
-Token: enum{operator,int,float,char,stringbuild,string,group,word} usage
-Token: Token[] children
-Token: SourceContext context
-Token: with(String name) Token
-Token: makeNode() Node
-
-Node: get String name
-Node: get enum{operator,literal,identifier} usage
-Node: getset Node parent
-Node: Node[] children
-Node: Map<String, VariableKey> variables
-Node: SourceContext context
-Node: getType() Type
-Node: setType(Type)
-Node: getVariable(String) VariableKey
-Node: setVariable(String,variables.VariableKey)
-Node: add(Node)
-Node: LocateVariables()
-Node: matchVariables()
-Node: matchTypes()
-Node: matchOverloads()
-Node: interpretVariable() InterpretVariable
-Node: interpretValue() interpretValue
-Node: compileMemory() CompileMemory
-Node: compileValue() CompileValue
-Node: compileSize() CompileSize
-
-IdentifierNode: systems.merl.monomer.variables.VariableKey key
-IdentifierNode: LocateVariables() over
-IdentifierNode: matchVariables() over
-IdentifierNode: matchTypes() over
-IdentifierNode: interpretVariable() InterpretVariable over
-IdentifierNode: interpretValue() interpretValue over
-IdentifierNode: compileMemory() CompileMemory over
-IdentifierNode: compileValue() CompileValue over
-IdentifierNode: compileSize() CompileSize over
-
-InterpretValue: Map<String, InterpretValue> children
-InterpretValue: put(String, InterpretValue)
-InterpretValue: get(String) InterpretValue
-InterpretValue: setValue(InterpretValue)
-InterpretValue: valueString() String
-InterpretValue: typeContains(systems.merl.monomer.variables.Type) bool
-
-InterpretVariable: copy() systems.merl.monomer.variables.VariableKey
-
-systems.merl.monomer.variables.VariableKey: interpretValue
-systems.merl.monomer.variables.VariableKey: systems.merl.monomer.variables.VariableKey parent
-
-<<interface>> systems.merl.monomer.variables.Type
-systems.merl.monomer.variables.Type: typeContains(systems.merl.monomer.variables.Type) bool
-systems.merl.monomer.variables.Type: getFields() Map<String,systems.merl.monomer.variables.Type>
-```
-
-```mermaid
-classDiagram
-OperatorNode <|-- GenericOperatorNode
-OperatorNode <|-- AssignNode
-OperatorNode <|-- DefineNode
-OperatorNode <|-- AsNode
-AsNode <|-- ToNode
-OperatorNode <|-- FieldNode
-OperatorNode <|-- CallNode
-OperatorNode <|-- ControlNode
-ControlNode *-- ControlChildNode
-Node <|-- ControlChildNode
-ControlChildNode <|-- IfNode
-ControlChildNode <|-- RepeatNode
-ControlChildNode <|-- WhileNode
-ControlChildNode <|-- ForNode
-ControlChildNode <|-- ElseNode
-ControlChildNode <|-- AnyNode
-
-OperatorNode: staticMap<String,Supplier<OperatorNode>> defs
-
-GenericOperatorNode: systems.merl.monomer.variables.Type type
-GenericOperatorNode: Supplier<InterpretValue> interpretValue
-GenericOperatorNode: Supplier<InterpretVariable> interpretVariable
-GenericOperatorNode: inpterpretValue() InterpretValue
-GenericOperatorNode: interpretVariable() InterpretVariable
-GenericOperatorNode: setType(systems.merl.monomer.variables.Type)
-GenericOperatorNode: getType() systems.merl.monomer.variables.Type
-
-AssignNode: matchTypes()
-
-DefineNode: Map<String,systems.merl.monomer.variables.VariableKey> variables
-DefineNode: setVariable(String, systems.merl.monomer.variables.VariableKey)
-DefineNode: getVariable(String) systems.merl.monomer.variables.VariableKey
-
-ControlNode: Map<String,systems.merl.monomer.variables.VariableKey> variables
-
-CallNode: LambdaNode overload
-
-ControlChildNode: Map<String,systems.merl.monomer.variables.VariableKey> variables
-```
-
-```mermaid
-classDiagram
-LiteralNode <|-- RawLiteralNode
-RawLiteralNode <|-- CharNode
-RawLiteralNode <|-- IntNode
-RawLiteralNode <|-- FloatNode
-RawLiteralNode <|-- StringNode
-
-LiteralNode <|-- LambdaNode
-LiteralNode <|-- ListNode
-LiteralNode <|-- RangeNode
-
-LiteralNode <|-- SetNode
-SetNode <|-- MapNode
-
-LiteralNode <|-- TupleNode
-LiteralNode <|-- SequenceNode
-
-LiteralNode <|-- StructureNode
-StructureNode <|-- EnumNode
-```
+[Full UML](UMLs/FullUML)
+[SymtaxT](UMLs/FullUML)
 
 The general program flowchart:
 
@@ -309,11 +143,11 @@ AP["readString(buffer)"] --> Q{escape char?}
 end
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNTQxODY5MjEsLTQ3NjM3OTIzMiw4Nz
-U2Mzc5ODUsMTI0NTg2NzcwNywxMTAzNDgxMzY2LC02MjkxOTI3
-NTIsLTEwMDY5MjIxNTUsLTE2ODc3MDQxNDUsNDc4MTAzNTk3LC
-01MjU5NDc2NiwtNjcxODg3MDk4LDEzNTk3ODMzNiwxNTU2NTY2
-OTk2LC05NzA1Mzk1NTAsMzA5OTY5MjAyLC0xNDA3MTQ1MDYsNj
-M5NTEwNjAzLDE5MjAzMTA3MzMsNjM2NjYyMzIyLDM4MjE4MjQ0
-OV19
+eyJoaXN0b3J5IjpbMTU2MTMzMzA1NywtNDc2Mzc5MjMyLDg3NT
+YzNzk4NSwxMjQ1ODY3NzA3LDExMDM0ODEzNjYsLTYyOTE5Mjc1
+MiwtMTAwNjkyMjE1NSwtMTY4NzcwNDE0NSw0NzgxMDM1OTcsLT
+UyNTk0NzY2LC02NzE4ODcwOTgsMTM1OTc4MzM2LDE1NTY1NjY5
+OTYsLTk3MDUzOTU1MCwzMDk5NjkyMDIsLTE0MDcxNDUwNiw2Mz
+k1MTA2MDMsMTkyMDMxMDczMyw2MzY2NjIzMjIsMzgyMTgyNDQ5
+XX0=
 -->
