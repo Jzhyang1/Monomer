@@ -310,9 +310,20 @@ class ConvertOperatorNode{
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
-class ConvertOperatorNode{
-	+ConvertOperatorNode()  
+class ControlGroupNode{
+	+ControlGroupNode()  
 	+matchTypes()  
+	+ interpretValue() InterpretValue  
+	+ compileValue() CompileValue  
+	+ compileSize() CompileSize
+}
+class ControlOperatorNode{
+	<<abstract>> 
+	-variables: Map<String,VariableKey>
+	+ControlOperatorNode()  
+	+matchTypes()  
+	+putVariable(String, VariableKey)  
+	+getVariable(String) VariableKey  
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
@@ -337,7 +348,7 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwODY2MDA5ODAsLTcyMDI4MzA3OSwtMj
-gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
-NzY5ODZdfQ==
+eyJoaXN0b3J5IjpbLTc1MDIxMzEwNywtNzIwMjgzMDc5LC0yOD
+M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
+Njk4Nl19
 -->
