@@ -328,6 +328,36 @@ class ControlOperatorNode{
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
+class IfNode{
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class ElseNode{
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class AnyNode{
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class RepeatNode{
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class WhileNode{
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class ForNode{
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
 
 Node *-- Node_Usage
 Node <-- ModuleNode
@@ -346,9 +376,11 @@ LiteralNode <-- ListNode
 LiteralNode <-- SetNode
 LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
+
+ControlOperatorNode <-- FieldOperatorNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTc1MDIxMzEwNywtNzIwMjgzMDc5LC0yOD
-M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
-Njk4Nl19
+eyJoaXN0b3J5IjpbLTEwMzQzMDE5MzMsLTcyMDI4MzA3OSwtMj
+gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
+NzY5ODZdfQ==
 -->
