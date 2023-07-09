@@ -2,6 +2,10 @@
 
 note for SourceIndex "x and y will be the indices [0...), whereas row and col will be the positions [1...)"
 
+note for SourceContext "toString will be the string from the source; errorString will have the source title and be underlined"
+
+note for ErrorBlock "throws a SyntaxError with context printed along with msg"
+
 note for Node "getVariableKey will default to null. interpretVariable and compileMemory will default to error. compileMemory is the location of a variable while compileValue can also specify calculations, constant value or register location"
 
 note for StringBuilderNode "parts being built together will be stored in children"
@@ -19,7 +23,14 @@ class SourceIndex{
 	+getY() int
 }
 class SourceContext{
-	
+	-source: Source  
+	-start: Index  
+	-end: Index
+}
+class ErrorBlock{
+	-context: SourceContext
+	+throwError(String msg)  
+	+setContext(context)
 }
 
 class Node{
@@ -179,5 +190,5 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzMTAzODE1ODZdfQ==
+eyJoaXN0b3J5IjpbMTExMjE3NDQwN119
 -->
