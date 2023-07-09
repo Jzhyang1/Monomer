@@ -84,7 +84,7 @@ class Token_Usage{
 }
 
 SourceContext o-- SourceIndex
-ErrorBlock--o SourceContext
+ErrorBlock o-- SourceContext
 Source --o SourceContext
 Source <-- SourceFile
 Source <-- SourceString
@@ -93,5 +93,5 @@ Source *-- Line
 Token *-- Token_Usage
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2NjExNTgyMTddfQ==
+eyJoaXN0b3J5IjpbLTcyMDA1MDg1NV19
 -->
