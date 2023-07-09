@@ -26,10 +26,10 @@ class Node{
 	+matchTypes()  
 	+matchOverloads()  
 	+interpretVariable() InterpretVariable  
-	/+ interpretValue() InterpretValue/  
-	+ compileMemory() CompileMemory  
-	/+ compileValue() CompileValue/  
-	/+ compileSize() CompileSize/
+	+interpretValue()* InterpretValue
+	+compileMemory() CompileMemory  
+	/+compileValue() CompileValue/  
+	/+compileSize() CompileSize/
 }
 class Node_Usage{
 	<<Enumeration>>
@@ -48,7 +48,17 @@ class ModuleNode{
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
+class SourceNode{
+	-exports: Map<String,VariableKey>
+	+ModuleNode(String path)  
+	+matchVariables()  
+	+matchTypes()  
+	+interpretValue() InterpretValue  
+	+compileMemory() CompileMemory  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE1MTYyNzMwMl19
+eyJoaXN0b3J5IjpbODcyNTgxMTg5XX0=
 -->
