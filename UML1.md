@@ -273,15 +273,28 @@ class AssignOperatorNode{
 	+compileSize() CompileSize
 }
 class DefineOperatorNode{
+	-variables: Map<String,VariableKey>
 	+DefineOperatorNode()  
-		+matchTypes()  
-		+putVariable(String, VariableKey)  
-		+getVariable(String) VariableKey  
-		+ interpretVariable() : InterpretVariable  
-		+ interpretValue() : InterpretValue  
-		+ compileMemory() : CompileMemory  
-		+ compileValue() : CompileValue  
-		+ compileSize() : CompileSize
+	+matchTypes()  
+	+putVariable(String, VariableKey)  
+	+getVariable(String) VariableKey  
+	+interpretVariable() InterpretVariable  
+	+interpretValue() InterpretValue  
+	+compileMemory() CompileMemory  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class GenericOperatorNode{
+	-interpret: Function<List<InterpretValue>,InterpretValue>  
+	-compileSize: CompileSize  
+	-compile: Function<List<Node>,CompileValue>
+	+ GenericOperatorNode()  
+	+ matchTypes()  
+	+ interpretValue() : InterpretValue  
+	+ compileValue()  CompileValue  
+	+ compileSize() CompileSize
+}
+class DefineOperatorNode{
 }
 
 Node *-- Node_Usage
@@ -303,7 +316,7 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTUyNTg5ODc2MywtNzIwMjgzMDc5LC0yOD
+eyJoaXN0b3J5IjpbLTY3NDMxNDgwMywtNzIwMjgzMDc5LC0yOD
 M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
 Njk4Nl19
 -->
