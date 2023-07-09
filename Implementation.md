@@ -17,7 +17,7 @@
 |Class|Role|
 |--|--|
 |Buffer|keeps track of the position of a file while spitting out contents of the file line-by-line. Also allows un-getting part of the most recent line|
-|LineContext|the information regarding a token's position, value, and the rest of its line that is used to display errors|
+|SourceContext|the information regarding a token's position, value, and the rest of its line that is used to display errors|
 |**Node**|the ancestral class for all syntax tree nodes|
 |**ModuleNode**|the node for a folder|
 |**IdentifierNode**|the node for a variable. Variables are declared by their first use|
@@ -44,7 +44,7 @@
 |TupleNode|a structured list with any type children|
 |SequenceNode|a flat list|
 |StructureNode|a block of code enclosed by braces (`{}`) that stores local variables as fields|
-|VariableKey|the Key of a variable that is shared between identifiers referring to the same variable. Doubles as the type, and, during interpretation, the value|
+|systems.merl.monomer.variables.VariableKey|the Key of a variable that is shared between identifiers referring to the same variable. Doubles as the type, and, during interpretation, the value|
 |FunctionKey||
 |InterpretVariable|requested from nodes for interpreter actions that require variable modification|
 |InterpretValue|requested from nodes for interpreter actions that require values|
@@ -88,7 +88,7 @@ SourceLine: getCol() int
 classDiagram
 Tokenizer o-- Token
 Node --o Token
-Token *-- LineContext
+Token *-- SourceContext
 
 Node <|-- OperatorNode: See Below
 Node <|-- LiteralNode: See Below
@@ -96,21 +96,21 @@ Node <|-- IdentifierNode
 Node o-- InterpretVariable
 Node o-- InterpretValue
 IdentifierNode <|-- ModuleNode
-IdentifierNode *-- VariableKey
-VariableKey <|-- FunctionKey
-VariableKey <|-- BuiltinTypeKey
-VariableKey *-- CompileMemory
+IdentifierNode *-- systems.merl.monomer.variables.VariableKey
+systems.merl.monomer.variables.VariableKey <|-- FunctionKey
+systems.merl.monomer.variables.VariableKey <|-- BuiltinTypeKey
+systems.merl.monomer.variables.VariableKey *-- CompileMemory
 InterpretValue <|-- InterpretVariable
 InterpretValue <|-- TemporaryValue
-Type <|.. InterpretValue
-InterpretVariable <|-- VariableKey
+systems.merl.monomer.variables.Type <|.. InterpretValue
+InterpretVariable <|-- systems.merl.monomer.variables.VariableKey
 CompileValue *-- CompileSize
 Node o-- CompileValue
 
 Token: String name
 Token: enum{operator,int,float,char,stringbuild,string,group,word} usage
 Token: Token[] children
-Token: LineContext context
+Token: SourceContext context
 Token: with(String name) Token
 Token: makeNode() Node
 
@@ -118,12 +118,12 @@ Node: get String name
 Node: get enum{operator,literal,identifier} usage
 Node: getset Node parent
 Node: Node[] children
-Node: Map<String, VariableKey> variables
-Node: LineContext context
-Node: getType() Type
-Node: setType(Type)
-Node: getVariable(String) VariableKey
-Node: setVariable(String,VariableKey)
+Node: Map<String, systems.merl.monomer.variables.VariableKey> variables
+Node: SourceContext context
+Node: getType() systems.merl.monomer.variables.Type
+Node: setType(systems.merl.monomer.variables.Type)
+Node: getVariable(String) systems.merl.monomer.variables.VariableKey
+Node: setVariable(String,systems.merl.monomer.variables.VariableKey)
 Node: add(Node)
 Node: LocateVariables()
 Node: matchVariables()
@@ -135,7 +135,7 @@ Node: compileMemory() CompileMemory
 Node: compileValue() CompileValue
 Node: compileSize() CompileSize
 
-IdentifierNode: VariableKey key
+IdentifierNode: systems.merl.monomer.variables.VariableKey key
 IdentifierNode: LocateVariables() over
 IdentifierNode: matchVariables() over
 IdentifierNode: matchTypes() over
@@ -150,16 +150,16 @@ InterpretValue: put(String, InterpretValue)
 InterpretValue: get(String) InterpretValue
 InterpretValue: setValue(InterpretValue)
 InterpretValue: valueString() String
-InterpretValue: typeContains(Type) bool
+InterpretValue: typeContains(systems.merl.monomer.variables.Type) bool
 
-InterpretVariable: copy() VariableKey
+InterpretVariable: copy() systems.merl.monomer.variables.VariableKey
 
-VariableKey: interpretValue
-VariableKey: VariableKey parent
+systems.merl.monomer.variables.VariableKey: interpretValue
+systems.merl.monomer.variables.VariableKey: systems.merl.monomer.variables.VariableKey parent
 
-<<interface>> Type
-Type: typeContains(Type) bool
-Type: getFields() Map<String,Type>
+<<interface>> systems.merl.monomer.variables.Type
+systems.merl.monomer.variables.Type: typeContains(systems.merl.monomer.variables.Type) bool
+systems.merl.monomer.variables.Type: getFields() Map<String,systems.merl.monomer.variables.Type>
 ```
 
 ```mermaid
@@ -183,25 +183,25 @@ ControlChildNode <|-- AnyNode
 
 OperatorNode: staticMap<String,Supplier<OperatorNode>> defs
 
-GenericOperatorNode: Type type
+GenericOperatorNode: systems.merl.monomer.variables.Type type
 GenericOperatorNode: Supplier<InterpretValue> interpretValue
 GenericOperatorNode: Supplier<InterpretVariable> interpretVariable
 GenericOperatorNode: inpterpretValue() InterpretValue
 GenericOperatorNode: interpretVariable() InterpretVariable
-GenericOperatorNode: setType(Type)
-GenericOperatorNode: getType() Type
+GenericOperatorNode: setType(systems.merl.monomer.variables.Type)
+GenericOperatorNode: getType() systems.merl.monomer.variables.Type
 
 AssignNode: matchTypes()
 
-DefineNode: Map<String,VariableKey> variables
-DefineNode: setVariable(String, VariableKey)
-DefineNode: getVariable(String) VariableKey
+DefineNode: Map<String,systems.merl.monomer.variables.VariableKey> variables
+DefineNode: setVariable(String, systems.merl.monomer.variables.VariableKey)
+DefineNode: getVariable(String) systems.merl.monomer.variables.VariableKey
 
-ControlNode: Map<String,VariableKey> variables
+ControlNode: Map<String,systems.merl.monomer.variables.VariableKey> variables
 
 CallNode: LambdaNode overload
 
-ControlChildNode: Map<String,VariableKey> variables
+ControlChildNode: Map<String,systems.merl.monomer.variables.VariableKey> variables
 ```
 
 ```mermaid
