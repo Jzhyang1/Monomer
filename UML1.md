@@ -3,7 +3,6 @@
 
 ```mermaid
 classDiagram
----  title: Animal example  ---
 class Node{
 	#static_enum: Usage  
 	-name: String  
@@ -30,13 +29,13 @@ class Node{
 	/+ compileSize() CompileSize/
 }
 
-note for Node "getVariableKey will default to null. interpretVariable and compileMemory will default to error.  
-compileMemory is the location of a variable while compileValue can also specify calculations, constant value or register location"
 
-class ModuleNode {
+note for Node "getVariableKey will default to null. interpretVariable and compileMemory will default to error. compileMemory is the location of a variable while compileValue can also specify calculations, constant value or register location"
+
+class ModuleNode{
 	-exports: Map<String,VariableKey>
 }
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY3NTUxMzkzN119
+eyJoaXN0b3J5IjpbMTI2OTk5ODk0OV19
 -->
