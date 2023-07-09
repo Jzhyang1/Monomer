@@ -35,15 +35,15 @@ class Node{
 
 class ModuleNode{
 	-exports: Map<String,VariableKey>
-	+ ModuleNode(String path)  
-	+ matchVariables()  
-	+ matchTypes()  
-	+ interpretValue() : InterpretValue  
-	+ compileMemory() : CompileMemory  
-	+ compileValue() : CompileValue  
-	+ compileSize() : CompileSize
+	+ModuleNode(String path)  
+	+matchVariables()  
+	+matchTypes()  
+	+interpretValue() InterpretValue  
+	+compileMemory() CompileMemory  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
 }
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTY0MjMxNzldfQ==
+eyJoaXN0b3J5IjpbLTY2NjA5MzY0M119
 -->
