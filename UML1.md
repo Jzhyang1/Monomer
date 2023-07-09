@@ -383,6 +383,8 @@ ControlOperatorNode <-- CastOperatorNode
 ControlOperatorNode <-- ConvertOperatorNode
 ControlOperatorNode <-- AssignOperatorNode
 ControlOperatorNode <-- ControlOperatorNode
+ControlOperatorNode <-- ControlGroupNode
+ControlOperatorNode <-- GenericOperatorNode
 
 AssignOperatorNode <-- DefineOperatorNode
 
@@ -399,7 +401,7 @@ ErrorBlock <-- Token
 ErrorBlock <-- Node
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTkwNDY4NzA1NywtNzIwMjgzMDc5LC0yOD
-M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
-Njk4Nl19
+eyJoaXN0b3J5IjpbLTEzMzU4NjY0MjgsLTcyMDI4MzA3OSwtMj
+gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
+NzY5ODZdfQ==
 -->
