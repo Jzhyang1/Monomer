@@ -18,7 +18,7 @@ class SourceIndex{
 	-y: int
 	+SourceIndex(int x, int y)  
 	+getRow() int  
-	+getCol() int  
+	+getCol() int
 	+getX() int  
 	+getY() int
 }
@@ -107,13 +107,14 @@ Token *-- Token_Usage
 
 
 class Node{
+	<<abstract>>
 	#$enum: Usage
 	-name: String  
 	-parent: Node  
 	-children: List<Node>
 	+Node(String)  
 	+getName() String
-	+getUsage() Usage
+	+getUsage()* Usage
 	+getParent() Node
 	+setParent(Node) 
 	+getType() Type
@@ -136,9 +137,11 @@ class Node_Usage{
 	OPERATOR
 	LITERAL
 	IDENTIFIER
+	MODULE
 }
 class VariableNode{
 	-key: VariableKey
+	+getUsage() Usage
 	+VariableNode(String)  
 	+matchVariables()  
 	+matchTypes()  
@@ -263,6 +266,6 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLT
-kyMjE3Njk4Nl19
+eyJoaXN0b3J5IjpbMTIyOTMxNTIyMCwtMTA4ODgwNzAyMCwtMT
+A4ODgwNzAyMCwtOTIyMTc2OTg2XX0=
 -->
