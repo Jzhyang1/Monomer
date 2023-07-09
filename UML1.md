@@ -263,10 +263,25 @@ class FieldOperatorNode{
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
-class OperatorNode{
-	+getUsage() Usage  
-	+getFirst() Node  
-	+getSecond() Node
+class AssignOperatorNode{
+	+AssignOperatorNode()  
+	+matchTypes()  
+	+interpretVariable() InterpretVariable  
+	+interpretValue() InterpretValue  
+	+compileMemory() CompileMemory  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class DefineOperatorNode{
+	+DefineOperatorNode()  
+		+matchTypes()  
+		+putVariable(String, VariableKey)  
+		+getVariable(String) VariableKey  
+		+ interpretVariable() : InterpretVariable  
+		+ interpretValue() : InterpretValue  
+		+ compileMemory() : CompileMemory  
+		+ compileValue() : CompileValue  
+		+ compileSize() : CompileSize
 }
 
 Node *-- Node_Usage
@@ -288,7 +303,7 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzOTYwNDc4MTgsLTcyMDI4MzA3OSwtMj
-gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
-NzY5ODZdfQ==
+eyJoaXN0b3J5IjpbLTUyNTg5ODc2MywtNzIwMjgzMDc5LC0yOD
+M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
+Njk4Nl19
 -->
