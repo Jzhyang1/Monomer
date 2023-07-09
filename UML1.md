@@ -7,7 +7,7 @@ note for Node "getVariableKey will default to null. interpretVariable and compil
 classDiagram
 
 class Node{
-	#static_enum: Usage  
+	#$enum: Usage
 	-name: String  
 	-parent: Node  
 	-children: List<Node>
@@ -28,8 +28,8 @@ class Node{
 	+interpretVariable() InterpretVariable  
 	+interpretValue()* InterpretValue
 	+compileMemory() CompileMemory  
-	/+compileValue() CompileValue/  
-	/+compileSize() CompileSize/
+	+compileValue()* CompileValue 
+	+compileSize()* CompileSize
 }
 class Node_Usage{
 	<<Enumeration>>
@@ -60,5 +60,5 @@ class SourceNode{
 }
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODcyNTgxMTg5XX0=
+eyJoaXN0b3J5IjpbNjEzODcyNDE0XX0=
 -->
