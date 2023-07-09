@@ -378,22 +378,22 @@ LiteralNode <-- SetNode
 LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 
-ControlOperatorNode <-- FieldOperatorNode
-ControlOperatorNode <-- CastOperatorNode
-ControlOperatorNode <-- ConvertOperatorNode
-ControlOperatorNode <-- AssignOperatorNode
-ControlOperatorNode <-- ControlOperatorNode
-ControlOperatorNode <-- ControlGroupNode
-ControlOperatorNode <-- GenericOperatorNode
+OperatorNode <-- FieldOperatorNode
+OperatorNode <-- CastOperatorNode
+OperatorNode <-- ConvertOperatorNode
+OperatorNode <-- AssignOperatorNode
+OperatorNode <-- ControlOperatorNode
+OperatorNode <-- ControlGroupNode
+OperatorNode <-- GenericOperatorNode
 
 AssignOperatorNode <-- DefineOperatorNode
 
-FieldOperatorNode <-- IfNode
-FieldOperatorNode <-- ElseNode
-FieldOperatorNode <-- AnyNode
-FieldOperatorNode <-- RepeatNode
-FieldOperatorNode <-- WhileNode
-FieldOperatorNode <-- ForNode
+ControlOperatorNode <-- IfNode
+ControlOperatorNode <-- ElseNode
+ControlOperatorNode <-- AnyNode
+ControlOperatorNode <-- RepeatNode
+ControlOperatorNode <-- WhileNode
+ControlOperatorNode <-- ForNode
 
 ControlGroupNode o-- ControlOperatorNode
 
@@ -401,7 +401,7 @@ ErrorBlock <-- Token
 ErrorBlock <-- Node
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzMzU4NjY0MjgsLTcyMDI4MzA3OSwtMj
-gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
-NzY5ODZdfQ==
+eyJoaXN0b3J5IjpbMjc5MTI0NjM5LC03MjAyODMwNzksLTI4Mz
+g0MDE4OCwtMTA4ODgwNzAyMCwtMTA4ODgwNzAyMCwtOTIyMTc2
+OTg2XX0=
 -->
