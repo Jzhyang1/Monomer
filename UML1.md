@@ -100,7 +100,42 @@ class StringNode{
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
+class StringBuilderNode{
+	+StringBuilderNode()
+	+StringBuilderNode(List<Node>)
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class TupleNode{
+	+TupleNode()
+	+TupleNode(List<Node>)
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class ListNode{
+	+ListNode()
+	+ListNode(List<Node>)
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class ListNode{
+	+ListNode()
+	+ListNode(List<Node>)
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class ListNode{
+	+ListNode()
+	+ListNode(List<Node>)
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0MzM4OTk5MjFdfQ==
+eyJoaXN0b3J5IjpbLTkzNTg1NzA5MV19
 -->
