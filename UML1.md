@@ -31,7 +31,8 @@ class Node{
 	/+ compileValue() CompileValue/  
 	/+ compileSize() CompileSize/
 }
-
+class Usage_Node
+<<Enumeration>> Usage
 
 class ModuleNode{
 	-exports: Map<String,VariableKey>
@@ -45,5 +46,5 @@ class ModuleNode{
 }
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY2NjA5MzY0M119
+eyJoaXN0b3J5IjpbLTE3MTA1NzIzNzFdfQ==
 -->
