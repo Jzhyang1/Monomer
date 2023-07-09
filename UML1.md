@@ -400,7 +400,18 @@ ControlGroupNode o-- ControlOperatorNode
 ErrorBlock <-- Token
 ErrorBlock <-- Node
 
-
+class VariableKey{
+	-interpretValue: InterpretValue
+	-parent: VariableKey
+}
+class Type{
+	<<abstract>>
+	-Map<String, Type> children
+	+put(String, Type)
+	+get(String) InterpretValue
+	+typeContains(Type) bool
+	+getFields() Map<String,Type>
+}
 class InterpretValue{
 	+put(String, InterpretValue)
 	+get(String) InterpretValue
@@ -409,21 +420,17 @@ class InterpretValue{
 	+typeContains(Type) bool
 	+copy() VariableKey
 }
-
-VariableKey: interpretValue
-VariableKey: VariableKey parent
-
-class Type{
-	<<abstract>>
-	-Map<String, Type> children
+class InterpretValue{
 	+put(String, InterpretValue)
 	+get(String) InterpretValue
+	+setValue(InterpretValue)
+	+valueString() String
 	+typeContains(Type) bool
-	+getFields() Map<String,Type>
+	+copy() VariableKey
 }
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTU0NzMzNjUxOSwtNzIwMjgzMDc5LC0yOD
-M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
-Njk4Nl19
+eyJoaXN0b3J5IjpbNTc5OTUzMDc2LC03MjAyODMwNzksLTI4Mz
+g0MDE4OCwtMTA4ODgwNzAyMCwtMTA4ODgwNzAyMCwtOTIyMTc2
+OTg2XX0=
 -->
