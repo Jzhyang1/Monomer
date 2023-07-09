@@ -54,6 +54,12 @@ class SourceFile{
 	#bufferLines(int num)  
 	+getTitle() String
 }
+class SourceString{
+	-source: String
+	+SourceString(String)  
+	#bufferLines(int num)  
+	+getTitle() String
+}
 
 class Node{
 	#$enum: Usage
@@ -212,5 +218,5 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0NzE0Nzg0NTRdfQ==
+eyJoaXN0b3J5IjpbNTcyMzQ3MDddfQ==
 -->
