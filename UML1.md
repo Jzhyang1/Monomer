@@ -105,6 +105,7 @@ Source o-- Token
 Source *-- Line
 Token *-- Token_Usage
 
+
 class Node{
 	#$enum: Usage
 	-name: String  
@@ -262,5 +263,5 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkyMjE3Njk4Nl19
+eyJoaXN0b3J5IjpbLTEwODg4MDcwMjAsLTkyMjE3Njk4Nl19
 -->
