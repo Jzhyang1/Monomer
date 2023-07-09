@@ -80,20 +80,27 @@ class CharNode{
 	+compileSize() CompileSize
 }
 class IntNode{
-	-value: Character
-	+CharNode(Character)
+	-value: Integer
+	+IntNode(Integer)
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
-class CharNode{
-	-value: Character
-	+CharNode(Character)
+class FloatNode{
+	-value: Double
+	+FloatNode(Double)
+	+interpretValue() InterpretValue  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
+class StringNode{
+	-value: String
+	+StringNode(String)
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQwOTYxMzU1NF19
+eyJoaXN0b3J5IjpbLTE0MzM4OTk5MjFdfQ==
 -->
