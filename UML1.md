@@ -145,7 +145,16 @@ class StructureNode{
 }
 
 Node *-- Node_Usage
+Node <-- ModuleNode
+Node <-- VariableNode
+Node <-- LiteralNode
+
+ModuleNode <-- SourceNode
+
+LiteralNode <-- CharNode
+LiteralNode <-- IntNode
+LiteralNode <-- FloatNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIzNTE1ODc4XX0=
+eyJoaXN0b3J5IjpbLTI1MTI2NTAxMl19
 -->
