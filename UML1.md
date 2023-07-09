@@ -384,10 +384,18 @@ ControlOperatorNode <-- AssignOperatorNode
 ControlOperatorNode <-- ControlOperatorNode
 
 AssignOperatorNode <-- DefineOperatorNode
-AssignOperatorNode <-- DefineOperatorNode
+
+FieldOperatorNode <-- IfNode
+FieldOperatorNode <-- ElseNode
+FieldOperatorNode <-- AnyNode
+FieldOperatorNode <-- RepeatNode
+FieldOperatorNode <-- WhileNode
+FieldOperatorNode <-- ForNode
+
+ControlGroupNode o-- ControlOperatorNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1Mzk0OTkyOTcsLTcyMDI4MzA3OSwtMj
-gzODQwMTg4LC0xMDg4ODA3MDIwLC0xMDg4ODA3MDIwLC05MjIx
-NzY5ODZdfQ==
+eyJoaXN0b3J5IjpbLTQzMjI1OTk2MiwtNzIwMjgzMDc5LC0yOD
+M4NDAxODgsLTEwODg4MDcwMjAsLTEwODg4MDcwMjAsLTkyMjE3
+Njk4Nl19
 -->
