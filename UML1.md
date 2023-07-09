@@ -3,11 +3,13 @@
 
 ```mermaid
 classDiagram
-Node: #static enum Usage  
-Node: -name String  
-Node: -parent Node  
-Node: -children List<Node>
+class Node{
+ #staticenum Usage  
+ -name String  
+ -parent Node  
+ -children List<Node>
+}
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwNjM2ODYwNTldfQ==
+eyJoaXN0b3J5IjpbMTk1NzA1OTI1MV19
 -->
