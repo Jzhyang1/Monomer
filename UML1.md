@@ -3,6 +3,8 @@
 
 note for Node "getVariableKey will default to null. interpretVariable and compileMemory will default to error. compileMemory is the location of a variable while compileValue can also specify calculations, constant value or register location"
 
+note for StringBuilderNode "parts being built together will be stored in children"
+
 ```mermaid
 classDiagram
 
@@ -163,5 +165,5 @@ LiteralNode <-- MapNode
 LiteralNode <-- StructureNode
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM5MzgzODUzNV19
+eyJoaXN0b3J5IjpbLTEwMjE1Nzc2NTFdfQ==
 -->
