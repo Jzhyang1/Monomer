@@ -37,7 +37,18 @@ class Node_Usage{
 	LITERAL
 	IDENTIFIER
 }
-
+class VariableNode{
+	-key: VariableKey
+	+VariableNode(String)  
+	+matchVariables()  
+	+matchTypes()  
+	+getVariableKey() VariableKey  
+	+interpretVariable() InterpretVariable  
+	+interpretValue() interpretValue  
+	+compileMemory() CompileMemory  
+	+compileValue() CompileValue  
+	+compileSize() CompileSize
+}
 class ModuleNode{
 	-exports: Map<String,VariableKey>
 	+ModuleNode(String path)  
@@ -60,5 +71,5 @@ class SourceNode{
 }
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjEzODcyNDE0XX0=
+eyJoaXN0b3J5IjpbMjQzMTU5NjRdfQ==
 -->
