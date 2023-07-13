@@ -6,8 +6,9 @@ class Node{
 	<<abstract>>
 	#$enum: Usage
 	-name: String  
-	-parent: Node  
-	-children: List<Node>
+	-parent: Node
+	-type: Type
+	-List<Node> children
 	+Node(String)  
 	+getName() String
 	+getUsage()* Usage
@@ -49,7 +50,7 @@ class VariableNode{
 	+compileSize() CompileSize
 }
 class ModuleNode{
-	-exports: Map<String,VariableKey>
+	-Map〈String,VariableKey〉exports
 	+ModuleNode(String path)
 	+getUsage() Usage
 	+interpretValue() InterpretValue  
@@ -58,7 +59,7 @@ class ModuleNode{
 	+compileSize() CompileSize
 }
 class SourceNode{
-	-exports: Map<String,VariableKey>
+	-Map〈String,VariableKey〉exports
 	+ModuleNode(String path)
 	+interpretValue() InterpretValue  
 	+compileMemory() CompileMemory  
@@ -98,7 +99,7 @@ class StringNode{
 }
 class StringBuilderNode{
 	+StringBuilderNode()
-	+StringBuilderNode(List<Node>)
+	+StringBuilderNode(List~Node~)
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
@@ -106,36 +107,38 @@ class StringBuilderNode{
 class TupleNode{
 	+asTuple() Tuple$
 	+TupleNode()
-	+TupleNode(List<Node>)
+	+TupleNode(List~Node~)
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
 class ListNode{
 	+ListNode()
-	+ListNode(List<Node>)
+	+ListNode(List~Node~)
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
 class SetNode{
 	+SetNode()
-	+SetNode(List<Node>)
+	+SetNode(List~Node~)
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
 class MapNode{
 	+MapNode()
-	+MapNode(List<Node>)
+	+MapNode(List~Node~)
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
 	+compileSize() CompileSize
 }
 class StructureNode{
+	-Map〈String,VariableKey〉variables
 	+StructureNode()
-	+StructureNode(List<Node>)
+	+StructureNode(List~Node~)
 	+putVariable(String, VariableKey)
+	+getVariable(String) VariableKey
 	+matchTypes()
 	+interpretValue() InterpretValue  
 	+compileValue() CompileValue  
@@ -169,7 +172,7 @@ class AssignOperatorNode{
 	+compileSize() CompileSize
 }
 class DefineOperatorNode{
-	-variables: Map<String,VariableKey>
+	-Map〈String,VariableKey〉variables
 	+DefineOperatorNode()  
 	+matchTypes()  
 	+putVariable(String, VariableKey)  
@@ -181,9 +184,9 @@ class DefineOperatorNode{
 	+compileSize() CompileSize
 }
 class GenericOperatorNode{
-	-interpret: Function<List<InterpretValue>,InterpretValue>  
+	-Function〈List〈InterpretValue〉,InterpretValue〉interpret
+	-Function〈List〈Node〉,CompileValue〉compile
 	-compileSize: CompileSize  
-	-compile: Function<List<Node>,CompileValue>
 	+GenericOperatorNode()  
 	+matchTypes()  
 	+interpretValue() InterpretValue  
@@ -215,7 +218,7 @@ class ControlGroupNode{
 }
 class ControlOperatorNode{
 	<<abstract>> 
-	-variables: Map<String,VariableKey>
+	-Map〈String,VariableKey〉variables
 	+ControlOperatorNode()  
 	+matchTypes()  
 	+putVariable(String, VariableKey)  
