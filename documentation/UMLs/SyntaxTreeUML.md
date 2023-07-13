@@ -50,7 +50,7 @@ class VariableNode{
 	+compileSize() CompileSize
 }
 class ModuleNode{
-	-Map~String,VariableKey~ exports
+	-Map〈String,VariableKey〉exports
 	+ModuleNode(String path)
 	+getUsage() Usage
 	+interpretValue() InterpretValue  
@@ -59,7 +59,7 @@ class ModuleNode{
 	+compileSize() CompileSize
 }
 class SourceNode{
-	-Map~String,VariableKey~ exports
+	-Map〈String,VariableKey〉exports
 	+ModuleNode(String path)
 	+interpretValue() InterpretValue  
 	+compileMemory() CompileMemory  
@@ -134,7 +134,7 @@ class MapNode{
 	+compileSize() CompileSize
 }
 class StructureNode{
-	-Map~String,VariableKey~ variables
+	-Map〈String,VariableKey〉variables
 	+StructureNode()
 	+StructureNode(List~Node~)
 	+putVariable(String, VariableKey)
@@ -172,7 +172,7 @@ class AssignOperatorNode{
 	+compileSize() CompileSize
 }
 class DefineOperatorNode{
-	-Map~String,VariableKey~ variables
+	-Map〈String,VariableKey〉variables
 	+DefineOperatorNode()  
 	+matchTypes()  
 	+putVariable(String, VariableKey)  
@@ -184,8 +184,8 @@ class DefineOperatorNode{
 	+compileSize() CompileSize
 }
 class GenericOperatorNode{
-	-Function~List~InterpretValue~,InterpretValue~ interpret
-	-Function~List~Node~,CompileValue~ compile
+	-Function〈List〈InterpretValue〉,InterpretValue〉interpret
+	-Function〈List〈Node〉,CompileValue〉compile
 	-compileSize: CompileSize  
 	+GenericOperatorNode()  
 	+matchTypes()  
@@ -218,7 +218,7 @@ class ControlGroupNode{
 }
 class ControlOperatorNode{
 	<<abstract>> 
-	-Map~String,VariableKey~ variables
+	-Map〈String,VariableKey〉variables
 	+ControlOperatorNode()  
 	+matchTypes()  
 	+putVariable(String, VariableKey)  
