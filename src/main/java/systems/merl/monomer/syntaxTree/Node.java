@@ -1,6 +1,9 @@
+package systems.merl.monomer.syntaxTree;
+
 import systems.merl.monomer.variables.Type;
 import systems.merl.monomer.variables.VariableKey;
 
+import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,24 +11,25 @@ import java.util.HashMap;
 public abstract class Node {
     private String name;
     private Node parent;
-    private ArrayList<Node> children = new ArrayList<Node>();
-    private Map variables = new HashMap();
-    private LineContext context;
-    private Usage usage;
+    private List<Node> children = new ArrayList<>();
+
+    private Map<String, VariableKey> variables = new HashMap();
+
+    private Type type;
 
     public enum Usage {
-        OPERATOR, LITERAL, INDENTIFIER
+        OPERATOR, LITERAL, IDENTIFIER, MODULE
     }
 
-    public Node(String name, Usage usage, LineContext context) {
+    public Node(String name) {
         this.name = name;
-        this.usage = usage;
-        this.context = context;
     }
 
     public String getName() {
         return name;
     }
+
+    public abstract String getUsage();
 
     public Node getParent() {
         return parent;
@@ -43,8 +47,12 @@ public abstract class Node {
         return parent.getVariable(name);
     }
 
-    public void setVariable(String name, VariableKey key) {
+    public void putVariable(String name, VariableKey key) {
         parent.setVariable(name, key);
+    }
+
+    public VariableKey getVariableKey() {
+        throw new UnsupportedOperationException("Unsupported method getVariableKey in Node");
     }
 
     public void add(Node node) {
