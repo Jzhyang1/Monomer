@@ -1,4 +1,4 @@
 package systems.merl.monomer.syntaxTree;
 
-public class LiteralNode extends Node {
+public abstract class LiteralNode extends Node {
 }

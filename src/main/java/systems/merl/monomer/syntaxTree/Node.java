@@ -1,5 +1,10 @@
 package systems.merl.monomer.syntaxTree;
 
+import systems.merl.monomer.compiler.CompileMemory;
+import systems.merl.monomer.compiler.CompileSize;
+import systems.merl.monomer.compiler.CompileValue;
+import systems.merl.monomer.interpreter.InterpretValue;
+import systems.merl.monomer.interpreter.InterpretVariable;
 import systems.merl.monomer.variables.Type;
 import systems.merl.monomer.variables.VariableKey;
 
@@ -29,7 +34,7 @@ public abstract class Node {
         return name;
     }
 
-    public abstract String getUsage();
+    public abstract Usage getUsage();
 
     public Node getParent() {
         return parent;
@@ -48,13 +53,19 @@ public abstract class Node {
     }
 
     public void putVariable(String name, VariableKey key) {
-        parent.setVariable(name, key);
+        parent.putVariable(name, key);
     }
 
     public VariableKey getVariableKey() {
         throw new UnsupportedOperationException("Unsupported method getVariableKey in Node");
     }
 
+    public List<Node> getChildren() {
+        return this.children;
+    }
+    public Node get(int i) {
+        return children.get(i);
+    }
     public void add(Node node) {
         children.add(node);
         node.setParent(this);

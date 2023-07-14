@@ -203,6 +203,14 @@ public abstract class Source {
         --y;
     }
 
+    /**
+     * returns all lines of the files from the startLine and ending at endLine
+     * both are inclusive
+     */
+    public List<String> getCodeBlock(int startLine, int endLine) {
+        throw new Error("TODO unimplemented");
+    }
+
     public boolean eof() {
         return buffer.isEmpty();
     }
