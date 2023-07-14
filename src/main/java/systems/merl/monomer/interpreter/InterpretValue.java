@@ -11,10 +11,9 @@ public abstract class InterpretValue extends Type {
     }
 
     public boolean typeContains(InterpretValue type) {
-        //TODO
-        throw new Error("unimplemented");
+        throw new Error("TODO unimplemented");
     }
 
     public abstract String valueString();
-    public abstract InterpretValue clone();
+    public abstract InterpretValue copy();
 }
