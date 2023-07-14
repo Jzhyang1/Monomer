@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/Monomer/static/css/main.073c9b0a.css",
+    "main.js": "/Monomer/static/js/main.bdfaa503.js",
+    "static/media/logo.svg": "/Monomer/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/Monomer/index.html",
+    "main.073c9b0a.css.map": "/Monomer/static/css/main.073c9b0a.css.map",
+    "main.bdfaa503.js.map": "/Monomer/static/js/main.bdfaa503.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.073c9b0a.css",
+    "static/js/main.bdfaa503.js"
+  ]
+}
