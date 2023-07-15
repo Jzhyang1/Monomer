@@ -1,0 +1,17 @@
+.Nav-bar {
+  position: fixed;
+  width: 100%;
+  height: 30px;
+}
+
+.Nav-menu {
+  display: flex;
+  flex-direction: row;
+  background-color: "#2233AA";
+  justify-content: space-between;
+  margin: 10px;
+}
+
+.Nav-link {
+  color: aliceblue;
+}
