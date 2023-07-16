@@ -19,16 +19,25 @@ const pages = [
   },
 ];
 
+function LinkButton({ name, url }) {
+  return (
+    <a
+      className="bg-black hover:opacity-25 px-[10px] py-[5px] text-white rounded-xl"
+      href={url}
+    >
+      {name}
+    </a>
+  );
+}
+
 export default function NavMenu() {
   return (
     <nav className="Nav-bar">
       <div className="Nav-menu">
-        <img src="/logo192.png" className="Nav-logo" alt="logo" />
-        <div>
+        <img src="/favicon.ico" alt="logo" />
+        <div className="flex flex-row gap-2">
           {pages.map((page, key) => (
-            <a className="Nav-link" href={page.url} key={key}>
-              {page.name}
-            </a>
+            <LinkButton {...page} key={key} />
           ))}
         </div>
       </div>
