@@ -8,6 +8,10 @@ public abstract class OperatorNode extends Node {
         HashSet<String> operators = new HashSet<String>();
         return operators;
     }
+    public static Set<String> symbolStartDelimiters() {
+        HashSet<String> delimiters = new HashSet<>();
+        return delimiters;
+    }
 
     public OperatorNode(String name) {
         super(name);
