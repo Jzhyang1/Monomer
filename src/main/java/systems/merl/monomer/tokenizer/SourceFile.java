@@ -8,7 +8,7 @@ public class SourceFile extends Source {
     private BufferedReader reader;
     private File file;
     private String fileName;
-    private int lineNumber;
+    private int lineNumber = 0;
 
     public SourceFile(String path) {
         try {

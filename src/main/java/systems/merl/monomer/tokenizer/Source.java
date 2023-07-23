@@ -224,6 +224,7 @@ public abstract class Source {
         SourceLineReader reader = new SourceLineReader();
 
         mainloop: while (!eof()) {
+            reader.line.skipSpaces();
             char peek = reader.line.peek();
             switch (peek) {
                 case '\\' -> {
@@ -263,10 +264,13 @@ public abstract class Source {
                 }
                 default -> {
                     //space, identifier, operator, or number
-                    if (Character.isSpaceChar(peek)) {
-                        reader.line.skipSpaces();
-                    } else {
-                        reader.addToken(parseNext(reader));
+                    Token nextToken = parseNext(reader);
+                    reader.addToken(nextToken);
+                    if(reader.line.peek() == '\n') {
+                        if((nextToken.usage == Token.Usage.OPERATOR && OperatorNode.isBreaking(nextToken.value)) ||
+                                nextToken.usage == Token.Usage.GROUP) {
+                            //TODO newline without added ;
+                        }
                     }
                 }
             }
