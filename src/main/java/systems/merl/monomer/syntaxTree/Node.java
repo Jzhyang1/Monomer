@@ -3,6 +3,7 @@ package systems.merl.monomer.syntaxTree;
 import systems.merl.monomer.compiler.CompileMemory;
 import systems.merl.monomer.compiler.CompileSize;
 import systems.merl.monomer.compiler.CompileValue;
+import systems.merl.monomer.errorHandling.ErrorBlock;
 import systems.merl.monomer.interpreter.InterpretValue;
 import systems.merl.monomer.interpreter.InterpretVariable;
 import systems.merl.monomer.variables.Type;
@@ -13,12 +14,10 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class Node {
+public abstract class Node extends ErrorBlock{
     private String name;
     private Node parent;
     private List<Node> children = new ArrayList<>();
-
-    private Map<String, VariableKey> variables = new HashMap();
 
     private Type type;
 
@@ -44,9 +43,13 @@ public abstract class Node {
         parent = node;
     }
 
-    public abstract Type getType();
+    public Type getType() {
+        return type;
+    }
 
-    public abstract void setType(Type type);
+    public void setType(Type type) {
+        this.type = type;
+    }
 
     public VariableKey getVariable(String name) {
         return parent.getVariable(name);
@@ -56,8 +59,9 @@ public abstract class Node {
         parent.putVariable(name, key);
     }
 
-    public VariableKey getVariableKey() {
-        throw new UnsupportedOperationException("Unsupported method getVariableKey in Node");
+    public VariableKey getVariableKey(){
+        throwError("Attempting to access " + name + " as a variable");
+        return null;
     }
 
     public List<Node> getChildren() {
@@ -95,11 +99,17 @@ public abstract class Node {
         }
     }
 
-    public abstract InterpretVariable interpretVariable();
+    public InterpretVariable interpretVariable() {
+        throwError("Attempting to access " + name + " as a variable");
+        return null;
+    }
 
     public abstract InterpretValue interpretValue();
 
-    public abstract CompileMemory compileMemory();
+    public CompileMemory compileMemory() {
+        throwError("Attempting to access " + name + " as a variable");
+        return null;
+    }
 
     public abstract CompileValue compileValue();
 
