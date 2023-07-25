@@ -159,6 +159,14 @@ public abstract class Source {
             this.x = x;
             this.y = y;
         }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
     }
 
     public static class Context {
@@ -179,6 +187,14 @@ public abstract class Source {
 
         public Source getSource() {
             return source;
+        }
+
+        public Index getStart() {
+            return start;
+        }
+
+        public Index getStop() {
+            return stop;
         }
     }
 
