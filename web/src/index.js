@@ -7,6 +7,8 @@ import StartPage from "./pages/StartPage";
 import ContactPage from "./pages/ContactPage";
 import ErrorPage from "./pages/ErrorPage";
 import PageWrapper from "./custom_components/PageWrapper";
+import InstallPage from "./pages/InstallPage";
+import DocumentationPage from "./pages/DocumentationPage";
 
 const root = ReactDOM.createRoot(document.body);
 root.render(
@@ -17,7 +19,9 @@ root.render(
           <Route errorElement element={<ErrorPage />} />
           <Route exact path="/" element={<HomePage />} />
           <Route exact path="/contact" element={<ContactPage />} />
+          <Route exact path="/docs" element={<DocumentationPage />} />
           <Route exact path="/start" element={<StartPage />} />
+          <Route exact path="/install" element={<InstallPage />} />
         </Routes>
       </PageWrapper>
     </Router>

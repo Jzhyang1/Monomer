@@ -3,23 +3,23 @@ import Link from "../components/Link";
 
 const pages = [
   {
-    name: "home",
+    name: "Home",
     url: "/",
   },
   {
-    name: "start",
+    name: "Getting Started",
     url: "/start",
   },
   {
-    name: "docs",
+    name: "Documentation",
     url: "/docs",
   },
   {
-    name: "source",
-    url: "/source",
+    name: "Install",
+    url: "/install",
   },
   {
-    name: "contact",
+    name: "Contact",
     url: "/contact",
   },
 ];
