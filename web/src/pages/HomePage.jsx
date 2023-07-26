@@ -1,10 +1,70 @@
 import Dropdown from "../components/Dropdown";
+import LargeText from "../components/LargeText";
 import Link from "../components/Link";
 import List from "../components/List";
 import SectionHead from "../components/SectionHead";
 import Title from "../components/Title";
 
 const goals = [
+  {
+    title: "Maintainable",
+    desc: "A project can be modified easily on the small scale without disrupting other parts of the program",
+    features: [
+      {
+        title: "Componentization",
+        desc: "A program structure that favors independent parts that build up the program",
+      },
+      {
+        title: "Adjacency",
+        desc: "Supporting the independence of components by separating the shared interactions between components from either component",
+      },
+    ],
+  },
+  {
+    title: "Efficient",
+    desc: "Implementing logic takes up minimal space and syntax does not pose a difficulty to implement logic",
+    features: [
+      {
+        title: "Implication",
+        desc: "A small number of keywords and symbols that take on different meanings by varying contexts",
+      },
+      {
+        title: "Reuse",
+        desc: "The few core symbols are redefined in the program to fulfill specific program needs",
+      },
+    ],
+  },
+  {
+    title: "Readable",
+    desc: "The logic written for any program is easily understood without additional explaination",
+    features: [
+      {
+        title: "Opinionation",
+        desc: "A program with strict rules to its syntax that forces the same approach to the same problem",
+      },
+      {
+        title: "Default",
+        desc: "A predefined value is used in cases where arbitrary naming is likely to occur",
+      },
+    ],
+  },
+  {
+    title: "Learnable",
+    desc: "A short amount of time is needed for individuals unfamiliar to programming to implement programs",
+    features: [
+      {
+        title: "Foundation",
+        desc: "The program is comprised of only a few fixed symbols and organizational structures",
+      },
+      {
+        title: "Script",
+        desc: "There is little to no excess (conveying no new information) formatting required for the program to run",
+      },
+    ],
+  },
+];
+
+const reasoning = [
   "reduce the number of unique identifiers to remember, and keep those that do need memory to an intuitive and combinable set",
   "reduce the number of lines without information, and increasing the amount of information able to be conveyed in one line",
   "reduce the depth of nested statements",
@@ -30,29 +90,46 @@ const keyFeatures = [
 export default function HomePage() {
   return (
     <>
-      <Title>Home</Title>
-      <Dropdown
-        toggle={<SectionHead>Goals</SectionHead>}
-        className="bg-orange-200"
-      >
-        <div>
-          We strive to improve the readability and writability of code by
-          drawing inspiration from&nbsp;
-          <Link href="https://www.python.org">Python</Link>,&nbsp;
-          <Link href="https://isocpp.org">C++</Link>,&nbsp;
-          <Link href="https://www.java.com/en/">Java</Link>, and other
-          additions:
-        </div>
-        <List className="p-[10px] text-lg leading-10" isNumber>
-          {goals}
-        </List>
-      </Dropdown>
-      <Dropdown
-        toggle={<SectionHead>Implementation</SectionHead>}
-        className="bg-orange-200"
-      >
-        <List className="p-[10px]">{keyFeatures}</List>
-      </Dropdown>
+      <Title>Monomer</Title>
+      <SectionHead>Goals</SectionHead>
+      {goals.map((goal, index) => (
+        <GoalBox key={index} goal={goal} isEven={index % 2 === 0} />
+      ))}
     </>
+  );
+}
+
+function GoalBox({ isEven, goal }) {
+  function TitleBox() {
+    return (
+      <div className="flex flex-col md:flex-row m-[20px] align-middle gap-[20px]">
+        <div className="w-[150px]">
+          <LargeText>{goal.title}</LargeText>
+        </div>
+        <div className="flex flex-1 font-thin leading-[18px] items-center">
+          {goal.desc}
+        </div>
+      </div>
+    );
+  }
+  function FeatureBox({ feature }) {
+    return (
+      <a href={`#${feature.title}`}>
+        <strong>{feature.title}:</strong> {feature.desc}
+      </a>
+    );
+  }
+
+  return (
+    <Dropdown
+      toggle={<TitleBox />}
+      className={isEven ? "bg-orange-200" : "bg-none"}
+    >
+      <List className="p-[10px]">
+        {goal.features.map((feature) => (
+          <FeatureBox feature={feature} />
+        ))}
+      </List>
+    </Dropdown>
   );
 }
