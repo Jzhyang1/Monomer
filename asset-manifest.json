@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Monomer/static/css/main.32535f5e.css",
-    "main.js": "/Monomer/static/js/main.b57e506c.js",
+    "main.css": "/Monomer/static/css/main.ca471fa5.css",
+    "main.js": "/Monomer/static/js/main.d1e9c26e.js",
     "index.html": "/Monomer/index.html",
-    "main.32535f5e.css.map": "/Monomer/static/css/main.32535f5e.css.map",
-    "main.b57e506c.js.map": "/Monomer/static/js/main.b57e506c.js.map"
+    "main.ca471fa5.css.map": "/Monomer/static/css/main.ca471fa5.css.map",
+    "main.d1e9c26e.js.map": "/Monomer/static/js/main.d1e9c26e.js.map"
   },
   "entrypoints": [
-    "static/css/main.32535f5e.css",
-    "static/js/main.b57e506c.js"
+    "static/css/main.ca471fa5.css",
+    "static/js/main.d1e9c26e.js"
   ]
 }
