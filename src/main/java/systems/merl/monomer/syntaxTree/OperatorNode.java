@@ -1,12 +1,22 @@
 package systems.merl.monomer.syntaxTree;
 
+import systems.merl.monomer.tokenizer.Source;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class OperatorNode extends Node {
     public static Set<String> symbolOperators() {
-        HashSet<String> operators = new HashSet<String>();
+        HashSet<String> operators = new HashSet<>();  //TODO
         return operators;
+    }
+    public static Set<String> symbolStartDelimiters() {
+        HashSet<String> delimiters = new HashSet<>();   //TODO
+        return delimiters;
+    }
+
+    public static boolean isBreaking(String nextToken) {
+        return true;    //TODO
     }
 
     public OperatorNode(String name) {
