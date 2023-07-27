@@ -44,7 +44,7 @@
 |TupleNode|a structured list with any type children|
 |SequenceNode|a flat list|
 |StructureNode|a block of code enclosed by braces (`{}`) that stores local variables as fields|
-|systems.merl.monomer.variables.VariableKey|the Key of a variable that is shared between identifiers referring to the same variable. Doubles as the type, and, during interpretation, the value|
+|variables.systems.monomer.VariableKey|the Key of a variable that is shared between identifiers referring to the same variable. Doubles as the type, and, during interpretation, the value|
 |FunctionKey||
 |InterpretVariable|requested from nodes for interpreter actions that require variable modification|
 |InterpretValue|requested from nodes for interpreter actions that require values|

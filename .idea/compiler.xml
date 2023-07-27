@@ -6,8 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="compiler" />
+        <module name="Monomer" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="compiler" target="17" />
+      <module name="monomer" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
