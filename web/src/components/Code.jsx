@@ -13,7 +13,6 @@ export default function Code({
       : children
           .map((child) => (typeof child === "string" ? child : "\n"))
           .join("");
-  console.log("code:", code);
   return blocked ? (
     <div
       {...props}
@@ -81,7 +80,6 @@ function ProcessedCode({ code, blocked, colored = true }) {
     });
   }
   function processLines(code, isString = false) {
-    console.log({ code });
     let finalParts = [];
     let start = 0;
     let end = 0;

@@ -10,7 +10,7 @@ import PageWrapper from "./custom_components/PageWrapper";
 import InstallPage from "./pages/InstallPage";
 import DocumentationPage from "./pages/DocumentationPage";
 
-const root = ReactDOM.createRoot(document.body);
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Router basename="/Monomer">

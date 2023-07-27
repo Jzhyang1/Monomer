@@ -27,7 +27,7 @@ const pages = [
 function LinkButton({ name, url }) {
   return (
     <Link
-      className="bg-black hover:opacity-50 px-[10px] py-[5px] text-white rounded-xl"
+      className="bg-black hover:opacity-50 px-[10px] py-[5px] text-xs md:text-sm text-white rounded-lg md:rounded-xl"
       href={url}
     >
       {name}
