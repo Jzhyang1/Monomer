@@ -18,7 +18,7 @@ public class SourceFile extends Source {
             throw new RuntimeException(e);
         }
         fileName = path;
-        bufferLines();
+        init();
     }
 
     public List<String> getCodeBlock(int startLine, int endLine) {

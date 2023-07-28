@@ -15,5 +15,4 @@ public abstract class InterpretValue extends Type {
     }
 
     public abstract String valueString();
-    public abstract InterpretValue copy();
 }

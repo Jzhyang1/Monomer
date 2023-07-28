@@ -9,7 +9,7 @@ public class SourceString extends Source {
 
     public SourceString(String value) {
         this.value = value.split("\n");
-        bufferLines();
+        init();
     }
 
     public List<String> getCodeBlock(int startLine, int endLine) {

@@ -7,7 +7,7 @@ public class InterpretTuple extends InterpretCollectionValue {
         throw new Error("TODO unimplemented");
     }
 
-    public InterpretValue copy() {
+    public InterpretTuple clone() {
         throw new Error("TODO unimplemented");
     }
 }

@@ -5,7 +5,7 @@ public class InterpretMap extends InterpretValue{
         throw new Error("TODO unimplemented");
     }
 
-    public InterpretValue copy() {
+    public InterpretMap clone() {
         throw new Error("TODO unimplemented");
     }
 }

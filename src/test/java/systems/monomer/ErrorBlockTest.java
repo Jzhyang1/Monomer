@@ -71,7 +71,7 @@ public class ErrorBlockTest {
     }
 
     @Test
-    public void testFileSource() throws IOException {
+    public void testFileSource() {
         String path = "samples/ErrorFile.m";
 
         Source source = new SourceFile(path);

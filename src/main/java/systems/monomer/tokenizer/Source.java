@@ -2,8 +2,6 @@ package systems.monomer.tokenizer;
 
 import systems.monomer.errorHandling.Index;
 import systems.monomer.syntaxTree.OperatorNode;
-import systems.monomer.errorHandling.ErrorBlock;
-import systems.monomer.syntaxTree.Node;
 
 import java.util.*;
 
@@ -117,6 +115,13 @@ public abstract class Source {
             return line.length() == x;
         }
 
+        /**
+         * sets the pointer to the newline
+         */
+        public void toEnd() {
+            x = line.length() - 1;
+        }
+
         public boolean allSpaces() {
             return line.isBlank();
         }
@@ -126,77 +131,26 @@ public abstract class Source {
         }
     }
 
-
-    private class SourceLineReader {    //TODO get rid of this class
-        public Line line;
-        public int starting;
-        private Token tokens; //wrapper token
-
-        public SourceLineReader() {
-            line = getNonemptyLine();
-            starting = line.skipSpaces();
-            tokens = new Token(Token.Usage.GROUP);
-        }
-
-        public void addSeparator() {
-            tokens.add(new Token(Token.Usage.OPERATOR, ";"));
-        }
-
-        public void addToken(Token token) {
-            tokens.add(token);
-        }
-
-        public Token getTokens() {
-            return tokens;
-        }
-
-        public void addOperator(String operator) {
-            addToken(new Token(Token.Usage.OPERATOR, operator));
-        }
-
-//        public void simpleNextLine() {
-//            saveIfToken();
-//            line = getLine();
-//        }
-    }
-
     private static final int DEFAULT_BUFFER_COUNT = 100;
     private int y = 0;
     protected Deque<Line> buffer = new LinkedList<>();
+    private Line line = null;
 
 
-    public Token parse() {
-        Line line = getLine();
-        Token ret = new Token(Token.Usage.GROUP);
+    public Token parseBlock() {
+        Token ret = new Token(Token.Usage.GROUP, "block");
+        int startingSpaces = line.startingSpaces();
 
         do {
             line.skipSpaces();
             char peek = line.peek();
-            if (peek == '\n') {
-                line.get();
-                if(eof()) break;
-
-                //new line
-                Line nextLine = getNonemptyLine();
-                int nextStarting = nextLine.startingSpaces();
-
-                if (nextStarting > line.startingSpaces()) {
-                    //child group
-                    ungetLine(nextLine);
-                    ret.add(parse());
-                } else if (nextStarting < line.startingSpaces()) {
-                    break;
-                } else {
-                    ret.addSeparator();
-                    line = nextLine;
-                }
-            } else if (peek == '\\') {
+            if (peek == '\\') {
                 //comments
                 line.get();
                 switch (line.peek()) {
                     case '\\' -> {
                         //comment to end-of-line
-                        //TODO copy-paste the \n case once tested
+                        line.toEnd();
                     }
                     case '\n' -> {
                         //escape newline
@@ -208,22 +162,39 @@ public abstract class Source {
                         parseNext();
                     }
                 }
-            } else {
-                //space, identifier, operator, or number
-                ungetLine(line);
-                Token nextToken = parseNext();
-                line = getLine();
-                ret.add(nextToken);
+            } else if (peek == '\n') {
+                if(eof()) break;
+                line.get();
 
-                if (line.peek() == '\n') {
-                    if ((nextToken.getUsage() == Token.Usage.OPERATOR && OperatorNode.isBreaking(nextToken.getValue()))) {
-                        //TODO newline without added ;
+                //new line
+                nextLine();
+                int nextStarting = line.startingSpaces();
+
+                if (nextStarting > startingSpaces) {
+                    //child group
+                    ret.add(parse());
+                } else if (nextStarting < startingSpaces) {
+                    break;
+                } else {
+                    Token lastToken = ret.getLast();
+                    if (!(lastToken.getUsage() == Token.Usage.OPERATOR &&
+                            OperatorNode.isBreaking(lastToken.getValue()))) {
+                        ret.addSeparator();
                     }
                 }
+            } else if (OperatorNode.symbolEndDelimiters().contains(peek)) {
+                break;
+            } else {
+                //identifier, operator, or number
+                ret.add(parseNext());
             }
         } while (!(eof() && line.eol()));
 
         return ret;
+    }
+    public Token parse() {
+        nextLine();
+        return parseBlock();
     }
 
     /**
@@ -234,7 +205,6 @@ public abstract class Source {
      * @return the string literal
      */
     public Token parseStringLiteral() {
-        Line line = getLine();
         Index lineStartingIndex = line.getIndex();
 
         char delim = line.get();
@@ -246,7 +216,7 @@ public abstract class Source {
 
         boolean multilineString = line.peek() == '\n';
         if (multilineString) {
-            line = getLine();
+            nextLine();
             startingSpaces = line.skipSpaces();
         }
 
@@ -340,12 +310,10 @@ public abstract class Source {
         }
 
         if (!strbuild.isEmpty()) ret.add(new Token(Token.Usage.STRING, strbuild.toString()));
-        ungetLine(line);
         return ret;
     }
 
     public Token parseNumberLiteral() {
-        Line line = getLine();
         Index start = line.getIndex();
 
         StringBuilder strbuild = new StringBuilder();
@@ -370,18 +338,18 @@ public abstract class Source {
             strbuild.append(line.get());
         }
 
-        ungetLine(line);
-        return new Token(hasE || hasDot ? Token.Usage.FLOAT : Token.Usage.INTEGER, strbuild.toString());
+        return new Token(hasE || hasDot ? Token.Usage.FLOAT : Token.Usage.INTEGER, strbuild.toString())
+                .with(start, line.getIndex(), Source.this);
     }
 
     public Token parseIdentifier() {
-        Line line = getLine();
+        Index start = line.getIndex();
         StringBuilder strbuild = new StringBuilder();
         while (isIdentifierChar(line.peek())) {
             strbuild.append(line.get());
         }
-        ungetLine(line);
-        return new Token(Token.Usage.IDENTIFIER, strbuild.toString());
+        return new Token(Token.Usage.IDENTIFIER, strbuild.toString())
+                .with(start, line.getIndex(), Source.this);
     }
 
     /**
@@ -390,36 +358,38 @@ public abstract class Source {
      * @return the next token from the above list
      */
     public Token parseNext() {
-        Line line = getLine();
         Index start = line.getIndex();
         char peek = line.peek();
 
         String operator = line.matchNext(OperatorNode.symbolOperators());
         if (operator != null) {
-            Token operatorToken = new Token(Token.Usage.OPERATOR, operator);
-            operatorToken.setContext(start, line.getIndex(), Source.this);
-            ungetLine(line);
-            return operatorToken;
+            return new Token(Token.Usage.OPERATOR, operator)
+                    .with(start, line.getIndex(), Source.this);
         }
 
-        ungetLine(line);
         if (OperatorNode.symbolStartDelimiters().contains(peek)) {
-            //TODO group
-            // also, don't forget to handle context
+            line.get(); //clear the delimiter
+            Token ret = parseBlock().with(start, line.getIndex(), Source.this);
+            char endDelim = line.get();
+            if(!OperatorNode.symbolEndDelimiters().contains(endDelim))
+                throwParseError(ret, "Missing end delimiter");
+            return ret.with("" + peek + endDelim);
         } else if (Character.isDigit(peek)) {
             return parseNumberLiteral();
         } else if (peek == '"' || peek == '\'') {
             return parseStringLiteral();
-        } else {
+        } else if (isIdentifierChar(peek)) {
             return parseIdentifier();
+        } else {
+            throwParseError(start, line.getIndex(), Token.Usage.GROUP, "token", "Invalid character while parsing");
+            return null;
         }
-        throw new InternalError("Reached unreachable block");
     }
 
     private void throwParseError(Index start, Index stop, Token.Usage usage, String value, String reason) {
-        Token errorBlock = new Token(usage, value);
-        errorBlock.setContext(start, stop, Source.this);
-        errorBlock.throwError(reason);
+        new Token(usage, value)
+                .with(start, stop, Source.this)
+                .throwError(reason);
     }
 
     private void throwParseError(Token token, String reason) {
@@ -446,6 +416,9 @@ public abstract class Source {
         if (ret.allSpaces()) return getNonemptyLine();
         else return ret;
     }
+    public void nextNonemptyLine() {
+        line = getNonemptyLine();
+    }
 
     public Line getLine() {
         if (eof()) {
@@ -461,10 +434,16 @@ public abstract class Source {
         }
         return ret;
     }
+    public void nextLine() {
+        line = getLine();
+    }
 
     public void ungetLine(Line sourceLine) {
         buffer.push(sourceLine);
         --y;
+    }
+    public void ungetLine() {
+        ungetLine(line);
     }
 
     /**
@@ -487,7 +466,7 @@ public abstract class Source {
 
     public abstract String getTitle();
 
-    public void bufferLines() {
+    protected void init() {
         bufferLines(DEFAULT_BUFFER_COUNT);
     }
 

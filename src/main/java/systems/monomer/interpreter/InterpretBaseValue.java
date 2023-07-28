@@ -26,7 +26,7 @@ public class InterpretBaseValue<T> extends InterpretValue {
         return type instanceof InterpretBaseValue<?> baseType && baseType.typeName.equals(typeName);
     }
 
-    public InterpretBaseValue<T> copy(){
-        return new InterpretBaseValue<>(value);
+    public InterpretBaseValue<T> clone(){
+        return (InterpretBaseValue<T>) super.clone();
     }
 }

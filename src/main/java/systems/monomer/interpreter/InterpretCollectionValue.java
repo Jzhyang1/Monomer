@@ -11,4 +11,9 @@ public abstract class InterpretCollectionValue extends InterpretValue {
     public String valueString() {
         return getValues().toString();
     }
+
+    public InterpretCollectionValue clone() {
+        InterpretCollectionValue cloned = (InterpretCollectionValue) super.clone();
+        throw new Error("TODO unimplemented");
+    }
 }

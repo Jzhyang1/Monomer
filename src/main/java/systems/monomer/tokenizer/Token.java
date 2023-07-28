@@ -2,10 +2,13 @@ package systems.monomer.tokenizer;
 
 import lombok.Getter;
 import systems.monomer.errorHandling.ErrorBlock;
+import systems.monomer.errorHandling.Index;
 import systems.monomer.syntaxTree.Node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Token extends ErrorBlock {
     public static enum Usage {
@@ -39,15 +42,26 @@ public class Token extends ErrorBlock {
         children.addAll(token.children);
     }
 
+    public Token getLast() {
+        return children.get(children.size() - 1);
+    }
+
     public Token with(String value) {
         this.value = value;
-        return Token.this;
+        return this;
     }
+    public Token with(Index start, Index stop, Source source) {
+        setContext(start, stop, source);
+        return this;
+    }
+
     public void addSeparator() {
         add(new Token(Usage.OPERATOR, ";"));
     }
 
     public String toString() {
-        return usage + " " + value + (children.isEmpty() ? "" : children);
+        return usage + " " + value + (children.isEmpty() ? "" : children.size() == 1 ? children :
+               "["+children.stream().map(Objects::toString)
+                       .collect(Collectors.joining(",\n\t"))+"]");
     }
 }
