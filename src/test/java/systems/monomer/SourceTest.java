@@ -1,8 +1,6 @@
 package systems.monomer;
 
 import org.junit.Test;
-import systems.monomer.errorHandling.Context;
-import systems.monomer.errorHandling.ErrorBlock;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.SourceFile;
 import systems.monomer.tokenizer.SourceString;
@@ -49,7 +47,7 @@ public class SourceTest {
         try {
             System.out.println(source.parse());
         } catch (RuntimeException e) {
-            assertEquals("ERROR Missing end delimiter in " + path + ":\n" +
+            assertEquals("Test parse in error file source", "ERROR Missing end delimiter in " + path + ":\n" +
                             "1| if (nextStarting > starting {\n" +
                             " |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
                             "2| \ttokens.add(tokenize(source));\n" +
@@ -66,5 +64,20 @@ public class SourceTest {
                             " | ^^\n",
                     e.getMessage());
         }
+    }
+
+    @Test
+    public void testSmallFileSource() {
+        //TODO
+        String path = "samples/SmallFile.m";
+
+        Source source = new SourceFile(path);
+
+        Token token = source.parse();
+        assertEquals("test parse small file source", token.toString(),
+                "GROUP block[" +
+                        "IDENTIFIER y, OPERATOR =, IDENTIFIER x, OPERATOR +, INTEGER 500, OPERATOR ;, " +
+                        "IDENTIFIER io, IDENTIFIER write, GROUP ()[IDENTIFIER y]" +
+                        "]");
     }
 }
