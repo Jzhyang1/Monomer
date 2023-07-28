@@ -1,15 +1,16 @@
 package systems.monomer.syntaxTree;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class OperatorNode extends Node {
     public static Set<String> symbolOperators() {
-        HashSet<String> operators = new HashSet<>();  //TODO
+        HashSet<String> operators = new HashSet<>(List.of("=", "+", "-", ";"));  //TODO
         return operators;
     }
-    public static Set<String> symbolStartDelimiters() {
-        HashSet<String> delimiters = new HashSet<>();   //TODO
+    public static Set<Character> symbolStartDelimiters() {
+        HashSet<Character> delimiters = new HashSet<>();   //TODO
         return delimiters;
     }
 

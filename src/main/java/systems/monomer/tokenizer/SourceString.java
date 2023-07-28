@@ -9,6 +9,7 @@ public class SourceString extends Source {
 
     public SourceString(String value) {
         this.value = value.split("\n");
+        bufferLines();
     }
 
     public List<String> getCodeBlock(int startLine, int endLine) {
@@ -19,9 +20,11 @@ public class SourceString extends Source {
         return "String source";
     }
     protected void bufferLines(int num) {
-        for(int i = 0; i < num; ++i) {
+        int i = 0;
+        while(i < num && lineNumber+i < value.length) {
             buffer.add(new Line(value[lineNumber+i], lineNumber+i));
+            ++i;
         }
-        lineNumber += num;
+        lineNumber += i;
     }
 }

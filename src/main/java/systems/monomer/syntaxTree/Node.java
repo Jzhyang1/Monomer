@@ -1,5 +1,7 @@
 package systems.monomer.syntaxTree;
 
+import lombok.Getter;
+import lombok.Setter;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
@@ -18,8 +20,11 @@ public abstract class Node extends ErrorBlock{
     }
 
     private String name;
+    @Getter @Setter
     private Node parent;
+    @Getter
     private List<Node> children = new ArrayList<>();
+    @Getter @Setter
     private Type type;
 
 
@@ -32,22 +37,6 @@ public abstract class Node extends ErrorBlock{
     }
 
     public abstract Usage getUsage();
-
-    public Node getParent() {
-        return parent;
-    }
-
-    protected void setParent(Node node) {
-        parent = node;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
 
     public VariableKey getVariable(String name) {
         return parent.getVariable(name);
@@ -62,9 +51,6 @@ public abstract class Node extends ErrorBlock{
         return null;
     }
 
-    public List<Node> getChildren() {
-        return this.children;
-    }
     public Node get(int i) {
         return children.get(i);
     }
@@ -73,24 +59,16 @@ public abstract class Node extends ErrorBlock{
         node.setParent(this);
     }
 
-    public void locateVariables() {
-        for (Node child : children) {
-            child.locateVariables();
-        }
-    }
-
     public void matchVariables() {
         for (Node child : children) {
             child.matchVariables();
         }
     }
-
     public void matchTypes() {
         for (Node child : children) {
             child.matchTypes();
         }
     }
-
     public void matchOverloads() {
         for (Node child : children) {
             child.matchOverloads();
@@ -101,15 +79,12 @@ public abstract class Node extends ErrorBlock{
         throwError("Attempting to access " + name + " as a variable");
         return null;
     }
-
     public abstract InterpretValue interpretValue();
 
     public CompileMemory compileMemory() {
         throwError("Attempting to access " + name + " as a variable");
         return null;
     }
-
     public abstract CompileValue compileValue();
-
     public abstract CompileSize compileSize();
 }

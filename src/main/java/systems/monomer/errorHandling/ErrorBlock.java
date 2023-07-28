@@ -5,19 +5,19 @@ import systems.monomer.tokenizer.Source;
 import java.util.List;
 
 public class ErrorBlock {
-    private Source.Context context = null;
+    private Context context = null;
 
-    public void setContext(Source.Context context) {
+    public void setContext(Context context) {
         this.context = context;
     }
-    public void setContext(Source.Index start, Source.Index stop, Source source) {
-        this.context = new Source.Context(start, stop, source);
+    public void setContext(Index start, Index stop, Source source) {
+        this.context = new Context(start, stop, source);
     }
 
     public void throwError(String message) {
         StringBuilder errorMessage = new StringBuilder();
         Source source = context.getSource();
-        Source.Index start = context.getStart(), stop = context.getStop();
+        Index start = context.getStart(), stop = context.getStop();
 
         //Error header
         errorMessage.append("ERROR ");

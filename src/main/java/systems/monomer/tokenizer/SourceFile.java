@@ -18,6 +18,7 @@ public class SourceFile extends Source {
             throw new RuntimeException(e);
         }
         fileName = path;
+        bufferLines();
     }
 
     public List<String> getCodeBlock(int startLine, int endLine) {
@@ -50,7 +51,11 @@ public class SourceFile extends Source {
     protected void bufferLines(int num) {
         try {
             for (int i = 0; i < num; ++i) {
-                buffer.add(new Line(reader.readLine(), lineNumber + i));
+                String nextLine = reader.readLine();
+                if(nextLine == null) {
+                    break;  //TODO eof
+                }
+                buffer.add(new Line(nextLine, lineNumber + i));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

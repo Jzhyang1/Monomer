@@ -3,6 +3,7 @@ package systems.monomer;
 import org.junit.*;
 import static org.junit.Assert.*;
 
+import systems.monomer.errorHandling.Context;
 import systems.monomer.errorHandling.ErrorBlock;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.SourceFile;
@@ -15,7 +16,7 @@ public class ErrorBlockTest {
     @Test
     public void testShortStringSource() {
         SourceString source = new SourceString("y = x + 500x;");
-        Source.Context context = new Source.Context(0, 8, 0, 11, source);
+        Context context = new Context(0, 8, 0, 11, source);
 
         ErrorBlock errorBlock = new ErrorBlock();
         errorBlock.setContext(context);
@@ -42,7 +43,7 @@ public class ErrorBlockTest {
                 "\tline.skipSpaces();\n" +
                 "}"
         );
-        Source.Context context = new Source.Context(0, 3, 6, 0, source);
+        Context context = new Context(0, 3, 6, 0, source);
 
         ErrorBlock errorBlock = new ErrorBlock();
         errorBlock.setContext(context);
@@ -74,7 +75,7 @@ public class ErrorBlockTest {
         String path = "samples/ErrorFile.m";
 
         Source source = new SourceFile(path);
-        Source.Context context = new Source.Context(0, 3, 6, 0, source);
+        Context context = new Context(0, 3, 6, 0, source);
 
         ErrorBlock errorBlock = new ErrorBlock();
         errorBlock.setContext(context);
