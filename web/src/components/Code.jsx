@@ -62,20 +62,22 @@ function ProcessedCode({ code, blocked, colored = true }) {
   let lineNumber = 0;
   function LineNumberLabel({ line }) {
     return (
-      <span className="inline-block w-[30px] font-serif border-r-[1px] border-black mr-[3px] text-black">
+      <span className="inline-block w-[30px] font-serif border-r-[1px] border-black mr-[15px] text-black">
         {line}
       </span>
     );
   }
   function processStandard(code) {
-    const parts = code.split(/(\s+|[^\w\s]+)/g);
+    const parts = code.split(/(\s+|[^_\w\s]+)/g);
     return parts.filter(Boolean).map((part) => {
       if (keywords.has(part))
         return <span className="text-[#23E]">{part}</span>;
       if (types.has(part)) return <span className="text-[#93d]">{part}</span>;
-      if (/[^\w\s]+/g.test(part))
+      if (/[^_\w\s]+/g.test(part))
         return <span className="text-[#a12]">{part}</span>;
       if (!isNaN(part)) return <span className="text-[#c1a]">{part}</span>;
+      if (part.startsWith("_"))
+        return <span className="italic text-[#5a1f1f]">{part.slice(1)}</span>;
       return part;
     });
   }
