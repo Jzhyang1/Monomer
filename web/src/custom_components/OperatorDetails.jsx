@@ -30,7 +30,7 @@ export default function OperatorDetails({
   collectionOps,
 }) {
   let ops = collectionOps
-    ? "_col"
+    ? "[_col]"
     : numOps
     ? "_n"
     : boolOps
@@ -44,11 +44,11 @@ export default function OperatorDetails({
     : doubleOps
     ? "_d"
     : listOps
-    ? "_list"
+    ? "[_list]"
     : setOps
-    ? "_set"
+    ? "{_set}"
     : mapOps
-    ? "_map"
+    ? "{_map}"
     : "_x";
 
   return (
@@ -58,12 +58,13 @@ export default function OperatorDetails({
         seeAlso={seeAlso}
         requirements={requirements}
         notes={notes}
+        page="/docs/operators"
       />
       <Title>{name}</Title>
       Structure:
-      <Code blocked>
-        {example ||
-          [
+      {example || (
+        <Code blocked>
+          {[
             isPrefix && `${symbol}${ops}`,
             isPrefix && isSuffix && <br />,
             isSuffix && `${ops}${symbol}`,
@@ -72,7 +73,8 @@ export default function OperatorDetails({
             isChained && <br />,
             isChained && `${ops} ${symbol} ${ops} ${symbol} ...`,
           ].filter(Boolean)}
-      </Code>
+        </Code>
+      )}
       <Link>
         <small>see here for an explaination of our example conventions</small>
       </Link>

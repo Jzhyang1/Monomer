@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
+import Link from "../components/Link";
 
-export default function FineDetails({ version, seeAlso, requirements, notes }) {
+export default function FineDetails({
+  version,
+  seeAlso,
+  requirements,
+  notes,
+  page,
+}) {
   const [open, setOpen] = useState(false);
   return (
     <div className="absolute right-0 top-0 max-w-[350px]">
@@ -11,7 +18,16 @@ export default function FineDetails({ version, seeAlso, requirements, notes }) {
       {open && (
         <div className="flex flex-col rounded-lg bg-slate-200 p-[10px] gap-[10px]">
           <DetailPart label="Version:">{version}</DetailPart>
-          <DetailPart label="See also:">{seeAlso}</DetailPart>
+          <DetailPart label="See also:">
+            {seeAlso.map((title, i) => (
+              <>
+                {i === 0 || ", "}
+                <Link href={`${page}/${title}`} key={i}>
+                  {title}
+                </Link>
+              </>
+            ))}
+          </DetailPart>
           <DetailPart label="Requires:">{requirements}</DetailPart>
           <DetailPart label="Notes:">{notes}</DetailPart>
         </div>
