@@ -1,4 +1,6 @@
 import React from "react";
+//TODO replace all lines from being handled by <br> to <div>
+//TODO replace all &emsp; with spaces/tabs in usages of Code
 
 export default function Code({
   className,
@@ -73,11 +75,11 @@ function ProcessedCode({ code, blocked, colored = true }) {
       if (keywords.has(part))
         return <span className="text-[#23E]">{part}</span>;
       if (types.has(part)) return <span className="text-[#93d]">{part}</span>;
+      if (part.startsWith("_") || part.startsWith("`"))
+        return <span className="italic text-[#5a1f1f]">{part.slice(1)}</span>;
       if (/[^_\w\s]+/g.test(part))
         return <span className="text-[#a12]">{part}</span>;
       if (!isNaN(part)) return <span className="text-[#c1a]">{part}</span>;
-      if (part.startsWith("_"))
-        return <span className="italic text-[#5a1f1f]">{part.slice(1)}</span>;
       return part;
     });
   }
@@ -87,13 +89,21 @@ function ProcessedCode({ code, blocked, colored = true }) {
     let end = 0;
 
     function push(last = false, value = undefined) {
-      if (!value)
-        finalParts.push(
-          isString
-            ? code.slice(start, end)
-            : processStandard(code.slice(start, end))
-        );
-      else finalParts.push(value);
+      if (!value) {
+        const line = code.slice(start, end);
+        console.log([...line]);
+        let leading = 0,
+          count = 0;
+        while (true) {
+          if (line.charAt(count) === " ") leading++;
+          else if (line.charAt(count) === "\t") leading += 4;
+          else break;
+          ++count;
+        }
+
+        const paddedLine = "\u2003".repeat(leading) + line.slice(count);
+        finalParts.push(isString ? paddedLine : processStandard(paddedLine));
+      } else finalParts.push(value);
       start = end + 1;
 
       if (!last && blocked) {

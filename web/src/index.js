@@ -15,8 +15,10 @@ import PageWrapper from "./custom_components/PageWrapper";
 import InstallPage from "./pages/InstallPage";
 import DocumentationPage from "./pages/DocumentationPage";
 import OperatorsPage, { operators } from "./pages/documentation/OperatorsPage";
+import TypesPage, { types } from "./pages/documentation/TypesPage";
 import DocumentationHomePage from "./pages/documentation/DocumentationPage";
 import OperatorDetails from "./custom_components/OperatorDetails";
+import TypeDetails from "./custom_components/TypeDetails";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -24,7 +26,7 @@ root.render(
     <Router path="%PUBLIC_URL%">
       <PageWrapper>
         <Routes>
-          <Route errorElement element={<ErrorPage />} />
+          {/* <Route path="" element={<ErrorPage />} /> */}
           <Route exact path="/" element={<HomePage />} />
           <Route exact path="/contact" element={<ContactPage />} />
           <Route exact path="/docs" element={<DocumentationPage />}>
@@ -36,8 +38,16 @@ root.render(
               {operators.map((op, i) => (
                 <Route
                   path={op.name}
-                  element={<OperatorDetails {...op} key={i} />}
+                  key={i}
+                  element={<OperatorDetails {...op} />}
                 />
+              ))}
+            </Route>
+            <Route path="types">
+              <Route path="" element={<TypesPage />} />
+              <Route path="*" element={<TypesPage />} />
+              {types.map((t, i) => (
+                <Route path={t.name} key={i} element={<TypeDetails {...t} />} />
               ))}
             </Route>
           </Route>

@@ -3,10 +3,10 @@ import { FaInfoCircle } from "react-icons/fa";
 import Link from "../components/Link";
 
 export default function FineDetails({
-  version,
+  version = "1.0.0",
   seeAlso,
-  requirements,
-  notes,
+  requirements = "none",
+  notes = "none",
   page,
 }) {
   const [open, setOpen] = useState(false);
