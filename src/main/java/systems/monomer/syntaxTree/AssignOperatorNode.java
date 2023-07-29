@@ -7,7 +7,7 @@ import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 
 public class AssignOperatorNode extends OperatorNode{
-    public AssignOperatorNode(){
+    public AssignOperatorNode() {
         super("=");
     }
 

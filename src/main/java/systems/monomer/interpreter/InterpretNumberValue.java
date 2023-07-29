@@ -4,11 +4,11 @@ package systems.monomer.interpreter;
  *
  * @param <T> The type of base value, can be Integer, Char, Float, Boolean
  */
-public class InterpretBaseValue<T> extends InterpretValue {
+public class InterpretNumberValue<T extends Number> extends InterpretValue {
     private T value;
     private String typeName;
 
-    public InterpretBaseValue(T value) {
+    public InterpretNumberValue(T value) {
         this.value = value;
         typeName = value.getClass().getName();
     }
@@ -23,10 +23,10 @@ public class InterpretBaseValue<T> extends InterpretValue {
         return value.toString();
     }
     public boolean typeContains(InterpretValue type) {
-        return type instanceof InterpretBaseValue<?> baseType && baseType.typeName.equals(typeName);
+        return type instanceof InterpretNumberValue<?> baseType && baseType.typeName.equals(typeName);
     }
 
-    public InterpretBaseValue<T> clone(){
-        return (InterpretBaseValue<T>) super.clone();
+    public InterpretNumberValue<T> clone(){
+        return (InterpretNumberValue<T>) super.clone();
     }
 }

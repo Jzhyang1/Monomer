@@ -2,7 +2,7 @@ package systems.monomer.syntaxTree;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretBaseValue;
+import systems.monomer.interpreter.InterpretNumberValue;
 import systems.monomer.interpreter.InterpretValue;
 
 public class FloatNode extends LiteralNode{
@@ -16,7 +16,7 @@ public class FloatNode extends LiteralNode{
 
     @Override
     public InterpretValue interpretValue() {
-        return new InterpretBaseValue<>(value);
+        return new InterpretNumberValue<>(value);
     }
 
     @Override

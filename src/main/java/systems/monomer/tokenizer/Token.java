@@ -61,7 +61,7 @@ public class Token extends ErrorBlock {
 
     public String toString() {
         return usage + " " + value + (children.isEmpty() ? "" : children.size() == 1 ? children :
-               "["+children.stream().map(Objects::toString)
-                       .collect(Collectors.joining(",\n\t"))+"]");
+               "[\n\t"+children.stream().map(Objects::toString)
+                       .collect(Collectors.joining(",\n\t"))+"\n\t]\n");
     }
 }

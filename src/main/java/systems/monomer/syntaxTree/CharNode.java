@@ -2,19 +2,19 @@ package systems.monomer.syntaxTree;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretBaseValue;
+import systems.monomer.interpreter.InterpretCharValue;
+import systems.monomer.interpreter.InterpretNumberValue;
 import systems.monomer.interpreter.InterpretValue;
 
 public class CharNode extends LiteralNode{
-
-    private Character value;
-
+    Character value;
     public CharNode(Character c) {
-        super(c.toString());
+        super("char");
+        value = c;
     }
 
     public InterpretValue interpretValue() {
-        return new InterpretBaseValue<>(value);
+        return new InterpretCharValue(value);
     }
 
     @Override
