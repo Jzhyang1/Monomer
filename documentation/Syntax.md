@@ -211,7 +211,7 @@ The supported type operators are: *treat as* (`a as b`), *convert to* (`a to b`)
 
 ## Variables
 
-Variables store values in a referencable identifier. In Monomer, every identifier can store only one systems.merl.monomer.variables.Type for their values. The variable is declared in the scope of its first use, and no extra keywords are necessary. Generally, a variable's first use will be some form of assignment, but simply naming a variable will suffice.
+Variables store values in a referencable identifier. In Monomer, every identifier can store only one variables.systems.monomer.Type for their values. The variable is declared in the scope of its first use, and no extra keywords are necessary. Generally, a variable's first use will be some form of assignment, but simply naming a variable will suffice.
 
 ## Groups
 
