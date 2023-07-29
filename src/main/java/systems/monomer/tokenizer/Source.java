@@ -172,7 +172,7 @@ public abstract class Source {
 
                 if (nextStarting > startingSpaces) {
                     //child group
-                    ret.add(parse());
+                    ret.add(parseBlock());
                 } else if (nextStarting < startingSpaces) {
                     break;
                 } else {

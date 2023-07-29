@@ -68,16 +68,46 @@ public class SourceTest {
 
     @Test
     public void testSmallFileSource() {
-        //TODO
         String path = "samples/SmallFile.m";
 
         Source source = new SourceFile(path);
 
         Token token = source.parse();
         assertEquals("test parse small file source", token.toString(),
-                "GROUP block[" +
-                        "IDENTIFIER y, OPERATOR =, IDENTIFIER x, OPERATOR +, INTEGER 500, OPERATOR ;, " +
-                        "IDENTIFIER io, IDENTIFIER write, GROUP ()[IDENTIFIER y]" +
-                        "]");
+                "GROUP block[\n" +
+                        "\tOPERATOR if,\n" +
+                        "\tIDENTIFIER nextStarting,\n" +
+                        "\tOPERATOR >,\n" +
+                        "\tIDENTIFIER starting,\n" +
+                        "\tOPERATOR :,\n" +
+                        "\tGROUP block[\n" +
+                        "\tIDENTIFIER tokens,\n" +
+                        "\tIDENTIFIER add,\n" +
+                        "\tGROUP ()[\n" +
+                        "\tIDENTIFIER tokenize,\n" +
+                        "\tGROUP ()[IDENTIFIER source]\n" +
+                        "\t]\n" +
+                        "\n" +
+                        "\t]\n" +
+                        ",\n" +
+                        "\tOPERATOR else,\n" +
+                        "\tIDENTIFIER nextStarting,\n" +
+                        "\tOPERATOR <,\n" +
+                        "\tIDENTIFIER starting,\n" +
+                        "\tOPERATOR :,\n" +
+                        "\tGROUP block[\n" +
+                        "\tIDENTIFIER return,\n" +
+                        "\tIDENTIFIER tokens\n" +
+                        "\t]\n" +
+                        ",\n" +
+                        "\tOPERATOR else,\n" +
+                        "\tOPERATOR :,\n" +
+                        "\tGROUP block[\n" +
+                        "\tIDENTIFIER line,\n" +
+                        "\tIDENTIFIER skipSpaces,\n" +
+                        "\tGROUP ()\n" +
+                        "\t]\n" +
+                        "\n" +
+                        "\t]\n");
     }
 }
