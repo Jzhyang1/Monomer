@@ -64,79 +64,87 @@ function ProcessedCode({ code, blocked, colored = true }) {
   let lineNumber = 0;
   function LineNumberLabel({ line }) {
     return (
-      <span className="inline-block w-[30px] font-serif border-r-[1px] border-black mr-[15px] text-black">
+      <span className="select-none w-[30px] font-serif border-r-[1px] border-black mr-[15px] text-black">
         {line}
       </span>
     );
   }
   function processStandard(code) {
-    const parts = code.split(/(\s+|[^_\w\s]+)/g);
-    return parts.filter(Boolean).map((part) => {
-      if (keywords.has(part))
-        return <span className="text-[#23E]">{part}</span>;
-      if (types.has(part)) return <span className="text-[#93d]">{part}</span>;
-      if (part.startsWith("_") || part.startsWith("`"))
-        return <span className="italic text-[#5a1f1f]">{part.slice(1)}</span>;
-      if (/[^_\w\s]+/g.test(part))
-        return <span className="text-[#a12]">{part}</span>;
-      if (!isNaN(part)) return <span className="text-[#c1a]">{part}</span>;
-      return part;
-    });
+    const commentIndex = code.indexOf("\\\\");
+    let comment = undefined;
+    if (commentIndex >= 0) {
+      comment = code.slice(commentIndex);
+      code = code.slice(0, commentIndex);
+    }
+    const parts = code
+      .split(/(\s+|[^_\w\s]+)/g)
+      .filter(Boolean)
+      .map((part) => {
+        if (keywords.has(part))
+          return <span className="text-[#23E]">{part}</span>;
+        if (types.has(part)) return <span className="text-[#93d]">{part}</span>;
+        if (part.startsWith("_") || part.startsWith("`"))
+          return <span className="italic text-[#5a1f1f]">{part.slice(1)}</span>;
+        if (/[^_\w\s]+/.test(part))
+          return <span className="text-[#a12]">{part}</span>;
+        if (/\s+/.test(part))
+          return part.replace(" ", "\u2003").replace("\t", "\u2003".repeat(4));
+        if (!isNaN(part)) return <span className="text-[#c1a]">{part}</span>;
+        return part;
+      });
+    if (comment) parts.push(<span className="text-[#AAA]">{comment}</span>);
+    return parts;
   }
   function processLines(code, isString = false) {
     let finalParts = [];
     let start = 0;
     let end = 0;
 
-    function push(last = false, value = undefined) {
-      if (!value) {
-        const line = code.slice(start, end);
-        console.log([...line]);
-        let leading = 0,
-          count = 0;
-        while (true) {
-          if (line.charAt(count) === " ") leading++;
-          else if (line.charAt(count) === "\t") leading += 4;
-          else break;
-          ++count;
-        }
+    function push() {
+      const line = code.slice(start, end);
+      console.log([...line]);
+      // let leading = 0,
+      //   count = 0;
+      // while (true) {
+      //   if (line.charAt(count) === " ") leading++;
+      //   else if (line.charAt(count) === "\t") leading += 4;
+      //   else break;
+      //   ++count;
+      // }
 
-        const paddedLine = "\u2003".repeat(leading) + line.slice(count);
-        finalParts.push(isString ? paddedLine : processStandard(paddedLine));
-      } else finalParts.push(value);
+      const paddedLine = line; //"\u2003".repeat(leading) + line.slice(count);
+      const addedPart = isString ? paddedLine : processStandard(paddedLine);
       start = end + 1;
 
-      if (!last && blocked) {
-        finalParts.push(<br />);
-        finalParts.push(<LineNumberLabel line={++lineNumber} />);
-      }
+      if (blocked) {
+        finalParts.push(
+          <div className="flex flex-row">
+            <LineNumberLabel line={++lineNumber} />
+            {addedPart}
+          </div>
+        );
+      } else finalParts.push(addedPart);
     }
 
     while (end < code.length) {
       if (code.charAt(end) === "\n") {
         push();
-      } else if (code.charAt(end) === "\\" && code.charAt(end + 1) === "\\") {
-        push(true);
-        while (end < code.length && code.charAt(end) !== "\n") ++end;
-        const comment = code.slice(start, end);
-        push(
-          end === code.length,
-          <span className="text-[#AAA]">\{comment}</span>
-        );
       }
       ++end;
     }
-    push(true);
+    push();
     return finalParts;
   }
   function processString(code) {
-    const parts = code.split(/(?<!\\)"/g);
+    let parts = code.split(/(?<!\\)"/g);
+    if (!parts[0]) parts = parts.slice(1);
+
     let finalParts = [];
     parts.forEach((part, i) =>
       i % 2 === 0
         ? (finalParts = finalParts.concat(processLines(part)))
         : finalParts.push(
-            <span className="text-[#1a2]">"{processLines(part, true)}"</span>
+            <span className="text-[#1a2]">{processLines(part, true)}</span>
           )
     );
     return finalParts;
