@@ -26,7 +26,6 @@ root.render(
     <Router path="%PUBLIC_URL%">
       <PageWrapper>
         <Routes>
-          {/* <Route path="" element={<ErrorPage />} /> */}
           <Route exact path="/" element={<HomePage />} />
           <Route exact path="/contact" element={<ContactPage />} />
           <Route exact path="/docs" element={<DocumentationPage />}>
