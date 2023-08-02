@@ -2,15 +2,18 @@ import Title from "../components/Title";
 import Code from "../components/Code";
 import Link from "../components/Link";
 import FineDetails from "./FineDetails";
+import Tabs from "../components/Tabs";
 //TODO show parent's fields
 
 export default function TypeDetails({
   name,
   aliases,
+  literals,
   parents,
   version,
   seeAlso,
   description,
+  literalDescription,
   requirements,
   notes,
   fields,
@@ -25,23 +28,42 @@ export default function TypeDetails({
         page="/docs/types"
       />
       <Title>{name}</Title>
-      {fields ? (
-        <Code blocked>
-          {aliases ? `\\\\also ${aliases.join(", ")}\n` : ""}
-          {name}
-          {" {\n"}
-          {parents?.map((parent) => "\t..." + parent + "\n").join("") || ""}
-          {expandFields(fields)}
-          {"}"}
-        </Code>
-      ) : (
-        <Code blocked>
-          {name} \\also {aliases.join()}
-        </Code>
-      )}
-      <Link>
-        <small>see here for an explaination of our example conventions</small>
-      </Link>
+      <Tabs
+        pages={literals ? ["Type", "Literal"] : ["Type"]}
+        background={"#E2E8F0"}
+      >
+        <>
+          <div>
+            {fields ? (
+              <Code blocked>
+                {aliases ? `\\\\also ${aliases.join(", ")}\n` : ""}
+                {name}
+                {" {\n"}
+                {parents?.map((parent) => "\t..." + parent + "\n").join("") ||
+                  ""}
+                {expandFields(fields)}
+                {"}"}
+              </Code>
+            ) : (
+              <Code blocked>
+                {name} {aliases ? `\\\\also ${aliases.join(", ")}` : ""}
+              </Code>
+            )}
+            <Link className="text-slate-400">
+              <small>
+                see here for an explaination of our example conventions
+              </small>
+            </Link>
+          </div>
+          <div>{description}</div>
+        </>
+        {literals && (
+          <>
+            <Code blocked>{literals.join("\n")}</Code>
+            <div>{literalDescription}</div>
+          </>
+        )}
+      </Tabs>
     </div>
   );
 }

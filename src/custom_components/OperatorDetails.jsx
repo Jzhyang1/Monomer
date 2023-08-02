@@ -18,6 +18,7 @@ export default function OperatorDetails({
   isPrefix,
   isSuffix,
   isChained,
+  mixWith,
   intOps,
   doubleOps,
   numOps,
@@ -30,7 +31,7 @@ export default function OperatorDetails({
   collectionOps,
 }) {
   let ops = collectionOps
-    ? "[_col]"
+    ? "`[_col`]"
     : numOps
     ? "_n"
     : boolOps
@@ -44,12 +45,25 @@ export default function OperatorDetails({
     : doubleOps
     ? "_d"
     : listOps
-    ? "[_list]"
+    ? "`[_list`]"
     : setOps
-    ? "{_set}"
+    ? "`{_set`}"
     : mapOps
-    ? "{_map}"
+    ? "`{_map`}"
     : "_x";
+
+  let mixWithLines = !mixWith
+    ? []
+    : Array.isArray(mixWith[0])
+    ? mixWith.reduce(
+        (prev, mixWith, i) => [
+          ...prev,
+          i > 0 ? "\n\n" : undefined,
+          ...mix({ ops, symbol, mixWith }),
+        ],
+        []
+      )
+    : mix({ ops, symbol, mixWith });
 
   return (
     <div className="relative">
@@ -65,13 +79,15 @@ export default function OperatorDetails({
       {example || (
         <Code blocked>
           {[
-            isPrefix && `${symbol}${ops}`,
-            isPrefix && isSuffix && <br />,
-            isSuffix && `${ops}${symbol}`,
-            isSuffix && isBinary && <br />,
+            isPrefix && `${symbol} ${ops}`,
+            isPrefix && isSuffix && "\n",
+            isSuffix && `${ops} ${symbol}`,
+            isSuffix && isBinary && "\n",
             (isBinary || isChained) && `${ops} ${symbol} ${ops}`,
-            isChained && <br />,
-            isChained && `${ops} ${symbol} ${ops} ${symbol} ...`,
+            isChained && "\n",
+            isChained && `${ops} ${symbol} ${ops} ${symbol} \`...`,
+            mixWith && "\n\n",
+            ...mixWithLines,
           ].filter(Boolean)}
         </Code>
       )}
@@ -81,4 +97,29 @@ export default function OperatorDetails({
       <div>{description}</div>
     </div>
   );
+}
+
+function mix({ ops, symbol, mixWith }) {
+  let mixWithFirstLines = [];
+  // let mixWithSecondLines = [];
+  let mixWithBetweenLines = [];
+  mixWith.forEach((symbol2, i) => {
+    mixWithFirstLines.push(`${ops} ${symbol} ${ops} ${symbol2} \`...`);
+    mixWithFirstLines.push(<br />);
+    // mixWithSecondLines.push(`${ops} ${symbol2} ${ops} ${symbol} \`...`);
+    // mixWithSecondLines.push(<br />);
+    for (let j = i; j < mixWith.length; ++j) {
+      const symbol3 = mixWith[j];
+      mixWithBetweenLines.push(
+        `${ops} ${symbol2} ${ops} ${symbol} ${ops} ${symbol3} \`...`
+      );
+      mixWithBetweenLines.push(<br />);
+    }
+  });
+  return [
+    ...mixWithFirstLines,
+    // ...mixWithSecondLines,
+    ...mixWithBetweenLines,
+    "`...",
+  ];
 }

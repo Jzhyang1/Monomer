@@ -3,37 +3,16 @@ import Title from "../components/Title";
 import Code from "../components/Code";
 import LargeText from "../components/LargeText";
 import List from "../components/List";
-import { useState } from "react";
+import Tabs from "../components/Tabs";
 
 export default function StartPage() {
-  const [page, setPage] = useState("beginner");
-
   return (
     <>
       <Title>Getting Started</Title>
-      <div className="flex flex-row w-full mt-[20px]">
-        <div
-          className={
-            "rounded-t-lg p-[5px] hover:cursor-pointer " +
-            (page === "beginner" ? "bg-slate-200" : "bg-slate-50")
-          }
-          onClick={() => setPage("beginner")}
-        >
-          Beginner
-        </div>
-        <div
-          className={
-            "rounded-t-lg p-[5px] hover:cursor-pointer " +
-            (page === "intermediate" ? "bg-slate-200" : "bg-slate-50")
-          }
-          onClick={() => setPage("intermediate")}
-        >
-          Intermediate
-        </div>
-      </div>
-      <div className="bg-slate-200 px-[25px]">
-        {page === "beginner" ? <BeginnersPage /> : <AdvancedPage />}
-      </div>
+      <Tabs pages={["Beginner", "Intermediate"]} background={"#E2E8F0"}>
+        <BeginnersPage />
+        <AdvancedPage />
+      </Tabs>
     </>
   );
 }

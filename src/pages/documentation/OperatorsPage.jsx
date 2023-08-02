@@ -193,31 +193,10 @@ export const operators = [
     {
       name: "Equals",
       symbol: "==",
-      example: (
-        <Code blocked>
-          _x == x<br />
-          _x == _x == ...
-          <br />
-          <br />
-          _x == _x != ...
-          <br />
-          ...
-          <br />
-          <br />
-          _x {"<"} _x == _x {"<"} ...
-          <br />
-          _x {"<="} _x == _x {"<"} ...
-          <br />
-          ...
-          <br />
-          <br />
-          _x {">"} _x == _x {">"} ...
-          <br />
-          _x {">="} _x == _x {">"} ...
-          <br />
-          ...
-        </Code>
-      ),
+      mixWith: [
+        ["<", "<=", "!="],
+        [">", ">=", "!="],
+      ],
       isChained: true,
       anyOps: true,
       version: "1.0.0",
@@ -235,19 +214,12 @@ export const operators = [
     },
     {
       name: "Not-Equal",
-      symbol: "==",
-      example: (
-        <Code blocked>
-          _x != x<br />
-          _x != _x != ...
-          <br />
-          <br />
-          _x != _x == ...
-          <br />
-          ...
-        </Code>
-      ),
+      symbol: "!=",
       isChained: true,
+      mixWith: [
+        ["<", "<=", "=="],
+        [">", ">=", "=="],
+      ],
       anyOps: true,
       version: "1.0.0",
       seeAlso: [
@@ -265,20 +237,8 @@ export const operators = [
     {
       name: "Greater",
       symbol: ">",
-      example: (
-        <Code blocked>
-          _x {">"} x<br />
-          _x {">"} _x {">"} ...
-          <br />
-          <br />
-          _x {">"} _x {">="} ...
-          <br />
-          _x {">"} _x {"=="} ...
-          <br />
-          ...
-        </Code>
-      ),
       isChained: true,
+      mixWith: [">=", "=="],
       anyOps: true,
       version: "1.0.0",
       seeAlso: ["Equals", "Lesser", "Greater-Equal", "Compare"],
@@ -288,20 +248,8 @@ export const operators = [
     {
       name: "Lesser",
       symbol: "<",
-      example: (
-        <Code blocked>
-          _x {"<"} x<br />
-          _x {"<"} _x {"<"} ...
-          <br />
-          <br />
-          _x {"<"} _x {"<="} ...
-          <br />
-          _x {"<"} _x {"=="} ...
-          <br />
-          ...
-        </Code>
-      ),
       isChained: true,
+      mixWith: ["<=", "=="],
       anyOps: true,
       version: "1.0.0",
       seeAlso: ["Equals", "Greater", "Greater-Equal", "Compare"],
@@ -311,20 +259,8 @@ export const operators = [
     {
       name: "Greater-Equal",
       symbol: ">=",
-      example: (
-        <Code blocked>
-          _x {">="} x<br />
-          _x {">="} _x {">="} ...
-          <br />
-          <br />
-          _x {">="} _x {">"} ...
-          <br />
-          _x {">="} _x {"=="} ...
-          <br />
-          ...
-        </Code>
-      ),
       isChained: true,
+      mixWith: [">", "=="],
       anyOps: true,
       version: "1.0.0",
       seeAlso: ["Equals", "Greater", "Lesser-Equal", "Compare"],
@@ -333,21 +269,9 @@ export const operators = [
     },
     {
       name: "Lesser-Equal",
-      symbol: "<",
-      example: (
-        <Code blocked>
-          _x {"<="} x<br />
-          _x {"<="} _x {"<="} ...
-          <br />
-          <br />
-          _x {"<="} _x {"<"} ...
-          <br />
-          _x {"<="} _x {"=="} ...
-          <br />
-          ...
-        </Code>
-      ),
+      symbol: "<=",
       isChained: true,
+      mixWith: ["<", "=="],
       anyOps: true,
       version: "1.0.0",
       seeAlso: ["Equals", "Lesser", "Greater-Equal", "Compare"],

@@ -16,9 +16,12 @@ import InstallPage from "./pages/InstallPage";
 import DocumentationPage from "./pages/DocumentationPage";
 import OperatorsPage, { operators } from "./pages/documentation/OperatorsPage";
 import TypesPage, { types } from "./pages/documentation/TypesPage";
+import ControlsPage, { controls } from "./pages/documentation/ControlsPage";
 import DocumentationHomePage from "./pages/documentation/DocumentationPage";
 import OperatorDetails from "./custom_components/OperatorDetails";
 import TypeDetails from "./custom_components/TypeDetails";
+import ControlDetails from "./custom_components/ControlDetails";
+import FunctionsPage from "./pages/documentation/FunctionsPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -49,6 +52,18 @@ root.render(
                 <Route path={t.name} key={i} element={<TypeDetails {...t} />} />
               ))}
             </Route>
+            <Route path="controls">
+              <Route path="" element={<ControlsPage />} />
+              <Route path="*" element={<ControlsPage />} />
+              {controls.map((t, i) => (
+                <Route
+                  path={t.name}
+                  key={i}
+                  element={<ControlDetails {...t} />}
+                />
+              ))}
+            </Route>
+            <Route path="functions" element={<FunctionsPage />} />
           </Route>
           <Route exact path="/start" element={<StartPage />} />
           <Route exact path="/install" element={<InstallPage />} />

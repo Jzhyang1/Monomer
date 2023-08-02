@@ -1,6 +1,5 @@
 import Dropdown from "../components/Dropdown";
 import LargeText from "../components/LargeText";
-import Link from "../components/Link";
 import List from "../components/List";
 import SectionHead from "../components/SectionHead";
 import Title from "../components/Title";

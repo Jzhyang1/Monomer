@@ -79,7 +79,8 @@ function ProcessedCode({ code, blocked, colored = true }) {
         return <span className="italic text-[#5a1f1f]">{part.slice(1)}</span>;
       if (/[^_\w\s]+/g.test(part))
         return <span className="text-[#a12]">{part}</span>;
-      if (!isNaN(part)) return <span className="text-[#c1a]">{part}</span>;
+      if (0 <= part[0] && part[0] <= 9)
+        return <span className="text-[#c1a]">{part}</span>;
       return part;
     });
   }

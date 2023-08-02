@@ -1,4 +1,3 @@
-import Image from "../components/Image";
 import Link from "../components/Link";
 
 const syntaxPages = [
