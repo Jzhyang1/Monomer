@@ -125,8 +125,8 @@ function GoalBox({ isEven, goal }) {
       className={isEven ? "bg-orange-200" : "bg-none"}
     >
       <List className="p-[10px]">
-        {goal.features.map((feature) => (
-          <FeatureBox feature={feature} />
+        {goal.features.map((feature, i) => (
+          <FeatureBox feature={feature} key={i} />
         ))}
       </List>
     </Dropdown>

@@ -77,7 +77,7 @@ function ProcessedCode({ code, blocked, colored = true }) {
       if (types.has(part)) return <span className="text-[#93d]">{part}</span>;
       if (part.startsWith("_") || part.startsWith("`"))
         return <span className="italic text-[#5a1f1f]">{part.slice(1)}</span>;
-      if (/[^_\w\s]+/g.test(part))
+      if (/[^_\w\s]+/.test(part))
         return <span className="text-[#a12]">{part}</span>;
       if (0 <= part[0] && part[0] <= 9)
         return <span className="text-[#c1a]">{part}</span>;
@@ -92,7 +92,6 @@ function ProcessedCode({ code, blocked, colored = true }) {
     function push(last = false, value = undefined) {
       if (!value) {
         const line = code.slice(start, end);
-        console.log([...line]);
         let leading = 0,
           count = 0;
         while (true) {
@@ -131,17 +130,41 @@ function ProcessedCode({ code, blocked, colored = true }) {
     return finalParts;
   }
   function processString(code) {
-    const parts = code.split(/(?<!\\)"/g);
-    let finalParts = [];
-    parts.forEach((part, i) =>
-      i % 2 === 0
-        ? (finalParts = finalParts.concat(processLines(part)))
-        : finalParts.push(
-            <span className="text-[#1a2]">"{processLines(part, true)}"</span>
-          )
-    );
-    return finalParts;
+    // console.log(code);
+    const parts = [];
+
+    let start = 0;
+    let delim = undefined;
+    for (let end = 0; end < code.length; ++end) {
+      if (delim) {
+        if (code.charAt(end) === delim || code.charAt(end) === "\\") {
+          parts.push(
+            <span className="text-[#1a2]">
+              {processLines(code.substring(start, end + 1), true)}
+            </span>
+          );
+          start = end + 1;
+        }
+        if (code.charAt(end) === delim) {
+          delim = undefined;
+        } else if (code.charAt(end) === "\\") {
+          ++end;
+          parts.push(
+            <span className="text-[#ca2]">{code.charAt(end + 1)}</span>
+          );
+        }
+      } else if (code.charAt(end) === '"' || code.charAt(end) === "'") {
+        if (start !== end)
+          parts.push(...processLines(code.substring(start, end)));
+        delim = code.charAt(end);
+        start = end;
+      }
+    }
+    if (start !== code.length)
+      parts.push(...processLines(code.substring(start)));
+    return parts;
   }
+
   return (
     <>
       {blocked && <LineNumberLabel line={++lineNumber} />}

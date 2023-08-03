@@ -7,8 +7,8 @@ export default function List({
   return (
     <div className={`pl-6 ${className}`} {...props}>
       <ul className={`list-outside ${isNumber ? "list-decimal" : "list-disc"}`}>
-        {children.map((child) => (
-          <li>{child}</li>
+        {children.map((child, i) => (
+          <li key={i}>{child}</li>
         ))}
       </ul>
     </div>

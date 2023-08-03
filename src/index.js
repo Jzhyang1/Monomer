@@ -22,6 +22,7 @@ import OperatorDetails from "./custom_components/OperatorDetails";
 import TypeDetails from "./custom_components/TypeDetails";
 import ControlDetails from "./custom_components/ControlDetails";
 import FunctionsPage from "./pages/documentation/FunctionsPage";
+import Code from "./components/Code";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
