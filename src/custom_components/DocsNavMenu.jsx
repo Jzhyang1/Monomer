@@ -1,3 +1,4 @@
+import { BrowserView } from "react-device-detect";
 import Link from "../components/Link";
 
 const syntaxPages = [
@@ -16,6 +17,10 @@ const syntaxPages = [
   {
     name: "Functions",
     url: "/functions",
+  },
+  {
+    name: "Variables",
+    url: "/variables",
   },
 ];
 
@@ -37,7 +42,7 @@ function LinkButton({ name, url }) {
   );
 }
 
-export default function DocsNavMenu({ title }) {
+export default function DocsNavMenu() {
   return (
     <nav className="w-full">
       <div className="flex flex-row">
@@ -46,15 +51,16 @@ export default function DocsNavMenu({ title }) {
           placeholder="Search documentation"
           className="border-[1px] border-slate-200 p-1 rounded-lg"
         />
-        <h2>{title}</h2>
-        <div className="flex my-auto mx-[10px] gap-2">
-          {syntaxPages.map((page, key) => (
-            <LinkButton {...page} key={key} />
-          ))}
-          {libraryPages.map((page, key) => (
-            <LinkButton {...page} key={key} />
-          ))}
-        </div>
+        <BrowserView>
+          <div className="flex my-auto mx-[10px] gap-2">
+            {syntaxPages.map((page, key) => (
+              <LinkButton {...page} key={key} />
+            ))}
+            {libraryPages.map((page, key) => (
+              <LinkButton {...page} key={key} />
+            ))}
+          </div>
+        </BrowserView>
       </div>
     </nav>
   );

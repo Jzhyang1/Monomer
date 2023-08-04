@@ -1,9 +1,9 @@
 import DocsNavMenu from "./DocsNavMenu";
 
-export default function DocsPageWrapper({ title, children }) {
+export default function DocsPageWrapper({ children }) {
   return (
     <>
-      <DocsNavMenu title={title} />
+      <DocsNavMenu />
       {children}
     </>
   );

@@ -23,6 +23,7 @@ import TypeDetails from "./custom_components/TypeDetails";
 import ControlDetails from "./custom_components/ControlDetails";
 import FunctionsPage from "./pages/documentation/FunctionsPage";
 import Code from "./components/Code";
+import VariablesPage from "./pages/documentation/VariablesPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -65,6 +66,7 @@ root.render(
               ))}
             </Route>
             <Route path="functions" element={<FunctionsPage />} />
+            <Route path="variables" element={<VariablesPage />} />
           </Route>
           <Route exact path="/start" element={<StartPage />} />
           <Route exact path="/install" element={<InstallPage />} />
