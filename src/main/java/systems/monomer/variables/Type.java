@@ -28,4 +28,7 @@ public class Type implements Cloneable {
             throw new RuntimeException(e);
         }
     }
+    public boolean equals(Object other) {
+        return (other instanceof Type typeOther) && typeOther.fields.equals(fields);
+    }
 }

@@ -367,7 +367,7 @@ public abstract class Source {
                     .with(start, line.getIndex(), Source.this);
         }
 
-        if (OperatorNode.symbolStartDelimiters().contains(peek)) {
+        if (OperatorNode.signStartDelimiters().contains(peek)) {
             line.get(); //clear the delimiter
             Token ret = parseBlock().with(start, line.getIndex(), Source.this);
             char endDelim = line.get();
