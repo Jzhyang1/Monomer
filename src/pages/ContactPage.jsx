@@ -1,4 +1,3 @@
-import LargeText from "../components/LargeText";
 import Box from "../components/Box";
 import Image from "../components/Image";
 import List from "../components/List";
