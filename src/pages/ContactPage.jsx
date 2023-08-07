@@ -1,7 +1,9 @@
 import LargeText from "../components/LargeText";
-import Link from "../components/Link";
+import Box from "../components/Box";
+import Image from "../components/Image";
 import List from "../components/List";
 import Title from "../components/Title";
+import Link from "../components/Link";
 
 const repos = [
   {
@@ -42,20 +44,21 @@ const repos = [
 const contacts = [
   {
     title: "Jonathan Yang",
-    image: "https://avatars.githubusercontent.com/u/82784096?v=4",
+    image: "/people/Jonathan.jpg",
     link: "http://jzhyang1.github.io",
+    creds: "Seven Lakes High School",
     desc: "founder",
     links: [
       {
         title: "jzhyang1@gmail.com",
-        link: "",
       },
     ],
     important: true,
   },
   {
     title: "Aidan Lai",
-    image: "https://avatars.githubusercontent.com/u/68030201?v=4",
+    image: "/people/Aidan.jpg",
+    creds: "Seven Lakes High School",
     link: "",
     desc: "developer",
     links: [],
@@ -64,16 +67,47 @@ const contacts = [
   {
     title: "Frank Li",
     image: "https://avatars.githubusercontent.com/u/79488460?s=48&v=4",
+    creds: "University of Texas at Austin",
     link: "",
     desc: "developer",
     links: [],
+    important: true,
+  },
+  {
+    title: "Phoenix Wu",
+    image: "/people/Phoenix.jpg",
+    creds: "Massachusetts Institute of Technology",
+    link: "",
+    desc: "commentator",
+    links: [],
+    important: true,
   },
   {
     title: "Kason Gu",
     image: "https://avatars.githubusercontent.com/u/80986485?s=64&v=4",
+    creds: "Seven Lakes High School",
     link: "",
     desc: "commentator",
     links: [],
+    important: true,
+  },
+  {
+    title: "Gordon Jin",
+    image: "/people/Gordon.jpg",
+    creds: "Seven Lakes High School",
+    link: "",
+    desc: "commentator",
+    links: [],
+    important: true,
+  },
+  {
+    title: "Derek Yu",
+    image: "/icon.jpg",
+    creds: "Seven Lakes High School",
+    link: "",
+    desc: "commentator",
+    links: [],
+    important: true,
   },
 ];
 
@@ -97,35 +131,40 @@ export default function ContactPage() {
 }
 
 function ContactBox({ contact }) {
-  const { title, link, image, desc, links, important } = contact;
+  //TODO make ContactBox pop out when clicked on
+  const { title, creds, link, image, desc, links, important } = contact;
   return (
-    <div
+    <Box
       className={
         "rounded-lg bg-slate-100 max-w-[300px] p-[10px] font-thin border-[2px] " +
         (important ? "border-orange-200" : "m-[10px]")
       }
+      header={
+        <div className="flex justify-center">
+          <Image
+            src={image}
+            alt={title}
+            className={
+              "border-[2px] rounded-full object-cover " +
+              (important
+                ? "h-[150px] w-[150px] border-gray-400"
+                : "h-[125px] w-[125px]")
+            }
+          />
+        </div>
+      }
+      title={title}
+      expand
     >
-      <div className="flex justify-center">
-        <img
-          src={image}
-          alt={title}
-          className={
-            "border-[2px] rounded-full " +
-            (important ? "h-[150px] border-gray-400" : "h-[125px]")
-          }
-        />
+      <div>
+        <small>{creds}</small>
       </div>
-      <LargeText>
-        <Link href={link}>{title}</Link>
-      </LargeText>
-      <div>{desc}</div>
-      <List>
-        {links.map(({ title, link }, i) => (
-          <a key={i} href={link}>
-            {title}
-          </a>
-        ))}
+      <div className="uppercase">{desc}</div>
+      <List className="text-sm">
+        {links.map(({ title, link }, i) =>
+          link ? <Link href={link}>{title}</Link> : title
+        )}
       </List>
-    </div>
+    </Box>
   );
 }

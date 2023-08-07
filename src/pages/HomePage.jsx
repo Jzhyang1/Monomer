@@ -113,9 +113,9 @@ function GoalBox({ isEven, goal }) {
   }
   function FeatureBox({ feature }) {
     return (
-      <a href={`#${feature.title}`}>
+      <>
         <strong>{feature.title}:</strong> {feature.desc}
-      </a>
+      </>
     );
   }
 

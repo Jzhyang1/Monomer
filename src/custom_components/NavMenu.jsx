@@ -39,7 +39,7 @@ function LinkButton({ name, url }) {
 
 export default function NavMenu({ title }) {
   return (
-    <nav className="w-full">
+    <nav>
       <div className="flex flex-row justify-between items-center bg-[#D74]">
         <Link href="/">
           <Image src="/icon.jpg" alt="logo" className="h-[48px]" />

@@ -24,6 +24,7 @@ import ControlDetails from "./custom_components/ControlDetails";
 import FunctionsPage from "./pages/documentation/FunctionsPage";
 import Code from "./components/Code";
 import VariablesPage from "./pages/documentation/VariablesPage";
+import CommandLinePage from "./pages/documentation/CommandLinePage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -67,6 +68,7 @@ root.render(
             </Route>
             <Route path="functions" element={<FunctionsPage />} />
             <Route path="variables" element={<VariablesPage />} />
+            <Route path="cli" element={<CommandLinePage />} />
           </Route>
           <Route exact path="/start" element={<StartPage />} />
           <Route exact path="/install" element={<InstallPage />} />

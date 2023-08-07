@@ -7,6 +7,7 @@ export default function Code({
   colored,
   blocked,
   children,
+  symbol,
   ...props
 }) {
   const code =
@@ -20,14 +21,23 @@ export default function Code({
       {...props}
       className={`p-3 m-3 bg-slate-100 rounded-lg tracking-wide font-mono text-md ${className}`}
     >
-      <ProcessedCode code={code} colored={colored} blocked></ProcessedCode>
+      <ProcessedCode
+        code={code}
+        colored={colored}
+        symbol={symbol}
+        blocked
+      ></ProcessedCode>
     </div>
   ) : (
     <p
       {...props}
       className={`inline-block tracking-wide font-mono text-sm ${className}`}
     >
-      <ProcessedCode code={code} colored={colored}></ProcessedCode>
+      <ProcessedCode
+        code={code}
+        colored={colored}
+        symbol={symbol}
+      ></ProcessedCode>
     </p>
   );
 }
@@ -60,13 +70,15 @@ const types = new Set([
   "io",
 ]);
 
-function ProcessedCode({ code, blocked, colored = true }) {
+function ProcessedCode({ code, blocked, symbol, colored = true }) {
   let lineNumber = 0;
   function LineNumberLabel({ line }) {
     return (
-      <span className="inline-block w-[30px] font-serif border-r-[1px] border-black mr-[15px] text-black">
-        {line}
-      </span>
+      symbol ?? (
+        <span className="inline-block w-[30px] font-serif border-r-[1px] border-black mr-[15px] text-black">
+          {line}
+        </span>
+      )
     );
   }
   function processStandard(code) {

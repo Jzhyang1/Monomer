@@ -1,6 +1,13 @@
 import { BrowserView } from "react-device-detect";
 import Link from "../components/Link";
 
+const usagePages = [
+  {
+    name: "Command Line",
+    url: "/cli",
+  },
+];
+
 const syntaxPages = [
   {
     name: "Operators",
@@ -53,6 +60,9 @@ export default function DocsNavMenu() {
         />
         <BrowserView>
           <div className="flex my-auto mx-[10px] gap-2">
+            {usagePages.map((page, key) => (
+              <LinkButton {...page} key={key} />
+            ))}
             {syntaxPages.map((page, key) => (
               <LinkButton {...page} key={key} />
             ))}
