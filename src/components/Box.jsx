@@ -1,5 +1,7 @@
+import { useContext } from "react";
 import LargeText from "./LargeText";
 import Link from "./Link";
+import { ThemeContext } from "../contexts";
 
 export default function Box({
   title,
@@ -7,10 +9,21 @@ export default function Box({
   children,
   link,
   expand,
+  className,
   ...props
 }) {
+  const { isDarkMode } = useContext(ThemeContext);
   const inner = (
-    <div {...props}>
+    <div
+      className={
+        "p-[10px] rounded-lg " +
+        (isDarkMode
+          ? "bg-[#3433fb]/20 border-[1px] border-blue-700 "
+          : "bg-[#f4b33b]/20 border-[1px] border-black ") +
+        className
+      }
+      {...props}
+    >
       <div>{header}</div>
       <LargeText>{title}</LargeText>
       {children && (

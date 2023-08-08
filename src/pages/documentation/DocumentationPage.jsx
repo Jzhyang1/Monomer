@@ -6,7 +6,7 @@ import Title from "../../components/Title";
 export default function DocumentationPage() {
   const PageBox = ({ title, link }) => (
     <Box
-      className="p-[10px] min-w-[150px] rounded-lg bg-[#f4b33b]/20 text-lg border-[1px] border-black"
+      className="min-w-[150px] text-lg"
       title={title}
       link={`/docs/${link}`}
     />

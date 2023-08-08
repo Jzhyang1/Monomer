@@ -22,11 +22,20 @@ import { useState } from "react";
 import { ThemeContext } from "../contexts";
 
 export default function App() {
-  const [isDarkMode, setDarkMode] = useState(false);
+  const [isDarkMode, setDarkMode] = useState(
+    window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
   const contextValue = useMemo(
     () => ({ isDarkMode, setDarkMode }),
     [isDarkMode]
   );
+
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", (event) => {
+      setDarkMode(event.matches);
+    });
 
   return (
     <React.StrictMode>

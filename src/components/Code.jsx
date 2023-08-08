@@ -114,7 +114,7 @@ function ProcessedCode({ code, blocked, symbol, isDarkMode, colored = true }) {
         return (
           <span
             className={
-              "italic " + (isDarkMode ? "text-[#b66666]" : "text-[#5a1f1f]")
+              "italic " + (isDarkMode ? "text-[#fbbbbb]" : "text-[#5a1f1f]")
             }
           >
             {part.slice(1)}

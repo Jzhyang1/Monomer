@@ -417,10 +417,7 @@ export const operators = [
 export default function OperatorsPage() {
   const PageBox = ({ title, ops }) => {
     return (
-      <Box
-        title={title}
-        className="p-[10px] min-w-[150px] rounded-lg bg-[#f4b33b]/20 text-lg border-[1px] border-black"
-      >
+      <Box title={title} className="min-w-[150px] text-lg">
         <List className="text-sm">
           {ops.map((op, i) => (
             <Link href={`/docs/operators/${op.name}`} key={i}>

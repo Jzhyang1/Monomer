@@ -14,7 +14,7 @@ export default function InstallPage() {
           merl.jar _path/_to/_file.m
         </Code>
       </div>
-      <div className="flex flex-row justify-evenly p-[10px] rounded-lg bg-black/5">
+      <div className="flex flex-row justify-evenly p-[10px] divide-x-[1px] rounded-lg bg-black/5">
         <Machine name="Universal (jar)" sources={["merl.jar"]} />
         <Machine name="Windows (jar)" sources={["MERLInstaller.exe"]} />
       </div>
@@ -24,7 +24,7 @@ export default function InstallPage() {
 
 function Machine({ name, sources }) {
   return (
-    <div className="flex flex-col px-[10px] border-x-[1px] border-x-black">
+    <div className="flex flex-1 flex-col items-center px-[10px]">
       <div className="font-bold mb-[10px]">{name}</div>
       {sources.map((source, i) => (
         <div key={i}>

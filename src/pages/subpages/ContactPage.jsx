@@ -152,7 +152,7 @@ function ContactBox({ contact }) {
           ? isDarkMode
             ? "border-blue-800 "
             : "border-orange-200 "
-          : "m-[10px] ") +
+          : "m-[10px] border-slate-200 ") +
         (isDarkMode ? "bg-slate-600" : "bg-slate-100")
       }
       header={
@@ -162,9 +162,8 @@ function ContactBox({ contact }) {
             alt={title}
             className={
               "border-[2px] rounded-full object-cover " +
-              (important
-                ? "h-[150px] w-[150px] border-gray-400"
-                : "h-[125px] w-[125px]")
+              (important ? "h-[150px] w-[150px] " : "h-[125px] w-[125px] ") +
+              (isDarkMode ? "border-blue-800" : "border-slate-200")
             }
           />
         </div>
