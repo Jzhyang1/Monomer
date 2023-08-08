@@ -1,6 +1,6 @@
-import Code from "../components/Code";
-import Link from "../components/Link";
-import Title from "../components/Title";
+import Code from "../../components/Code";
+import Link from "../../components/Link";
+import Title from "../../components/Title";
 
 export default function InstallPage() {
   return (

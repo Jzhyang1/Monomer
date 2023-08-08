@@ -19,7 +19,7 @@ export default function Code({
   return blocked ? (
     <div
       {...props}
-      className={`p-3 m-3 bg-slate-100 rounded-lg tracking-wide font-mono text-md ${className}`}
+      className={`p-3 m-3 bg-slate-100 rounded-lg tracking-wide overflow-x-scroll font-mono text-md ${className}`}
     >
       <ProcessedCode
         code={code}

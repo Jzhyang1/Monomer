@@ -1,27 +1,29 @@
 import React from "react";
-import { Route, Routes, useHistory } from "react-router-dom";
-import HomePage from "./HomePage";
-import StartPage from "./StartPage";
-import ContactPage from "./ContactPage";
-import ErrorPage from "./ErrorPage";
-import PageWrapper from "../custom_components/PageWrapper";
-import InstallPage from "./InstallPage";
-import DocumentationPage from "./DocumentationPage";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./subpages/HomePage";
+import StartPage from "./subpages/StartPage";
+import ContactPage from "./subpages/ContactPage";
+import ErrorPage from "./subpages/ErrorPage";
+import InstallPage from "./subpages/InstallPage";
+import DocumentationPage from "./subpages/DocumentationPage";
 import OperatorsPage, { operators } from "./documentation/OperatorsPage";
 import TypesPage, { types } from "./documentation/TypesPage";
 import ControlsPage, { controls } from "./documentation/ControlsPage";
 import DocumentationHomePage from "./documentation/DocumentationPage";
-import OperatorDetails from "../custom_components/OperatorDetails";
-import TypeDetails from "../custom_components/TypeDetails";
-import ControlDetails from "../custom_components/ControlDetails";
+import OperatorDetails from "./documentation/pagedetails/OperatorDetails";
+import TypeDetails from "./documentation/pagedetails/TypeDetails";
+import ControlDetails from "./documentation/pagedetails/ControlDetails";
 import FunctionsPage from "./documentation/FunctionsPage";
 import VariablesPage from "./documentation/VariablesPage";
 import CommandLinePage from "./documentation/CommandLinePage";
+import NavMenu from "../custom_components/NavMenu";
+import Footer from "../custom_components/Footer";
 
 export default function App() {
   return (
     <React.StrictMode>
-      <PageWrapper>
+      <NavMenu />
+      <div className="relative flex flex-col p-[20px] md:p-[40px] overflow-y-scroll overflow-x-clip">
         <Routes>
           <Route path="*" element={<ErrorPage />} />
           <Route exact path="/" element={<HomePage />} />
@@ -65,7 +67,8 @@ export default function App() {
           <Route exact path="/start" element={<StartPage />} />
           <Route exact path="/install" element={<InstallPage />} />
         </Routes>
-      </PageWrapper>
+        <Footer />
+      </div>
     </React.StrictMode>
   );
 }

@@ -16,7 +16,7 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mm
+        mono
       </Code>
       Which will output:
       <Code colored={false} symbol="" className={"text-slate-700"} blocked>
@@ -29,7 +29,7 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mm help
+        mono help
       </Code>
       To get information on a specific command, run the following:
       <Code
@@ -38,7 +38,7 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mm help [command_name]
+        mono help [command_name]
       </Code>
       To run Monomer shell, run the following:
       <Code
@@ -47,7 +47,7 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mm shell
+        mono shell
       </Code>
       To run one or many files, run either of the following:
       <Code
@@ -56,8 +56,8 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mm int "[file1.m]" {"\n"}
-        mm int "[file1.m]" "[file2.m]" [...]
+        mono int "[file1.m]" {"\n"}
+        mono int "[file1.m]" "[file2.m]" [...]
       </Code>
       To compile one or many files, run either of the following:
       <Code
@@ -66,8 +66,8 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mm comp "[file1.m]" {"\n"}
-        mm comp "[file1.m]" "[file2.m]" [...]
+        mono comp "[file1.m]" {"\n"}
+        mono comp "[file1.m]" "[file2.m]" [...]
       </Code>
     </>
   );

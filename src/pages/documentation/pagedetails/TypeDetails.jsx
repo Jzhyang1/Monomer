@@ -1,8 +1,8 @@
-import Title from "../components/Title";
-import Code from "../components/Code";
-import Link from "../components/Link";
-import FineDetails from "./FineDetails";
-import Tabs from "../components/Tabs";
+import Title from "../../../components/Title";
+import Code from "../../../components/Code";
+import Link from "../../../components/Link";
+import Tabs from "../../../components/Tabs";
+import FineDetails from "../../../custom_components/FineDetails";
 //TODO show parent's fields
 
 export default function TypeDetails({

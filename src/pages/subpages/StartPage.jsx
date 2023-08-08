@@ -1,9 +1,9 @@
-import SectionHead from "../components/SectionHead";
-import Title from "../components/Title";
-import Code from "../components/Code";
-import LargeText from "../components/LargeText";
-import List from "../components/List";
-import Tabs from "../components/Tabs";
+import SectionHead from "../../components/SectionHead";
+import Title from "../../components/Title";
+import Code from "../../components/Code";
+import LargeText from "../../components/LargeText";
+import List from "../../components/List";
+import Tabs from "../../components/Tabs";
 
 export default function StartPage() {
   return (

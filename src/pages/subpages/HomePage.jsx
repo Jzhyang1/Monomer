@@ -1,8 +1,8 @@
-import Dropdown from "../components/Dropdown";
-import LargeText from "../components/LargeText";
-import List from "../components/List";
-import SectionHead from "../components/SectionHead";
-import Title from "../components/Title";
+import Dropdown from "../../components/Dropdown";
+import LargeText from "../../components/LargeText";
+import List from "../../components/List";
+import SectionHead from "../../components/SectionHead";
+import Title from "../../components/Title";
 
 const goals = [
   {

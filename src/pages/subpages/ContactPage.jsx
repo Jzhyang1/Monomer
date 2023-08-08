@@ -1,8 +1,8 @@
-import Box from "../components/Box";
-import Image from "../components/Image";
-import List from "../components/List";
-import Title from "../components/Title";
-import Link from "../components/Link";
+import Box from "../../components/Box";
+import Image from "../../components/Image";
+import List from "../../components/List";
+import Title from "../../components/Title";
+import Link from "../../components/Link";
 
 const repos = [
   {

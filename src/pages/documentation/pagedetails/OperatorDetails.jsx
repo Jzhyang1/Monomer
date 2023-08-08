@@ -1,7 +1,7 @@
-import Title from "../components/Title";
-import Code from "../components/Code";
-import Link from "../components/Link";
-import FineDetails from "./FineDetails";
+import Title from "../../../components/Title";
+import Code from "../../../components/Code";
+import Link from "../../../components/Link";
+import FineDetails from "../../../custom_components/FineDetails";
 
 export default function OperatorDetails({
   name,
