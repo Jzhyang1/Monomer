@@ -3,7 +3,9 @@ import Title from "../../components/Title";
 
 export default function CommandLinePage() {
   const symbol = (
-    <span className="inline-block w-[20px] font-serif text-black">$</span>
+    <span className="inline-block w-[65px] font-serif text-[#725143]/70">
+      $ mono
+    </span>
   );
   return (
     <>
@@ -16,11 +18,11 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mono
+        {" "}
       </Code>
       Which will output:
       <Code colored={false} symbol="" className={"text-slate-700"} blocked>
-        Monomer version 1.0.0{"\n"}For help, type:{"\n\t"}mm help
+        Monomer version 1.0.0{"\n"}For help, type:{"\n\t"}mono help
       </Code>
       To get a list of all commands, run the following:
       <Code
@@ -29,7 +31,7 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mono help
+        help
       </Code>
       To get information on a specific command, run the following:
       <Code
@@ -38,7 +40,7 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mono help [command_name]
+        help [command_name]
       </Code>
       To run Monomer shell, run the following:
       <Code
@@ -47,7 +49,7 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mono shell
+        shell
       </Code>
       To run one or many files, run either of the following:
       <Code
@@ -56,8 +58,8 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mono int "[file1.m]" {"\n"}
-        mono int "[file1.m]" "[file2.m]" [...]
+        int "[file1.m]" {"\n"}
+        int "[file1.m]" "[file2.m]" [...]
       </Code>
       To compile one or many files, run either of the following:
       <Code
@@ -66,8 +68,8 @@ export default function CommandLinePage() {
         className={"text-slate-700"}
         blocked
       >
-        mono comp "[file1.m]" {"\n"}
-        mono comp "[file1.m]" "[file2.m]" [...]
+        comp "[file1.m]" {"\n"}
+        comp "[file1.m]" "[file2.m]" [...]
       </Code>
     </>
   );
