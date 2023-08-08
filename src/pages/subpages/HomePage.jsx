@@ -127,7 +127,7 @@ function GoalBox({ isEven, goal }) {
     <Dropdown
       toggle={<TitleBox />}
       className={
-        isEven ? (isDarkMode ? "bg-blue-900" : "bg-orange-200") : "bg-none"
+        isEven ? (isDarkMode ? "bg-blue-800" : "bg-orange-200") : "bg-none"
       }
     >
       <List className="p-[10px]">

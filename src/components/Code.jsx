@@ -30,6 +30,7 @@ export default function Code({
         code={code}
         colored={colored}
         symbol={symbol}
+        isDarkMode={isDarkMode}
         blocked
       ></ProcessedCode>
     </div>
@@ -42,6 +43,7 @@ export default function Code({
         code={code}
         colored={colored}
         symbol={symbol}
+        isDarkMode={isDarkMode}
       ></ProcessedCode>
     </p>
   );
@@ -75,12 +77,19 @@ const types = new Set([
   "io",
 ]);
 
-function ProcessedCode({ code, blocked, symbol, colored = true }) {
+function ProcessedCode({ code, blocked, symbol, isDarkMode, colored = true }) {
   let lineNumber = 0;
   function LineNumberLabel({ line }) {
     return (
       symbol ?? (
-        <span className="inline-block w-[30px] font-serif border-r-[1px] border-black mr-[15px] text-black">
+        <span
+          className={
+            "inline-block w-[30px] font-serif border-r-[1px] mr-[15px] " +
+            (isDarkMode
+              ? "border-white text-gray-200"
+              : "border-black text-gray-700")
+          }
+        >
           {line}
         </span>
       )
@@ -90,14 +99,39 @@ function ProcessedCode({ code, blocked, symbol, colored = true }) {
     const parts = code.split(/(\s+|[^_\w\s]+)/g);
     return parts.filter(Boolean).map((part) => {
       if (keywords.has(part))
-        return <span className="text-[#23E]">{part}</span>;
-      if (types.has(part)) return <span className="text-[#93d]">{part}</span>;
+        return (
+          <span className={isDarkMode ? "text-[#67F]" : "text-[#23E]"}>
+            {part}
+          </span>
+        );
+      if (types.has(part))
+        return (
+          <span className={isDarkMode ? "text-[#c5f]" : "text-[#93d]"}>
+            {part}
+          </span>
+        );
       if (part.startsWith("_") || part.startsWith("`"))
-        return <span className="italic text-[#5a1f1f]">{part.slice(1)}</span>;
+        return (
+          <span
+            className={
+              "italic " + (isDarkMode ? "text-[#b66666]" : "text-[#5a1f1f]")
+            }
+          >
+            {part.slice(1)}
+          </span>
+        );
       if (/[^_\w\s]+/.test(part))
-        return <span className="text-[#a12]">{part}</span>;
+        return (
+          <span className={isDarkMode ? "text-[#e56]" : "text-[#a12]"}>
+            {part}
+          </span>
+        );
       if (0 <= part[0] && part[0] <= 9)
-        return <span className="text-[#c1a]">{part}</span>;
+        return (
+          <span className={isDarkMode ? "text-[#c2b]" : "text-[#c1a]"}>
+            {part}
+          </span>
+        );
       return part;
     });
   }
@@ -138,7 +172,9 @@ function ProcessedCode({ code, blocked, symbol, colored = true }) {
         const comment = code.slice(start, end);
         push(
           end === code.length,
-          <span className="text-[#AAA]">\{comment}</span>
+          <span className={isDarkMode ? "text-[#777]" : "text-[#AAA]"}>
+            \{comment}
+          </span>
         );
       }
       ++end;

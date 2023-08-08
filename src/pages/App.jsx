@@ -31,12 +31,17 @@ export default function App() {
   return (
     <React.StrictMode>
       <ThemeContext.Provider value={contextValue}>
-        <div className={"h-screen flex flex-col " + (isDarkMode ? "bg-black" : "bg-white")}>
+        <div
+          className={
+            "h-screen flex flex-col md:block " +
+            (isDarkMode ? "bg-black" : "bg-white")
+          }
+        >
           <NavMenu />
           <div
             className={
               "relative flex flex-col p-[20px] md:p-[40px] overflow-y-scroll overflow-x-clip " +
-              (isDarkMode ? "bg-black text-white" : "bg-white text-black")
+              (isDarkMode ? "bg-black text-gray-300" : "bg-white text-black")
             }
           >
             <Routes>
