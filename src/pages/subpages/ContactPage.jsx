@@ -3,6 +3,8 @@ import Image from "../../components/Image";
 import List from "../../components/List";
 import Title from "../../components/Title";
 import Link from "../../components/Link";
+import { useContext } from "react";
+import { ThemeContext } from "../../contexts";
 
 const repos = [
   {
@@ -110,7 +112,7 @@ const contacts = [
   },
   {
     title: "Aayush Ishware",
-    image: "/icon.jpg",
+    image: "/icon-dark.jpg",
     creds: "Seven Lakes High School",
     link: "",
     desc: "web developer",
@@ -139,13 +141,19 @@ export default function ContactPage() {
 }
 
 function ContactBox({ contact }) {
+  const { isDarkMode } = useContext(ThemeContext);
   //TODO make ContactBox pop out when clicked on
   const { title, creds, link, image, desc, links, important } = contact;
   return (
     <Box
       className={
-        "rounded-lg bg-slate-100 max-w-[300px] p-[10px] font-thin border-[2px] " +
-        (important ? "border-orange-200" : "m-[10px]")
+        "rounded-lg max-w-[300px] p-[10px] font-thin border-[2px] " +
+        (important
+          ? isDarkMode
+            ? "border-blue-800 "
+            : "border-orange-200 "
+          : "m-[10px] ") +
+        (isDarkMode ? "bg-slate-600" : "bg-slate-100")
       }
       header={
         <div className="flex justify-center">
