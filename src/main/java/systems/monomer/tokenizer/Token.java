@@ -31,7 +31,7 @@ public class Token extends ErrorBlock {
     }
 
     private Node partialToNode(Node cur, ListIterator<Token> iter) {
-        if(!iter.hasNext()) return cur;
+        if (!iter.hasNext()) return cur;
 
         Token nextOp = iter.next();
         switch (nextOp.usage) {
@@ -57,33 +57,59 @@ public class Token extends ErrorBlock {
             }
         }
     }
+
     private Node partialOperatorToNode(@Nullable Node cur, Token op, ListIterator<Token> iter) {
+        if (!iter.hasNext()) {
+            if (OperatorNode.symbolSuffixes().contains(op.value)) {
+                Node opNode = op.toNode();
+                opNode.add(cur);
+                return opNode;
+            } else op.throwError("Expected value after operator");
+        }
+
         Token token = iter.next();
         Node next = null;
-        if(token.usage == Usage.OPERATOR) {
-            if(!OperatorNode.symbolPrefixes().contains(token.value))
-                token.throwError("Expected value or prefix");
-            next = partialOperatorToNode(null, token, iter);
-        }
-        else
+        if (token.usage == Usage.OPERATOR) {
+            if (OperatorNode.symbolPrefixes().contains(token.value))
+                next = partialOperatorToNode(null, token, iter);
+            else if (OperatorNode.symbolSuffixes().contains(op.value)) {
+                next = op.toNode();
+                next.add(cur);
+            } else token.throwError("Expected value or prefix");
+        } else
             next = token.toNode();
         next = partialToNode(next, iter);
 
-        Token nextOp = iter.next();
         Node opNode = op.toNode();
 
-        if(cur != null) {
-            if(cur.getUsage() == Node.Usage.OPERATOR && OperatorNode.isChained(cur.getName(), opNode.getName())) opNode = cur;
-            else opNode.add(cur);
+        if (cur != null) {
+            if (cur.getUsage() == Node.Usage.OPERATOR &&
+                    OperatorNode.isChained(cur.getName(), opNode.getName()))
+                opNode = cur;
+            else
+                opNode.add(cur);
         }
-        if(op.rightPrec() >= nextOp.leftPrec()) {
+
+        if (!iter.hasNext()) {
             opNode.add(next);
-            return partialOperatorToNode(opNode, nextOp, iter);
+            return opNode;
         }
-        else {
+        Token nextOp = iter.next();
+
+        if (op.rightPrec() >= nextOp.leftPrec()) {
+            iter.previous();
+            opNode.add(next);
+            return opNode;
+        } else {
             next = partialOperatorToNode(next, nextOp, iter);
-            opNode.add(next);
-            if(iter.hasNext())
+            if(OperatorNode.isChained(opNode.getName(), next.getName())) {
+                opNode.addOp(next.getName());
+                opNode.addAll(next.getChildren());
+            }
+            else {
+                opNode.add(next);
+            }
+            if (iter.hasNext())
                 return partialOperatorToNode(opNode, iter.next(), iter);
             else
                 return opNode;
@@ -120,11 +146,12 @@ public class Token extends ErrorBlock {
                     case "as" -> new CastOperatorNode();
                     case "if", "repeat", "while" ->
                             new ControlGroupNode() {{ //TODO how will the GROUP branch handle this?
-                                add(null);  //TODO add the if/repeat/while node
+                                //add(null);  //TODO add the if/repeat/while node
                             }};
                     case "else", "any", "all" -> null;    //TODO
                     case "for" -> null;    //TODO
-                    default -> new GenericOperatorNode(value);  //TODO make sure the GenericOperatorNode gets the function for interpret, compile, etc
+                    default ->
+                            new GenericOperatorNode(value);  //TODO make sure the GenericOperatorNode gets the function for interpret, compile, etc
                 };
             }
             case GROUP -> {
@@ -134,9 +161,9 @@ public class Token extends ErrorBlock {
                 Node cur = (token.usage == Usage.OPERATOR && OperatorNode.symbolPrefixes().contains(token.value)) ?
                         partialOperatorToNode(null, token, iter) : token.toNode();
 
-                while(iter.hasNext()) {
+                while (iter.hasNext()) {
                     token = iter.next();
-                    if(token.usage != Usage.OPERATOR) token.throwError("Expected operator");
+                    if (token.usage != Usage.OPERATOR) token.throwError("Expected operator");
                     cur = partialOperatorToNode(cur, token, iter);
                 }
 
@@ -159,6 +186,7 @@ public class Token extends ErrorBlock {
     public Token getFirst() {
         return children.get(0);
     }
+
     public Token getLast() {
         return children.get(children.size() - 1);
     }
@@ -166,6 +194,7 @@ public class Token extends ErrorBlock {
     public int leftPrec() {
         return OperatorNode.precedence(value).getFirst();
     }
+
     public int rightPrec() {
         return OperatorNode.precedence(value).getSecond();
     }

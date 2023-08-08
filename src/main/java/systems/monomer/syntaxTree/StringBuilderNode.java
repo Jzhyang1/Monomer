@@ -2,7 +2,6 @@ package systems.monomer.syntaxTree;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretBaseValue;
 import systems.monomer.interpreter.InterpretValue;
 
 import java.util.Collection;

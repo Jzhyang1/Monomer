@@ -14,37 +14,42 @@ public abstract class OperatorNode extends Node {
         private static Map<String, Data> operators = new HashMap<>();
 
         /**
-         * @param leftPrec a higher number signals a higher precedence
+         * @param leftPrec  a higher number signals a higher precedence
          * @param rightPrec a higher number signals a higher precedence
          */
         private static void putData(String symbol, int leftPrec, int rightPrec, Supplier<Node> constructor) {
             operators.put(symbol, new Data(leftPrec, rightPrec, constructor));
         }
+
         private static void putData(String symbol, int prec, Supplier<Node> constructor) {
             operators.put(symbol, new Data(prec, prec, constructor));
         }
+
         private static void putData(String symbol, int prec, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
-            operators.put(symbol, new Data(prec, prec, ()->new GenericOperatorNode(symbol){{
+            operators.put(symbol, new Data(prec, prec, () -> new GenericOperatorNode(symbol) {{
                 setCompile(compile);
                 setInterpret(interpret);
             }}));
         }
+
         private static void putData(String symbol, int leftPrec, int rightPrec, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
-            operators.put(symbol, new Data(leftPrec, rightPrec, ()->new GenericOperatorNode(symbol){{
+            operators.put(symbol, new Data(leftPrec, rightPrec, () -> new GenericOperatorNode(symbol) {{
                 setCompile(compile);
                 setInterpret(interpret);
             }}));
         }
+
         private static void putData(String symbol, int prec, Function<GenericOperatorNode, CompileValue> compile, BiFunction<InterpretValue, InterpretValue, InterpretValue> interpret) {
-            operators.put(symbol, new Data(prec, prec, ()->new GenericOperatorNode(symbol){{
+            operators.put(symbol, new Data(prec, prec, () -> new GenericOperatorNode(symbol) {{
                 setCompile(compile);
-                setInterpret((self)->interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()));
+                setInterpret((self) -> interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()));
             }}));
         }
+
         private static void putData(String symbol, int leftPrec, int rightPrec, Function<GenericOperatorNode, CompileValue> compile, BiFunction<InterpretValue, InterpretValue, InterpretValue> interpret) {
-            operators.put(symbol, new Data(leftPrec, rightPrec, ()->new GenericOperatorNode(symbol){{
+            operators.put(symbol, new Data(leftPrec, rightPrec, () -> new GenericOperatorNode(symbol) {{
                 setCompile(compile);
-                setInterpret((self)->interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()));
+                setInterpret((self) -> interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()));
             }}));
         }
 
@@ -52,61 +57,61 @@ public abstract class OperatorNode extends Node {
          * Arithmetic operators inhabit the precedence range 1000-1200
          */
         private static void initArithmetic() {
-            putData("+", 1050, (self)->{
+            putData("+", 1050, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("-", 1050, (self)->{
+            putData("-", 1050, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("*", 1055, (self)->{
+            putData("*", 1055, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("/", 1055, (self)->{
+            putData("/", 1055, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("%", 1055, (self)->{
+            putData("%", 1055, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
-                return null;
-            });
-
-
-            putData("||", 1065, (self)->{
-                //TODO
-                return null;
-            }, (first, second)-> {
-                return null;
-            });
-            putData("><", 1060, (self)->{
-                //TODO
-                return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
 
-            putData("**", 1075, (self)->{
+
+            putData("||", 1065, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("*/", 1075, (self)->{
+            putData("><", 1060, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
+                return null;
+            });
+
+            putData("**", 1075, (self) -> {
+                //TODO
+                return null;
+            }, (first, second) -> {
+                return null;
+            });
+            putData("*/", 1075, (self) -> {
+                //TODO
+                return null;
+            }, (first, second) -> {
                 return null;
             });
         }
@@ -122,40 +127,40 @@ public abstract class OperatorNode extends Node {
          * Comparison operators inhabit the precedence range 500-600
          */
         private static void initComparison() {
-            putData("==", 550, (self)->{
+            putData("==", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("!=", 550, (self)->{
+            putData("!=", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData(">", 550, (self)->{
+            putData(">", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("<", 550, (self)->{
+            putData("<", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData(">=", 550, (self)->{
+            putData(">=", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("<=", 550, (self)->{
+            putData("<=", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
         }
@@ -165,46 +170,46 @@ public abstract class OperatorNode extends Node {
          * This range overlaps with some other operators
          */
         private static void initControl() {
-            putData("if", -20, (self)->{
+            putData("if", -20, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("repeat", -20, (self)->{
+            putData("repeat", -20, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("while", -20, (self)->{
+            putData("while", -20, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("for", -20, (self)->{
+            putData("for", -20, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("else", -20, (self)->{
+            putData("else", -20, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("any", -20, (self)->{
+            putData("any", -20, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
-            putData("all", -20, (self)->{
+            putData("all", -20, (self) -> {
                 //TODO
                 return null;
-            }, (first, second)-> {
+            }, (first, second) -> {
                 return null;
             });
         }
@@ -222,6 +227,7 @@ public abstract class OperatorNode extends Node {
         }
 
         int leftPrec, rightPrec;
+
         private Data(int leftPrec, int rightPrec, Supplier<Node> constructor) {
             this.leftPrec = leftPrec;
             this.rightPrec = rightPrec;
@@ -231,24 +237,40 @@ public abstract class OperatorNode extends Node {
     public static Set<String> symbolOperators() {  //TODO
         return Data.operators.keySet();
     }
+
     public static Set<String> symbolPrefixes() {
         HashSet<String> delimiters = new HashSet<>(List.of("+", "-", "~", "#", "!"));   //TODO
         return delimiters;
     }
+
+    public static Set<String> symbolSuffixes() {
+        HashSet<String> delimiters = new HashSet<>(List.of(";"));   //TODO
+        return delimiters;
+    }
+
     public static Set<Character> signStartDelimiters() {
         HashSet<Character> delimiters = new HashSet<>(List.of('(', '[', '{'));   //TODO
         return delimiters;
     }
+
     public static Set<Character> signEndDelimiters() {
         HashSet<Character> delimiters = new HashSet<>(List.of(')', ']', '}'));   //TODO
         return delimiters;
     }
+
     public static Pair<Integer, Integer> precedence(String op) {
         Data dat = Data.operators.get(op);
         return new Pair<>(dat.leftPrec, dat.rightPrec);
     }
+
     public static boolean isChained(String a, String b) {
-        return false; //TODO
+        List<Set<String>> chains = List.of(
+                new TreeSet<>(List.of(";")),
+                new HashSet<>(List.of("<", "<=", "==")),
+                new HashSet<>(List.of(">", ">=", "==")),
+                new TreeSet<>(List.of("==", "!="))
+        );
+        return chains.stream().anyMatch((g) -> g.contains(a) && g.contains(b));
     }
 
     public static boolean isBreaking(String nextToken) {
@@ -260,10 +282,11 @@ public abstract class OperatorNode extends Node {
     }
 
 
-    public Node getFirst(){
+    public Node getFirst() {
         return get(0);
     }
-    public Node getSecond(){
+
+    public Node getSecond() {
         return get(1);
     }
 

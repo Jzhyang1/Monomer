@@ -182,7 +182,7 @@ public abstract class Source {
                         ret.addSeparator();
                     }
                 }
-            } else if (OperatorNode.symbolEndDelimiters().contains(peek)) {
+            } else if (OperatorNode.signEndDelimiters().contains(peek)) {
                 break;
             } else {
                 //identifier, operator, or number
@@ -336,6 +336,8 @@ public abstract class Source {
             hasE = isE;
             hasDot = isDot;
             strbuild.append(line.get());
+
+            if(isE && line.peek() == '-') strbuild.append(line.get());
         }
 
         return new Token(hasE || hasDot ? Token.Usage.FLOAT : Token.Usage.INTEGER, strbuild.toString())
@@ -371,7 +373,7 @@ public abstract class Source {
             line.get(); //clear the delimiter
             Token ret = parseBlock().with(start, line.getIndex(), Source.this);
             char endDelim = line.get();
-            if(!OperatorNode.symbolEndDelimiters().contains(endDelim))
+            if(!OperatorNode.signEndDelimiters().contains(endDelim))
                 throwParseError(ret, "Missing end delimiter");
             return ret.with("" + peek + endDelim);
         } else if (Character.isDigit(peek)) {

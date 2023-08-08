@@ -19,8 +19,7 @@ public class SetNode extends LiteralNode{
     }
 
     public InterpretValue interpretValue() {
-        throw new Error("TODO unimplemented");
-        return new InterpretSet(getChildren().stream().map(Node::interpretValue).toList());
+        return new InterpretSet(getChildren());
     }
 
     public CompileValue compileValue() {
