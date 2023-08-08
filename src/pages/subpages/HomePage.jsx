@@ -3,6 +3,8 @@ import LargeText from "../../components/LargeText";
 import List from "../../components/List";
 import SectionHead from "../../components/SectionHead";
 import Title from "../../components/Title";
+import { useContext } from "react";
+import { ThemeContext } from "../../contexts";
 
 const goals = [
   {
@@ -99,6 +101,7 @@ export default function HomePage() {
 }
 
 function GoalBox({ isEven, goal }) {
+  const { isDarkMode, setDarkMode } = useContext(ThemeContext);
   function TitleBox() {
     return (
       <div className="flex flex-col md:flex-row m-[20px] align-middle gap-[20px]">
@@ -122,7 +125,7 @@ function GoalBox({ isEven, goal }) {
   return (
     <Dropdown
       toggle={<TitleBox />}
-      className={isEven ? "bg-orange-200" : "bg-none"}
+      className={isEven ? (isDarkMode ? "bg-blue-500" : "bg-orange-200") : "bg-none"}
     >
       <List className="p-[10px]">
         {goal.features.map((feature, i) => (

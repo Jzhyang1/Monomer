@@ -44,10 +44,10 @@ export default function NavMenu({ title }) {
 
   return (
     <nav>
-      <div className="flex flex-row justify-between items-center bg-[#D74]">
+      <div className={"flex flex-row justify-between items-center " + (isDarkMode ? "bg-blue-500" : "bg-[#D74]")}>
         <div className="flex flex-row items-center gap-1 md:gap-3">
           <Link href="/">
-            <Image src="/icon.jpg" alt="logo" className="h-[48px]" />
+            <Image src={isDarkMode ? "/icon-dark.jpg" : "/icon.jpg"} alt="logo" className="h-[48px]" />
           </Link>
           <h1>{title}</h1>
           <label class="relative items-center cursor-pointer">
@@ -64,7 +64,7 @@ export default function NavMenu({ title }) {
               className="w-11 h-6 rounded-full peer peer-checked:after:translate-x-full after:absolute after:top-0.5 after:left-[2px] after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
                 bg-orange-300 peer-focus:ring-orange-200
                 after:bg-orange-100 after:border-slate-500 
-                peer-checked:after:border-blue-200 peer-checked:after:bg-blue-200 peer-checked:bg-slate-800"
+                peer-checked:before:border-blue-200 peer-checked:before:bg-blue-200 peer-checked:bg-slate-800"
             ></div>
           </label>
         </div>
