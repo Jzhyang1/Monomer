@@ -108,6 +108,15 @@ const contacts = [
     links: [],
     important: true,
   },
+  {
+    title: "Aayush Ishware",
+    image: "/icon.jpg",
+    creds: "Seven Lakes High School",
+    link: "",
+    desc: "web developer",
+    links: [],
+    important: true,
+  },
 ];
 
 export default function ContactPage() {
