@@ -7,9 +7,9 @@ import systems.monomer.interpreter.InterpretValue;
 
 public class FloatNode extends LiteralNode{
 
-    private Float value;
+    private Double value;
 
-    public FloatNode(Float f) {
+    public FloatNode(Double f) {
         super(f.toString());
         value = f;
     }

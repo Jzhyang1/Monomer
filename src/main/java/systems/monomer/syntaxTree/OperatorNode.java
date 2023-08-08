@@ -2,6 +2,7 @@ package systems.monomer.syntaxTree;
 
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.util.Pair;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -220,21 +221,34 @@ public abstract class OperatorNode extends Node {
             initControl();
         }
 
+        int leftPrec, rightPrec;
         private Data(int leftPrec, int rightPrec, Supplier<Node> constructor) {
-            //TODO
+            this.leftPrec = leftPrec;
+            this.rightPrec = rightPrec;
         }
     }
 
     public static Set<String> symbolOperators() {  //TODO
         return Data.operators.keySet();
     }
-    public static Set<Character> symbolStartDelimiters() {
+    public static Set<String> symbolPrefixes() {
+        HashSet<String> delimiters = new HashSet<>(List.of("+", "-", "~", "#", "!"));   //TODO
+        return delimiters;
+    }
+    public static Set<Character> signStartDelimiters() {
         HashSet<Character> delimiters = new HashSet<>(List.of('(', '[', '{'));   //TODO
         return delimiters;
     }
-    public static Set<Character> symbolEndDelimiters() {
+    public static Set<Character> signEndDelimiters() {
         HashSet<Character> delimiters = new HashSet<>(List.of(')', ']', '}'));   //TODO
         return delimiters;
+    }
+    public static Pair<Integer, Integer> precedence(String op) {
+        Data dat = Data.operators.get(op);
+        return new Pair<>(dat.leftPrec, dat.rightPrec);
+    }
+    public static boolean isChained(String a, String b) {
+        return false; //TODO
     }
 
     public static boolean isBreaking(String nextToken) {
