@@ -42,7 +42,7 @@ export default function App() {
       <ThemeContext.Provider value={contextValue}>
         <div
           className={
-            "h-screen flex flex-col md:block " +
+            "h-full flex flex-col md:block " +
             (isDarkMode ? "bg-black" : "bg-white")
           }
         >
