@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { ThemeContext } from "../contexts";
 //TODO replace all lines from being handled by <br> to <div>
 //TODO replace all &emsp; with spaces/tabs in usages of Code
 
@@ -10,6 +11,8 @@ export default function Code({
   symbol,
   ...props
 }) {
+  const { isDarkMode } = useContext(ThemeContext);
+
   const code =
     typeof children === "string"
       ? children
@@ -19,7 +22,9 @@ export default function Code({
   return blocked ? (
     <div
       {...props}
-      className={`p-3 m-3 bg-slate-100 rounded-lg tracking-wide overflow-x-scroll font-mono text-md ${className}`}
+      className={`p-3 m-3 rounded-lg tracking-wide font-mono text-md ${
+        isDarkMode ? "bg-slate-800" : "bg-slate-100 "
+      } ${className}`}
     >
       <ProcessedCode
         code={code}

@@ -9,10 +9,7 @@ export default function StartPage() {
   return (
     <>
       <Title>Getting Started</Title>
-      <Tabs
-        pages={["Beginner", "Intermediate", "Advanced"]}
-        background={"#E2E8F0"}
-      >
+      <Tabs pages={["Beginner", "Intermediate", "Advanced"]}>
         <BeginnersPage />
         <IntermediatePage />
         <AdvancedPage />

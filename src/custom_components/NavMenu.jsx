@@ -44,10 +44,19 @@ export default function NavMenu({ title }) {
 
   return (
     <nav>
-      <div className={"flex flex-row justify-between items-center " + (isDarkMode ? "bg-blue-500" : "bg-[#D74]")}>
+      <div
+        className={
+          "flex flex-row justify-between items-center " +
+          (isDarkMode ? "bg-blue-600" : "bg-[#D74]")
+        }
+      >
         <div className="flex flex-row items-center gap-1 md:gap-3">
           <Link href="/">
-            <Image src={isDarkMode ? "/icon-dark.jpg" : "/icon.jpg"} alt="logo" className="h-[48px]" />
+            <Image
+              src={isDarkMode ? "/icon-dark.jpg" : "/icon.jpg"}
+              alt="logo"
+              className="h-[48px]"
+            />
           </Link>
           <h1>{title}</h1>
           <label class="relative items-center cursor-pointer">

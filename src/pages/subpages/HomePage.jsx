@@ -101,7 +101,8 @@ export default function HomePage() {
 }
 
 function GoalBox({ isEven, goal }) {
-  const { isDarkMode, setDarkMode } = useContext(ThemeContext);
+  const { isDarkMode } = useContext(ThemeContext);
+
   function TitleBox() {
     return (
       <div className="flex flex-col md:flex-row m-[20px] align-middle gap-[20px]">
@@ -125,7 +126,9 @@ function GoalBox({ isEven, goal }) {
   return (
     <Dropdown
       toggle={<TitleBox />}
-      className={isEven ? (isDarkMode ? "bg-blue-500" : "bg-orange-200") : "bg-none"}
+      className={
+        isEven ? (isDarkMode ? "bg-blue-900" : "bg-orange-200") : "bg-none"
+      }
     >
       <List className="p-[10px]">
         {goal.features.map((feature, i) => (

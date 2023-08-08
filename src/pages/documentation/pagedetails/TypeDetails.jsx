@@ -28,10 +28,7 @@ export default function TypeDetails({
         page="/docs/types"
       />
       <Title>{name}</Title>
-      <Tabs
-        pages={literals ? ["Type", "Literal"] : ["Type"]}
-        background={"#E2E8F0"}
-      >
+      <Tabs pages={literals ? ["Type", "Literal"] : ["Type"]}>
         <>
           <div>
             {fields ? (

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { ThemeContext } from "../contexts";
 
 export default function Tabs({
   pages,
@@ -7,7 +8,9 @@ export default function Tabs({
   className,
   ...props
 }) {
+  const { isDarkMode } = useContext(ThemeContext);
   const [page, setPage] = useState(0);
+
   return (
     <>
       <div className="flex flex-row w-full mt-[20px]">
@@ -16,8 +19,9 @@ export default function Tabs({
             <div
               className={`rounded-t-lg p-[5px] hover:cursor-pointer`}
               style={{
-                opacity: page === i ? 1 : 0.2,
-                backgroundColor: background,
+                opacity: page === i ? 1 : isDarkMode ? 0.5 : 0.2,
+                backgroundColor:
+                  background || (isDarkMode ? "#333043" : "#E2E8F0"),
               }}
               onClick={() => setPage(i)}
             >
@@ -28,7 +32,9 @@ export default function Tabs({
       </div>
       <div
         className={`px-[25px] py-[5px] ${className}`}
-        style={{ backgroundColor: background }}
+        style={{
+          backgroundColor: background || (isDarkMode ? "#333043" : "#E2E8F0"),
+        }}
         {...props}
       >
         {children[page]}
