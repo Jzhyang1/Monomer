@@ -92,7 +92,14 @@ export default function HomePage() {
   return (
     <>
       <Title>Monomer</Title>
-      <SectionHead>Goals</SectionHead>
+      <div className="my-4 mx-2">
+        <p>
+          Monomer is a general purpose programming language designed to be used
+          by beginners and professionals, and for everything from markup to
+          installers, with no extra installations
+        </p>
+      </div>
+      <SectionHead className="mt-4 mb-2">Goals</SectionHead>
       {goals.map((goal, index) => (
         <GoalBox key={index} goal={goal} isEven={index % 2 === 0} />
       ))}
