@@ -1,5 +1,7 @@
 package systems.monomer;
 
+import systems.monomer.tokenizer.SourceString;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,7 +43,9 @@ public class Run {
     public static void interpret(String code) {
         System.out.println("running " + code);
         try {
-            // actually implement your code here
+            SourceString source = new SourceString(code);
+            source.parse();
+
 
         } catch (Exception e) {
 

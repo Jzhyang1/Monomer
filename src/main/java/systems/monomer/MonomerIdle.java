@@ -13,7 +13,7 @@ public class MonomerIdle {
         Editor editor = new Editor();
     }
 
-    public static void setFont() {
+    private static void setFont() {
         Enumeration<Object> keys = UIManager.getDefaults().keys();
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
