@@ -48,7 +48,7 @@ export default function App() {
           <NavMenu />
           <div
             className={
-              "relative flex flex-col px-[20px] md:px-[40px] pt-[40px] pb-[60px] overflow-y-auto overflow-x-clip " +
+              "relative h-full flex flex-col px-[20px] md:px-[40px] pt-[40px] pb-[60px] overflow-y-auto overflow-x-clip " +
               (isDarkMode ? "bg-black text-gray-300" : "bg-white text-black")
             }
           >
