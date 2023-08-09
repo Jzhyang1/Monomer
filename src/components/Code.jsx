@@ -190,21 +190,29 @@ function ProcessedCode({ code, blocked, symbol, isDarkMode, colored = true }) {
     let delim = undefined;
     for (let end = 0; end < code.length; ++end) {
       if (delim) {
-        if (code.charAt(end) === delim || code.charAt(end) === "\\") {
+        const endString = code.charAt(end) === delim;
+        const escape = code.charAt(end) === "\\";
+        if (endString || escape) {
           parts.push(
             <span className="text-[#1a2]">
-              {processLines(code.substring(start, end + 1), true)}
+              {processLines(code.substring(start, end + endString), true)}
             </span>
           );
-          start = end + 1;
+          start = end + endString;
         }
-        if (code.charAt(end) === delim) {
+        if (endString) {
           delim = undefined;
-        } else if (code.charAt(end) === "\\") {
+        } else if (escape) {
           ++end;
-          parts.push(
-            <span className="text-[#ca2]">{code.charAt(end + 1)}</span>
-          );
+          const c = code.charAt(end);
+          let escaped =
+            c === "u"
+              ? code.substr(end, 5)
+              : c === "a"
+              ? code.substr(end, 3)
+              : c;
+          parts.push(<span className="text-[#ca2]">\{escaped}</span>);
+          start = end + escaped.length;
         }
       } else if (code.charAt(end) === '"' || code.charAt(end) === "'") {
         if (start !== end)
