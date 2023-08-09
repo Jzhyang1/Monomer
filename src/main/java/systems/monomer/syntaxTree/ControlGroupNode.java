@@ -9,6 +9,10 @@ public class ControlGroupNode extends OperatorNode {
         super("control");
     }
 
+    public Usage getUsage() {
+        return Usage.CONTROL_GROUP;
+    }
+
     public void matchTypes() {
         throw new Error("TODO unimplemented");
     }

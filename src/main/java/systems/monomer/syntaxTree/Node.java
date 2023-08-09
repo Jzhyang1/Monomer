@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public abstract class Node extends ErrorBlock {
     public enum Usage {
-        OPERATOR, LITERAL, IDENTIFIER, MODULE
+        OPERATOR, LITERAL, IDENTIFIER, LABEL, CONTROL_GROUP, MODULE
     }
 
     private String name;
@@ -31,9 +31,12 @@ public abstract class Node extends ErrorBlock {
 
 
     public Node(String name) {
-        this.name = name;
+        addName(name);
     }
 
+    public void addName(String name) {
+        this.name = name;
+    }
     public String getName() {
         return name;
     }
@@ -61,9 +64,9 @@ public abstract class Node extends ErrorBlock {
         children.add(node);
         node.setParent(this);
     }
-
-    public void addOp(String name) {
-        this.name += " " + name;
+    public Node with(Node node) {
+        add(node);
+        return this;
     }
 
     public void addAll(List<Node> children) {

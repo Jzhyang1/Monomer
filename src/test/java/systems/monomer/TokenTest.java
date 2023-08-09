@@ -24,7 +24,39 @@ public class TokenTest {
 
         Token token = source.parse();
         Node node = token.toNode();
-        assertEquals("identifier token toNode", "OPERATOR ; ;[\n" +
+        System.out.println(node);
+        assertEquals("operator file token toNode", "OPERATOR ;[\n" +
+                "\tOPERATOR =[\n" +
+                "\t\tIDENTIFIER x\n" +
+                "\t\tLITERAL 0\n" +
+                "\t]\n" +
+                "\tOPERATOR =[\n" +
+                "\t\tIDENTIFIER y\n" +
+                "\t\tOPERATOR +[\n" +
+                "\t\t\tLITERAL 1\n" +
+                "\t\t\tIDENTIFIER x\n" +
+                "\t\t]\n" +
+                "\t]\n" +
+                "\tOPERATOR =[\n" +
+                "\t\tIDENTIFIER z\n" +
+                "\t\tOPERATOR *[\n" +
+                "\t\t\tIDENTIFIER y\n" +
+                "\t\t\tIDENTIFIER x\n" +
+                "\t\t]\n" +
+                "\t]\n" +
+                "]", node.toString());
+    }
+
+    @Test
+    public void testToNode3() {
+        String path = "samples/SmallFile.m";
+
+        Source source = new SourceFile(path);
+
+        Token token = source.parse();
+        Node node = token.toNode();
+        System.out.println(node);
+        assertEquals("condition file token toNode", "OPERATOR ; ;[\n" +
                 "\tOPERATOR =[\n" +
                 "\t\tIDENTIFIER x\n" +
                 "\t\tLITERAL 0\n" +

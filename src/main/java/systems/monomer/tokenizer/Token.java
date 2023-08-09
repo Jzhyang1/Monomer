@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import systems.monomer.errorHandling.ErrorBlock;
 import systems.monomer.errorHandling.Index;
 import systems.monomer.syntaxTree.*;
+import systems.monomer.syntaxTree.controlNodes.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,17 +36,13 @@ public class Token extends ErrorBlock {
 
         Token nextOp = iter.next();
         switch (nextOp.usage) {
-            case IDENTIFIER -> {
-                FieldOperatorNode fieldNode = new FieldOperatorNode();
-                fieldNode.add(cur);
-                fieldNode.add(nextOp.toNode());
+            case IDENTIFIER -> {    //TODO move this under partialOperator or remember to call after every operation
+                Node fieldNode = new FieldOperatorNode().with(cur).with(nextOp.toNode());
                 return partialToNode(fieldNode, iter);
             }
-            case GROUP -> {
-                Node callNode = new CallOperatorNode();
-                callNode.add(cur);
-                callNode.add(nextOp.toNode());
-                return callNode;
+            case GROUP -> { //TODO move this as well
+                Node callNode = new CallOperatorNode().with(cur).with(nextOp.toNode());
+                return partialToNode(callNode, iter);
             }
             case OPERATOR -> {
                 iter.previous();
@@ -58,32 +55,68 @@ public class Token extends ErrorBlock {
         }
     }
 
-    private Node partialOperatorToNode(@Nullable Node cur, Token op, ListIterator<Token> iter) {
+    private Node partialControlToNode(Token control, ListIterator<Token> iter) {
+        if (!iter.hasNext()) control.throwError("Unexpected control at end of file");
+
+        Node controlNode = control.toNode();
+        Token token = iter.next();
+
+        Node cur = (token.usage == Usage.OPERATOR && OperatorNode.symbolPrefixes().contains(token.value)) ?
+             partialOperatorToNode(control, null, token, iter) : partialToNode(token.toNode(), iter);
+        token = iter.next();
+
+        cur = partialOperatorToNode(control, cur, token, iter);
+        return controlNode.with(cur);
+    }
+
+    private Node partialOperatorToNode(@Nullable Token prevOp, @Nullable Node cur, @Nullable Token nullableOp, ListIterator<Token> iter) {
+        Token op = nullableOp;
+        if (op == null) {
+            if (iter.hasNext()) {
+                op = iter.next();
+                if (op.usage != Usage.OPERATOR) op.throwError("Expected operator");
+            } else if (cur != null) return cur;
+            else throwError("Expected operator somewhere in here");
+
+            assert op != null;
+        }
+
+        //check if previous operation is before this op
+        if (prevOp != null && prevOp.rightPrec() >= op.leftPrec()) {
+            iter.previous();
+            return cur;
+        }
+
+        //check suffix
         if (!iter.hasNext()) {
             if (OperatorNode.symbolSuffixes().contains(op.value)) {
-                Node opNode = op.toNode();
-                opNode.add(cur);
-                return opNode;
+                return op.toNode().with(cur);
             } else op.throwError("Expected value after operator");
         }
 
         Token token = iter.next();
+
+        Node opNode = op.toNode(), tokenNode = token.toNode();
         Node next = null;
+        //check prefixes/suffixes
         if (token.usage == Usage.OPERATOR) {
             if (OperatorNode.symbolPrefixes().contains(token.value))
-                next = partialOperatorToNode(null, token, iter);
+                next = partialOperatorToNode(op, null, token, iter);
+            else if (OperatorNode.symbolControls().contains(token.value))
+                next = partialControlToNode(token, iter);
             else if (OperatorNode.symbolSuffixes().contains(op.value)) {
-                next = op.toNode();
-                next.add(cur);
+                next = opNode.with(cur);
             } else token.throwError("Expected value or prefix");
         } else
             next = token.toNode();
         next = partialToNode(next, iter);
+        next = partialOperatorToNode(op, next, null, iter);
 
-        Node opNode = op.toNode();
 
+        //check for chaining
         if (cur != null) {
-            if (cur.getUsage() == Node.Usage.OPERATOR &&
+            if ((cur.getUsage() == Node.Usage.OPERATOR || cur.getUsage() == Node.Usage.LABEL)   //TODO this sucks
+                    &&
                     OperatorNode.isChained(cur.getName(), opNode.getName()))
                 opNode = cur;
             else
@@ -91,28 +124,31 @@ public class Token extends ErrorBlock {
         }
 
         if (!iter.hasNext()) {
-            opNode.add(next);
-            return opNode;
+            return opNode.with(next);
         }
+
         Token nextOp = iter.next();
 
-        if (op.rightPrec() >= nextOp.leftPrec()) {
-            iter.previous();
+        if (op.rightPrec() >= nextOp.leftPrec()) {  //do current operation first
+//            iter.previous();
             opNode.add(next);
-            return opNode;
-        } else {
-            next = partialOperatorToNode(next, nextOp, iter);
-            if(OperatorNode.isChained(opNode.getName(), next.getName())) {
-                opNode.addOp(next.getName());
-                opNode.addAll(next.getChildren());
-            }
-            else {
-                opNode.add(next);
-            }
             if (iter.hasNext())
-                return partialOperatorToNode(opNode, iter.next(), iter);
+                return partialOperatorToNode(prevOp, opNode, nextOp, iter);
             else
                 return opNode;
+        } else {    //do second operation first
+            next = partialOperatorToNode(op, next, nextOp, iter);
+//            if (OperatorNode.isChained(opNode.getName(), next.getName())) { //chaining
+//                opNode.addName(next.getName());
+//                opNode.addAll(next.getChildren());
+//            } else {
+            opNode.add(next);
+//            }
+            if (iter.hasNext())
+                return partialOperatorToNode(op, opNode, iter.next(), iter);
+            else
+                return opNode;
+
         }
     }
 
@@ -142,29 +178,33 @@ public class Token extends ErrorBlock {
             case OPERATOR -> {
                 return switch (value) {
                     case "=" -> new AssignOperatorNode();
-                    case ":", "to" -> new ConvertOperatorNode();
+//                    case ":", "to" -> new ConvertOperatorNode(value);
+//                    case ";", "," -> new TupleNode(value);
                     case "as" -> new CastOperatorNode();
-                    case "if", "repeat", "while" ->
-                            new ControlGroupNode() {{ //TODO how will the GROUP branch handle this?
-                                //add(null);  //TODO add the if/repeat/while node
-                            }};
-                    case "else", "any", "all" -> null;    //TODO
-                    case "for" -> null;    //TODO
+                    case "if" -> new IfNode();
+                    case "repeat" -> new RepeatNode();
+                    case "while" -> new WhileNode();
+                    case "for" -> new ForNode();
+                    case "else" -> new ElseNode();
+                    case "any" -> new AnyNode();
+                    case "all" -> new AllNode();
                     default ->
                             new GenericOperatorNode(value);  //TODO make sure the GenericOperatorNode gets the function for interpret, compile, etc
                 };
             }
             case GROUP -> {
+                if(children.isEmpty()) return new TupleNode();
+
                 ListIterator<Token> iter = children.listIterator();
                 Token token = iter.next();
 
                 Node cur = (token.usage == Usage.OPERATOR && OperatorNode.symbolPrefixes().contains(token.value)) ?
-                        partialOperatorToNode(null, token, iter) : token.toNode();
+                        partialOperatorToNode(null,null, token, iter) : partialToNode(token.toNode(), iter);
 
                 while (iter.hasNext()) {
                     token = iter.next();
                     if (token.usage != Usage.OPERATOR) token.throwError("Expected operator");
-                    cur = partialOperatorToNode(cur, token, iter);
+                    cur = partialOperatorToNode(null, cur, token, iter);
                 }
 
                 return cur;

@@ -239,8 +239,13 @@ public abstract class OperatorNode extends Node {
     }
 
     public static Set<String> symbolPrefixes() {
-        HashSet<String> delimiters = new HashSet<>(List.of("+", "-", "~", "#", "!"));   //TODO
+        HashSet<String> delimiters = new HashSet<>(List.of("+", "-", "~", "#", "!", ":", "if", "else", "any", "all", "while", "repeat", "for"));   //TODO
         return delimiters;
+    }
+
+    public static Set<String> symbolControls() {
+        HashSet<String> controls = new HashSet<>(List.of("if", "else", "any", "all", "while", "repeat", "for"));   //TODO
+        return controls;
     }
 
     public static Set<String> symbolSuffixes() {
@@ -268,7 +273,11 @@ public abstract class OperatorNode extends Node {
                 new TreeSet<>(List.of(";")),
                 new HashSet<>(List.of("<", "<=", "==")),
                 new HashSet<>(List.of(">", ">=", "==")),
-                new TreeSet<>(List.of("==", "!="))
+                new TreeSet<>(List.of("==", "!=")),
+                new HashSet<>(List.of("if", "else", "any", "all")),
+                new HashSet<>(List.of("repeat", "else", "any", "all")),
+                new HashSet<>(List.of("while", "else", "any", "all")),
+                new HashSet<>(List.of("for", "else", "any", "all"))
         );
         return chains.stream().anyMatch((g) -> g.contains(a) && g.contains(b));
     }
@@ -292,5 +301,12 @@ public abstract class OperatorNode extends Node {
 
     public Usage getUsage() {
         return Usage.OPERATOR;
+    }
+
+    //TODO probably make a ChainedOperatorNode and move this there
+    private List<String> names = new ArrayList<>();
+    public void addName(String name) {
+        if(names.isEmpty()) super.addName(name);
+        names.add(name);
     }
 }

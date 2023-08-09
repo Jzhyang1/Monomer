@@ -16,6 +16,10 @@ public abstract class ControlOperatorNode extends OperatorNode{
         super(name);
     }
 
+    public Usage getUsage() {
+        return Usage.LABEL;
+    }
+
     public void putVariable(String name, VariableKey key) {
         variables.put(name, key);
     }
