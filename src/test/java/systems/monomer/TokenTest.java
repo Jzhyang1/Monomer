@@ -18,7 +18,7 @@ public class TokenTest {
 
     @Test
     public void testToNode2() {
-        String path = "samples/OperatorFile.m";
+        String path = "samples/operator-sample.m";
 
         Source source = new SourceFile(path);
 
@@ -49,7 +49,7 @@ public class TokenTest {
 
     @Test
     public void testToNode3() {
-        String path = "samples/SmallFile.m";
+        String path = "samples/control-small.m";
 
         Source source = new SourceFile(path);
 

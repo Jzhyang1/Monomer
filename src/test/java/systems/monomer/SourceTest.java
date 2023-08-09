@@ -68,7 +68,7 @@ public class SourceTest {
 
     @Test
     public void testSmallFileSource() {
-        String path = "samples/SmallFile.m";
+        String path = "samples/control-small.m";
 
         Source source = new SourceFile(path);
 
