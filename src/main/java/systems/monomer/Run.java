@@ -38,6 +38,16 @@ public class Run {
         }
         return false;
     }
+    public static void interpret(String code) {
+        System.out.println("running " + code);
+        try {
+            // actually implement your code here
+
+        } catch (Exception e) {
+
+        }
+    }
+
     private static boolean checkCompile(String[] args){
         if(commands.get("comp").aliases.contains(args[0])) {
             //TODO
