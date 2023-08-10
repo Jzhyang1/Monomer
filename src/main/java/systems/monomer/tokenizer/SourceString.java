@@ -22,7 +22,7 @@ public class SourceString extends Source {
     protected void bufferLines(int num) {
         int i = 0;
         while(i < num && lineNumber+i < value.length) {
-            buffer.add(new Line(value[lineNumber+i], lineNumber+i));
+            buffer.add(new Line(value[lineNumber+i], lineNumber+i, 0));
             ++i;
         }
         lineNumber += i;

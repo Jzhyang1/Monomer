@@ -41,7 +41,6 @@ public class Run {
         return false;
     }
     public static void interpret(String code) {
-        System.out.println("running " + code);
         try {
             SourceString source = new SourceString(code);
             source.parse();

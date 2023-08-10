@@ -1,6 +1,6 @@
 package systems.monomer;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -8,7 +8,7 @@ import java.util.Enumeration;
 
 public class MonomerIdle {
     public static void main(String[] args) {
-        FlatDarculaLaf.setup();
+        FlatDarkLaf.setup();
         setFont();
         Editor editor = new Editor();
     }

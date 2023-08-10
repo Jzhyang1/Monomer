@@ -10,18 +10,15 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-public class Editor extends JFrame {
+public final class Editor extends JFrame {
 
-    private static final Logger logger = LoggerFactory.getLogger(Editor.class);
     private static Editor editor;
 
     public interface TabSource {
@@ -185,6 +182,45 @@ public class Editor extends JFrame {
                 }
             });
 
+            InputMap inputMap = contents.getInputMap(JComponent.WHEN_FOCUSED);
+            ActionMap actionMap = contents.getActionMap();
+            KeyStroke enterStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+            inputMap.put(enterStroke, enterStroke.toString());
+            actionMap.put(enterStroke.toString(), new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    int pos = contents.getCaretPosition();
+                    int lineStart = 0;
+                    try {
+                        lineStart = contents.getLineStartOffset(contents.getLineOfOffset(pos));
+                    } catch (BadLocationException ex) {
+                        ex.printStackTrace();
+                    }
+                    String line = contents.getText().substring(lineStart, pos);
+                    int tabs = 0;
+                    while (tabs < line.length() && line.charAt(tabs) == '\t') tabs++;
+                    contents.insert("\n", pos);
+                    contents.insert("\t".repeat(tabs), pos + 1);
+                }
+            });
+
+            enterStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
+            inputMap.put(enterStroke, enterStroke.toString());
+            actionMap.put(enterStroke.toString(), new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    if (contents.getSelectedText() == null) {
+                        int pos = contents.getCaretPosition();
+                        contents.insert("\t", pos);
+                    } else {
+                        Action.getAction("Indent").action.run();
+                    }
+                }
+            });
+
+            // if down and it's the last line, go to the end of the line
+            // if up and it's the first line, go to the start of the line
+
             this.contents.getDocument().addUndoableEditListener((event) -> {
                 undoManager.addEdit(event.getEdit());
             });
@@ -193,7 +229,7 @@ public class Editor extends JFrame {
             this.add(new JScrollPane(contents), BorderLayout.CENTER);
 
             Box box = Box.createHorizontalBox();
-            JLabel location = new JLabel("    1:1");
+            JLabel location = new JLabel("    1:1 / length: 0");
 
             contents.addCaretListener((event) -> {
                 int pos = contents.getCaretPosition();
@@ -204,7 +240,7 @@ public class Editor extends JFrame {
                 } catch (BadLocationException e) {
                     e.printStackTrace();
                 }
-                location.setText("    " + (row + 1) + ":" + (col + 1));
+                location.setText("    " + (row + 1) + ":" + (col + 1) + " / length: " + contents.getText().length());
             });
             contents.setTabSize(4);
             box.add(location);
@@ -220,43 +256,72 @@ public class Editor extends JFrame {
 
         public void save() {
             source.setContents(contents.getText());
-            if (source instanceof NewTabSource) {
+            if (source instanceof NewTabSource && ((NewTabSource) source).transform() != null) {
                 source = ((NewTabSource) source).transform();
             }
             this.editedSinceLastSave = false;
-            logger.info("Saved tab {}", source.getName());
         }
+
     }
 
     private final List<Tab> tabs = new ArrayList<>();
     private final JTabbedPane tabbedPane = new JTabbedPane();
+    private final JPanel display = new JPanel();
     private final JMenuBar menuBar = new JMenuBar();
 
     public Editor() {
         editor = this;
+        this.setLayout(new BorderLayout());
         this.setJMenuBar(menuBar);
-        this.add(tabbedPane);
-
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1000, 1000);
         this.setVisible(true);
         this.setResizable(true);
         this.setTitle("Monomer Editor");
+        createDisplayPanel();
+        this.add(display);
         populateActions();
         populateMenu();
-        sampleTab();
+    }
+
+    private void createDisplayPanel() {
+        JLabel comp1 = new JLabel("<html>Create a file with <font color='#b5ddff'>Ctrl + N</font></html>");
+        comp1.setFont(new Font("Consolas", Font.PLAIN, 20));
+        comp1.setHorizontalAlignment(SwingConstants.CENTER);
+        comp1.setVerticalAlignment(SwingConstants.CENTER);
+        JLabel comp3 = new JLabel("<html>Open a file with <font color='#b5ddff'>Ctrl + O</font></html>");
+        comp3.setFont(new Font("Consolas", Font.PLAIN, 20));
+        comp3.setHorizontalAlignment(SwingConstants.CENTER);
+        comp3.setVerticalAlignment(SwingConstants.CENTER);
+        JLabel comp2 = new JLabel("<html>Search for actions with <font color='#b5ddff'>Ctrl + Shift + A</font></html>");
+        comp2.setFont(new Font("Consolas", Font.PLAIN, 20));
+        comp2.setHorizontalAlignment(SwingConstants.CENTER);
+        comp2.setVerticalAlignment(SwingConstants.CENTER);
+
+
+        display.setLayout(new BorderLayout());
+        Box panel = Box.createVerticalBox();
+        panel.add(Box.createVerticalGlue());
+        panel.add(comp1);
+        panel.add(Box.createVerticalStrut(20));
+        panel.add(comp3);
+        panel.add(Box.createVerticalStrut(20));
+        panel.add(comp2);
+        panel.add(Box.createVerticalGlue());
+        display.add(panel, BorderLayout.CENTER);
     }
 
     public void addTab(Tab tab) {
+        if (!hasAnyTabs()) {
+            this.remove(display);
+            this.add(tabbedPane, BorderLayout.CENTER);
+        }
         tabs.add(tab);
         tabbedPane.addTab(tab.getName(), null, tab, tab.source.getToolTipText());
     }
 
-    private void sampleTab() {
-        DefaultTabSource source = new DefaultTabSource();
-        source.setContents("Hello, world!");
-        source.setName("Hello");
-        addTab(new Tab(source));
+    private boolean hasAnyTabs() {
+        return !tabs.isEmpty();
     }
 
     public Tab getSelectedTab() {
@@ -337,6 +402,10 @@ public class Editor extends JFrame {
                         refreshTab(tab);
                     }
                 }),
+                new Action("Close", () -> {
+                    Tab tab = getSelectedTab();
+                    closeTab(tab);
+                }),
                 new Action("Exit", () -> {
                     for (Tab tab : tabs) {
                         tab.save();
@@ -406,12 +475,240 @@ public class Editor extends JFrame {
                     }
                     tab.contents.select(index, index + text.length());
                 }),
+                new Action("Replace", () -> {
+                    Tab tab = getSelectedTab();
+                    JDialog dialog = new JDialog(this, "Replace", true);
+                    JPanel panel = new JPanel();
+                    dialog.setContentPane(panel);
+                    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                    JPanel findPanel = new JPanel();
+                    panel.add(findPanel);
+                    findPanel.setLayout(new BoxLayout(findPanel, BoxLayout.X_AXIS));
+                    findPanel.add(new JLabel("  Find what:  "));
+                    JTextField findField = new JTextField();
+                    findPanel.add(findField);
+                    JPanel replacePanel = new JPanel();
+                    panel.add(replacePanel);
+                    panel.add(Box.createVerticalStrut(10));
+                    replacePanel.setLayout(new BoxLayout(replacePanel, BoxLayout.X_AXIS));
+                    replacePanel.add(new JLabel("  Replace with:  "));
+                    JTextField replaceField = new JTextField();
+                    replacePanel.add(replaceField);
+                    JPanel buttonPanel = new JPanel();
+                    panel.add(Box.createVerticalStrut(10));
+                    panel.add(buttonPanel);
+                    JButton replaceButton = new JButton("Replace");
+                    replaceButton.addActionListener(e -> {
+                        String findText = findField.getText();
+                        String replaceText = replaceField.getText();
+                        String newText = tab.contents.getText().replace(
+                                findText,
+                                replaceText);
+                        tab.contents.setText(newText);
+                    });
+                    buttonPanel.add(replaceButton);
+                    JButton replaceAllButton = new JButton("Replace All");
+                    replaceAllButton.addActionListener(e -> {
+                        String findText = findField.getText();
+                        String replaceText = replaceField.getText();
+                        String newText = tab.contents.getText().replaceAll(
+                                findText,
+                                replaceText);
+                        tab.contents.setText(newText);
+                    });
+                    buttonPanel.add(replaceAllButton);
+                    dialog.pack();
+                    dialog.setVisible(true);
+                }),
                 new Action("Run File", () -> {
                     Tab tab = getSelectedTab();
                     String contents = tab.contents.getText();
                     Run.interpret(contents);
+                }),
+                new Action("Find Action", () -> {
+                    JPanel panel = new JPanel();
+                    JDialog dialog = new JDialog(this, "Find Action", true);
+                    dialog.setContentPane(panel);
+                    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                    JTextField field = new JTextField();
+                    panel.add(field); // show a list of results as field is updated
+                    JPanel buttonPanel = new JPanel();
+                    JScrollPane scrollPane = new JScrollPane(buttonPanel);
+                    panel.add(scrollPane);
+                    Set<Map.Entry<String, Action>> entries = Action.actions.entrySet().stream()
+                            .filter(entry -> !entry.getKey().equals("Find Action"))
+                            .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey().toLowerCase(Locale.ROOT), entry.getValue()))
+                            .collect(Collectors.toSet());
+                    buttonPanel.setLayout(new GridLayout(entries.size(), 1));
+                    Consumer<String> onKeyTyped = (contents) -> {
+                        List<Action> actions = new ArrayList<>(entries.stream()
+                                .filter(entry -> entry.getKey().contains(contents))
+                                .map(Map.Entry::getValue)
+                                .toList());
+                        buttonPanel.removeAll();
+                        actions.sort(Comparator.comparing(action -> action.name));
+                        GridBagConstraints gbc = new GridBagConstraints();
+                        gbc.gridx = 0;
+                        gbc.gridy = 0;
+                        gbc.fill = GridBagConstraints.HORIZONTAL;
+                        gbc.ipadx = 20;
+                        gbc.ipady = 20;
+                        for (Action action : actions) {
+                            JButton button = new JButton(action.name);
+                            button.setHorizontalTextPosition(SwingConstants.CENTER);
+                            button.setVerticalTextPosition(SwingConstants.CENTER);
+                            button.setToolTipText("Run action \"" + action.name + "\"");
+
+                            button.addActionListener(e1 -> {
+                                dialog.dispose();
+                                action.action.run();
+                            });
+                            button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                            buttonPanel.add(button, gbc);
+                            gbc.gridy++;
+                        }
+                        buttonPanel.revalidate();
+                        buttonPanel.repaint();
+                    };
+                    field.addKeyListener(new KeyListener() {
+                        @Override
+                        public void keyTyped(KeyEvent e) {
+                            String s;
+                            if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+                                s = field.getText();
+                            } else {
+                                s = field.getText() + e.getKeyChar();
+                            }
+                            String contents = s.toLowerCase(Locale.ROOT);
+                            onKeyTyped.accept(contents);
+                        }
+
+                        @Override
+                        public void keyPressed(KeyEvent e) {
+                        }
+
+                        @Override
+                        public void keyReleased(KeyEvent e) {
+                        }
+                    });
+                    onKeyTyped.accept("");
+                    dialog.setSize(400, 400);
+                    dialog.setLocationRelativeTo(this);
+                    dialog.setVisible(true);
+                }),
+                new Action("Indent", () -> {
+
+                    // get the selected lines
+                    Tab tab = getSelectedTab();
+                    String str;
+
+                    boolean hasSelection = tab.contents.getSelectedText() != null;
+                    if (!hasSelection) {
+                        str = tab.contents.getText();
+                        String[] lines = str.split("\n");
+                        lines = Arrays.stream(lines)
+                                .map(line -> "\t" + line)
+                                .toArray(String[]::new);
+                        String newStr = String.join("\n", lines);
+                        tab.contents.setText(newStr);
+                    } else {
+                        int start = tab.contents.getSelectionStart();
+                        int lineStart = start;
+                        while (lineStart > 0 && tab.contents.getText().charAt(lineStart - 1) != '\n') {
+                            lineStart--;
+                        }
+                        str = tab.contents.getText().substring(lineStart, tab.contents.getSelectionEnd());
+                        String[] lines = str.split("\n");
+                        lines = Arrays.stream(lines)
+                                .map(line -> "\t" + line)
+                                .toArray(String[]::new);
+                        String newStr = String.join("\n", lines);
+                        tab.contents.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
+                    }
+                }),
+                new Action("Dedent", () -> {
+
+                    // get the selected lines
+                    Tab tab = getSelectedTab();
+                    String str;
+
+                    boolean hasSelection = tab.contents.getSelectedText() != null;
+                    if (!hasSelection) {
+                        str = tab.contents.getText();
+                        String[] lines = str.split("\n");
+                        for (int i = 0; i < lines.length; i++) {
+                            String line = lines[i];
+                            if (line.startsWith("\t")) {
+                                lines[i] = line.substring(1);
+                            }
+                        }
+                        String newStr = String.join("\n", lines);
+                        tab.contents.setText(newStr);
+                    } else {
+                        int start = tab.contents.getSelectionStart();
+                        int lineStart = start;
+                        while (lineStart > 0 && tab.contents.getText().charAt(lineStart - 1) != '\n') {
+                            lineStart--;
+                        }
+                        str = tab.contents.getText().substring(lineStart, tab.contents.getSelectionEnd());
+                        String[] lines = str.split("\n");
+                        for (int i = 0; i < lines.length; i++) {
+                            String line = lines[i];
+                            if (line.startsWith("\t")) {
+                                lines[i] = line.substring(1);
+                            }
+                        }
+                        String newStr = String.join("\n", lines);
+                        tab.contents.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
+                    }
+                }),
+                new Action("Comment", () -> {
+
+                    // get the selected lines
+                    Tab tab = getSelectedTab();
+                    if (tab.contents.getSelectedText() == null) {
+                        // comment the current line
+                        int caretPosition = tab.contents.getCaretPosition();
+                        int lineStart = caretPosition;
+                        while (lineStart > 0 && tab.contents.getText().charAt(lineStart - 1) != '\n') {
+                            lineStart--;
+                        }
+                        String str = tab.contents.getText().substring(lineStart, caretPosition);
+                        if (str.contains("//"))
+                            tab.contents.replaceRange(str.replace("\\\\", ""), lineStart, caretPosition);
+                        else
+                            tab.contents.replaceRange("\\\\" + str, lineStart, caretPosition);
+                    } else {
+                        int start = tab.contents.getSelectionStart();
+                        int lineStart = start;
+                        while (lineStart > 0 && tab.contents.getText().charAt(lineStart - 1) != '\n') {
+                            lineStart--;
+                        }
+                        String str = tab.contents.getText().substring(lineStart, tab.contents.getSelectionEnd());
+                        String[] lines = str.split("\n");
+                        for (int i = 0; i < lines.length; i++) {
+                            String line = lines[i];
+                            if (line.contains("\\\\ ")) {
+                                lines[i] = line.replace("\\\\ ", "");
+                            } else {
+                                lines[i] = "\\\\ " + line;
+                            }
+                        }
+                        String newStr = String.join("\n", lines);
+                        tab.contents.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
+                    }
                 })
         );
+    }
+
+    private void closeTab(Tab tab) {
+        tabbedPane.remove(tab);
+        tabs.remove(tab);
+        if (!hasAnyTabs()) {
+            remove(tabbedPane);
+            add(display, BorderLayout.CENTER);
+            repaint();
+        }
     }
 
     private void populateMenu() {
@@ -419,10 +716,12 @@ public class Editor extends JFrame {
 
         JMenuItem newFile = new JMenuItem("New");
         newFile.addActionListener(Action.getAction("New").asActionListener());
+        newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(newFile);
 
         JMenuItem open = new JMenuItem("Open");
         open.addActionListener(Action.getAction("Open").asActionListener());
+        open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(open);
 
         JMenuItem save = new JMenuItem("Save");
@@ -434,6 +733,11 @@ public class Editor extends JFrame {
         saveAs.addActionListener(Action.getAction("Save As").asActionListener());
         saveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
         fileMenu.add(saveAs);
+
+        JMenuItem close = new JMenuItem("Close");
+        close.addActionListener(Action.getAction("Close").asActionListener());
+        close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
+        fileMenu.add(close);
 
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(Action.getAction("Exit").asActionListener());
@@ -473,6 +777,29 @@ public class Editor extends JFrame {
         find.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
         editMenu.add(find);
 
+        JMenuItem replace = new JMenuItem("Replace");
+        replace.addActionListener(Action.getAction("Replace").asActionListener());
+        replace.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
+        editMenu.add(replace);
+
+        JMenu code = new JMenu("Code");
+        JMenuItem indent = new JMenuItem("Indent");
+        indent.addActionListener(Action.getAction("Indent").asActionListener());
+        // Ctrl ]
+        indent.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, InputEvent.CTRL_DOWN_MASK));
+        code.add(indent);
+
+        JMenuItem dedent = new JMenuItem("Dedent");
+        dedent.addActionListener(Action.getAction("Dedent").asActionListener());
+        // Ctrl [
+        dedent.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, InputEvent.CTRL_DOWN_MASK));
+        code.add(dedent);
+
+        JMenuItem comment = new JMenuItem("Comment");
+        comment.addActionListener(Action.getAction("Comment").asActionListener());
+        comment.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SLASH, InputEvent.CTRL_DOWN_MASK));
+        code.add(comment);
+
         JMenu run = new JMenu("Run");
         JMenuItem runFile = new JMenuItem("Run File");
         runFile.addActionListener(Action.getAction("Run File").asActionListener());
@@ -480,9 +807,71 @@ public class Editor extends JFrame {
         runFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.SHIFT_DOWN_MASK));
         run.add(runFile);
 
+        JMenu help = new JMenu("Help");
+        JMenuItem findAction = new JMenuItem("Find Action");
+        findAction.addActionListener(Action.getAction("Find Action").asActionListener());
+        findAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        help.add(findAction);
+
+        JMenuItem about = new JMenuItem("About & Usage");
+        about.addActionListener((e) -> {
+            JFrame frame = new JFrame("About & Usage");
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setSize(400, 400);
+            frame.setLocationRelativeTo(this);
+            frame.setVisible(true);
+            frame.setLayout(new BorderLayout());
+            JTextArea textArea = new JTextArea();
+            textArea.setEditable(false);
+            textArea.setText("""
+                    This is a simple text editor for editing Monomer files, and is bundled with the 
+                    Monomer compiler.
+                                       
+                    To visit the Monomer website, go to https://monomer.dev
+                    The source code for this project can be found at:
+                                       
+                    https://github.com/Jzhyang1/Monomer
+                                       
+                    Using this editor is simple:
+                     - Create a new file by clicking File -> New (or Ctrl+N)
+                        
+                        Once a file has been created, you can save it by clicking File -> Save (or Ctrl+S)
+                        or save it as a new file by clicking File -> Save As (or Ctrl+Alt+S)
+                     - Open a file by clicking File -> Open (or Ctrl+O)
+                     
+                     - Close a file by clicking File -> Close (or Ctrl+W)
+                     - Exit the program by clicking File -> Exit
+                      
+                    Standard text editing shortcuts are also available:
+                     
+                     - Ctrl+Z: Undo
+                     - Ctrl+Y: Redo
+                     - Ctrl+X: Cut
+                     - Ctrl+C: Copy
+                     - Ctrl+V: Paste
+                     - Ctrl+A: Select All
+                     - Ctrl+F: Find
+                     - Ctrl+R: Replace
+                                       
+                    Syntax highlighting is available for Monomer files (*.mm).
+                                       
+                    To run a file, click Run -> Run File (or Shift+F10).
+                    To look at all the actions as a whole, you can click Help -> Find Action (or Ctrl+Shift+A).
+                                       
+                    """);
+            frame.add(textArea, BorderLayout.CENTER);
+            frame.revalidate();
+            frame.setSize(756, 618);
+        });
+        help.add(about);
+
+
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
+        menuBar.add(code);
         menuBar.add(run);
-
+        menuBar.add(help);
+        revalidate();
+        repaint();
     }
 }
