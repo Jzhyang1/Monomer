@@ -12,13 +12,16 @@ public class SourceFile extends Source {
     private int lineNumber = 0;
 
     public SourceFile(String path) {
+        this(new File(path));
+    }
+    public SourceFile(File sourceFile) {
         try {
-            file = new File(path);
+            file = sourceFile;
             reader = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        fileName = path;
+        fileName = sourceFile.getPath();
         init();
     }
 
@@ -64,5 +67,9 @@ public class SourceFile extends Source {
             throw new RuntimeException(e);
         }
         lineNumber += num;
+    }
+
+    protected int getPosition() {
+        return position;
     }
 }

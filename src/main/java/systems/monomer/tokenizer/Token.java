@@ -218,7 +218,6 @@ public class Token extends ErrorBlock {
     public void add(Token child) {
         children.add(child);
     }
-
     public void addAll(Token token) {
         children.addAll(token.children);
     }
@@ -226,7 +225,6 @@ public class Token extends ErrorBlock {
     public Token getFirst() {
         return children.get(0);
     }
-
     public Token getLast() {
         return children.get(children.size() - 1);
     }
@@ -234,7 +232,6 @@ public class Token extends ErrorBlock {
     public int leftPrec() {
         return OperatorNode.precedence(value).getFirst();
     }
-
     public int rightPrec() {
         return OperatorNode.precedence(value).getSecond();
     }
@@ -243,14 +240,30 @@ public class Token extends ErrorBlock {
         this.value = value;
         return this;
     }
-
     public Token with(Index start, Index stop, Source source) {
         setContext(start, stop, source);
         return this;
     }
 
-    public void addSeparator() {
-        add(new Token(Usage.OPERATOR, ";"));
+    public List<Token> markupBlock() {
+        List<Token> tokens = new ArrayList<>();
+        Index start1 = getStart(), stop1 = getFirst().getStart();
+        int posStart1 = start1.getPosition(), posStop1 = stop1.getPosition();
+        Index start2 = getLast().getStop(), stop2 = getStop();
+        int posStart2 = start2.getPosition(), posStop2 = stop2.getPosition();
+
+        if(posStop1 > posStart1) {
+            Token firstToken = new Token(usage, value.substring(0, posStop1 - posStart1)).with(start1, stop1, getSource());
+            tokens.add(firstToken);
+        }
+        for(Token child : children) {
+            tokens.addAll(child.markupBlock());
+        }
+        if(posStop2 > posStart2) {
+            Token secondToken = new Token(usage, value.substring(value.length() - (stop2.getPosition()- start2.getPosition()))).with(start2, stop2, getSource());
+            tokens.add(secondToken);
+        }
+        return tokens;
     }
 
     public String toString() {

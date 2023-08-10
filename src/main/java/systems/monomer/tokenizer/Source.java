@@ -24,7 +24,7 @@ public abstract class Source {
         }
 
         public Index getIndex() {
-            return new Index(x, y);
+            return new Index(x, y, position);
         }
 
         public char peek() {
@@ -188,7 +188,7 @@ public abstract class Source {
                     Token lastToken = ret.getLast();
                     if (!(lastToken.getUsage() == Token.Usage.OPERATOR &&
                             OperatorNode.isBreaking(lastToken.getValue()))) {
-                        ret.addSeparator();
+                        ret.add(new Token(Token.Usage.OPERATOR, ";"));
                     }
                 }
             } else if (OperatorNode.signEndDelimiters().contains(peek)) {
@@ -433,13 +433,14 @@ public abstract class Source {
 
     public Line getLine() {
         if (eof()) {
-            Index endpoint = new Index(0, y);
+            Index endpoint = new Index(0, y, getPosition());
             throwParseError(endpoint, endpoint, Token.Usage.GROUP, "",
                     "Unexpected EOF while parsing.\n" +
                             "This may be because of an unclosed parenthesis");
         }
         Line ret = buffer.remove();
         ++y;
+
         if (buffer.isEmpty()) {
             bufferLines(DEFAULT_BUFFER_COUNT);
         }
@@ -474,6 +475,7 @@ public abstract class Source {
     public int getRow() {
         return y + 1;
     }
+    protected abstract int getPosition();
 
     public abstract String getTitle();
 

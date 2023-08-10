@@ -1,7 +1,12 @@
 package systems.monomer;
 
+import systems.monomer.syntaxTree.Node;
+import systems.monomer.tokenizer.Source;
+import systems.monomer.tokenizer.SourceFile;
 import systems.monomer.tokenizer.SourceString;
+import systems.monomer.tokenizer.Token;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -10,8 +15,8 @@ import static systems.monomer.Config.*;
 public class Run {
     public static void main(String[] args) {
         System.out.println();
-        System.exit(
-                checkIDE(args) ||
+        if(!checkIDE(args))
+            System.exit(
                 checkVersionInfo(args) ||
                 checkHelp(args) ||
                 checkCompile(args) ||
@@ -19,9 +24,10 @@ public class Run {
                 checkShell(args) ?
                 0 : -1);
     }
+
     private static boolean checkIDE(String[] args){
         if(args.length == 0) {
-            //TODO
+            MonomerIdle.main(args);
             return true;
         }
         return false;
@@ -35,22 +41,11 @@ public class Run {
     }
     private static boolean checkInterpret(String[] args){
         if(commands.get("int").aliases.contains(args[0])) {
-            //TODO
+            interpret(new File(stripQuotes(args[1])));   //TODO interpret multiple files
             return true;
         }
         return false;
     }
-    public static void interpret(String code) {
-        try {
-            SourceString source = new SourceString(code);
-            source.parse();
-
-
-        } catch (Exception e) {
-
-        }
-    }
-
     private static boolean checkCompile(String[] args){
         if(commands.get("comp").aliases.contains(args[0])) {
             //TODO
@@ -84,6 +79,23 @@ public class Run {
 
     private static String stripQuotes(String path) {
         return path.charAt(0) == '"' || path.charAt(0) == '\'' ? path.substring(1, path.length() - 1) : path;
+    }
+
+    public static void interpret(Source source) {
+        Token body = source.parse();
+        Node node = body.toNode();
+        node.matchVariables();
+        node.matchTypes();
+        node.matchOverloads();
+        node.interpretValue();
+    }
+    public static void interpret(File sourceFile) {
+        Source source = new SourceFile(sourceFile);
+        interpret(source);
+    }
+    public static void interpret(String code) {
+        Source source = new SourceString(code);
+        interpret(source);
     }
 
     private static class CommandInfo {

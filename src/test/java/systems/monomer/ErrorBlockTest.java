@@ -16,7 +16,7 @@ public class ErrorBlockTest {
     @Test
     public void testShortStringSource() {
         SourceString source = new SourceString("y = x + 500x;");
-        Context context = new Context(0, 8, 0, 11, source);
+        Context context = new Context(0, 8, 0, 0, 11, 11, source);
 
         ErrorBlock errorBlock = new ErrorBlock();
         errorBlock.setContext(context);

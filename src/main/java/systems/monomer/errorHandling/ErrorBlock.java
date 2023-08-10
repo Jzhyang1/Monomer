@@ -14,6 +14,17 @@ public class ErrorBlock {
         this.context = new Context(start, stop, source);
     }
 
+    public Source getSource() {
+        return context.getSource();
+    }
+
+    public Index getStart() {
+        return context.getStart();
+    }
+    public Index getStop() {
+        return context.getStop();
+    }
+
     public void throwError(String message) {
         StringBuilder errorMessage = new StringBuilder();
         Source source = context.getSource();

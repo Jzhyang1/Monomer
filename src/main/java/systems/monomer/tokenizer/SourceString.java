@@ -6,6 +6,7 @@ import java.util.List;
 public class SourceString extends Source {
     private String[] value;
     private int lineNumber = 0;
+    private int position = 0;
 
     public SourceString(String value) {
         this.value = value.split("\n");
@@ -22,9 +23,14 @@ public class SourceString extends Source {
     protected void bufferLines(int num) {
         int i = 0;
         while(i < num && lineNumber+i < value.length) {
-            buffer.add(new Line(value[lineNumber+i], lineNumber+i, 0));
+            buffer.add(new Line(value[lineNumber+i], lineNumber+i, position));
             ++i;
+            position += value[lineNumber+i].length();
         }
         lineNumber += i;
+    }
+
+    protected int getPosition() {
+        return position;
     }
 }
