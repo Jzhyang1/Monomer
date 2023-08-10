@@ -10,6 +10,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.io.*;
 import java.util.List;
@@ -265,8 +267,30 @@ public final class Editor extends JFrame {
                 }
             });
 
-            // if down and it's the last line, go to the end of the line
-            // if up and it's the first line, go to the start of the line
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "copy");
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK), "paste_asdf");
+
+            actionMap.put("copy", new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    Action.getAction("Copy").action.run();
+                }
+            });
+
+            actionMap.put("paste_asdf", new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    Action.getAction("Paste").action.run();
+                }
+            });
+
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK), "cut");
+            actionMap.put("cut", new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    Action.getAction("Cut").action.run();
+                }
+            });
 
             this.contents.getDocument().addUndoableEditListener((event) -> {
                 undoManager.addEdit(event.getEdit());
@@ -317,11 +341,16 @@ public final class Editor extends JFrame {
 
         private void color() {
             try {
-                final List<Token> tokens = new SourceString(contents.getText()).parse().markupBlock();
+                String text = contents.getText().replace("\r\n", "\n");
+                final List<Token> tokens = new SourceString(text).parse().markupBlock();
                 SwingUtilities.invokeLater(() -> {
                     for (Token token : tokens) {
-                        syntaxHighlight(token.getStart().getPosition(), token.getStop().getPosition(),
-                                Editor.getColorFor(token.getUsage()));
+                        try {
+                            syntaxHighlight(token.getStart().getPosition(), token.getStop().getPosition(),
+                                    Editor.getColorFor(token.getUsage()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             } catch (Exception e) {
@@ -553,11 +582,47 @@ public final class Editor extends JFrame {
                 }),
                 new Action("Cut", () -> {
                     Tab tab = getSelectedTab();
-                    tab.contents.cut();
+                    if (tab.contents.getSelectedText() == null) {
+                        int caret = tab.contents.getCaretPosition();
+                        int start = caret;
+                        int end = caret;
+                        String text = tab.contents.getText().replaceAll("\r", "");
+                        while (start > 0 && text.charAt(start - 1) != '\n') {
+                            start--;
+                        }
+                        while (end < text.length() && text.charAt(end) != '\n') {
+                            end++;
+                        }
+                        tab.contents.select(start, end);
+                    }
+                    String text = tab.contents.getSelectedText();
+                    StringSelection selection = new StringSelection(text);
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clipboard.setContents(selection, selection);
+                    tab.contents.replaceSelection("");
                 }),
                 new Action("Copy", () -> {
                     Tab tab = getSelectedTab();
-                    tab.contents.copy();
+                    if (tab.contents.getSelectedText() == null) {
+                        // transfer the current line to the clipboard
+                        int caret = tab.contents.getCaretPosition();
+                        int start = caret;
+                        int end = caret;
+                        String text = tab.contents.getText().replaceAll("\r", "");
+                        while (start > 0 && text.charAt(start - 1) != '\n') {
+                            start--;
+                        }
+                        while (end < text.length() && text.charAt(end) != '\n') {
+                            end++;
+                        }
+                        tab.contents.select(start, end);
+                    }
+                    // get the selected text
+                    String text = tab.contents.getSelectedText();
+                    // put the selected text on the clipboard
+                    StringSelection selection = new StringSelection(text);
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clipboard.setContents(selection, selection);
                 }),
                 new Action("Paste", () -> {
                     Tab tab = getSelectedTab();
@@ -890,10 +955,12 @@ public final class Editor extends JFrame {
 
         JMenuItem copy = new JMenuItem("Copy");
         copy.addActionListener(Action.getAction("Copy").asActionListener());
+        copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
         editMenu.add(copy);
 
         JMenuItem paste = new JMenuItem("Paste");
         paste.addActionListener(Action.getAction("Paste").asActionListener());
+        paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
         editMenu.add(paste);
 
         JMenuItem selectAll = new JMenuItem("Select All");
