@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import LargeText from "./LargeText";
 import Modal from "react-modal";
 import { ThemeContext } from "../contexts";
+import Link from "./Link";
 
 export default function Box({
   title,
@@ -9,11 +10,12 @@ export default function Box({
   children,
   expand,
   className,
+  link,
   ...props
 }) {
   const [isExpanded, setExpanded] = useState(false);
 
-  return expand ? (
+  const expandView = expand ? (
     <>
       <div onClick={() => setExpanded(true)}>
         <BoxContent
@@ -60,6 +62,8 @@ export default function Box({
       {...props}
     />
   );
+
+  return link ? <Link href={link}>{expandView}</Link> : expandView;
 }
 
 export function BoxContent({ className, header, title, children, ...props }) {
