@@ -1,8 +1,6 @@
 package systems.monomer;
 
 import lombok.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -12,8 +10,8 @@ import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -674,7 +672,7 @@ public final class Editor extends JFrame {
                             lineStart--;
                         }
                         String str = tab.contents.getText().substring(lineStart, caretPosition);
-                        if (str.contains("//"))
+                        if (str.contains("\\\\"))
                             tab.contents.replaceRange(str.replace("\\\\", ""), lineStart, caretPosition);
                         else
                             tab.contents.replaceRange("\\\\" + str, lineStart, caretPosition);
