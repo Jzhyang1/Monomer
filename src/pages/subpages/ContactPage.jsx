@@ -185,15 +185,13 @@ function ContactBox({ contact }) {
       }
       title={title}
       expand={
-        <Link href={link}>
-          <BoxContent
-            className={
-              "rounded-lg p-[20px] md:p-[50px] w-full font-thin border-[2px] " +
-              (isDarkMode
-                ? "bg-slate-600 text-white"
-                : "bg-slate-100 text-black")
-            }
-            header={
+        <BoxContent
+          className={
+            "rounded-lg p-[20px] md:p-[50px] w-full font-thin border-[2px] " +
+            (isDarkMode ? "bg-slate-600 text-white" : "bg-slate-100 text-black")
+          }
+          header={
+            <Link href={link}>
               <div className="flex justify-center">
                 <Image
                   src={image}
@@ -204,21 +202,23 @@ function ContactBox({ contact }) {
                   }
                 />
               </div>
-            }
-            title={title}
-          >
-            <div className="text-sm">{creds}</div>
-            <div className="uppercase text-xl mb-2">{desc}</div>
-            <List className="text-base">
-              {links.map(({ title, link }, i) =>
-                link ? <Link href={link}>{title}</Link> : title
-              )}
-            </List>
+            </Link>
+          }
+          title={<Link href={link}>{title}</Link>}
+        >
+          <div className="text-sm">{creds}</div>
+          <div className="uppercase text-xl mb-2">{desc}</div>
+          <List className="text-base">
+            {links.map(({ title, link }, i) =>
+              link ? <Link href={link}>{title}</Link> : title
+            )}
+          </List>
+          {tasks && (
             <div className="mt-1 border-[1px] border-slate-400">
               <List className="text-base">{tasks}</List>
             </div>
-          </BoxContent>
-        </Link>
+          )}
+        </BoxContent>
       }
     >
       <div>
