@@ -1,11 +1,15 @@
 package systems.monomer;
 
 import lombok.*;
+import systems.monomer.tokenizer.SourceString;
+import systems.monomer.tokenizer.Token;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.*;
@@ -18,6 +22,38 @@ import java.util.stream.Collectors;
 public final class Editor extends JFrame {
 
     private static Editor editor;
+    private static final Highlighter.HighlightPainter RED = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#e06c75"));
+    private static final Highlighter.HighlightPainter GREEN = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#98c379"));
+    private static final Highlighter.HighlightPainter YELLOW = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#e5c07b"));
+    private static final Highlighter.HighlightPainter BLUE = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#61afef"));
+    private static final Highlighter.HighlightPainter PURPLE = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#c678dd"));
+    private static final Highlighter.HighlightPainter ORANGE = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#d19a66"));
+    private static final Highlighter.HighlightPainter GRAY = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#abb2bf"));
+    private static final Highlighter.HighlightPainter CYAN = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#56b6c2"));
+    private static Highlighter.HighlightPainter getPainterFor(Token.Usage usage) {
+        if (usage == null) return GRAY;
+        switch (usage) {
+            case IDENTIFIER -> {
+                return ORANGE;
+            }
+            case OPERATOR -> {
+                return PURPLE;
+            }
+            case STRING, STRING_BUILDER -> {
+                return GREEN;
+            }
+            case CHARACTER, CHARACTER_FROM_INT -> {
+                return YELLOW;
+            }
+            case INTEGER, FLOAT -> {
+                return RED;
+            }
+            case GROUP -> {
+                return BLUE;
+            }
+        }
+        return GRAY;
+    }
 
     public interface TabSource {
 
@@ -162,6 +198,7 @@ public final class Editor extends JFrame {
                     if (editedSinceLastSave) return;
                     editedSinceLastSave = true;
                     editor.refreshTab(Tab.this);
+                    color();
                 }
 
                 @Override
@@ -250,6 +287,19 @@ public final class Editor extends JFrame {
                 return "*" + source.getName();
             }
             return source.getName();
+        }
+
+        private void color() {
+            Highlighter highlighter = contents.getHighlighter();
+            List<Token> tokens = new SourceString(contents.getText()).parse().markupBlock();
+            highlighter.removeAllHighlights();
+            for (Token token : tokens) {
+                try {
+                    highlighter.addHighlight(token.getStart().getPosition(), token.getStop().getPosition(), Editor.getPainterFor(token.getUsage()));
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         public void save() {
