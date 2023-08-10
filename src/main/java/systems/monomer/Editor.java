@@ -1,6 +1,8 @@
 package systems.monomer;
 
 import lombok.*;
+import org.mozilla.universalchardet.ReaderFactory;
+import org.mozilla.universalchardet.UniversalDetector;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
 
@@ -14,22 +16,24 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.*;
+import java.util.Timer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public final class Editor extends JFrame {
 
     private static Editor editor;
-    private static final Color RED =    (Color.decode("#e06c75"));
-    private static final Color GREEN =  (Color.decode("#98c379"));
+    private static final Color RED = (Color.decode("#e06c75"));
+    private static final Color GREEN = (Color.decode("#98c379"));
     private static final Color YELLOW = (Color.decode("#e5c07b"));
-    private static final Color BLUE =   (Color.decode("#61afef"));
+    private static final Color BLUE = (Color.decode("#61afef"));
     private static final Color PURPLE = (Color.decode("#c678dd"));
     private static final Color ORANGE = (Color.decode("#d19a66"));
-    private static final Color GRAY =   (Color.decode("#abb2bf"));
-    private static final Color CYAN =   (Color.decode("#56b6c2"));
+    private static final Color GRAY = (Color.decode("#abb2bf"));
+    private static final Color CYAN = (Color.decode("#56b6c2"));
 
     private static final Color[] COLORS = {RED, GREEN, YELLOW, BLUE, PURPLE, ORANGE, GRAY, CYAN};
 
@@ -73,6 +77,7 @@ public final class Editor extends JFrame {
         String getContents();
 
         void setContents(String contents);
+        String desc();
     }
 
 
@@ -103,13 +108,14 @@ public final class Editor extends JFrame {
         @SneakyThrows
         public String getContents() {
             if (contents != null) return contents;
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            BufferedReader reader = ReaderFactory.createBufferedReader(file);
             StringBuilder builder = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
                 builder.append("\n");
             }
+            reader.close();
             return (contents = builder.toString());
         }
 
@@ -124,6 +130,21 @@ public final class Editor extends JFrame {
                 e.printStackTrace();
             }
         }
+
+        private String calculatedEncoding = null;
+
+        @SneakyThrows
+        @Override
+        public String desc() {
+            if (calculatedEncoding == null) {
+                // file <encoding>
+                calculatedEncoding = UniversalDetector.detectCharset(file);
+                if (calculatedEncoding == null) {
+                    calculatedEncoding = "utf-8";
+                }
+            }
+            return "file " + calculatedEncoding;
+        }
     }
 
     @Getter
@@ -136,6 +157,10 @@ public final class Editor extends JFrame {
         @Override
         public void setName(String name) {
             this.name = name;
+        }
+        @Override
+        public String desc() {
+            return "virtual";
         }
     }
 
@@ -182,6 +207,11 @@ public final class Editor extends JFrame {
         public FileTabSource transform() {
             return fileTabSource;
         }
+
+        @Override
+        public String desc() {
+            return "new (virtual)";
+        }
     }
 
     static class Tab extends JPanel {
@@ -189,6 +219,7 @@ public final class Editor extends JFrame {
         private final JTextPane contents;
         private final UndoManager undoManager = new UndoManager();
         private boolean editedSinceLastSave = false;
+        private boolean editedSinceLastColor = false;
 
         public Tab(TabSource source) {
             this.source = source;
@@ -203,8 +234,9 @@ public final class Editor extends JFrame {
                     if (e.getType() == DocumentEvent.EventType.CHANGE && e instanceof DefaultStyledDocument.AttributeUndoableEdit) {
                         return; // coloring
                     }
-                    color();
-                    repaint();
+                    if (!editedSinceLastColor) {
+                        editedSinceLastColor = true;
+                    }
                     if (editedSinceLastSave) return;
                     editedSinceLastSave = true;
                     editor.refreshTab(Tab.this);
@@ -300,7 +332,7 @@ public final class Editor extends JFrame {
             this.add(new JScrollPane(contents), BorderLayout.CENTER);
 
             Box box = Box.createHorizontalBox();
-            JLabel location = new JLabel("    1:1 / length: 0");
+            JLabel location = new JLabel("    1:1 / 0 / length: 0 / " + source.desc());
 
             contents.addCaretListener((event) -> {
                 if (contents.getSelectedText() == null) {
@@ -308,7 +340,8 @@ public final class Editor extends JFrame {
                     int row = 0, col = 0;
                     row = getLineOfOffset(pos);
                     col = pos - getLineStartOffset(row);
-                    location.setText("    " + (row + 1) + ":" + (col + 1) + " / length: " + contents.getText().length());
+                    location.setText("    " + (row + 1) + ":" + (col + 1) + " / " + pos + " / length: " + contents.getText().length()
+                    + " / " + this.source.desc());
                 } else {
                     int start = contents.getSelectionStart();
                     int end = contents.getSelectionEnd();
@@ -324,7 +357,8 @@ public final class Editor extends JFrame {
                     } else {
                         s = " (" + selectionLength + " chars)";
                     }
-                    location.setText("    " + (startRow + 1) + ":" + (startCol + 1) + " - " + (endRow + 1) + ":" + (endCol + 1) + s + " / length: " + contents.getText().length());
+                    location.setText("    " + (startRow + 1) + ":" + (startCol + 1) + " - " + (endRow + 1) + ":" + (endCol + 1) + s + " / " + contents.getCaretPosition() + " / length: " + contents.getText().length()
+                            + " / " + this.source.desc());
                 }
             });
             contents.getDocument().putProperty(PlainDocument.tabSizeAttribute, Config.TAB_SIZE);
@@ -340,6 +374,8 @@ public final class Editor extends JFrame {
         }
 
         private void color() {
+            if (!editedSinceLastColor) return;
+            editedSinceLastColor = false;
             try {
                 String text = contents.getText().replace("\r\n", "\n");
                 final List<Token> tokens = new SourceString(text).parse().markupBlock();
@@ -361,7 +397,7 @@ public final class Editor extends JFrame {
         private static final Map<Color, AttributeSet> COLOR_ATTRIBUTE_SET_HASH_MAP = new HashMap<>();
 
         static {
-            for (Color color: Editor.COLORS) {
+            for (Color color : Editor.COLORS) {
                 StyleContext sc = StyleContext.getDefaultStyleContext();
                 AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
                 aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
@@ -424,6 +460,18 @@ public final class Editor extends JFrame {
         this.add(display);
         populateActions();
         populateMenu();
+
+        TimerTask a = new TimerTask() {
+            @Override
+            public void run() {
+                if (!hasAnyTabs()) return;
+                Tab t = getSelectedTab();
+                t.color();
+                t.repaint();
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(a, 0, 1000);
     }
 
     private void createDisplayPanel() {
