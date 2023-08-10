@@ -148,6 +148,7 @@ public abstract class Source {
 
     public Token parseBlock() {
         Token ret = new Token(Token.Usage.GROUP, "block");
+        Index start = line.getIndex();
         int startingSpaces = line.startingSpaces();
 
         do {
@@ -199,6 +200,7 @@ public abstract class Source {
             }
         } while (!(eof() && line.eol()));
 
+        ret.setContext(start, line.getIndex(), this);
         return ret;
     }
     public Token parse() {

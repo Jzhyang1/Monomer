@@ -246,6 +246,8 @@ public class Token extends ErrorBlock {
     }
 
     public List<Token> markupBlock() {
+        if(children.isEmpty()) return List.of(this);
+
         List<Token> tokens = new ArrayList<>();
         Index start1 = getStart(), stop1 = getFirst().getStart();
         int posStart1 = start1.getPosition(), posStop1 = stop1.getPosition();
