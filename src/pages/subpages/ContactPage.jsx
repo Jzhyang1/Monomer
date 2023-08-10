@@ -1,4 +1,4 @@
-import Box from "../../components/Box";
+import Box, { BoxContent } from "../../components/Box";
 import Image from "../../components/Image";
 import List from "../../components/List";
 import Title from "../../components/Title";
@@ -49,6 +49,14 @@ const contacts = [
     link: "http://jzhyang1.github.io",
     creds: "Seven Lakes High School",
     desc: "founder",
+    tasks: [
+      "main developer for MERL",
+      "planning and management",
+      "documentation",
+      "CLI",
+      "tokenization",
+      "web development",
+    ],
     links: [
       {
         title: "jzhyang1@gmail.com",
@@ -62,6 +70,7 @@ const contacts = [
     creds: "Seven Lakes High School",
     link: "",
     desc: "developer",
+    tasks: ["developer for MERL", "syntax tree", "interpreter"],
     links: [],
     important: true,
   },
@@ -71,6 +80,7 @@ const contacts = [
     creds: "University of Texas at Austin",
     link: "",
     desc: "developer",
+    tasks: ["error handling"],
     links: [],
     important: true,
   },
@@ -80,6 +90,7 @@ const contacts = [
     creds: "Massachusetts Institute of Technology",
     link: "",
     desc: "commentator",
+    tasks: [],
     links: [],
     important: true,
   },
@@ -88,7 +99,8 @@ const contacts = [
     image: "https://avatars.githubusercontent.com/u/80986485?s=64&v=4",
     creds: "Seven Lakes High School",
     link: "",
-    desc: "commentator",
+    desc: "developer",
+    tasks: ["IDE"],
     links: [],
     important: true,
   },
@@ -98,6 +110,7 @@ const contacts = [
     creds: "Seven Lakes High School",
     link: "",
     desc: "commentator",
+    tasks: [],
     links: [],
     important: true,
   },
@@ -107,6 +120,7 @@ const contacts = [
     creds: "Seven Lakes High School",
     link: "",
     desc: "commentator",
+    tasks: [],
     links: [],
     important: true,
   },
@@ -116,6 +130,7 @@ const contacts = [
     creds: "Seven Lakes High School",
     link: "",
     desc: "web developer",
+    tasks: ["dark mode"],
     links: [],
     important: true,
   },
@@ -143,7 +158,7 @@ export default function ContactPage() {
 function ContactBox({ contact }) {
   const { isDarkMode } = useContext(ThemeContext);
   //TODO make ContactBox pop out when clicked on
-  const { title, creds, link, image, desc, links, important } = contact;
+  const { title, creds, link, image, desc, links, important, tasks } = contact;
   return (
     <Box
       className={
@@ -169,7 +184,42 @@ function ContactBox({ contact }) {
         </div>
       }
       title={title}
-      expand
+      expand={
+        <Link href={link}>
+          <BoxContent
+            className={
+              "rounded-lg p-[20px] md:p-[50px] w-full font-thin border-[2px] " +
+              (isDarkMode
+                ? "bg-slate-600 text-white"
+                : "bg-slate-100 text-black")
+            }
+            header={
+              <div className="flex justify-center">
+                <Image
+                  src={image}
+                  alt={title}
+                  className={
+                    "border-[2px] rounded-full object-cover h-[200px] w-[200px] " +
+                    (isDarkMode ? "border-blue-800" : "border-slate-200")
+                  }
+                />
+              </div>
+            }
+            title={title}
+          >
+            <div className="text-sm">{creds}</div>
+            <div className="uppercase text-xl mb-2">{desc}</div>
+            <List className="text-base">
+              {links.map(({ title, link }, i) =>
+                link ? <Link href={link}>{title}</Link> : title
+              )}
+            </List>
+            <div className="mt-1 border-[1px] border-slate-400">
+              <List className="text-base">{tasks}</List>
+            </div>
+          </BoxContent>
+        </Link>
+      }
     >
       <div>
         <small>{creds}</small>
