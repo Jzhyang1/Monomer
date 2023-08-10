@@ -1,5 +1,6 @@
 package systems.monomer.tokenizer;
 
+import systems.monomer.Config;
 import systems.monomer.errorHandling.Index;
 import systems.monomer.syntaxTree.OperatorNode;
 
@@ -7,10 +8,9 @@ import java.util.*;
 
 public abstract class Source {
     public static class Line {
-        public static final int TAB = 4;
         public static final Map<Character, Integer> SPACE_CHARS = new HashMap<>() {{
             put(' ', 1);
-            put('\t', TAB);
+            put('\t', Config.TAB_SIZE);
         }};
 
         private String line;
@@ -177,7 +177,9 @@ public abstract class Source {
                 line.get();
 
                 //new line
-                nextLine();
+                do {
+                    nextLine();
+                } while (!eof() && line.allSpaces());
                 int nextStarting = line.startingSpaces();
 
                 if (nextStarting > startingSpaces) {
@@ -221,7 +223,7 @@ public abstract class Source {
 
         char delim = line.get();
         int initialStartingSpaces = line.startingSpaces();
-        int startingSpaces = initialStartingSpaces + Line.TAB;
+        int startingSpaces = initialStartingSpaces + Config.TAB_SIZE;
 
         Token ret = new Token(Token.Usage.STRING_BUILDER);
         StringBuilder strbuild = new StringBuilder();
@@ -326,7 +328,8 @@ public abstract class Source {
         }
 
         line.get();
-        if (!strbuild.isEmpty()) ret.add(new Token(Token.Usage.STRING, strbuild.toString()).with(currentStartingIndex, line.getIndex(), this));
+        if (!strbuild.isEmpty())
+            ret.add(new Token(Token.Usage.STRING, strbuild.toString()).with(currentStartingIndex, line.getIndex(), this));
         return ret.with(lineStartingIndex, line.getIndex(), this);
     }
 

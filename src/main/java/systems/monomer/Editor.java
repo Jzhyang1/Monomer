@@ -327,7 +327,7 @@ public final class Editor extends JFrame {
                     location.setText("    " + (startRow + 1) + ":" + (startCol + 1) + " - " + (endRow + 1) + ":" + (endCol + 1) + s + " / length: " + contents.getText().length());
                 }
             });
-            contents.getDocument().putProperty(PlainDocument.tabSizeAttribute, 4);
+            contents.getDocument().putProperty(PlainDocument.tabSizeAttribute, Config.TAB_SIZE);
             box.add(location);
             this.add(box, BorderLayout.SOUTH);
         }

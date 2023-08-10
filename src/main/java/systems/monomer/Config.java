@@ -7,4 +7,5 @@ public class Config {
      * REVISION - Stores the version's revision number (ie bug fixes)
      */
     public static final int MAJOR = 1, MINOR = 0, REVISION = 0;
+    public static final int TAB_SIZE = 4;
 }
