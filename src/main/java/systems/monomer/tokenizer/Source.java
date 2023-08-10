@@ -14,11 +14,13 @@ public abstract class Source {
         }};
 
         private String line;
+        private int position;
         private int x = 0, y;
 
-        public Line(String line, int y) {
+        public Line(String line, int y, int position) {
             this.line = line + "\n";
             this.y = y;
+            this.position = position;
         }
 
         public Index getIndex() {
@@ -30,15 +32,18 @@ public abstract class Source {
         }
 
         public char get() {
+            ++position;
             return line.charAt(x++);
         }
 
         public String get(int num) {
             x += num;
+            position += num;
             return line.substring(x - num, x);
         }
 
         public void unget() {
+            --position;
             --x;
         }
 
@@ -60,9 +65,8 @@ public abstract class Source {
          */
         public int skipSpaces() {
             int spaces = 0;
-            while (SPACE_CHARS.containsKey(line.charAt(x))) {
-                spaces += SPACE_CHARS.get(line.charAt(x));
-                ++x;
+            while (SPACE_CHARS.containsKey(peek())) {
+                spaces += SPACE_CHARS.get(get());
             }
             return spaces;
         }
@@ -73,12 +77,12 @@ public abstract class Source {
          */
         public int skipSpaces(int num) {
             int spaces = 0;
-            while (SPACE_CHARS.containsKey(line.charAt(x))) {
-                int add = SPACE_CHARS.get(line.charAt(x));
+            while (SPACE_CHARS.containsKey(peek())) {
+                int add = SPACE_CHARS.get(peek());
                 if (spaces + add > num) break;
 
                 spaces += add;
-                ++x;
+                get();
             }
             return spaces;
         }
@@ -99,13 +103,17 @@ public abstract class Source {
                 }
             }
 
-            if (bestOption != null) x += bestOption.length();
+            if (bestOption != null) {
+                x += bestOption.length();
+                position += bestOption.length();
+            }
             return bestOption;
         }
 
         public boolean matchNext(String next) {
             if (isNext(next)) {
                 x += next.length();
+                position += next.length();
                 return true;
             }
             return false;
@@ -119,6 +127,7 @@ public abstract class Source {
          * sets the pointer to the newline
          */
         public void toEnd() {
+            position += line.length() - 1 - x;
             x = line.length() - 1;
         }
 

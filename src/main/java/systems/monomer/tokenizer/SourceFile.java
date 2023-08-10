@@ -8,6 +8,7 @@ public class SourceFile extends Source {
     private BufferedReader reader;
     private File file;
     private String fileName;
+    private int position = 0;
     private int lineNumber = 0;
 
     public SourceFile(String path) {
@@ -53,9 +54,11 @@ public class SourceFile extends Source {
             for (int i = 0; i < num; ++i) {
                 String nextLine = reader.readLine();
                 if(nextLine == null) {
-                    break;  //TODO eof
+                    num = i;
+                    break;
                 }
-                buffer.add(new Line(nextLine, lineNumber + i));
+                buffer.add(new Line(nextLine, lineNumber + i, position));
+                position += nextLine.length();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
