@@ -7,9 +7,7 @@ import systems.monomer.tokenizer.Token;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Highlighter;
+import javax.swing.text.*;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.*;
@@ -22,15 +20,18 @@ import java.util.stream.Collectors;
 public final class Editor extends JFrame {
 
     private static Editor editor;
-    private static final Highlighter.HighlightPainter RED = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#e06c75"));
-    private static final Highlighter.HighlightPainter GREEN = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#98c379"));
-    private static final Highlighter.HighlightPainter YELLOW = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#e5c07b"));
-    private static final Highlighter.HighlightPainter BLUE = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#61afef"));
-    private static final Highlighter.HighlightPainter PURPLE = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#c678dd"));
-    private static final Highlighter.HighlightPainter ORANGE = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#d19a66"));
-    private static final Highlighter.HighlightPainter GRAY = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#abb2bf"));
-    private static final Highlighter.HighlightPainter CYAN = new DefaultHighlighter.DefaultHighlightPainter(Color.decode("#56b6c2"));
-    private static Highlighter.HighlightPainter getPainterFor(Token.Usage usage) {
+    private static final Color RED =    (Color.decode("#e06c75"));
+    private static final Color GREEN =  (Color.decode("#98c379"));
+    private static final Color YELLOW = (Color.decode("#e5c07b"));
+    private static final Color BLUE =   (Color.decode("#61afef"));
+    private static final Color PURPLE = (Color.decode("#c678dd"));
+    private static final Color ORANGE = (Color.decode("#d19a66"));
+    private static final Color GRAY =   (Color.decode("#abb2bf"));
+    private static final Color CYAN =   (Color.decode("#56b6c2"));
+
+    private static final Color[] COLORS = {RED, GREEN, YELLOW, BLUE, PURPLE, ORANGE, GRAY, CYAN};
+
+    private static Color getColorFor(Token.Usage usage) {
         if (usage == null) return GRAY;
         switch (usage) {
             case IDENTIFIER -> {
@@ -183,37 +184,43 @@ public final class Editor extends JFrame {
 
     static class Tab extends JPanel {
         private TabSource source;
-        private final JTextArea contents;
+        private final JTextPane contents;
         private final UndoManager undoManager = new UndoManager();
         private boolean editedSinceLastSave = false;
 
         public Tab(TabSource source) {
             this.source = source;
             boolean isEditable = source.isEditable();
-            this.contents = new JTextArea(source.getContents());
+            this.contents = new JTextPane();
+            this.contents.setFont(new Font("Consolas", Font.PLAIN, 14));
+            this.contents.setText(source.getContents());
             this.contents.setEditable(isEditable);
 
             this.contents.getDocument().addDocumentListener(new DocumentListener() {
-                private void update() {
+                private void update(DocumentEvent e) {
+                    if (e.getType() == DocumentEvent.EventType.CHANGE && e instanceof DefaultStyledDocument.AttributeUndoableEdit) {
+                        return; // coloring
+                    }
+                    color();
+                    repaint();
                     if (editedSinceLastSave) return;
                     editedSinceLastSave = true;
                     editor.refreshTab(Tab.this);
-                    color();
                 }
 
                 @Override
                 public void insertUpdate(DocumentEvent e) {
-                    update();
+                    update(e);
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
-                    update();
+                    update(e);
                 }
 
                 @Override
                 public void changedUpdate(DocumentEvent e) {
-                    update();
+
                 }
             });
 
@@ -226,16 +233,17 @@ public final class Editor extends JFrame {
                 public void actionPerformed(ActionEvent arg0) {
                     int pos = contents.getCaretPosition();
                     int lineStart = 0;
-                    try {
-                        lineStart = contents.getLineStartOffset(contents.getLineOfOffset(pos));
-                    } catch (BadLocationException ex) {
-                        ex.printStackTrace();
-                    }
-                    String line = contents.getText().substring(lineStart, pos);
+                    lineStart = getLineStartOffset(getLineOfOffset(pos));
+                    String line = contents.getText().replace("\r\n", "\n").substring(lineStart, pos);
                     int tabs = 0;
                     while (tabs < line.length() && line.charAt(tabs) == '\t') tabs++;
-                    contents.insert("\n", pos);
-                    contents.insert("\t".repeat(tabs), pos + 1);
+                    System.out.println(tabs);
+                    try {
+                        contents.getDocument().insertString(pos, "\n", null);
+                        contents.getDocument().insertString(pos + 1, "\t".repeat(tabs), null);
+                    } catch (BadLocationException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
 
@@ -246,7 +254,11 @@ public final class Editor extends JFrame {
                 public void actionPerformed(ActionEvent arg0) {
                     if (contents.getSelectedText() == null) {
                         int pos = contents.getCaretPosition();
-                        contents.insert("\t", pos);
+                        try {
+                            contents.getDocument().insertString(pos, "\t", null);
+                        } catch (BadLocationException e) {
+                            throw new RuntimeException(e);
+                        }
                     } else {
                         Action.getAction("Indent").action.run();
                     }
@@ -267,17 +279,31 @@ public final class Editor extends JFrame {
             JLabel location = new JLabel("    1:1 / length: 0");
 
             contents.addCaretListener((event) -> {
-                int pos = contents.getCaretPosition();
-                int row = 0, col = 0;
-                try {
-                    row = contents.getLineOfOffset(pos);
-                    col = pos - contents.getLineStartOffset(row);
-                } catch (BadLocationException e) {
-                    e.printStackTrace();
+                if (contents.getSelectedText() == null) {
+                    int pos = contents.getCaretPosition();
+                    int row = 0, col = 0;
+                    row = getLineOfOffset(pos);
+                    col = pos - getLineStartOffset(row);
+                    location.setText("    " + (row + 1) + ":" + (col + 1) + " / length: " + contents.getText().length());
+                } else {
+                    int start = contents.getSelectionStart();
+                    int end = contents.getSelectionEnd();
+                    int startRow = 0, startCol = 0, endRow = 0, endCol = 0;
+                    startRow = getLineOfOffset(start);
+                    startCol = start - getLineStartOffset(startRow);
+                    endRow = getLineOfOffset(end);
+                    endCol = end - getLineStartOffset(endRow);
+                    int selectionLength = end - start;
+                    String s;
+                    if (selectionLength == 1) {
+                        s = " (1 char)";
+                    } else {
+                        s = " (" + selectionLength + " chars)";
+                    }
+                    location.setText("    " + (startRow + 1) + ":" + (startCol + 1) + " - " + (endRow + 1) + ":" + (endCol + 1) + s + " / length: " + contents.getText().length());
                 }
-                location.setText("    " + (row + 1) + ":" + (col + 1) + " / length: " + contents.getText().length());
             });
-            contents.setTabSize(4);
+            contents.getDocument().putProperty(PlainDocument.tabSizeAttribute, 4);
             box.add(location);
             this.add(box, BorderLayout.SOUTH);
         }
@@ -290,17 +316,36 @@ public final class Editor extends JFrame {
         }
 
         private void color() {
-            Highlighter highlighter = contents.getHighlighter();
-            List<Token> tokens = new SourceString(contents.getText()).parse().markupBlock();
-            highlighter.removeAllHighlights();
-            for (Token token : tokens) {
-                try {
-                    highlighter.addHighlight(token.getStart().getPosition(), token.getStop().getPosition(), Editor.getPainterFor(token.getUsage()));
-                } catch (BadLocationException e) {
-                    e.printStackTrace();
-                }
+            try {
+                final List<Token> tokens = new SourceString(contents.getText()).parse().markupBlock();
+                SwingUtilities.invokeLater(() -> {
+                    for (Token token : tokens) {
+                        syntaxHighlight(token.getStart().getPosition(), token.getStop().getPosition(),
+                                Editor.getColorFor(token.getUsage()));
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+
+        private static final Map<Color, AttributeSet> COLOR_ATTRIBUTE_SET_HASH_MAP = new HashMap<>();
+
+        static {
+            for (Color color: Editor.COLORS) {
+                StyleContext sc = StyleContext.getDefaultStyleContext();
+                AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
+                aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+                COLOR_ATTRIBUTE_SET_HASH_MAP.put(color, aset);
+            }
+        }
+
+        private void syntaxHighlight(int start, int end, Color color) {
+            System.out.println("highlighting " + start + " to " + end + " as " + color);
+            AttributeSet aset = COLOR_ATTRIBUTE_SET_HASH_MAP.get(color);
+            contents.getStyledDocument().setCharacterAttributes(start, end - start, aset, false);
+        }
+
 
         public void save() {
             source.setContents(contents.getText());
@@ -308,6 +353,26 @@ public final class Editor extends JFrame {
                 source = ((NewTabSource) source).transform();
             }
             this.editedSinceLastSave = false;
+        }
+
+        public int getLineStartOffset(int line) {
+            Element map = contents.getDocument().getDefaultRootElement();
+            Element lineElem = map.getElement(line);
+            return lineElem.getStartOffset();
+        }
+
+        public int getLineOfOffset(int offset) {
+            Element map = contents.getDocument().getDefaultRootElement();
+            return map.getElementIndex(offset);
+        }
+
+        public void replaceRange(String str, int start, int end) {
+            try {
+                contents.getDocument().remove(start, end - start);
+                contents.getDocument().insertString(start, str, null);
+            } catch (BadLocationException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }
@@ -382,10 +447,23 @@ public final class Editor extends JFrame {
         tabbedPane.setToolTipTextAt(index, tab.source.getToolTipText());
     }
 
-    @Data
+    @Getter
     static class Action {
         private final String name;
         private final Runnable action;
+
+        Action(String name, Runnable action) {
+            this.name = name;
+            this.action = () -> {
+                try {
+                    action.run();
+                } catch (IndexOutOfBoundsException e) {
+                    JOptionPane.showMessageDialog(editor, "This action requires a tab to be selected.", "No tab selected", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            };
+        }
 
         public ActionListener asActionListener() {
             return (e) -> action.run();
@@ -526,6 +604,7 @@ public final class Editor extends JFrame {
                 new Action("Replace", () -> {
                     Tab tab = getSelectedTab();
                     JDialog dialog = new JDialog(this, "Replace", true);
+                    dialog.setLocationRelativeTo(this);
                     JPanel panel = new JPanel();
                     dialog.setContentPane(panel);
                     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -652,7 +731,7 @@ public final class Editor extends JFrame {
 
                     boolean hasSelection = tab.contents.getSelectedText() != null;
                     if (!hasSelection) {
-                        str = tab.contents.getText();
+                        str = tab.contents.getText().replace("\r", "");
                         String[] lines = str.split("\n");
                         lines = Arrays.stream(lines)
                                 .map(line -> "\t" + line)
@@ -662,16 +741,17 @@ public final class Editor extends JFrame {
                     } else {
                         int start = tab.contents.getSelectionStart();
                         int lineStart = start;
-                        while (lineStart > 0 && tab.contents.getText().charAt(lineStart - 1) != '\n') {
+                        String text = tab.contents.getText().replace("\r", "");
+                        while (lineStart > 0 && text.charAt(lineStart - 1) != '\n') {
                             lineStart--;
                         }
-                        str = tab.contents.getText().substring(lineStart, tab.contents.getSelectionEnd());
+                        str = text.substring(lineStart, tab.contents.getSelectionEnd());
                         String[] lines = str.split("\n");
                         lines = Arrays.stream(lines)
                                 .map(line -> "\t" + line)
                                 .toArray(String[]::new);
                         String newStr = String.join("\n", lines);
-                        tab.contents.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
+                        tab.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
                     }
                 }),
                 new Action("Dedent", () -> {
@@ -681,8 +761,9 @@ public final class Editor extends JFrame {
                     String str;
 
                     boolean hasSelection = tab.contents.getSelectedText() != null;
+                    String text = tab.contents.getText().replace("\r", "");
                     if (!hasSelection) {
-                        str = tab.contents.getText();
+                        str = text;
                         String[] lines = str.split("\n");
                         for (int i = 0; i < lines.length; i++) {
                             String line = lines[i];
@@ -695,10 +776,10 @@ public final class Editor extends JFrame {
                     } else {
                         int start = tab.contents.getSelectionStart();
                         int lineStart = start;
-                        while (lineStart > 0 && tab.contents.getText().charAt(lineStart - 1) != '\n') {
+                        while (lineStart > 0 && text.charAt(lineStart - 1) != '\n') {
                             lineStart--;
                         }
-                        str = tab.contents.getText().substring(lineStart, tab.contents.getSelectionEnd());
+                        str = text.substring(lineStart, tab.contents.getSelectionEnd());
                         String[] lines = str.split("\n");
                         for (int i = 0; i < lines.length; i++) {
                             String line = lines[i];
@@ -707,7 +788,7 @@ public final class Editor extends JFrame {
                             }
                         }
                         String newStr = String.join("\n", lines);
-                        tab.contents.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
+                        tab.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
                     }
                 }),
                 new Action("Comment", () -> {
@@ -723,9 +804,9 @@ public final class Editor extends JFrame {
                         }
                         String str = tab.contents.getText().substring(lineStart, caretPosition);
                         if (str.contains("\\\\"))
-                            tab.contents.replaceRange(str.replace("\\\\", ""), lineStart, caretPosition);
+                            tab.replaceRange(str.replace("\\\\", ""), lineStart, caretPosition);
                         else
-                            tab.contents.replaceRange("\\\\" + str, lineStart, caretPosition);
+                            tab.replaceRange("\\\\" + str, lineStart, caretPosition);
                     } else {
                         int start = tab.contents.getSelectionStart();
                         int lineStart = start;
@@ -743,7 +824,7 @@ public final class Editor extends JFrame {
                             }
                         }
                         String newStr = String.join("\n", lines);
-                        tab.contents.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
+                        tab.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
                     }
                 })
         );
@@ -865,7 +946,6 @@ public final class Editor extends JFrame {
         about.addActionListener((e) -> {
             JFrame frame = new JFrame("About & Usage");
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setSize(400, 400);
             frame.setLocationRelativeTo(this);
             frame.setVisible(true);
             frame.setLayout(new BorderLayout());
@@ -901,14 +981,15 @@ public final class Editor extends JFrame {
                      - Ctrl+F: Find
                      - Ctrl+R: Replace
                                        
-                    Syntax highlighting is available for Monomer files (*.mm).
+                    Monomer syntax highlighting is provided. 
                                        
                     To run a file, click Run -> Run File (or Shift+F10).
-                    To look at all the actions as a whole, you can click Help -> Find Action (or Ctrl+Shift+A).
+                    To run a specific action, you can click Help -> Find Action (or Ctrl+Shift+A).
                                        
                     """);
             frame.add(textArea, BorderLayout.CENTER);
             frame.revalidate();
+            frame.setResizable(false);
             frame.setSize(756, 618);
         });
         help.add(about);
