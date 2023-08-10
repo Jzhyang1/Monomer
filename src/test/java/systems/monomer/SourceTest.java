@@ -25,6 +25,14 @@ public class SourceTest {
     }
 
     @Test
+    public void testShortStringSourceParse2() {
+        SourceString source = new SourceString("\"Hello World!\"");
+        Token token = source.parse();
+        assertEquals("test parse short string source 2", token.toString(),
+                "GROUP block[STRINGBUILDER null[STRING Hello World!]]");
+    }
+
+    @Test
     public void testLongStringSourceParse() {
         SourceString source = new SourceString(
                 "y = x + 500\n" +

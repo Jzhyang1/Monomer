@@ -61,7 +61,7 @@ public class SourceFile extends Source {
                     break;
                 }
                 buffer.add(new Line(nextLine, lineNumber + i, position));
-                position += nextLine.length();
+                position += nextLine.length() + 1;  //+1 for newline
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
