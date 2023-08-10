@@ -24,7 +24,7 @@ public class SourceString extends Source {
         int i = 0;
         while(i < num && lineNumber+i < value.length) {
             buffer.add(new Line(value[lineNumber+i], lineNumber+i, position));
-            position += value[lineNumber+i].length();
+            position += value[lineNumber+i].length() + 1;   //1 for newline
             ++i;
         }
         lineNumber += i;

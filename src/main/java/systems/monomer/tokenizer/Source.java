@@ -151,7 +151,7 @@ public abstract class Source {
         Index start = line.getIndex();
         int startingSpaces = line.startingSpaces();
 
-        do {
+        while (!(eof() && line.eol())) {
             line.skipSpaces();
             char peek = line.peek();
             if (peek == '\\') {
@@ -173,7 +173,7 @@ public abstract class Source {
                     }
                 }
             } else if (peek == '\n') {
-                if(eof()) break;
+                if (eof()) break;
                 line.get();
 
                 //new line
@@ -189,7 +189,7 @@ public abstract class Source {
                     Token lastToken = ret.getLast();
                     if (!(lastToken.getUsage() == Token.Usage.OPERATOR &&
                             OperatorNode.isBreaking(lastToken.getValue()))) {
-                        ret.add(new Token(Token.Usage.OPERATOR, ";"));
+                        ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
                     }
                 }
             } else if (OperatorNode.signEndDelimiters().contains(peek)) {
@@ -198,11 +198,12 @@ public abstract class Source {
                 //identifier, operator, or number
                 ret.add(parseNext());
             }
-        } while (!(eof() && line.eol()));
+        }
 
         ret.setContext(start, line.getIndex(), this);
         return ret;
     }
+
     public Token parse() {
         nextLine();
         return parseBlock();
@@ -224,11 +225,12 @@ public abstract class Source {
 
         Token ret = new Token(Token.Usage.STRING_BUILDER);
         StringBuilder strbuild = new StringBuilder();
+        Index currentStartingIndex = line.getIndex();
 
         boolean multilineString = line.peek() == '\n';
         if (multilineString) {
             nextLine();
-            startingSpaces = line.skipSpaces();
+            line.skipSpaces(startingSpaces);
         }
 
         while (line.peek() != delim) {
@@ -299,7 +301,8 @@ public abstract class Source {
                     }
                 }
                 case '\n' -> {
-                    if(!multilineString) throwParseError(lineStartingIndex, line.getIndex(), Token.Usage.STRING_BUILDER, "string", "Attempting to spread single line string across multiple lines. \nIf multiple lines are needed, type a newline immediately after the initial quotation mark");
+                    if (!multilineString)
+                        throwParseError(lineStartingIndex, line.getIndex(), Token.Usage.STRING_BUILDER, "string", "Attempting to spread single line string across multiple lines. \nIf multiple lines are needed, type a newline immediately after the initial quotation mark");
 
                     strbuild.append(line.get());
                     line = getLine();
@@ -312,16 +315,19 @@ public abstract class Source {
 
                     if (failEmptyCheck && failTabCheck && failEndCheck) {
                         Index stop = line.getIndex();
-                        if (isEnd) throwParseError(start, stop, Token.Usage.STRING, strbuild.toString(), "End delimiter should have the same amount of tabbing as the line of the start delimiter");
-                        else throwParseError(start, stop, Token.Usage.STRING, strbuild.toString(), "Insufficient spacing for line of string");
+                        if (isEnd)
+                            throwParseError(start, stop, Token.Usage.STRING, strbuild.toString(), "End delimiter should have the same amount of tabbing as the line of the start delimiter");
+                        else
+                            throwParseError(start, stop, Token.Usage.STRING, strbuild.toString(), "Insufficient spacing for line of string");
                     }
                 }
                 default -> strbuild.append(line.get());
             }
         }
 
-        if (!strbuild.isEmpty()) ret.add(new Token(Token.Usage.STRING, strbuild.toString()));
-        return ret;
+        line.get();
+        if (!strbuild.isEmpty()) ret.add(new Token(Token.Usage.STRING, strbuild.toString()).with(currentStartingIndex, line.getIndex(), this));
+        return ret.with(lineStartingIndex, line.getIndex(), this);
     }
 
     public Token parseNumberLiteral() {
@@ -348,7 +354,7 @@ public abstract class Source {
             hasDot = isDot;
             strbuild.append(line.get());
 
-            if(isE && line.peek() == '-') strbuild.append(line.get());
+            if (isE && line.peek() == '-') strbuild.append(line.get());
         }
 
         return new Token(hasE || hasDot ? Token.Usage.FLOAT : Token.Usage.INTEGER, strbuild.toString())
@@ -384,7 +390,7 @@ public abstract class Source {
             line.get(); //clear the delimiter
             Token ret = parseBlock().with(start, line.getIndex(), Source.this);
             char endDelim = line.get();
-            if(!OperatorNode.signEndDelimiters().contains(endDelim))
+            if (!OperatorNode.signEndDelimiters().contains(endDelim))
                 throwParseError(ret, "Missing end delimiter");
             return ret.with("" + peek + endDelim);
         } else if (Character.isDigit(peek)) {
@@ -429,6 +435,7 @@ public abstract class Source {
         if (ret.allSpaces()) return getNonemptyLine();
         else return ret;
     }
+
     public void nextNonemptyLine() {
         line = getNonemptyLine();
     }
@@ -448,6 +455,7 @@ public abstract class Source {
         }
         return ret;
     }
+
     public void nextLine() {
         line = getLine();
     }
@@ -456,6 +464,7 @@ public abstract class Source {
         buffer.push(sourceLine);
         --y;
     }
+
     public void ungetLine() {
         ungetLine(line);
     }
@@ -477,6 +486,7 @@ public abstract class Source {
     public int getRow() {
         return y + 1;
     }
+
     protected abstract int getPosition();
 
     public abstract String getTitle();

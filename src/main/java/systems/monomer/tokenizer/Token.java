@@ -246,6 +246,7 @@ public class Token extends ErrorBlock {
     }
 
     public List<Token> markupBlock() {
+        if(getStop().getPosition() <= getStart().getPosition()) return List.of();
         if(children.isEmpty()) return List.of(this);
 
         List<Token> tokens = new ArrayList<>();
@@ -255,14 +256,14 @@ public class Token extends ErrorBlock {
         int posStart2 = start2.getPosition(), posStop2 = stop2.getPosition();
 
         if(posStop1 > posStart1) {
-            Token firstToken = new Token(usage, value.substring(0, posStop1 - posStart1)).with(start1, stop1, getSource());
+            Token firstToken = new Token(usage, value).with(start1, stop1, getSource());
             tokens.add(firstToken);
         }
         for(Token child : children) {
             tokens.addAll(child.markupBlock());
         }
         if(posStop2 > posStart2) {
-            Token secondToken = new Token(usage, value.substring(value.length() - (stop2.getPosition()- start2.getPosition()))).with(start2, stop2, getSource());
+            Token secondToken = new Token(usage, value).with(start2, stop2, getSource());
             tokens.add(secondToken);
         }
         return tokens;
