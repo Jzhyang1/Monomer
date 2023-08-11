@@ -6,13 +6,18 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Option;
 
-@Command(name = "mono", mixinStandardHelpOptions = true, version = "1.0", description = "The Monomer programming language (more info at https://monomer.dev)")
+import java.io.File;
+
+@Command(name = "mono", mixinStandardHelpOptions = true, version = "1.0.0", description = "The Monomer programming language (more info at https://monomer.dev)")
 public class CommandLineInterface implements Runnable {
+    @Option(names = {"-v", "--version"}, versionHelp = true, description = "Print version information")
+    private boolean versionRequested;
 
     @Command(name = "interpret", aliases = {"int"}, description = "Interpret Monomer file(s)")
     void interpret(@Parameters(description = "File(s) to interpret") String[] files) {
-        // Implement the interpretation logic here
-        System.out.println("Interpreting files: " + String.join(", ", files));
+        for (String file : files) {
+            Interpret.interpret(new File(file));
+        }
     }
 
     @Command(name = "compile", aliases = {"comp"}, description = "Compile Monomer file(s)")
@@ -20,10 +25,8 @@ public class CommandLineInterface implements Runnable {
             @Parameters(description = "File(s) to compile") String[] files,
             @Option(names = {"-c", "--config"}, description = "Compile configuration file") String configFile
     ) {
-        // Implement the compilation logic here
-        System.out.println("Compiling files: " + String.join(", ", files));
-        if (configFile != null) {
-            System.out.println("Using config file: " + configFile);
+        for (String file : files) {
+            Compile.compile(new File(file));    //TODO use config file
         }
     }
 
@@ -39,6 +42,7 @@ public class CommandLineInterface implements Runnable {
 
     @Parameters(paramLabel = "sources", description = "Files to open in the IDE")
     private String[] defaultFiles;
+
     @Override
     public void run() {
         MonomerIdle.main(defaultFiles);

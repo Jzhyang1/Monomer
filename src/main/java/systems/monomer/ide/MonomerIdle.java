@@ -19,7 +19,7 @@ public class MonomerIdle {
             Object key = keys.nextElement();
             Object value = UIManager.get(key);
             if (value instanceof FontUIResource) {
-                UIManager.put(key, new FontUIResource("Consolas", FontUIResource.PLAIN, 14));
+                UIManager.put(key, new FontUIResource(Editor.FONT, FontUIResource.PLAIN, 14));
             }
         }
     }

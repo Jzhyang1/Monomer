@@ -8,21 +8,8 @@ import systems.monomer.tokenizer.Token;
 
 import java.io.File;
 
-import static picocli.CommandLine.*;
 
-@Command(name = "interpret", aliases = {"int"}, description = "Interpret a Monomer file", mixinStandardHelpOptions = true)
-public class Interpret implements Runnable{
-    @Parameters(paramLabel = "<files>", description = "Paths to the files to be interpreted.")
-    private File[] files;
-
-    @Override
-    public void run() {
-        for(File file : files) {
-            interpret(file);
-        }
-    }
-
-
+public class Interpret {
     public static void interpret(Source source) {
         Token body = source.parse();
         Node node = body.toNode();

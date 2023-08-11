@@ -30,161 +30,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public final class Editor extends JFrame {
-
+    public static final String TITLE = "Monomer Idle";
+    public static final String FONT = "Consolas";
     private static Editor editor;
-
-
-    public interface TabSource {
-
-        boolean isEditable();
-
-        String getName();
-
-        void setName(String name);
-
-        default String getToolTipText() {
-            return getName();
-        }
-
-        String getContents();
-
-        void setContents(String contents);
-        String desc();
-    }
-
-
-    @RequiredArgsConstructor
-    @Getter
-    public static class FileTabSource implements TabSource {
-        private final File file;
-        private final boolean editable;
-        private String contents;
-
-        @Override
-        public String getName() {
-            return file.getName();
-        }
-
-        @Override
-        public void setName(String name) {
-            if (!isEditable()) return;
-            file.renameTo(new File(file.getParent(), name));
-        }
-
-        @Override
-        public String getToolTipText() {
-            return file.getAbsolutePath();
-        }
-
-        @Override
-        @SneakyThrows
-        public String getContents() {
-            if (contents != null) return contents;
-            BufferedReader reader = ReaderFactory.createBufferedReader(file);
-            StringBuilder builder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-                builder.append("\n");
-            }
-            reader.close();
-            return (contents = builder.toString());
-        }
-
-        @Override
-        @SneakyThrows
-        public void setContents(String contents) {
-            if (!isEditable()) return;
-            this.contents = contents;
-            try (PrintStream stream = new PrintStream(file)) {
-                stream.print(contents);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private String calculatedEncoding = null;
-
-        @SneakyThrows
-        @Override
-        public String desc() {
-            if (calculatedEncoding == null) {
-                // file <encoding>
-                calculatedEncoding = UniversalDetector.detectCharset(file);
-                if (calculatedEncoding == null) {
-                    calculatedEncoding = "utf-8";
-                }
-            }
-            return "file " + calculatedEncoding;
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class DefaultTabSource implements TabSource {
-        private boolean editable = true;
-        private String name;
-        private String contents;
-
-        @Override
-        public void setName(String name) {
-            this.name = name;
-        }
-        @Override
-        public String desc() {
-            return "virtual";
-        }
-    }
-
-    public static class NewTabSource extends DefaultTabSource implements TabSource {
-        public NewTabSource() {
-            setName("untitled");
-            super.setContents("");
-        }
-
-        private FileTabSource fileTabSource;
-
-        @Override
-        public void setContents(String contents) {
-            super.setContents(contents);
-            String fileName = (String) JOptionPane.showInputDialog(editor,
-                    "Save the file as:",
-                    "Save New File As",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    null, "untitled.mm");
-            if (fileName == null) return;
-            File f = new File(fileName);
-            if (f.exists() && !f.isDirectory()) {
-                int result = JOptionPane.showConfirmDialog(editor,
-                        "File already exists. Overwrite?",
-                        "Existing File",
-                        JOptionPane.YES_NO_OPTION);
-                if (result == JOptionPane.NO_OPTION) {
-                    return;
-                }
-                fileTabSource = new FileTabSource(f, true);
-                fileTabSource.setContents(contents);
-            } else if (f.isDirectory()) {
-                JOptionPane.showMessageDialog(editor,
-                        "Cannot save to a directory.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            } else {
-                fileTabSource = new FileTabSource(f, true);
-                fileTabSource.setContents(contents);
-            }
-        }
-
-        public FileTabSource transform() {
-            return fileTabSource;
-        }
-
-        @Override
-        public String desc() {
-            return "new (virtual)";
-        }
-    }
 
     static class Tab extends JPanel {
         private TabSource source;
@@ -197,7 +45,7 @@ public final class Editor extends JFrame {
             this.source = source;
             boolean isEditable = source.isEditable();
             this.contents = new JTextPane();
-            this.contents.setFont(new Font("Consolas", Font.PLAIN, 14));
+            this.contents.setFont(new Font(FONT, Font.PLAIN, 14));
             this.contents.setText(source.getContents());
             this.contents.setEditable(isEditable);
 
@@ -371,7 +219,7 @@ public final class Editor extends JFrame {
         static {
             for (Colors color : Colors.values()) {
                 StyleContext sc = StyleContext.getDefaultStyleContext();
-                AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
+                AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color.getColor());
                 aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
                 COLOR_ATTRIBUTE_SET_HASH_MAP.put(color.getColor(), aset);
             }
@@ -447,7 +295,7 @@ public final class Editor extends JFrame {
 
     private JLabel createDisplayPanelLabel(String option, String commandWindows, String commandMac) {
         JLabel comp = new JLabel("<html>" + option + " with <font color='#b5ddff'>" + commandWindows + "</font></html>");
-        comp.setFont(new Font("Consolas", Font.PLAIN, 20));
+        comp.setFont(new Font(FONT, Font.PLAIN, 20));
         comp.setHorizontalAlignment(SwingConstants.CENTER);
         comp.setVerticalAlignment(SwingConstants.CENTER);
         return comp;
@@ -532,7 +380,7 @@ public final class Editor extends JFrame {
     void populateActions() {
         Action.addAction(
                 new Action("New", () -> {
-                    TabSource source = new NewTabSource();
+                    TabSource source = new NewTabSource(editor);
                     addTab(new Tab(source));
                     tabbedPane.setSelectedIndex(tabs.size() - 1);
                 }),
@@ -556,6 +404,10 @@ public final class Editor extends JFrame {
                         }
                         addTab(new Tab(new FileTabSource(file, true)));
                         tabbedPane.setSelectedIndex(tabs.size() - 1);
+                        //color
+                        Tab tab = getSelectedTab();
+                        tab.color();
+                        tab.repaint();
                     }
                 }),
                 new Action("Save", () -> {
@@ -971,7 +823,7 @@ public final class Editor extends JFrame {
 
         JMenu run = new JMenu("Run");
         run.add(createMenuItem("Run File", KeyEvent.VK_F10, InputEvent.SHIFT_DOWN_MASK));
-        run.add(createMenuItem("Run Project", KeyEvent.VK_F10, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+//        run.add(createMenuItem("Run Project", KeyEvent.VK_F10, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 
         JMenu help = new JMenu("Help");
         help.add(createMenuItem("Find Action", KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));

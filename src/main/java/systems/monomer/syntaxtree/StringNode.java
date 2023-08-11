@@ -6,7 +6,7 @@ import systems.monomer.interpreter.InterpretStringValue;
 import systems.monomer.interpreter.InterpretValue;
 
 public class StringNode extends LiteralNode{
-
+    public static final Node EMPTY = new StringNode("");
     private String value;
 
 

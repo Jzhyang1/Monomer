@@ -18,7 +18,7 @@ public class Token extends ErrorBlock {
 
     @Getter
     private String value;
-    private final List<Token> children = new ArrayList<>();
+    private List<Token> children = null;
     @Getter
     private final Usage usage;
 
@@ -155,6 +155,7 @@ public class Token extends ErrorBlock {
     public Node toNode() {
         switch (usage) {
             case STRING_BUILDER -> {
+                if(children == null) return new StringBuilderNode(List.of(StringNode.EMPTY));
                 return new StringBuilderNode(children.stream().map(Token::toNode).collect(Collectors.toList()));
             }
             case STRING -> {
@@ -193,7 +194,7 @@ public class Token extends ErrorBlock {
                 };
             }
             case GROUP -> {
-                if(children.isEmpty()) return new TupleNode();
+                if(children == null) return new TupleNode();
 
                 ListIterator<Token> iter = children.listIterator();
                 Token token = iter.next();
@@ -216,10 +217,12 @@ public class Token extends ErrorBlock {
     }
 
     public void add(Token child) {
+        if(children == null) children = new ArrayList<>();
         children.add(child);
     }
     public void addAll(Token token) {
-        children.addAll(token.children);
+        if(children == null) children = new ArrayList<>(token.children);
+        else children.addAll(token.children);
     }
 
     public Token getFirst() {
@@ -247,7 +250,7 @@ public class Token extends ErrorBlock {
 
     public List<Token> markupBlock() {
         if(getStop().getPosition() <= getStart().getPosition()) return List.of();
-        if(children.isEmpty()) return List.of(this);
+        if(children == null) return List.of(this);
 
         List<Token> tokens = new ArrayList<>();
         Index start1 = getStart(), stop1 = getFirst().getStart();
@@ -270,7 +273,7 @@ public class Token extends ErrorBlock {
     }
 
     public String toString() {
-        return usage + " " + value + (children.isEmpty() ? "" : children.size() == 1 ? children :
+        return usage + " " + value + (children == null ? "" : children.size() == 1 ? children :
                 "[\n\t" + children.stream().map(Objects::toString)
                         .collect(Collectors.joining(",\n\t")) + "\n\t]\n");
     }
