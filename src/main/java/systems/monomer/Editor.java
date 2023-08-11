@@ -1,5 +1,6 @@
 package systems.monomer;
 
+import commandLine.CommandLineInterface;
 import lombok.*;
 import org.mozilla.universalchardet.ReaderFactory;
 import org.mozilla.universalchardet.UniversalDetector;
@@ -16,7 +17,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.*;
 import java.util.Timer;
@@ -289,7 +289,7 @@ public final class Editor extends JFrame {
                     if (contents.getSelectedText() == null) {
                         int pos = contents.getCaretPosition();
                         try {
-                            contents.getDocument().insertString(pos, "\t", null);
+                            contents.getDocument().insertString(pos, " ".repeat(Config.TAB_SIZE), null);
                         } catch (BadLocationException e) {
                             throw new RuntimeException(e);
                         }
@@ -763,7 +763,7 @@ public final class Editor extends JFrame {
                 new Action("Run File", () -> {
                     Tab tab = getSelectedTab();
                     String contents = tab.contents.getText();
-                    Run.interpret(contents);
+                    CommandLineInterface.interpret(contents);
                 }),
                 new Action("Find Action", () -> {
                     JPanel panel = new JPanel();

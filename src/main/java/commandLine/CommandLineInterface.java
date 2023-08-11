@@ -1,5 +1,6 @@
-package systems.monomer;
+package commandLine;
 
+import systems.monomer.MonomerIdle;
 import systems.monomer.syntaxTree.Node;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.SourceFile;
@@ -10,45 +11,18 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
+
 import static systems.monomer.Config.*;
 
-public class Run {
-    public static void main(String[] args) {
-        System.out.println();
-        if(!checkIDE(args))
-            System.exit(
-                checkVersionInfo(args) ||
-                checkHelp(args) ||
-                checkCompile(args) ||
-                checkInterpret(args) ||
-                checkShell(args) ?
-                0 : -1);
-    }
+public class CommandLineInterface {
 
     private static boolean checkIDE(String[] args){
         if(args.length == 0) {
             MonomerIdle.main(args);
-            return true;
-        }
-        return false;
-    }
-    private static boolean checkShell(String[] args){
-        if(commands.get("shell").aliases.contains(args[0])) {
-            //TODO
-            return true;
-        }
-        return false;
-    }
-    private static boolean checkInterpret(String[] args){
-        if(commands.get("int").aliases.contains(args[0])) {
-            interpret(new File(stripQuotes(args[1])));   //TODO interpret multiple files
-            return true;
-        }
-        return false;
-    }
-    private static boolean checkCompile(String[] args){
-        if(commands.get("comp").aliases.contains(args[0])) {
-            //TODO
             return true;
         }
         return false;
@@ -77,27 +51,6 @@ public class Run {
         return false;
     }
 
-    private static String stripQuotes(String path) {
-        return path.charAt(0) == '"' || path.charAt(0) == '\'' ? path.substring(1, path.length() - 1) : path;
-    }
-
-    public static void interpret(Source source) {
-        Token body = source.parse();
-        Node node = body.toNode();
-        node.matchVariables();
-        node.matchTypes();
-        node.matchOverloads();
-        node.interpretValue();
-    }
-    public static void interpret(File sourceFile) {
-        Source source = new SourceFile(sourceFile);
-        interpret(source);
-    }
-    public static void interpret(String code) {
-        Source source = new SourceString(code);
-        interpret(source);
-    }
-
     private static class CommandInfo {
         List<String> aliases;
         String desc;
@@ -112,8 +65,5 @@ public class Run {
     private static Map<String, CommandInfo> commands = new TreeMap<>(){{
         put("version", new CommandInfo(List.of("version", "-version", "v", "-v"), "displays the installed Monomer version", "displays the version\n\tversion\t\tdisplays M.m.r where M is the compatibility version, m is the feature version, and r is the revision version"));
         put("help", new CommandInfo(List.of("help", "-help", "h", "-h"), "displays the help menu", "displays the help menu\n\thelp\t\tdisplays a list of all commands and a general description\n\thelp [command]\tdisplays a list of all options for a command"));
-        put("int", new CommandInfo(List.of("interpret", "-interpret", "int", "-int"), "interprets a Monomer file", "interprets Monomer files\n\tint [...paths]\tinterprets the files specified by a space separated list of paths. Paths may be quote enclosed"));
-        put("comp", new CommandInfo(List.of("compile", "-compile", "comp", "-comp"), "compiles a Monomer file", "compiles Monomer files\n\tcomp [...paths]\tcompiles the files specified by a space separated list of paths. Paths may be quote enclosed\n\tcomp [...paths] -out [path]\tcompiles the files and outputs in the specified path"));
-        put("shell", new CommandInfo(List.of("shell", "-shell", "sh", "-sh"), "starts Monomer shell", "starts Monomer shell\n\tshell\tturns the command line into a shell"));
     }};
 }
