@@ -396,9 +396,10 @@ public abstract class Source {
         }
 
         if (OperatorNode.signStartDelimiters().contains(peek)) {
-            line.get(); //clear the delimiter
-            Token ret = parseBlock().with(start, line.getIndex(), Source.this);
-            char endDelim = line.get();
+            line.get(); //clear start delim
+            Token ret = parseBlock();
+            char endDelim = line.get(); //clear end delim
+            ret.setContext(start, line.getIndex(), Source.this);
             if (!OperatorNode.signEndDelimiters().contains(endDelim))
                 throwParseError(ret, "Missing end delimiter");
             return ret.with("" + peek + endDelim);

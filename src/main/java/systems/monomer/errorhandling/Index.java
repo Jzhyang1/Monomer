@@ -28,4 +28,8 @@ public class Index {
     public int getPosition() {
         return position;
     }
+
+    public String toString() {
+        return "(%d,%d)@%d".formatted(x,y,position);
+    }
 }
