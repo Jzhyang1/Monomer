@@ -1,7 +1,9 @@
 package systems.monomer;
 
-import commandLine.CommandLineInterface;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.SneakyThrows;
 import org.mozilla.universalchardet.ReaderFactory;
 import org.mozilla.universalchardet.UniversalDetector;
 import systems.monomer.tokenizer.SourceString;
@@ -16,10 +18,13 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.List;
-import java.util.*;
 import java.util.Timer;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -271,7 +276,6 @@ public final class Editor extends JFrame {
                     String line = contents.getText().replace("\r\n", "\n").substring(lineStart, pos);
                     int tabs = 0;
                     while (tabs < line.length() && line.charAt(tabs) == '\t') tabs++;
-                    System.out.println(tabs);
                     try {
                         contents.getDocument().insertString(pos, "\n", null);
                         contents.getDocument().insertString(pos + 1, "\t".repeat(tabs), null);
@@ -289,7 +293,7 @@ public final class Editor extends JFrame {
                     if (contents.getSelectedText() == null) {
                         int pos = contents.getCaretPosition();
                         try {
-                            contents.getDocument().insertString(pos, " ".repeat(Config.TAB_SIZE), null);
+                            contents.getDocument().insertString(pos, "    ", null);
                         } catch (BadLocationException e) {
                             throw new RuntimeException(e);
                         }
@@ -361,7 +365,7 @@ public final class Editor extends JFrame {
                             + " / " + this.source.desc());
                 }
             });
-            contents.getDocument().putProperty(PlainDocument.tabSizeAttribute, Config.TAB_SIZE);
+            contents.getDocument().putProperty(PlainDocument.tabSizeAttribute, 4);
             box.add(location);
             this.add(box, BorderLayout.SOUTH);
         }
@@ -392,6 +396,7 @@ public final class Editor extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            contents.setCharacterAttributes(SimpleAttributeSet.EMPTY, true);
         }
 
         private static final Map<Color, AttributeSet> COLOR_ATTRIBUTE_SET_HASH_MAP = new HashMap<>();
@@ -406,7 +411,6 @@ public final class Editor extends JFrame {
         }
 
         private void syntaxHighlight(int start, int end, Color color) {
-            System.out.println("highlighting " + start + " to " + end + " as " + color);
             AttributeSet aset = COLOR_ATTRIBUTE_SET_HASH_MAP.get(color);
             contents.getStyledDocument().setCharacterAttributes(start, end - start, aset, false);
         }
@@ -566,6 +570,12 @@ public final class Editor extends JFrame {
                     addTab(new Tab(source));
                     tabbedPane.setSelectedIndex(tabs.size() - 1);
                 }),
+                new Action("New Virtual", () -> {
+                    TabSource source = new DefaultTabSource();
+                    source.setName("virtual.mm");
+                    addTab(new Tab(source));
+                    tabbedPane.setSelectedIndex(tabs.size() - 1);
+                }),
                 new Action("Open", () -> {
                     JFileChooser chooser = new JFileChooser();
                     int result = chooser.showOpenDialog(this);
@@ -589,6 +599,13 @@ public final class Editor extends JFrame {
                 }),
                 new Action("Save As", () -> {
                     Tab tab = getSelectedTab();
+                    if (tab.source instanceof DefaultTabSource && !(tab.source instanceof  NewTabSource)) {
+                        // ask them to change the name of the file
+                        String text = JOptionPane.showInputDialog(this, "Change the name of the virtual file to:");
+                        if (text == null) return;
+                        tab.source.setName(text);
+                        return;
+                    }
                     JFileChooser chooser = new JFileChooser();
                     int result = chooser.showSaveDialog(this);
                     if (result == JFileChooser.APPROVE_OPTION) {
@@ -763,7 +780,7 @@ public final class Editor extends JFrame {
                 new Action("Run File", () -> {
                     Tab tab = getSelectedTab();
                     String contents = tab.contents.getText();
-                    CommandLineInterface.interpret(contents);
+                    Run.interpret(contents);
                 }),
                 new Action("Find Action", () -> {
                     JPanel panel = new JPanel();
@@ -960,6 +977,12 @@ public final class Editor extends JFrame {
         newFile.addActionListener(Action.getAction("New").asActionListener());
         newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         fileMenu.add(newFile);
+
+        JMenuItem newVirtual = new JMenuItem("New Virtual");
+        newVirtual.addActionListener(Action.getAction("New Virtual").asActionListener());
+        newVirtual.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        fileMenu.add(newVirtual);
+
 
         JMenuItem open = new JMenuItem("Open");
         open.addActionListener(Action.getAction("Open").asActionListener());
