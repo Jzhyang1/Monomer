@@ -42,13 +42,14 @@ export default function App() {
       <ThemeContext.Provider value={contextValue}>
         <div
           className={
-            "flex flex-col md:block " + (isDarkMode ? "bg-black" : "bg-white")
+            "h-screen flex flex-col md:block " +
+            (isDarkMode ? "bg-black" : "bg-white")
           }
         >
           <NavMenu />
           <div
             className={
-              "relative h-screen flex flex-col px-[20px] md:px-[40px] pt-[40px] pb-[60px] overflow-y-auto overflow-x-clip " +
+              "relative flex flex-col px-[20px] md:px-[40px] pt-[40px] pb-[60px] overflow-y-auto overflow-x-clip " +
               (isDarkMode ? "bg-black text-gray-300" : "bg-white text-black")
             }
           >
