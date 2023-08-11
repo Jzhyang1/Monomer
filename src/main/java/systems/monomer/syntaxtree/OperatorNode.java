@@ -1,8 +1,9 @@
 package systems.monomer.syntaxtree;
 
 import systems.monomer.compiler.CompileValue;
+import systems.monomer.interpreter.InterpretNumberValue;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.util.Pair;
+import systems.monomer.ide.util.Pair;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -60,53 +61,123 @@ public abstract class OperatorNode extends Node {
             putData("+", 1050, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
+            }, (self) -> {
+                InterpretValue first = self.getFirst().interpretValue();
+                InterpretValue second = self.getSecond().interpretValue();
+                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
+                    self.throwError("Unsupported operation \"+\" with non-numeric values");
+                }
+                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
+                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
+                if (firstInterpreted.getValue() instanceof Integer && secondInterpreted.getValue() instanceof Integer) {
+                    return new InterpretNumberValue<>(firstInterpreted.getValue().intValue() + secondInterpreted.getValue().intValue());
+                } else {
+                    return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue() + secondInterpreted.getValue().doubleValue());
+                }
             });
             putData("-", 1050, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
+            }, (self) -> {
+                InterpretValue first = self.getFirst().interpretValue();
+                InterpretValue second = self.getSecond().interpretValue();
+                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
+                    self.throwError("Unsupported operation \"-\" with non-numeric values");
+                }
+                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
+                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
+                if (firstInterpreted.getValue() instanceof Integer && secondInterpreted.getValue() instanceof Integer) {
+                    return new InterpretNumberValue<>(firstInterpreted.getValue().intValue() - secondInterpreted.getValue().intValue());
+                } else {
+                    return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue() - secondInterpreted.getValue().doubleValue());
+                }
             });
             putData("*", 1055, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
+            }, (self) -> {
+                InterpretValue first = self.getFirst().interpretValue();
+                InterpretValue second = self.getSecond().interpretValue();
+                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
+                    self.throwError("Unsupported operation \"*\" with non-numeric values");
+                }
+                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
+                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
+                if (firstInterpreted.getValue() instanceof Integer && secondInterpreted.getValue() instanceof Integer) {
+                    return new InterpretNumberValue<>(firstInterpreted.getValue().intValue() * secondInterpreted.getValue().intValue());
+                } else {
+                    return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue() * secondInterpreted.getValue().doubleValue());
+                }
             });
             putData("/", 1055, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
+            }, (self) -> {
+                InterpretValue first = self.getFirst().interpretValue();
+                InterpretValue second = self.getSecond().interpretValue();
+                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
+                    self.throwError("Unsupported operation \"/\" with non-numeric values");
+                }
+                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
+                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
+                if (firstInterpreted.getValue() instanceof Integer && secondInterpreted.getValue() instanceof Integer) {
+                    return new InterpretNumberValue<>(firstInterpreted.getValue().intValue() / secondInterpreted.getValue().intValue());
+                } else {
+                    return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue() / secondInterpreted.getValue().doubleValue());
+                }
             });
             putData("%", 1055, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
+            }, (self) -> {
+                InterpretValue first = self.getFirst().interpretValue();
+                if (!(first instanceof InterpretNumberValue<? extends Number>)) {
+                    self.throwError("Unsupported operation \"%\" with non-numeric values");
+                }
+                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
+                return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue()/100.0);
             });
 
 
             putData("||", 1065, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
+            }, (self) -> {
+                InterpretValue first = self.getFirst().interpretValue();
+                InterpretValue second = self.getSecond().interpretValue();
+                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
+                    self.throwError("Unsupported operation \"||\"");
+                }
+                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
+                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
+                Double firstDouble = firstInterpreted.getValue().doubleValue();
+                Double secondDouble = firstInterpreted.getValue().doubleValue();
+                return new InterpretNumberValue<>(firstDouble * secondDouble/(firstDouble + secondDouble));
             });
             putData("><", 1060, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
+            }, (self) -> {
+                //TODO
                 return null;
             });
 
             putData("**", 1075, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
+            }, (self) -> {
+                InterpretValue first = self.getFirst().interpretValue();
+                InterpretValue second = self.getSecond().interpretValue();
+                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
+                    self.throwError("Unsupported operation \"/\" with non-numeric values");
+                }
+                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
+                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
+                if (firstInterpreted.getValue() instanceof Integer && secondInterpreted.getValue() instanceof Integer) {
+                    return new InterpretNumberValue<>((int) StrictMath.pow(firstInterpreted.getValue().intValue(), secondInterpreted.getValue().intValue()));
+                } else {
+                    return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue() / secondInterpreted.getValue().doubleValue());
+                }
             });
             putData("*/", 1075, (self) -> {
                 //TODO
