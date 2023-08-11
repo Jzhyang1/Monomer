@@ -1,11 +1,5 @@
 package systems.monomer.ide;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.SneakyThrows;
-import org.mozilla.universalchardet.ReaderFactory;
-import org.mozilla.universalchardet.UniversalDetector;
 import systems.monomer.commandline.Interpret;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
@@ -19,24 +13,24 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.util.List;
 import java.util.Timer;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public final class Editor extends JFrame {
     public static final String TITLE = "Monomer Idle";
-    public static final String FONT = "Consolas";
-    private static Editor editor;
+    public static final String FONT = "Monospaced";
+    static Editor editor;
 
     static class Tab extends JPanel {
+        //create a panel with line numbers and a content text area
         private TabSource source;
         private final JTextPane contents;
+        private final JTextPane lineNumbers;
         private final UndoManager undoManager = new UndoManager();
         private boolean editedSinceLastSave = false;
         private boolean editedSinceLastColor = false;
@@ -44,6 +38,14 @@ public final class Editor extends JFrame {
         public Tab(TabSource source) {
             this.source = source;
             boolean isEditable = source.isEditable();
+
+            this.lineNumbers = new JTextPane();
+            this.lineNumbers.setFont(new Font(FONT, Font.PLAIN, 14));
+            this.lineNumbers.setText("1");
+            this.lineNumbers.setEditable(false);
+            this.lineNumbers.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+            this.lineNumbers.setMargin(new Insets(0, 5, 0, 10));
+
             this.contents = new JTextPane();
             this.contents.setFont(new Font(FONT, Font.PLAIN, 14));
             this.contents.setText(source.getContents());
@@ -86,8 +88,7 @@ public final class Editor extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     int pos = contents.getCaretPosition();
-                    int lineStart = 0;
-                    lineStart = getLineStartOffset(getLineOfOffset(pos));
+                    int lineStart = getLineStartOffset(getLineOfOffset(pos));
                     String line = contents.getText().replace("\r\n", "\n").substring(lineStart, pos);
                     int tabs = 0;
                     while (tabs < line.length() && line.charAt(tabs) == '\t') tabs++;
@@ -113,7 +114,7 @@ public final class Editor extends JFrame {
                             throw new RuntimeException(e);
                         }
                     } else {
-                        Action.getAction("Indent").action.run();
+                        Action.getAction("Indent").run();
                     }
                 }
             });
@@ -124,14 +125,14 @@ public final class Editor extends JFrame {
             actionMap.put("copy", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    Action.getAction("Copy").action.run();
+                    Action.getAction("Copy").run();
                 }
             });
 
             actionMap.put("paste_asdf", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    Action.getAction("Paste").action.run();
+                    Action.getAction("Paste").run();
                 }
             });
 
@@ -139,7 +140,7 @@ public final class Editor extends JFrame {
             actionMap.put("cut", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    Action.getAction("Cut").action.run();
+                    Action.getAction("Cut").run();
                 }
             });
 
@@ -147,8 +148,12 @@ public final class Editor extends JFrame {
                 undoManager.addEdit(event.getEdit());
             });
 
+            //scrollpane for both lineNumbers and contents
+            JScrollPane scrollPane = new JScrollPane(contents);
+            scrollPane.setRowHeaderView(lineNumbers);
+
             this.setLayout(new BorderLayout());
-            this.add(new JScrollPane(contents), BorderLayout.CENTER);
+            this.add(scrollPane, BorderLayout.CENTER);
 
             Box box = Box.createHorizontalBox();
             JLabel location = new JLabel("    1:1 / 0 / length: 0 / " + source.desc());
@@ -196,7 +201,10 @@ public final class Editor extends JFrame {
             if (!editedSinceLastColor) return;
             editedSinceLastColor = false;
             try {
-                String text = contents.getText().replace("\r\n", "\n");
+                String[] lines = contents.getText().split("\r\n|\r|\n", -1);
+                String text = String.join("\n", lines);
+                int lineCount = lines.length;
+
                 final List<Token> tokens = new SourceString(text).parse().markupBlock();
                 SwingUtilities.invokeLater(() -> {
                     for (Token token : tokens) {
@@ -208,6 +216,8 @@ public final class Editor extends JFrame {
                         }
                     }
                 });
+                //set line numbers to 1 through lineCount
+                lineNumbers.setText(IntStream.range(1, lineCount + 1).mapToObj(Integer::toString).collect(Collectors.joining("\n")));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -274,7 +284,7 @@ public final class Editor extends JFrame {
         this.setSize(1000, 1000);
         this.setVisible(true);
         this.setResizable(true);
-        this.setTitle("Monomer Editor");
+        this.setTitle(TITLE);
         createDisplayPanel();
         this.add(display);
         populateActions();
@@ -342,40 +352,6 @@ public final class Editor extends JFrame {
         tabbedPane.setToolTipTextAt(index, tab.source.getToolTipText());
     }
 
-    @Getter
-    static class Action {
-        private final String name;
-        private final Runnable action;
-
-        Action(String name, Runnable action) {
-            this.name = name;
-            this.action = () -> {
-                try {
-                    action.run();
-                } catch (IndexOutOfBoundsException e) {
-                    JOptionPane.showMessageDialog(editor, "This action requires a tab to be selected.", "No tab selected", JOptionPane.ERROR_MESSAGE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            };
-        }
-
-        public ActionListener asActionListener() {
-            return (e) -> action.run();
-        }
-
-        static Map<String, Action> actions = new HashMap<>();
-
-        public static Action getAction(String name) {
-            return actions.get(name);
-        }
-
-        public static void addAction(Action... action) {
-            for (Action a : action) {
-                actions.put(a.getName(), a);
-            }
-        }
-    }
 
     void populateActions() {
         Action.addAction(
@@ -621,7 +597,7 @@ public final class Editor extends JFrame {
                                 .map(Map.Entry::getValue)
                                 .toList());
                         buttonPanel.removeAll();
-                        actions.sort(Comparator.comparing(action -> action.name));
+                        actions.sort(Comparator.comparing(Action::getName));
                         GridBagConstraints gbc = new GridBagConstraints();
                         gbc.gridx = 0;
                         gbc.gridy = 0;
@@ -629,14 +605,14 @@ public final class Editor extends JFrame {
                         gbc.ipadx = 20;
                         gbc.ipady = 20;
                         for (Action action : actions) {
-                            JButton button = new JButton(action.name);
+                            JButton button = new JButton(action.getName());
                             button.setHorizontalTextPosition(SwingConstants.CENTER);
                             button.setVerticalTextPosition(SwingConstants.CENTER);
-                            button.setToolTipText("Run action \"" + action.name + "\"");
+                            button.setToolTipText("Run action \"" + action.getName() + "\"");
 
                             button.addActionListener(e1 -> {
                                 dialog.dispose();
-                                action.action.run();
+                                action.run();
                             });
                             button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                             buttonPanel.add(button, gbc);

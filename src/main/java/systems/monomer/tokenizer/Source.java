@@ -207,8 +207,14 @@ public abstract class Source {
     }
 
     public Token parse() {
-        nextLine();
-        return parseBlock();
+        try {
+            nextNonemptyLine();
+            return parseBlock();
+        } catch (Exception e) {
+            //TODO clean this up
+            Index eofIndex = new Index(0, y, getPosition());
+            return new Token(Token.Usage.GROUP, "block").with(eofIndex, eofIndex, this);
+        }
     }
 
     /**
