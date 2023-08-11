@@ -1,5 +1,6 @@
 package systems.monomer.ide;
 
+import systems.monomer.Constants;
 import systems.monomer.commandline.Interpret;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
@@ -357,12 +358,7 @@ public final class Editor extends JFrame {
     }
 
     private JLabel createDisplayPanelLabel(String option, String commandWindows, String commandMac) {
-        String commandText;
-        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            commandText = commandMac;
-        } else {
-            commandText = commandWindows;
-        }
+        String commandText = Constants.IS_MAC ? commandMac : commandWindows;
         JLabel comp = new JLabel("<html>" + option + " with <font color='#b5ddff'>" + commandText + "</font></html>");
         comp.setFont(new Font(FONT, Font.PLAIN, 20));
         comp.setHorizontalAlignment(SwingConstants.CENTER);
@@ -818,46 +814,46 @@ public final class Editor extends JFrame {
         }
     }
 
-    private JMenuItem createMenuItem(String name, int keyEvent, int inputEvent) {
+    private JMenuItem createMenuItem(String name, int keyEvent, int inputEvent, int inputEventMac) {
         JMenuItem item = new JMenuItem(name);
         item.addActionListener(Action.getAction(name).asActionListener());
-        item.setAccelerator(KeyStroke.getKeyStroke(keyEvent, inputEvent));
+        item.setAccelerator(KeyStroke.getKeyStroke( keyEvent, Constants.IS_MAC ? inputEventMac : inputEvent));
         return item;
     }
 
     private void populateMenu() {
         JMenu fileMenu = new JMenu("File");
 
-        fileMenu.add(createMenuItem("New", KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
-        fileMenu.add(createMenuItem("New Virtual", KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
-        fileMenu.add(createMenuItem("Open", KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-        fileMenu.add(createMenuItem("Save", KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-        fileMenu.add(createMenuItem("Save As", KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
-        fileMenu.add(createMenuItem("Close", KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
-        fileMenu.add(createMenuItem("Exit", KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
+        fileMenu.add(createMenuItem("New", KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        fileMenu.add(createMenuItem("New Virtual", KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        fileMenu.add(createMenuItem("Open", KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        fileMenu.add(createMenuItem("Save", KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        fileMenu.add(createMenuItem("Save As", KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        fileMenu.add(createMenuItem("Close", KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        fileMenu.add(createMenuItem("Exit", KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
 
 
         JMenu editMenu = new JMenu("Edit");
-        editMenu.add(createMenuItem("Undo", KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(createMenuItem("Redo", KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(createMenuItem("Cut", KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(createMenuItem("Copy", KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(createMenuItem("Paste", KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(createMenuItem("Select All", KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(createMenuItem("Find", KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(createMenuItem("Replace", KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
+        editMenu.add(createMenuItem("Undo", KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        editMenu.add(createMenuItem("Redo", KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        editMenu.add(createMenuItem("Cut", KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        editMenu.add(createMenuItem("Copy", KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        editMenu.add(createMenuItem("Paste", KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        editMenu.add(createMenuItem("Select All", KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        editMenu.add(createMenuItem("Find", KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        editMenu.add(createMenuItem("Replace", KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
 
         JMenu code = new JMenu("Code");
-        code.add(createMenuItem("Indent", KeyEvent.VK_CLOSE_BRACKET, InputEvent.CTRL_DOWN_MASK));
-        code.add(createMenuItem("Dedent", KeyEvent.VK_OPEN_BRACKET, InputEvent.CTRL_DOWN_MASK));
-        code.add(createMenuItem("Comment", KeyEvent.VK_SLASH, InputEvent.CTRL_DOWN_MASK));
+        code.add(createMenuItem("Indent", KeyEvent.VK_CLOSE_BRACKET, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        code.add(createMenuItem("Dedent", KeyEvent.VK_OPEN_BRACKET, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
+        code.add(createMenuItem("Comment", KeyEvent.VK_SLASH, InputEvent.CTRL_DOWN_MASK, InputEvent.META_DOWN_MASK));
 
         JMenu run = new JMenu("Run");
-        run.add(createMenuItem("Run File", KeyEvent.VK_F10, InputEvent.SHIFT_DOWN_MASK));
+        run.add(createMenuItem("Run File", KeyEvent.VK_F10, InputEvent.SHIFT_DOWN_MASK, InputEvent.SHIFT_DOWN_MASK));
 //        run.add(createMenuItem("Run Project", KeyEvent.VK_F10, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 
         JMenu help = new JMenu("Help");
-        help.add(createMenuItem("Find Action", KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        help.add(createMenuItem("Find Action", KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 
         JMenuItem about = new JMenuItem("About & Usage");
         about.addActionListener((e) -> {
