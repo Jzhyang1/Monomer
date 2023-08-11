@@ -23,9 +23,20 @@ import java.util.stream.Collectors;
 
 public final class Editor extends JFrame {
     public static final String TITLE = "Monomer Idle";
-    public static final String FONT = "Consolas";
+    public static String FONT;
     public static final String INDENT = "    ";
     static Editor EDITOR_INSTANCE;
+
+    static {
+        try {
+            Font firaCode = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/java/systems/monomer/ide/FiraCode-Regular.ttf")).deriveFont(12f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(firaCode);
+            FONT = "Fira Code";
+        } catch (Exception e) {
+            FONT = "Consolas";
+        }
+    }
 
     static class Tab extends JPanel {
         //create a panel with line numbers and a content text area
