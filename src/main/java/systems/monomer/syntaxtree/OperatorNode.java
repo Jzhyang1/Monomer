@@ -187,7 +187,15 @@ public abstract class OperatorNode extends Node {
          * Bitwise operators inhabit the precedence range 700-900
          */
         private static void initBitwise() {
-
+            //TODO
+            putData("!", 860, (self)->null, (self)->null);
+            putData("?", 860, (self)->null, (self)->null);
+            putData("&", 850, (self)->null, (self)->null);
+            putData("|", 820, (self)->null, (self)->null);
+            putData("^", 820, (self)->null, (self)->null);
+            putData("~&", 850, (self)->null, (self)->null);
+            putData("~|", 820, (self)->null, (self)->null);
+            putData("~^", 820, (self)->null, (self)->null);
         }
 
         /**
@@ -225,6 +233,12 @@ public abstract class OperatorNode extends Node {
                 return null;
             });
             putData("<=", 550, (self) -> {
+                //TODO
+                return null;
+            }, (first, second) -> {
+                return null;
+            });
+            putData("?=", 555, (self) -> {
                 //TODO
                 return null;
             }, (first, second) -> {

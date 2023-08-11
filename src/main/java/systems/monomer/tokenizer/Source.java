@@ -6,6 +6,7 @@ import systems.monomer.syntaxtree.OperatorNode;
 
 import java.util.*;
 
+//TODO needs optimization, especially for matching operators
 public abstract class Source {
     public static class Line {
         public static final Map<Character, Integer> SPACE_CHARS = new HashMap<>() {{
