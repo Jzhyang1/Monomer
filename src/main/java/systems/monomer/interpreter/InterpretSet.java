@@ -1,6 +1,6 @@
 package systems.monomer.interpreter;
 
-import systems.monomer.syntaxTree.Node;
+import systems.monomer.syntaxtree.Node;
 
 import java.util.Collection;
 import java.util.HashSet;

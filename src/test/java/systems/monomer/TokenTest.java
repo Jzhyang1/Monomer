@@ -1,7 +1,7 @@
 package systems.monomer;
 
 import org.junit.Test;
-import systems.monomer.syntaxTree.Node;
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.SourceFile;
 import systems.monomer.tokenizer.Token;

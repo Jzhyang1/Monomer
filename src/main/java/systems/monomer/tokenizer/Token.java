@@ -2,10 +2,10 @@ package systems.monomer.tokenizer;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import systems.monomer.errorHandling.ErrorBlock;
-import systems.monomer.errorHandling.Index;
-import systems.monomer.syntaxTree.*;
-import systems.monomer.syntaxTree.controlNodes.*;
+import systems.monomer.errorhandling.ErrorBlock;
+import systems.monomer.errorhandling.Index;
+import systems.monomer.syntaxtree.*;
+import systems.monomer.syntaxtree.controlNodes.*;
 
 import java.util.*;
 import java.util.stream.Collectors;

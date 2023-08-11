@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import org.mozilla.universalchardet.ReaderFactory;
 import org.mozilla.universalchardet.UniversalDetector;
-import systems.monomer.commandLine.Interpret;
+import systems.monomer.commandline.Interpret;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
 

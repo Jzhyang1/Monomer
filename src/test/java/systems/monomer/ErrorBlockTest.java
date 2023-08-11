@@ -3,14 +3,11 @@ package systems.monomer;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import systems.monomer.errorHandling.Context;
-import systems.monomer.errorHandling.ErrorBlock;
+import systems.monomer.errorhandling.Context;
+import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.SourceFile;
 import systems.monomer.tokenizer.SourceString;
-
-import java.io.File;
-import java.io.IOException;
 
 public class ErrorBlockTest {
     @Test

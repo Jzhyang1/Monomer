@@ -1,8 +1,8 @@
 package systems.monomer.tokenizer;
 
-import systems.monomer.Config;
-import systems.monomer.errorHandling.Index;
-import systems.monomer.syntaxTree.OperatorNode;
+import systems.monomer.Constants;
+import systems.monomer.errorhandling.Index;
+import systems.monomer.syntaxtree.OperatorNode;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ public abstract class Source {
     public static class Line {
         public static final Map<Character, Integer> SPACE_CHARS = new HashMap<>() {{
             put(' ', 1);
-            put('\t', Config.TAB_SIZE);
+            put('\t', Constants.TAB_SIZE);
         }};
 
         private String line;
@@ -223,7 +223,7 @@ public abstract class Source {
 
         char delim = line.get();
         int initialStartingSpaces = line.startingSpaces();
-        int startingSpaces = initialStartingSpaces + Config.TAB_SIZE;
+        int startingSpaces = initialStartingSpaces + Constants.TAB_SIZE;
 
         Token ret = new Token(Token.Usage.STRING_BUILDER);
         StringBuilder strbuild = new StringBuilder();
