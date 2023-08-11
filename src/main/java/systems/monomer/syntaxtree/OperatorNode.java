@@ -1,9 +1,10 @@
 package systems.monomer.syntaxtree;
 
+import lombok.NonNull;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretNumberValue;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.ide.util.Pair;
+import systems.monomer.util.Pair;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -21,32 +22,27 @@ public abstract class OperatorNode extends Node {
         private static void putData(String symbol, int leftPrec, int rightPrec, Supplier<Node> constructor) {
             operators.put(symbol, new Data(leftPrec, rightPrec, constructor));
         }
-
         private static void putData(String symbol, int prec, Supplier<Node> constructor) {
             operators.put(symbol, new Data(prec, prec, constructor));
         }
-
         private static void putData(String symbol, int prec, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
             operators.put(symbol, new Data(prec, prec, () -> new GenericOperatorNode(symbol) {{
                 setCompile(compile);
                 setInterpret(interpret);
             }}));
         }
-
         private static void putData(String symbol, int leftPrec, int rightPrec, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
             operators.put(symbol, new Data(leftPrec, rightPrec, () -> new GenericOperatorNode(symbol) {{
                 setCompile(compile);
                 setInterpret(interpret);
             }}));
         }
-
         private static void putData(String symbol, int prec, Function<GenericOperatorNode, CompileValue> compile, BiFunction<InterpretValue, InterpretValue, InterpretValue> interpret) {
             operators.put(symbol, new Data(prec, prec, () -> new GenericOperatorNode(symbol) {{
                 setCompile(compile);
                 setInterpret((self) -> interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()));
             }}));
         }
-
         private static void putData(String symbol, int leftPrec, int rightPrec, Function<GenericOperatorNode, CompileValue> compile, BiFunction<InterpretValue, InterpretValue, InterpretValue> interpret) {
             operators.put(symbol, new Data(leftPrec, rightPrec, () -> new GenericOperatorNode(symbol) {{
                 setCompile(compile);
@@ -298,10 +294,16 @@ public abstract class OperatorNode extends Node {
         }
 
         int leftPrec, rightPrec;
+        private Supplier<Node> constructor;
 
-        private Data(int leftPrec, int rightPrec, Supplier<Node> constructor) {
+        private Data(int leftPrec, int rightPrec, @NonNull Supplier<Node> constructor) {
             this.leftPrec = leftPrec;
             this.rightPrec = rightPrec;
+            this.constructor = constructor;
+        }
+
+        public Node getOperator() {
+            return constructor.get();
         }
     }
 
@@ -357,6 +359,11 @@ public abstract class OperatorNode extends Node {
         return true;    //TODO
     }
 
+    public static Node getOperator(String name) {
+        return Data.operators.get(name).getOperator();
+    }
+
+
     public OperatorNode(String name) {
         super(name);
     }
@@ -375,9 +382,12 @@ public abstract class OperatorNode extends Node {
     }
 
     //TODO probably make a ChainedOperatorNode and move this there
-    private List<String> names = new ArrayList<>();
+    private List<String> names = null;
     public void addName(String name) {
-        if(names.isEmpty()) super.addName(name);
+        if(names == null) {
+            super.addName(name);
+            names = new ArrayList<>();
+        }
         names.add(name);
     }
 }

@@ -190,7 +190,7 @@ public class Token extends ErrorBlock {
                     case "any" -> new AnyNode();
                     case "all" -> new AllNode();
                     default ->
-                            new GenericOperatorNode(value);  //TODO make sure the GenericOperatorNode gets the function for interpret, compile, etc
+                            OperatorNode.getOperator(value);  //TODO make sure the GenericOperatorNode gets the function for interpret, compile, etc
                 };
             }
             case GROUP -> {
