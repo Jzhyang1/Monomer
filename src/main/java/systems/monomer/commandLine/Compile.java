@@ -1,4 +1,4 @@
-package commandLine;
+package systems.monomer.commandLine;
 
 import systems.monomer.syntaxTree.Node;
 import systems.monomer.tokenizer.Source;

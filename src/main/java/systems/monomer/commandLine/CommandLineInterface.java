@@ -1,20 +1,9 @@
-package commandLine;
+package systems.monomer.commandLine;
 
-import systems.monomer.MonomerIdle;
-import systems.monomer.syntaxTree.Node;
-import systems.monomer.tokenizer.Source;
-import systems.monomer.tokenizer.SourceFile;
-import systems.monomer.tokenizer.SourceString;
-import systems.monomer.tokenizer.Token;
+import systems.monomer.ide.MonomerIdle;
 
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import picocli.CommandLine;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 
 import static systems.monomer.Config.*;
 

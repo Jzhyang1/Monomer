@@ -1,4 +1,4 @@
-package systems.monomer;
+package systems.monomer.ide;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import org.mozilla.universalchardet.ReaderFactory;
 import org.mozilla.universalchardet.UniversalDetector;
+import systems.monomer.commandLine.Interpret;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
 
@@ -31,41 +32,7 @@ import java.util.stream.Collectors;
 public final class Editor extends JFrame {
 
     private static Editor editor;
-    private static final Color RED = (Color.decode("#e06c75"));
-    private static final Color GREEN = (Color.decode("#98c379"));
-    private static final Color YELLOW = (Color.decode("#e5c07b"));
-    private static final Color BLUE = (Color.decode("#61afef"));
-    private static final Color PURPLE = (Color.decode("#c678dd"));
-    private static final Color ORANGE = (Color.decode("#d19a66"));
-    private static final Color GRAY = (Color.decode("#abb2bf"));
-    private static final Color CYAN = (Color.decode("#56b6c2"));
 
-    private static final Color[] COLORS = {RED, GREEN, YELLOW, BLUE, PURPLE, ORANGE, GRAY, CYAN};
-
-    private static Color getColorFor(Token.Usage usage) {
-        if (usage == null) return GRAY;
-        switch (usage) {
-            case IDENTIFIER -> {
-                return ORANGE;
-            }
-            case OPERATOR -> {
-                return PURPLE;
-            }
-            case STRING, STRING_BUILDER -> {
-                return GREEN;
-            }
-            case CHARACTER, CHARACTER_FROM_INT -> {
-                return YELLOW;
-            }
-            case INTEGER, FLOAT -> {
-                return RED;
-            }
-            case GROUP -> {
-                return BLUE;
-            }
-        }
-        return GRAY;
-    }
 
     public interface TabSource {
 
@@ -387,7 +354,7 @@ public final class Editor extends JFrame {
                     for (Token token : tokens) {
                         try {
                             syntaxHighlight(token.getStart().getPosition(), token.getStop().getPosition(),
-                                    Editor.getColorFor(token.getUsage()));
+                                    Colors.colorFor(token.getUsage()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -402,11 +369,11 @@ public final class Editor extends JFrame {
         private static final Map<Color, AttributeSet> COLOR_ATTRIBUTE_SET_HASH_MAP = new HashMap<>();
 
         static {
-            for (Color color : Editor.COLORS) {
+            for (Colors color : Colors.values()) {
                 StyleContext sc = StyleContext.getDefaultStyleContext();
                 AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
                 aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
-                COLOR_ATTRIBUTE_SET_HASH_MAP.put(color, aset);
+                COLOR_ATTRIBUTE_SET_HASH_MAP.put(color.getColor(), aset);
             }
         }
 
@@ -478,29 +445,28 @@ public final class Editor extends JFrame {
         timer.schedule(a, 0, 1000);
     }
 
+    private JLabel createDisplayPanelLabel(String option, String commandWindows, String commandMac) {
+        JLabel comp = new JLabel("<html>" + option + " with <font color='#b5ddff'>" + commandWindows + "</font></html>");
+        comp.setFont(new Font("Consolas", Font.PLAIN, 20));
+        comp.setHorizontalAlignment(SwingConstants.CENTER);
+        comp.setVerticalAlignment(SwingConstants.CENTER);
+        return comp;
+    }
     private void createDisplayPanel() {
-        JLabel comp1 = new JLabel("<html>Create a file with <font color='#b5ddff'>Ctrl + N</font></html>");
-        comp1.setFont(new Font("Consolas", Font.PLAIN, 20));
-        comp1.setHorizontalAlignment(SwingConstants.CENTER);
-        comp1.setVerticalAlignment(SwingConstants.CENTER);
-        JLabel comp3 = new JLabel("<html>Open a file with <font color='#b5ddff'>Ctrl + O</font></html>");
-        comp3.setFont(new Font("Consolas", Font.PLAIN, 20));
-        comp3.setHorizontalAlignment(SwingConstants.CENTER);
-        comp3.setVerticalAlignment(SwingConstants.CENTER);
-        JLabel comp2 = new JLabel("<html>Search for actions with <font color='#b5ddff'>Ctrl + Shift + A</font></html>");
-        comp2.setFont(new Font("Consolas", Font.PLAIN, 20));
-        comp2.setHorizontalAlignment(SwingConstants.CENTER);
-        comp2.setVerticalAlignment(SwingConstants.CENTER);
-
+        List<JLabel> comps = List.of(
+                createDisplayPanelLabel("Create file", "Ctrl + N", "Cmd + N"),
+                createDisplayPanelLabel("Search for actions", "Ctrl + Shift + A", "Cmd + Shift + A"),
+                createDisplayPanelLabel("Open file", "Ctrl + O", "Cmd + O"));
 
         display.setLayout(new BorderLayout());
         Box panel = Box.createVerticalBox();
         panel.add(Box.createVerticalGlue());
-        panel.add(comp1);
-        panel.add(Box.createVerticalStrut(20));
-        panel.add(comp3);
-        panel.add(Box.createVerticalStrut(20));
-        panel.add(comp2);
+        for (int i = 0; i < comps.size(); i++) {
+            panel.add(comps.get(i));
+            if (i != comps.size() - 1) {
+                panel.add(Box.createVerticalStrut(20));
+            }
+        }
         panel.add(Box.createVerticalGlue());
         display.add(panel, BorderLayout.CENTER);
     }
@@ -780,7 +746,7 @@ public final class Editor extends JFrame {
                 new Action("Run File", () -> {
                     Tab tab = getSelectedTab();
                     String contents = tab.contents.getText();
-                    Run.interpret(contents);
+                    Interpret.interpret(contents);
                 }),
                 new Action("Find Action", () -> {
                     JPanel panel = new JPanel();
@@ -970,115 +936,45 @@ public final class Editor extends JFrame {
         }
     }
 
+    private JMenuItem createMenuItem(String name, int keyEvent, int inputEvent) {
+        JMenuItem item = new JMenuItem(name);
+        item.addActionListener(Action.getAction(name).asActionListener());
+        item.setAccelerator(KeyStroke.getKeyStroke(keyEvent, inputEvent));
+        return item;
+    }
     private void populateMenu() {
         JMenu fileMenu = new JMenu("File");
 
-        JMenuItem newFile = new JMenuItem("New");
-        newFile.addActionListener(Action.getAction("New").asActionListener());
-        newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
-        fileMenu.add(newFile);
+        fileMenu.add(createMenuItem("New", KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+        fileMenu.add(createMenuItem("New Virtual", KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        fileMenu.add(createMenuItem("Open", KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+        fileMenu.add(createMenuItem("Save", KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+        fileMenu.add(createMenuItem("Save As", KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
+        fileMenu.add(createMenuItem("Close", KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
+        fileMenu.add(createMenuItem("Exit", KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
 
-        JMenuItem newVirtual = new JMenuItem("New Virtual");
-        newVirtual.addActionListener(Action.getAction("New Virtual").asActionListener());
-        newVirtual.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
-        fileMenu.add(newVirtual);
-
-
-        JMenuItem open = new JMenuItem("Open");
-        open.addActionListener(Action.getAction("Open").asActionListener());
-        open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-        fileMenu.add(open);
-
-        JMenuItem save = new JMenuItem("Save");
-        save.addActionListener(Action.getAction("Save").asActionListener());
-        save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-        fileMenu.add(save);
-
-        JMenuItem saveAs = new JMenuItem("Save As");
-        saveAs.addActionListener(Action.getAction("Save As").asActionListener());
-        saveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
-        fileMenu.add(saveAs);
-
-        JMenuItem close = new JMenuItem("Close");
-        close.addActionListener(Action.getAction("Close").asActionListener());
-        close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
-        fileMenu.add(close);
-
-        JMenuItem exit = new JMenuItem("Exit");
-        exit.addActionListener(Action.getAction("Exit").asActionListener());
-        fileMenu.add(exit);
 
         JMenu editMenu = new JMenu("Edit");
-        JMenuItem undo = new JMenuItem("Undo");
-        undo.addActionListener(Action.getAction("Undo").asActionListener());
-        undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(undo);
-
-        JMenuItem redo = new JMenuItem("Redo");
-        redo.addActionListener(Action.getAction("Redo").asActionListener());
-        redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(redo);
-
-        JMenuItem cut = new JMenuItem("Cut");
-        cut.addActionListener(Action.getAction("Cut").asActionListener());
-        cut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(cut);
-
-        JMenuItem copy = new JMenuItem("Copy");
-        copy.addActionListener(Action.getAction("Copy").asActionListener());
-        copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(copy);
-
-        JMenuItem paste = new JMenuItem("Paste");
-        paste.addActionListener(Action.getAction("Paste").asActionListener());
-        paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(paste);
-
-        JMenuItem selectAll = new JMenuItem("Select All");
-        selectAll.addActionListener(Action.getAction("Select All").asActionListener());
-        selectAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(selectAll);
-
-        JMenuItem find = new JMenuItem("Find");
-        find.addActionListener(Action.getAction("Find").asActionListener());
-        find.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(find);
-
-        JMenuItem replace = new JMenuItem("Replace");
-        replace.addActionListener(Action.getAction("Replace").asActionListener());
-        replace.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
-        editMenu.add(replace);
+        editMenu.add(createMenuItem("Undo", KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK));
+        editMenu.add(createMenuItem("Redo", KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK));
+        editMenu.add(createMenuItem("Cut", KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK));
+        editMenu.add(createMenuItem("Copy", KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
+        editMenu.add(createMenuItem("Paste", KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
+        editMenu.add(createMenuItem("Select All", KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
+        editMenu.add(createMenuItem("Find", KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
+        editMenu.add(createMenuItem("Replace", KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
 
         JMenu code = new JMenu("Code");
-        JMenuItem indent = new JMenuItem("Indent");
-        indent.addActionListener(Action.getAction("Indent").asActionListener());
-        // Ctrl ]
-        indent.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, InputEvent.CTRL_DOWN_MASK));
-        code.add(indent);
-
-        JMenuItem dedent = new JMenuItem("Dedent");
-        dedent.addActionListener(Action.getAction("Dedent").asActionListener());
-        // Ctrl [
-        dedent.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, InputEvent.CTRL_DOWN_MASK));
-        code.add(dedent);
-
-        JMenuItem comment = new JMenuItem("Comment");
-        comment.addActionListener(Action.getAction("Comment").asActionListener());
-        comment.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SLASH, InputEvent.CTRL_DOWN_MASK));
-        code.add(comment);
+        code.add(createMenuItem("Indent", KeyEvent.VK_CLOSE_BRACKET, InputEvent.CTRL_DOWN_MASK));
+        code.add(createMenuItem("Dedent", KeyEvent.VK_OPEN_BRACKET, InputEvent.CTRL_DOWN_MASK));
+        code.add(createMenuItem("Comment", KeyEvent.VK_SLASH, InputEvent.CTRL_DOWN_MASK));
 
         JMenu run = new JMenu("Run");
-        JMenuItem runFile = new JMenuItem("Run File");
-        runFile.addActionListener(Action.getAction("Run File").asActionListener());
-        // shift f10
-        runFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.SHIFT_DOWN_MASK));
-        run.add(runFile);
+        run.add(createMenuItem("Run File", KeyEvent.VK_F10, InputEvent.SHIFT_DOWN_MASK));
+        run.add(createMenuItem("Run Project", KeyEvent.VK_F10, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 
         JMenu help = new JMenu("Help");
-        JMenuItem findAction = new JMenuItem("Find Action");
-        findAction.addActionListener(Action.getAction("Find Action").asActionListener());
-        findAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
-        help.add(findAction);
+        help.add(createMenuItem("Find Action", KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 
         JMenuItem about = new JMenuItem("About & Usage");
         about.addActionListener((e) -> {

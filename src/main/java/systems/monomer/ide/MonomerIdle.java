@@ -1,4 +1,4 @@
-package systems.monomer;
+package systems.monomer.ide;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 

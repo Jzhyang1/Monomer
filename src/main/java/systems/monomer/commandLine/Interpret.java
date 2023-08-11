@@ -1,4 +1,4 @@
-package commandLine;
+package systems.monomer.commandLine;
 
 import picocli.CommandLine;
 import systems.monomer.syntaxTree.Node;
