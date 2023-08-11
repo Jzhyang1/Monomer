@@ -67,7 +67,6 @@ public class FileTabSource implements TabSource {
     @Override
     public String desc() {
         if (calculatedEncoding == null) {
-            // file <encoding>
             calculatedEncoding = UniversalDetector.detectCharset(file);
             if (calculatedEncoding == null) {
                 calculatedEncoding = "utf-8";

@@ -19,12 +19,12 @@ import java.util.Timer;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public final class Editor extends JFrame {
     public static final String TITLE = "Monomer Idle";
-    public static final String FONT = "Monospaced";
-    static Editor editor;
+    public static final String FONT = "Consolas";
+    public static final String INDENT = "    ";
+    static Editor EDITOR_INSTANCE;
 
     static class Tab extends JPanel {
         //create a panel with line numbers and a content text area
@@ -34,6 +34,8 @@ public final class Editor extends JFrame {
         private final UndoManager undoManager = new UndoManager();
         private boolean editedSinceLastSave = false;
         private boolean editedSinceLastColor = false;
+        private int existingLineCount = 1;
+        private final JLabel location = new JLabel();
 
         public Tab(TabSource source) {
             this.source = source;
@@ -52,32 +54,29 @@ public final class Editor extends JFrame {
             this.contents.setEditable(isEditable);
 
             this.contents.getDocument().addDocumentListener(new DocumentListener() {
-                private void update(DocumentEvent e) {
-                    if (e.getType() == DocumentEvent.EventType.CHANGE && e instanceof DefaultStyledDocument.AttributeUndoableEdit) {
-                        return; // coloring
-                    }
+                private void update() {
                     if (!editedSinceLastColor) {
                         editedSinceLastColor = true;
                     }
                     if (editedSinceLastSave) return;
                     editedSinceLastSave = true;
-                    editor.refreshTab(Tab.this);
+                    EDITOR_INSTANCE.refreshTab(Tab.this);
                 }
 
                 @Override
                 public void insertUpdate(DocumentEvent e) {
-                    update(e);
+                    update();
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
-                    update(e);
+                    updateLineCount();
+                    update();
                 }
 
                 @Override
                 public void changedUpdate(DocumentEvent e) {
-
-                }
+                } // ignore because coloring causes a
             });
 
             InputMap inputMap = contents.getInputMap(JComponent.WHEN_FOCUSED);
@@ -86,17 +85,34 @@ public final class Editor extends JFrame {
             inputMap.put(enterStroke, enterStroke.toString());
             actionMap.put(enterStroke.toString(), new AbstractAction() {
                 @Override
-                public void actionPerformed(ActionEvent arg0) {
+                public void actionPerformed(ActionEvent actionEvent) {
                     int pos = contents.getCaretPosition();
-                    int lineStart = getLineStartOffset(getLineOfOffset(pos));
-                    String line = contents.getText().replace("\r\n", "\n").substring(lineStart, pos);
-                    int tabs = 0;
-                    while (tabs < line.length() && line.charAt(tabs) == '\t') tabs++;
+                    int lineStart, lineEnd;
+                    try {
+                        lineStart = Utilities.getRowStart(contents, pos);
+                        lineEnd = Utilities.getRowEnd(contents, pos);
+                    } catch (BadLocationException badLocationException) {
+                        throw new RuntimeException(badLocationException);
+                    }
+                    String line = sanitizedText().substring(lineStart, lineEnd);
+                    while (line.startsWith("\n")) {
+                        line = line.substring(1);
+                    }
+                    int numSpaces = 0;
+                    for (int i = 0; i < line.length(); i++) {
+                        if (line.charAt(i) == ' ') {
+                            numSpaces++;
+                        } else {
+                            break;
+                        }
+                    }
+                    int indents = numSpaces / INDENT.length();
                     try {
                         contents.getDocument().insertString(pos, "\n", null);
-                        contents.getDocument().insertString(pos + 1, "\t".repeat(tabs), null);
-                    } catch (BadLocationException e) {
-                        throw new RuntimeException(e);
+                        contents.getDocument().insertString(pos + 1, INDENT.repeat(indents), null);
+                        updateLineCount();
+                    } catch (BadLocationException badLocationException) {
+                        throw new RuntimeException(badLocationException);
                     }
                 }
             });
@@ -105,11 +121,11 @@ public final class Editor extends JFrame {
             inputMap.put(enterStroke, enterStroke.toString());
             actionMap.put(enterStroke.toString(), new AbstractAction() {
                 @Override
-                public void actionPerformed(ActionEvent arg0) {
+                public void actionPerformed(ActionEvent actionEvent) {
                     if (contents.getSelectedText() == null) {
                         int pos = contents.getCaretPosition();
                         try {
-                            contents.getDocument().insertString(pos, "    ", null);
+                            contents.getDocument().insertString(pos, INDENT, null);
                         } catch (BadLocationException e) {
                             throw new RuntimeException(e);
                         }
@@ -119,75 +135,73 @@ public final class Editor extends JFrame {
                 }
             });
 
-            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "copy");
-            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK), "paste_asdf");
-
-            actionMap.put("copy", new AbstractAction() {
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "Copy");
+            actionMap.put("Copy", new AbstractAction() { // override default action
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     Action.getAction("Copy").run();
                 }
             });
-
-            actionMap.put("paste_asdf", new AbstractAction() {
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK), "Paste_");
+            actionMap.put("Paste_", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     Action.getAction("Paste").run();
                 }
             });
-
-            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK), "cut");
-            actionMap.put("cut", new AbstractAction() {
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK), "Cut");
+            actionMap.put("Cut", new AbstractAction() { // override default action
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     Action.getAction("Cut").run();
                 }
             });
 
-            this.contents.getDocument().addUndoableEditListener((event) -> {
-                undoManager.addEdit(event.getEdit());
-            });
+            this.contents.getDocument().addUndoableEditListener((event) -> undoManager.addEdit(event.getEdit()));
 
-            //scrollpane for both lineNumbers and contents
             JScrollPane scrollPane = new JScrollPane(contents);
             scrollPane.setRowHeaderView(lineNumbers);
-
             this.setLayout(new BorderLayout());
             this.add(scrollPane, BorderLayout.CENTER);
 
-            Box box = Box.createHorizontalBox();
-            JLabel location = new JLabel("    1:1 / 0 / length: 0 / " + source.desc());
-
-            contents.addCaretListener((event) -> {
-                if (contents.getSelectedText() == null) {
-                    int pos = contents.getCaretPosition();
-                    int row = 0, col = 0;
-                    row = getLineOfOffset(pos);
-                    col = pos - getLineStartOffset(row);
-                    location.setText("    " + (row + 1) + ":" + (col + 1) + " / " + pos + " / length: " + contents.getText().length()
-                    + " / " + this.source.desc());
-                } else {
-                    int start = contents.getSelectionStart();
-                    int end = contents.getSelectionEnd();
-                    int startRow = 0, startCol = 0, endRow = 0, endCol = 0;
-                    startRow = getLineOfOffset(start);
-                    startCol = start - getLineStartOffset(startRow);
-                    endRow = getLineOfOffset(end);
-                    endCol = end - getLineStartOffset(endRow);
-                    int selectionLength = end - start;
-                    String s;
-                    if (selectionLength == 1) {
-                        s = " (1 char)";
-                    } else {
-                        s = " (" + selectionLength + " chars)";
-                    }
-                    location.setText("    " + (startRow + 1) + ":" + (startCol + 1) + " - " + (endRow + 1) + ":" + (endCol + 1) + s + " / " + contents.getCaretPosition() + " / length: " + contents.getText().length()
-                            + " / " + this.source.desc());
-                }
-            });
+            contents.addCaretListener((event) -> updateLocationLabelText());
+            updateLocationLabelText();
             contents.getDocument().putProperty(PlainDocument.tabSizeAttribute, 4);
-            box.add(location);
-            this.add(box, BorderLayout.SOUTH);
+            this.add(location, BorderLayout.SOUTH);
+        }
+
+        private void updateLocationLabelText() {
+            if (contents.getSelectedText() == null) {
+                int positionOffset = contents.getCaretPosition();
+                int row = getLineOfOffset(positionOffset);
+                int col = positionOffset - getLineStartOffset(row);
+                location.setText(
+                        INDENT + (row + 1) + ":" + (col + 1) +
+                                " / " + positionOffset +
+                                " / length: " + sanitizedText().length() +
+                                " / " + this.source.desc());
+            } else {
+                int start = contents.getSelectionStart();
+                int end = contents.getSelectionEnd();
+                int startRow = getLineOfOffset(start);
+                int startCol = start - getLineStartOffset(startRow);
+                int endRow = getLineOfOffset(end);
+                int endCol = end - getLineStartOffset(endRow);
+                int selectionLength = end - start;
+                String selectionLengthString;
+                if (selectionLength == 1) {
+                    selectionLengthString = " (1 char)";
+                } else {
+                    selectionLengthString = " (" + selectionLength + " chars)";
+                }
+                location.setText(
+                        INDENT + (startRow + 1) + ":" + (startCol + 1) + " - " + (endRow + 1) + ":" + (endCol + 1)
+                                + selectionLengthString +
+                                " / " + start + " - " + end +
+                                " / length: " + sanitizedText().length() +
+                                " / " + this.source.desc());
+            }
+
         }
 
         public String getName() {
@@ -197,30 +211,57 @@ public final class Editor extends JFrame {
             return source.getName();
         }
 
+        private int lineCount() {
+            Element root = contents.getDocument().getDefaultRootElement();
+            return root.getElementCount();
+        }
+
+        private void updateLineCount() {
+            int lineNumber = lineCount();
+            if (lineNumber == this.existingLineCount) return; // no need to update
+            try {
+                lineNumbers.getDocument().remove(0, lineNumbers.getDocument().getLength());
+            } catch (BadLocationException badLocationException) {
+                throw new RuntimeException(badLocationException);
+            }
+            this.existingLineCount = lineNumber;
+            int offset = 0;
+            for (int currentLine = 1; currentLine <= lineNumber; currentLine++) {
+                String insert = currentLine + "\n";
+                try {
+                    lineNumbers.getDocument().insertString(offset, insert, null);
+                } catch (BadLocationException e) {
+                    throw new RuntimeException(e);
+                }
+                offset += insert.length();
+            }
+        }
+
         private void color() {
             if (!editedSinceLastColor) return;
             editedSinceLastColor = false;
+            String text = sanitizedText();
+            List<Token> tokens;
             try {
-                String[] lines = contents.getText().split("\r\n|\r|\n", -1);
-                String text = String.join("\n", lines);
-                int lineCount = lines.length;
-
-                final List<Token> tokens = new SourceString(text).parse().markupBlock();
-                SwingUtilities.invokeLater(() -> {
-                    for (Token token : tokens) {
-                        try {
-                            syntaxHighlight(token.getStart().getPosition(), token.getStop().getPosition(),
-                                    Colors.colorFor(token.getUsage()));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                //set line numbers to 1 through lineCount
-                lineNumbers.setText(IntStream.range(1, lineCount + 1).mapToObj(Integer::toString).collect(Collectors.joining("\n")));
-            } catch (Exception e) {
-                e.printStackTrace();
+                tokens = new SourceString(text).parse().markupBlock();
+            } catch (Exception exception) {
+                throw new RuntimeException("failed to color parse source, " + source.desc(), exception);
             }
+            final List<Token> finalTokens = tokens;
+            SwingUtilities.invokeLater(() -> {
+                for (Token token : finalTokens) {
+                    try {
+                        syntaxHighlight(
+                                token.getStart().getPosition(),
+                                token.getStop().getPosition(),
+                                Colors.colorFor(token.getUsage())
+                        );
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
+                updateLineCount();
+            });
             contents.setCharacterAttributes(SimpleAttributeSet.EMPTY, true);
         }
 
@@ -228,21 +269,25 @@ public final class Editor extends JFrame {
 
         static {
             for (Colors color : Colors.values()) {
-                StyleContext sc = StyleContext.getDefaultStyleContext();
-                AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color.getColor());
-                aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
-                COLOR_ATTRIBUTE_SET_HASH_MAP.put(color.getColor(), aset);
+                StyleContext styleContext = StyleContext.getDefaultStyleContext();
+                AttributeSet attributeSet = styleContext.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color.getColor());
+                attributeSet = styleContext.addAttribute(attributeSet, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+                COLOR_ATTRIBUTE_SET_HASH_MAP.put(color.getColor(), attributeSet);
             }
         }
 
         private void syntaxHighlight(int start, int end, Color color) {
-            AttributeSet aset = COLOR_ATTRIBUTE_SET_HASH_MAP.get(color);
-            contents.getStyledDocument().setCharacterAttributes(start, end - start, aset, false);
+            contents.getStyledDocument().setCharacterAttributes(
+                    start,
+                    end - start,
+                    COLOR_ATTRIBUTE_SET_HASH_MAP.get(color),
+                    false
+            );
         }
 
 
         public void save() {
-            source.setContents(contents.getText());
+            source.setContents(sanitizedText());
             if (source instanceof NewTabSource && ((NewTabSource) source).transform() != null) {
                 source = ((NewTabSource) source).transform();
             }
@@ -269,15 +314,39 @@ public final class Editor extends JFrame {
             }
         }
 
+        public String sanitizedText() {
+            return contents.getText().replace("\r", "");
+        }
+
     }
 
     private final List<Tab> tabs = new ArrayList<>();
     private final JTabbedPane tabbedPane = new JTabbedPane();
     private final JPanel display = new JPanel();
     private final JMenuBar menuBar = new JMenuBar();
+    private final TimerTask colorTimerTask;
+    private final Timer colorTimer = new Timer();
 
     public Editor() {
-        editor = this;
+        EDITOR_INSTANCE = this;
+        initFrame();
+        createDisplayPanel();
+        this.add(display);
+        populateActions();
+        populateMenu();
+        this.colorTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (hasNoTabs()) return;
+                Tab selectedTab = getSelectedTab();
+                selectedTab.color();
+                selectedTab.repaint();
+            }
+        };
+        colorTimer.schedule(colorTimerTask, 0, 1000);
+    }
+
+    private void initFrame() {
         this.setLayout(new BorderLayout());
         this.setJMenuBar(menuBar);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -285,43 +354,33 @@ public final class Editor extends JFrame {
         this.setVisible(true);
         this.setResizable(true);
         this.setTitle(TITLE);
-        createDisplayPanel();
-        this.add(display);
-        populateActions();
-        populateMenu();
-
-        TimerTask a = new TimerTask() {
-            @Override
-            public void run() {
-                if (!hasAnyTabs()) return;
-                Tab t = getSelectedTab();
-                t.color();
-                t.repaint();
-            }
-        };
-        Timer timer = new Timer();
-        timer.schedule(a, 0, 1000);
     }
 
     private JLabel createDisplayPanelLabel(String option, String commandWindows, String commandMac) {
-        JLabel comp = new JLabel("<html>" + option + " with <font color='#b5ddff'>" + commandWindows + "</font></html>");
+        String commandText;
+        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            commandText = commandMac;
+        } else {
+            commandText = commandWindows;
+        }
+        JLabel comp = new JLabel("<html>" + option + " with <font color='#b5ddff'>" + commandText + "</font></html>");
         comp.setFont(new Font(FONT, Font.PLAIN, 20));
         comp.setHorizontalAlignment(SwingConstants.CENTER);
         comp.setVerticalAlignment(SwingConstants.CENTER);
         return comp;
     }
+
     private void createDisplayPanel() {
         List<JLabel> comps = List.of(
                 createDisplayPanelLabel("Create file", "Ctrl + N", "Cmd + N"),
                 createDisplayPanelLabel("Search for actions", "Ctrl + Shift + A", "Cmd + Shift + A"),
                 createDisplayPanelLabel("Open file", "Ctrl + O", "Cmd + O"));
-
         display.setLayout(new BorderLayout());
         Box panel = Box.createVerticalBox();
         panel.add(Box.createVerticalGlue());
-        for (int i = 0; i < comps.size(); i++) {
-            panel.add(comps.get(i));
-            if (i != comps.size() - 1) {
+        for (int index = 0; index < comps.size(); index++) {
+            panel.add(comps.get(index));
+            if (index != comps.size() - 1) {
                 panel.add(Box.createVerticalStrut(20));
             }
         }
@@ -330,16 +389,17 @@ public final class Editor extends JFrame {
     }
 
     public void addTab(Tab tab) {
-        if (!hasAnyTabs()) {
+        if (hasNoTabs()) {
             this.remove(display);
             this.add(tabbedPane, BorderLayout.CENTER);
         }
         tabs.add(tab);
         tabbedPane.addTab(tab.getName(), null, tab, tab.source.getToolTipText());
+        tabbedPane.setSelectedIndex(tabs.size() - 1);
     }
 
-    private boolean hasAnyTabs() {
-        return !tabs.isEmpty();
+    private boolean hasNoTabs() {
+        return tabs.isEmpty();
     }
 
     public Tab getSelectedTab() {
@@ -356,15 +416,13 @@ public final class Editor extends JFrame {
     void populateActions() {
         Action.addAction(
                 new Action("New", () -> {
-                    TabSource source = new NewTabSource(editor);
+                    TabSource source = new NewTabSource(EDITOR_INSTANCE);
                     addTab(new Tab(source));
-                    tabbedPane.setSelectedIndex(tabs.size() - 1);
                 }),
                 new Action("New Virtual", () -> {
                     TabSource source = new DefaultTabSource();
-                    source.setName("virtual.mm");
+                    source.setName("virtual");
                     addTab(new Tab(source));
-                    tabbedPane.setSelectedIndex(tabs.size() - 1);
                 }),
                 new Action("Open", () -> {
                     JFileChooser chooser = new JFileChooser();
@@ -378,10 +436,8 @@ public final class Editor extends JFrame {
                                     JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-                        addTab(new Tab(new FileTabSource(file, true)));
-                        tabbedPane.setSelectedIndex(tabs.size() - 1);
-                        //color
-                        Tab tab = getSelectedTab();
+                        Tab tab;
+                        addTab(tab = new Tab(new FileTabSource(file, true)));
                         tab.color();
                         tab.repaint();
                     }
@@ -393,8 +449,8 @@ public final class Editor extends JFrame {
                 }),
                 new Action("Save As", () -> {
                     Tab tab = getSelectedTab();
-                    if (tab.source instanceof DefaultTabSource && !(tab.source instanceof  NewTabSource)) {
-                        // ask them to change the name of the file
+                    if (tab.source instanceof DefaultTabSource && !(tab.source instanceof NewTabSource)) {
+                        // pure virtual
                         String text = JOptionPane.showInputDialog(this, "Change the name of the virtual file to:");
                         if (text == null) return;
                         tab.source.setName(text);
@@ -443,14 +499,12 @@ public final class Editor extends JFrame {
                     Tab tab = getSelectedTab();
                     if (tab.contents.getSelectedText() == null) {
                         int caret = tab.contents.getCaretPosition();
-                        int start = caret;
-                        int end = caret;
-                        String text = tab.contents.getText().replaceAll("\r", "");
-                        while (start > 0 && text.charAt(start - 1) != '\n') {
-                            start--;
-                        }
-                        while (end < text.length() && text.charAt(end) != '\n') {
-                            end++;
+                        int start, end;
+                        try {
+                            start = Utilities.getRowStart(tab.contents, caret);
+                            end = Utilities.getRowEnd(tab.contents, caret);
+                        } catch (BadLocationException badLocationException) {
+                            throw new RuntimeException(badLocationException);
                         }
                         tab.contents.select(start, end);
                     }
@@ -458,27 +512,22 @@ public final class Editor extends JFrame {
                     StringSelection selection = new StringSelection(text);
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     clipboard.setContents(selection, selection);
-                    tab.contents.replaceSelection("");
+                    tab.contents.replaceSelection(null);
                 }),
                 new Action("Copy", () -> {
                     Tab tab = getSelectedTab();
                     if (tab.contents.getSelectedText() == null) {
-                        // transfer the current line to the clipboard
                         int caret = tab.contents.getCaretPosition();
-                        int start = caret;
-                        int end = caret;
-                        String text = tab.contents.getText().replaceAll("\r", "");
-                        while (start > 0 && text.charAt(start - 1) != '\n') {
-                            start--;
-                        }
-                        while (end < text.length() && text.charAt(end) != '\n') {
-                            end++;
+                        int start, end;
+                        try {
+                            start = Utilities.getRowStart(tab.contents, caret);
+                            end = Utilities.getRowEnd(tab.contents, caret);
+                        } catch (BadLocationException badLocationException) {
+                            throw new RuntimeException(badLocationException);
                         }
                         tab.contents.select(start, end);
                     }
-                    // get the selected text
                     String text = tab.contents.getSelectedText();
-                    // put the selected text on the clipboard
                     StringSelection selection = new StringSelection(text);
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     clipboard.setContents(selection, selection);
@@ -489,20 +538,23 @@ public final class Editor extends JFrame {
                 }),
                 new Action("Select All", () -> {
                     Tab tab = getSelectedTab();
-                    tab.contents.selectAll();
+                    tab.contents.select(0, tab.sanitizedText().length());
                 }),
                 new Action("Find", () -> {
                     Tab tab = getSelectedTab();
-                    String text = JOptionPane.showInputDialog(this, "Find what:");
-                    if (text == null) {
-                        return;
-                    }
-                    String contents = tab.contents.getText();
+                    String text = JOptionPane.showInputDialog(
+                            this,
+                            "Find what:",
+                            "Find",
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+                    if (text == null) return;
+                    String contents = tab.sanitizedText();
                     int index = contents.indexOf(text);
                     if (index == -1) {
                         JOptionPane.showMessageDialog(this,
-                                "Cannot find \"" + text + "\"",
-                                "Could not find text",
+                                "We couldn't find the text \"" + text + "\" in the file",
+                                "Could not find input",
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
@@ -510,254 +562,256 @@ public final class Editor extends JFrame {
                 }),
                 new Action("Find Next", () -> {
                     Tab tab = getSelectedTab();
-                    String text = JOptionPane.showInputDialog(this, "Find what:");
-                    if (text == null) {
-                        return;
-                    }
-                    String contents = tab.contents.getText();
+                    String text = JOptionPane.showInputDialog(
+                            this,
+                            "Find what:",
+                            "Find Next",
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+                    if (text == null) return;
+                    String contents = tab.sanitizedText();
                     int index = contents.indexOf(text, tab.contents.getCaretPosition());
                     if (index == -1) {
                         JOptionPane.showMessageDialog(this,
-                                "Cannot find \"" + text + "\"",
-                                "Could not find text",
+                                "We couldn't find the text \"" + text + "\" in the rest of the file",
+                                "Could not find input",
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     tab.contents.select(index, index + text.length());
                 }),
-                new Action("Replace", () -> {
-                    Tab tab = getSelectedTab();
-                    JDialog dialog = new JDialog(this, "Replace", true);
-                    dialog.setLocationRelativeTo(this);
-                    JPanel panel = new JPanel();
-                    dialog.setContentPane(panel);
-                    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-                    JPanel findPanel = new JPanel();
-                    panel.add(findPanel);
-                    findPanel.setLayout(new BoxLayout(findPanel, BoxLayout.X_AXIS));
-                    findPanel.add(new JLabel("  Find what:  "));
-                    JTextField findField = new JTextField();
-                    findPanel.add(findField);
-                    JPanel replacePanel = new JPanel();
-                    panel.add(replacePanel);
-                    panel.add(Box.createVerticalStrut(10));
-                    replacePanel.setLayout(new BoxLayout(replacePanel, BoxLayout.X_AXIS));
-                    replacePanel.add(new JLabel("  Replace with:  "));
-                    JTextField replaceField = new JTextField();
-                    replacePanel.add(replaceField);
-                    JPanel buttonPanel = new JPanel();
-                    panel.add(Box.createVerticalStrut(10));
-                    panel.add(buttonPanel);
-                    JButton replaceButton = new JButton("Replace");
-                    replaceButton.addActionListener(e -> {
-                        String findText = findField.getText();
-                        String replaceText = replaceField.getText();
-                        String newText = tab.contents.getText().replace(
-                                findText,
-                                replaceText);
-                        tab.contents.setText(newText);
-                    });
-                    buttonPanel.add(replaceButton);
-                    JButton replaceAllButton = new JButton("Replace All");
-                    replaceAllButton.addActionListener(e -> {
-                        String findText = findField.getText();
-                        String replaceText = replaceField.getText();
-                        String newText = tab.contents.getText().replaceAll(
-                                findText,
-                                replaceText);
-                        tab.contents.setText(newText);
-                    });
-                    buttonPanel.add(replaceAllButton);
-                    dialog.pack();
-                    dialog.setVisible(true);
-                }),
+                new Action("Replace", this::askForReplace),
                 new Action("Run File", () -> {
                     Tab tab = getSelectedTab();
-                    String contents = tab.contents.getText();
+                    String contents = tab.sanitizedText();
                     Interpret.interpret(contents);
                 }),
-                new Action("Find Action", () -> {
-                    JPanel panel = new JPanel();
-                    JDialog dialog = new JDialog(this, "Find Action", true);
-                    dialog.setContentPane(panel);
-                    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-                    JTextField field = new JTextField();
-                    panel.add(field); // show a list of results as field is updated
-                    JPanel buttonPanel = new JPanel();
-                    JScrollPane scrollPane = new JScrollPane(buttonPanel);
-                    panel.add(scrollPane);
-                    Set<Map.Entry<String, Action>> entries = Action.actions.entrySet().stream()
-                            .filter(entry -> !entry.getKey().equals("Find Action"))
-                            .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey().toLowerCase(Locale.ROOT), entry.getValue()))
-                            .collect(Collectors.toSet());
-                    buttonPanel.setLayout(new GridLayout(entries.size(), 1));
-                    Consumer<String> onKeyTyped = (contents) -> {
-                        List<Action> actions = new ArrayList<>(entries.stream()
-                                .filter(entry -> entry.getKey().contains(contents))
-                                .map(Map.Entry::getValue)
-                                .toList());
-                        buttonPanel.removeAll();
-                        actions.sort(Comparator.comparing(Action::getName));
-                        GridBagConstraints gbc = new GridBagConstraints();
-                        gbc.gridx = 0;
-                        gbc.gridy = 0;
-                        gbc.fill = GridBagConstraints.HORIZONTAL;
-                        gbc.ipadx = 20;
-                        gbc.ipady = 20;
-                        for (Action action : actions) {
-                            JButton button = new JButton(action.getName());
-                            button.setHorizontalTextPosition(SwingConstants.CENTER);
-                            button.setVerticalTextPosition(SwingConstants.CENTER);
-                            button.setToolTipText("Run action \"" + action.getName() + "\"");
-
-                            button.addActionListener(e1 -> {
-                                dialog.dispose();
-                                action.run();
-                            });
-                            button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-                            buttonPanel.add(button, gbc);
-                            gbc.gridy++;
-                        }
-                        buttonPanel.revalidate();
-                        buttonPanel.repaint();
-                    };
-                    field.addKeyListener(new KeyListener() {
-                        @Override
-                        public void keyTyped(KeyEvent e) {
-                            String s;
-                            if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
-                                s = field.getText();
-                            } else {
-                                s = field.getText() + e.getKeyChar();
-                            }
-                            String contents = s.toLowerCase(Locale.ROOT);
-                            onKeyTyped.accept(contents);
-                        }
-
-                        @Override
-                        public void keyPressed(KeyEvent e) {
-                        }
-
-                        @Override
-                        public void keyReleased(KeyEvent e) {
-                        }
-                    });
-                    onKeyTyped.accept("");
-                    dialog.setSize(400, 400);
-                    dialog.setLocationRelativeTo(this);
-                    dialog.setVisible(true);
-                }),
+                new Action("Find Action", this::showActionListWindow),
                 new Action("Indent", () -> {
-
-                    // get the selected lines
                     Tab tab = getSelectedTab();
-                    String str;
-
-                    boolean hasSelection = tab.contents.getSelectedText() != null;
-                    if (!hasSelection) {
-                        str = tab.contents.getText().replace("\r", "");
-                        String[] lines = str.split("\n");
-                        lines = Arrays.stream(lines)
-                                .map(line -> "\t" + line)
+                    if (tab.contents.getSelectedText() == null) {
+                        String[] lines = tab.sanitizedText()
+                                .lines()
+                                .map(line -> INDENT + line)
                                 .toArray(String[]::new);
-                        String newStr = String.join("\n", lines);
-                        tab.contents.setText(newStr);
+                        tab.contents.setText(String.join("\n", lines));
                     } else {
-                        int start = tab.contents.getSelectionStart();
-                        int lineStart = start;
-                        String text = tab.contents.getText().replace("\r", "");
-                        while (lineStart > 0 && text.charAt(lineStart - 1) != '\n') {
-                            lineStart--;
+                        int lineStart, lineEnd;
+                        try {
+                            lineStart = Utilities.getRowStart(tab.contents, tab.contents.getSelectionStart());
+                            lineEnd = Utilities.getRowEnd(tab.contents, tab.contents.getSelectionEnd());
+                        } catch (BadLocationException badLocationException) {
+                            throw new RuntimeException(badLocationException);
                         }
-                        str = text.substring(lineStart, tab.contents.getSelectionEnd());
-                        String[] lines = str.split("\n");
-                        lines = Arrays.stream(lines)
-                                .map(line -> "\t" + line)
+                        String[] lines = tab.sanitizedText()
+                                .substring(lineStart, lineEnd)
+                                .lines()
+                                .map(line -> INDENT + line)
                                 .toArray(String[]::new);
-                        String newStr = String.join("\n", lines);
-                        tab.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
+                        String replacement = String.join("\n", lines);
+                        tab.replaceRange(replacement, lineStart, lineEnd);
                     }
                 }),
                 new Action("Dedent", () -> {
-
-                    // get the selected lines
                     Tab tab = getSelectedTab();
-                    String str;
-
-                    boolean hasSelection = tab.contents.getSelectedText() != null;
-                    String text = tab.contents.getText().replace("\r", "");
-                    if (!hasSelection) {
-                        str = text;
-                        String[] lines = str.split("\n");
-                        for (int i = 0; i < lines.length; i++) {
-                            String line = lines[i];
-                            if (line.startsWith("\t")) {
-                                lines[i] = line.substring(1);
+                    if (tab.contents.getSelectedText() == null) {
+                        String[] lines = tab.sanitizedText()
+                                .lines()
+                                .toArray(String[]::new);
+                        for (int index = 0; index < lines.length; index++) {
+                            if (lines[index].startsWith(INDENT)) {
+                                lines[index] = lines[index].substring(INDENT.length());
                             }
                         }
-                        String newStr = String.join("\n", lines);
-                        tab.contents.setText(newStr);
+                        tab.contents.setText(String.join("\n", lines));
                     } else {
-                        int start = tab.contents.getSelectionStart();
-                        int lineStart = start;
-                        while (lineStart > 0 && text.charAt(lineStart - 1) != '\n') {
-                            lineStart--;
+                        int lineStart, lineEnd;
+                        try {
+                            lineStart = Utilities.getRowStart(tab.contents, tab.contents.getSelectionStart());
+                            lineEnd = Utilities.getRowEnd(tab.contents, tab.contents.getSelectionEnd());
+                        } catch (BadLocationException badLocationException) {
+                            throw new RuntimeException(badLocationException);
                         }
-                        str = text.substring(lineStart, tab.contents.getSelectionEnd());
-                        String[] lines = str.split("\n");
-                        for (int i = 0; i < lines.length; i++) {
-                            String line = lines[i];
-                            if (line.startsWith("\t")) {
-                                lines[i] = line.substring(1);
+                        String[] lines = tab.sanitizedText()
+                                .substring(lineStart, lineEnd)
+                                .lines()
+                                .toArray(String[]::new);
+                        for (int index = 0; index < lines.length; index++) {
+                            if (lines[index].startsWith(INDENT)) {
+                                lines[index] = lines[index].substring(INDENT.length());
                             }
                         }
-                        String newStr = String.join("\n", lines);
-                        tab.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
+                        String replacement = String.join("\n", lines);
+                        tab.replaceRange(replacement, lineStart, lineEnd);
                     }
                 }),
                 new Action("Comment", () -> {
-
-                    // get the selected lines
                     Tab tab = getSelectedTab();
                     if (tab.contents.getSelectedText() == null) {
-                        // comment the current line
-                        int caretPosition = tab.contents.getCaretPosition();
-                        int lineStart = caretPosition;
-                        while (lineStart > 0 && tab.contents.getText().charAt(lineStart - 1) != '\n') {
-                            lineStart--;
+                        int caret = tab.contents.getCaretPosition();
+                        int lineStart, lineEnd;
+                        try {
+                            lineStart = Utilities.getRowStart(tab.contents, caret);
+                            lineEnd = Utilities.getRowEnd(tab.contents, caret);
+                        } catch (BadLocationException badLocationException) {
+                            throw new RuntimeException(badLocationException);
                         }
-                        String str = tab.contents.getText().substring(lineStart, caretPosition);
-                        if (str.contains("\\\\"))
-                            tab.replaceRange(str.replace("\\\\", ""), lineStart, caretPosition);
-                        else
-                            tab.replaceRange("\\\\" + str, lineStart, caretPosition);
+                        String line = tab.sanitizedText().substring(lineStart, lineEnd);
+                        if (line.contains("\\\\")) {
+                            tab.replaceRange(line.replace("\\\\", ""), lineStart, lineEnd);
+                        } else {
+                            tab.replaceRange("\\\\ " + line, lineStart, lineEnd);
+                        }
                     } else {
-                        int start = tab.contents.getSelectionStart();
-                        int lineStart = start;
-                        while (lineStart > 0 && tab.contents.getText().charAt(lineStart - 1) != '\n') {
-                            lineStart--;
+                        int lineStart, lineEnd;
+                        try {
+                            lineStart = Utilities.getRowStart(tab.contents, tab.contents.getSelectionStart());
+                            lineEnd = Utilities.getRowEnd(tab.contents, tab.contents.getSelectionEnd());
+                        } catch (BadLocationException badLocationException) {
+                            throw new RuntimeException(badLocationException);
                         }
-                        String str = tab.contents.getText().substring(lineStart, tab.contents.getSelectionEnd());
-                        String[] lines = str.split("\n");
-                        for (int i = 0; i < lines.length; i++) {
-                            String line = lines[i];
-                            if (line.contains("\\\\ ")) {
-                                lines[i] = line.replace("\\\\ ", "");
+                        String[] lines = tab.contents
+                                .getText()
+                                .substring(lineStart, lineEnd)
+                                .lines()
+                                .toArray(String[]::new);
+                        for (int index = 0; index < lines.length; index++) {
+                            if (lines[index].contains("\\\\")) {
+                                lines[index] = lines[index].replace("\\\\", "");
                             } else {
-                                lines[i] = "\\\\ " + line;
+                                lines[index] = "\\\\ " + lines[index];
                             }
                         }
-                        String newStr = String.join("\n", lines);
-                        tab.replaceRange(newStr, lineStart, tab.contents.getSelectionEnd());
+                        String replacement = String.join("\n", lines);
+                        tab.replaceRange(replacement, lineStart, lineEnd);
                     }
                 })
         );
     }
 
+    private void askForReplace() {
+        Tab tab = getSelectedTab();
+        JDialog dialog = new JDialog(this, "Find and Replace", true);
+        dialog.setLocationRelativeTo(this);
+        JPanel panel = new JPanel();
+        dialog.setContentPane(panel);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JPanel findPanel = new JPanel();
+        panel.add(findPanel);
+        findPanel.setLayout(new BoxLayout(findPanel, BoxLayout.X_AXIS));
+        findPanel.add(new JLabel("  Find what:  "));
+        JTextField findField = new JTextField();
+        findPanel.add(findField);
+        JPanel replacePanel = new JPanel();
+        panel.add(replacePanel);
+        panel.add(Box.createVerticalStrut(10));
+        replacePanel.setLayout(new BoxLayout(replacePanel, BoxLayout.X_AXIS));
+        replacePanel.add(new JLabel("  Replace with:  "));
+        JTextField replaceField = new JTextField();
+        replacePanel.add(replaceField);
+        JPanel buttonPanel = new JPanel();
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(buttonPanel);
+        JButton replaceButton = new JButton("Replace");
+        replaceButton.addActionListener(e -> {
+            String findText = findField.getText();
+            String replaceText = replaceField.getText();
+            String newText = tab.sanitizedText().replace(
+                    findText,
+                    replaceText);
+            tab.contents.setText(newText);
+        });
+        buttonPanel.add(replaceButton);
+        JButton replaceAllButton = new JButton("Replace All");
+        replaceAllButton.addActionListener(e -> {
+            String findText = findField.getText();
+            String replaceText = replaceField.getText();
+            String newText = tab.sanitizedText().replaceAll(
+                    findText,
+                    replaceText);
+            tab.contents.setText(newText);
+        });
+        buttonPanel.add(replaceAllButton);
+        dialog.pack();
+        dialog.setVisible(true);
+    }
+
+    private void showActionListWindow() {
+        JPanel panel = new JPanel();
+        JDialog dialog = new JDialog(this, "Find Action", true);
+        dialog.setContentPane(panel);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JTextField field = new JTextField();
+        panel.add(field);
+        JPanel buttonPanel = new JPanel();
+        JScrollPane scrollPane = new JScrollPane(buttonPanel);
+        panel.add(scrollPane);
+        Set<Map.Entry<String, Action>> entries = Action.actions.entrySet().stream()
+                .filter(entry -> !entry.getKey().equals("Find Action"))
+                .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey().toLowerCase(Locale.ROOT), entry.getValue()))
+                .collect(Collectors.toSet());
+        buttonPanel.setLayout(new GridLayout(entries.size(), 1));
+        Consumer<String> onKeyTyped = (contents) -> {
+            List<Action> actions = new ArrayList<>(entries.stream()
+                    .filter(entry -> entry.getKey().contains(contents))
+                    .map(Map.Entry::getValue)
+                    .toList());
+            buttonPanel.removeAll();
+            actions.sort(Comparator.comparing(Action::getName));
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 0;
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints.ipadx = 20;
+            gridBagConstraints.ipady = 20;
+            for (Action action : actions) {
+                JButton button = new JButton(action.getName());
+                button.setHorizontalTextPosition(SwingConstants.CENTER);
+                button.setVerticalTextPosition(SwingConstants.CENTER);
+                button.setToolTipText("Run action \"" + action.getName() + "\"");
+                button.addActionListener(actionEvent -> {
+                    dialog.dispose();
+                    action.run();
+                });
+                button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                buttonPanel.add(button, gridBagConstraints);
+                gridBagConstraints.gridy++;
+            }
+            buttonPanel.revalidate();
+            buttonPanel.repaint();
+        };
+        field.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                String actualTextInField;
+                if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+                    actualTextInField = field.getText();
+                } else {
+                    actualTextInField = field.getText() + e.getKeyChar();
+                } // field.getText() doesn't include the character we just typed right now
+                String contents = actualTextInField.toLowerCase(Locale.ROOT);
+                onKeyTyped.accept(contents);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+        onKeyTyped.accept("");
+        dialog.setSize(400, 400);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+
+    }
+
     private void closeTab(Tab tab) {
         tabbedPane.remove(tab);
         tabs.remove(tab);
-        if (!hasAnyTabs()) {
+        if (hasNoTabs()) {
             remove(tabbedPane);
             add(display, BorderLayout.CENTER);
             repaint();
@@ -770,6 +824,7 @@ public final class Editor extends JFrame {
         item.setAccelerator(KeyStroke.getKeyStroke(keyEvent, inputEvent));
         return item;
     }
+
     private void populateMenu() {
         JMenu fileMenu = new JMenu("File");
 
@@ -824,7 +879,6 @@ public final class Editor extends JFrame {
                                        
                     Using this editor is simple:
                      - Create a new file by clicking File -> New (or Ctrl+N)
-                        
                         Once a file has been created, you can save it by clicking File -> Save (or Ctrl+S)
                         or save it as a new file by clicking File -> Save As (or Ctrl+Alt+S)
                      - Open a file by clicking File -> Open (or Ctrl+O)

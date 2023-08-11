@@ -18,7 +18,7 @@ public class Action {
             try {
                 action.run();
             } catch (IndexOutOfBoundsException e) {
-                JOptionPane.showMessageDialog(Editor.editor, "This action requires a tab to be selected.", "No tab selected", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(Editor.EDITOR_INSTANCE, "This action requires a tab to be selected.", "No tab selected", JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
                 e.printStackTrace();
             }
