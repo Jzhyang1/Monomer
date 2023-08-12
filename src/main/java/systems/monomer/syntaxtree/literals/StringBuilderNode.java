@@ -2,11 +2,13 @@ package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
+import systems.monomer.interpreter.InterpretStringValue;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.LiteralNode;
 import systems.monomer.syntaxtree.Node;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class StringBuilderNode extends LiteralNode {
 
@@ -16,8 +18,7 @@ public class StringBuilderNode extends LiteralNode {
     }
 
     public InterpretValue interpretValue() {
-        throw new Error("TODO unimplemented");
-        //return new InterpretBaseValue<>(getChildren().stream().map(x -> x.interpretValue().valueString()).collect(Collectors.joining()));
+        return new InterpretStringValue(getChildren().stream().map(x -> x.interpretValue().valueString()).collect(Collectors.joining()));
     }
 
     public CompileValue compileValue() {

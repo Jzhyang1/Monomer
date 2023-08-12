@@ -19,9 +19,9 @@ public class InterpretTest {
     }
     @Test
     public void testInterpret2() {
-        Source source = new SourceString("1+@3");
+        Source source = new SourceString("@\"hello world\"");
         Token token = source.parse();
         Node node = token.toNode();
-        assertEquals("interpret 1+@3", "4", node.interpretValue().valueString());
+        assertEquals("interpret hello world", "hello world", node.interpretValue().valueString());
     }
 }

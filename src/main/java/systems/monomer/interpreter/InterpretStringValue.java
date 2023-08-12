@@ -1,10 +1,11 @@
 package systems.monomer.interpreter;
 
 public class InterpretStringValue extends InterpretValue {
+    private String value;
     public InterpretStringValue(String value) {
-        //TODO
+        this.value = value;
     }
     public String valueString() {
-        throw new Error("TODO unimplemented");
+        return value;
     }
 }
