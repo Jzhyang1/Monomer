@@ -73,6 +73,9 @@ public abstract class Node extends ErrorBlock {
         for (Node child : children)
             add(child);
     }
+    public int size() {
+        return children.size();
+    }
 
     public void matchVariables() {
         for (Node child : children) {
