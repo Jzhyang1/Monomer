@@ -5,6 +5,7 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.variables.Type;
 import systems.monomer.variables.VariableKey;
 
 public class VariableNode extends Node {
@@ -25,16 +26,20 @@ public class VariableNode extends Node {
         }
         key = existing;
     }
+    public void setType(Type type) {
+        super.setType(type);
+        key.setValue((InterpretValue) type);    //TODO this is a hack
+    }
 
     public VariableKey getVariableKey() {
         return key;
     }
 
     public InterpretVariable interpretVariable() {
-        throw new Error("TODO unimplemented");
+        return key;
     }
     public InterpretValue interpretValue() {
-        return null;
+        return key.getValue();
     }
 
     public CompileMemory compileMemory() {

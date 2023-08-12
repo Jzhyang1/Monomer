@@ -1,8 +1,9 @@
-package systems.monomer.syntaxtree;
+package systems.monomer.syntaxtree.controls;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.operators.OperatorNode;
 
 public class ControlGroupNode extends OperatorNode {
     public ControlGroupNode(){

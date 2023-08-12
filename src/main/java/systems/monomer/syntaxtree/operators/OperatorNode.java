@@ -1,13 +1,13 @@
-package systems.monomer.syntaxtree;
+package systems.monomer.syntaxtree.operators;
 
 import lombok.NonNull;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretNumberValue;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
-import systems.monomer.syntaxtree.operators.Arithmetic;
+
 import static systems.monomer.syntaxtree.operators.Arithmetic.*;
-import systems.monomer.syntaxtree.operators.AssignOperatorNode;
+import systems.monomer.syntaxtree.operators.AssignNode;
 import systems.monomer.syntaxtree.operators.GenericOperatorNode;
 import systems.monomer.util.Pair;
 
@@ -207,7 +207,7 @@ public abstract class OperatorNode extends Node {
         }
 
         static {
-            putData("=", 0, AssignOperatorNode::new);
+            putData("=", 0, AssignNode::new);
             putData(",", 100, TupleNode::new);
             putData(";", -1000, TupleNode::new);
             putData(":", 20, 10, TupleNode::new);
@@ -276,6 +276,7 @@ public abstract class OperatorNode extends Node {
 
     public static boolean isChained(String a, String b) {
         List<Set<String>> chains = List.of(
+                new TreeSet<>(List.of(",")),
                 new TreeSet<>(List.of(";")),
                 new HashSet<>(List.of("<", "<=", "==")),
                 new HashSet<>(List.of(">", ">=", "==")),

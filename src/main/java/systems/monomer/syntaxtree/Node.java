@@ -22,12 +22,12 @@ public abstract class Node extends ErrorBlock {
     private String name;
     @Getter
     @Setter
-    private Node parent;
+    private Node parent = null;
     @Getter
     private List<Node> children = new ArrayList<>();
     @Getter
     @Setter
-    private Type type;
+    private Type type = null;
 
 
     public Node(String name) {

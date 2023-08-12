@@ -1,14 +1,15 @@
-package systems.monomer.syntaxtree;
+package systems.monomer.syntaxtree.controls;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.variables.VariableKey;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ControlOperatorNode extends OperatorNode{
+public abstract class ControlOperatorNode extends OperatorNode {
     private Map<String, VariableKey> variables = new HashMap<>();
 
     public ControlOperatorNode(String name){

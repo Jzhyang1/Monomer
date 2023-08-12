@@ -4,7 +4,6 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretStringValue;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.LiteralNode;
 import systems.monomer.syntaxtree.Node;
 
 import java.util.Collection;

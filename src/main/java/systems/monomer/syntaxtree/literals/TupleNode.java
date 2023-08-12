@@ -2,8 +2,8 @@ package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
+import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.LiteralNode;
 import systems.monomer.syntaxtree.Node;
 
 import java.util.Collection;
@@ -20,8 +20,7 @@ public class TupleNode extends LiteralNode {
     }
 
     public InterpretValue interpretValue() {
-        throw new Error("TODO unimplemented");
-        //  new InterpretTuple(getChildren());
+        return new InterpretTuple(getChildren());
     }
 
     public CompileValue compileValue() {

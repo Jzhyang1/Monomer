@@ -3,7 +3,6 @@ package systems.monomer.syntaxtree.literals;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.LiteralNode;
 
 public class BoolNode extends LiteralNode {
     public InterpretValue interpretValue() {

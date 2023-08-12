@@ -2,7 +2,7 @@ package systems.monomer.tokenizer;
 
 import systems.monomer.Constants;
 import systems.monomer.errorhandling.Index;
-import systems.monomer.syntaxtree.OperatorNode;
+import systems.monomer.syntaxtree.operators.OperatorNode;
 
 import java.util.*;
 
@@ -173,7 +173,8 @@ public abstract class Source {
                         parseNext();
                     }
                 }
-            } else if (peek == '\n') {
+            }
+            else if (peek == '\n') {
                 if (eof()) break;
                 line.get();
 
@@ -195,9 +196,11 @@ public abstract class Source {
                         ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
                     }
                 }
-            } else if (OperatorNode.signEndDelimiters().contains(peek)) {
+            }
+            else if (OperatorNode.signEndDelimiters().contains(peek)) {
                 break;
-            } else {
+            }
+            else {
                 //identifier, operator, or number
                 ret.add(parseNext());
             }

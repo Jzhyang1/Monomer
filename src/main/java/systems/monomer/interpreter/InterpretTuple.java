@@ -7,16 +7,21 @@ import java.util.Collection;
 import java.util.List;
 
 public class InterpretTuple extends InterpretCollectionValue {
+    public static InterpretTuple EMPTY = new InterpretTuple(List.of());
 
-    List<InterpretValue> tuple;
+    List<InterpretValue> tuple = new ArrayList<>();
 
     public InterpretTuple(Collection<? extends Node> list) {
-        tuple = new ArrayList<>();
         getValues().addAll(list.stream().map(Node::interpretValue).toList());
     }
 
     protected Collection<InterpretValue> getValues() {
-        throw new Error("TODO unimplemented");
+        return tuple;
+    }
+
+    @Override
+    public String valueString() {
+        return "(" + super.valueString() + ")";
     }
 
     public InterpretTuple clone() {

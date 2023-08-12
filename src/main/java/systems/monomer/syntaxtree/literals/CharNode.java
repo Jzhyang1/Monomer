@@ -4,7 +4,6 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretCharValue;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.LiteralNode;
 
 public class CharNode extends LiteralNode {
     Character value;

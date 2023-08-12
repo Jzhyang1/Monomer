@@ -7,10 +7,7 @@ import systems.monomer.errorhandling.Index;
 import systems.monomer.syntaxtree.*;
 import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.*;
-import systems.monomer.syntaxtree.operators.AssignOperatorNode;
-import systems.monomer.syntaxtree.operators.CallOperatorNode;
-import systems.monomer.syntaxtree.operators.CastOperatorNode;
-import systems.monomer.syntaxtree.operators.FieldOperatorNode;
+import systems.monomer.syntaxtree.operators.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,11 +39,11 @@ public class Token extends ErrorBlock {
         Token nextOp = iter.next();
         switch (nextOp.usage) {
             case IDENTIFIER -> {    //TODO move this under partialOperator or remember to call after every operation
-                Node fieldNode = new FieldOperatorNode().with(cur).with(nextOp.toNode());
+                Node fieldNode = new FieldNode().with(cur).with(nextOp.toNode());
                 return partialToNode(fieldNode, iter);
             }
             case GROUP -> { //TODO move this as well
-                Node callNode = new CallOperatorNode().with(cur).with(nextOp.toNode());
+                Node callNode = new CallNode().with(cur).with(nextOp.toNode());
                 return partialToNode(callNode, iter);
             }
             case OPERATOR -> {
@@ -122,7 +119,7 @@ public class Token extends ErrorBlock {
         if (cur != null) {
             if ((cur.getUsage() == Node.Usage.OPERATOR || cur.getUsage() == Node.Usage.LABEL)   //TODO this sucks
                     &&
-                    OperatorNode.isChained(cur.getName(), opNode.getName()))
+                    OperatorNode.isChained(cur.getName(), opNode.getName()))    //TODO doesn't work for ";" because tuple doesn't store the original operator
                 opNode = cur;
             else
                 opNode.add(cur);
@@ -183,10 +180,10 @@ public class Token extends ErrorBlock {
             }
             case OPERATOR -> {
                 return switch (value) {
-                    case "=" -> new AssignOperatorNode();
-//                    case ":", "to" -> new ConvertOperatorNode(value);
+                    case "=" -> new AssignNode();
+//                    case ":", "to" -> new ConvertNode(value);
 //                    case ";", "," -> new TupleNode(value);
-                    case "as" -> new CastOperatorNode();
+                    case "as" -> new CastNode();
                     case "if" -> new IfNode();
                     case "repeat" -> new RepeatNode();
                     case "while" -> new WhileNode();
@@ -198,8 +195,15 @@ public class Token extends ErrorBlock {
                             OperatorNode.getOperator(value);  //TODO make sure the GenericOperatorNode gets the function for interpret, compile, etc
                 };
             }
-            case GROUP -> {
-                if(children == null) return new TupleNode();
+            case GROUP -> { //TODO account for all the different types of groups
+                Node node = switch (value) {
+                    case "()" -> new TupleNode();
+                    case "[]" -> new ListNode();
+                    case "{}" -> new StructureNode();
+                    case "block" -> new ModuleNode("--block--"); //TODO make this better
+                    default -> null;
+                };
+                if(children == null) return node;
 
                 ListIterator<Token> iter = children.listIterator();
                 Token token = iter.next();
@@ -213,7 +217,9 @@ public class Token extends ErrorBlock {
                     cur = partialOperatorToNode(null, cur, token, iter);
                 }
 
-                return cur;
+                if(value.equals("()"))  return cur;    //TODO this is ugly
+                node.addAll(cur.getChildren());
+                return node;
             }
             default -> {
                 throw new Error("reached unreachable statement");

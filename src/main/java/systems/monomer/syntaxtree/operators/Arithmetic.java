@@ -2,8 +2,6 @@ package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.interpreter.InterpretNumberValue;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.OperatorNode;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

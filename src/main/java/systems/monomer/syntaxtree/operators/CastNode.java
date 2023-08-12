@@ -5,26 +5,30 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
-import systems.monomer.syntaxtree.OperatorNode;
+import systems.monomer.variables.Type;
 
-public class AssignOperatorNode extends OperatorNode {
-    public AssignOperatorNode() {
-        super("=");
+/**
+ * The first child is the value
+ * The second child is the type
+ */
+public class CastNode extends OperatorNode {
+    public CastNode() {
+        super("as");
     }
 
-    public void matchTypes() {
-        throw new Error("TODO unimplemented");
+    public Type getType() {
+        return getSecond().getType();
     }
 
     public InterpretVariable interpretVariable() {
         throw new Error("TODO unimplemented");
     }
     public InterpretValue interpretValue() {
-        return null;
+        throw new Error("TODO unimplemented");
     }
 
     public CompileMemory compileMemory() {
-        throw new Error("TODO unimplemented");
+        return getFirst().compileMemory();
     }
     public CompileValue compileValue() {
         throw new Error("TODO unimplemented");

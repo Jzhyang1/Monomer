@@ -9,7 +9,10 @@ public abstract class InterpretCollectionValue extends InterpretValue {
         getValues().add(value);
     }
     public String valueString() {
-        return getValues().toString();
+        return getValues().stream()
+                .map(InterpretValue::valueString)
+                .reduce((a, b) -> a + "," + b)
+                .orElse("");
     }
 
     public InterpretCollectionValue clone() {

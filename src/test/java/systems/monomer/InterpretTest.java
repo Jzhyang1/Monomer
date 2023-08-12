@@ -24,4 +24,29 @@ public class InterpretTest {
         Node node = token.toNode();
         assertEquals("interpret hello world", "hello world", node.interpretValue().valueString());
     }
+    @Test
+    public void testInterpret3() {
+        Source source = new SourceString("@(1+1)");
+        Token token = source.parse();
+        Node node = token.toNode();
+        assertEquals("interpret @(1+1)", "2", node.interpretValue().valueString());
+    }
+    @Test
+    public void testInterpret4() {
+        Source source = new SourceString("@(a=1);@a");
+        Token token = source.parse();
+        Node node = token.toNode();
+        node.matchVariables();
+        node.matchTypes();
+        assertEquals("interpret assign", "(1,1)", node.interpretValue().valueString());
+    }
+    @Test
+    public void testInterpretFile() {
+        Source source = new SourceFile("samples/operator-sample.m");
+        Token token = source.parse();
+        Node node = token.toNode();
+        node.matchVariables();
+        node.matchTypes();
+        assertEquals("interpret assign", "(0,1,0,0,1,0)", node.interpretValue().valueString());
+    }
 }

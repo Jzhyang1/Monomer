@@ -3,11 +3,16 @@ package systems.monomer.syntaxtree.operators;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.OperatorNode;
+import systems.monomer.variables.Type;
 
-public class CallOperatorNode extends OperatorNode {
-    public CallOperatorNode() {
-        super("call");
+public class ConvertNode extends OperatorNode {
+
+    public ConvertNode() {
+        super("to");
+    }
+
+    public Type getType() {
+        return getSecond().getType();
     }
 
     public InterpretValue interpretValue() {
@@ -17,7 +22,6 @@ public class CallOperatorNode extends OperatorNode {
     public CompileValue compileValue() {
         throw new Error("TODO unimplemented");
     }
-
     public CompileSize compileSize() {
         throw new Error("TODO unimplemented");
     }

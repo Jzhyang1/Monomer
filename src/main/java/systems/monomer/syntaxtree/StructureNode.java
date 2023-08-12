@@ -3,6 +3,7 @@ package systems.monomer.syntaxtree;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.literals.LiteralNode;
 import systems.monomer.variables.VariableKey;
 
 import java.util.HashMap;

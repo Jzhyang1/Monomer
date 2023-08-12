@@ -4,7 +4,6 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretNumberValue;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.LiteralNode;
 
 public class FloatNode extends LiteralNode {
 
