@@ -15,21 +15,21 @@ public class InterpretTest {
         Source source = new SourceString("1+1");
         Token token = source.parse();
         Node node = token.toNode();
-        assertEquals("interpret 1+1", "2", node.interpretValue().valueString());
+        assertEquals("interpret 1+1", "(2)", node.interpretValue().valueString());
     }
     @Test
     public void testInterpret2() {
         Source source = new SourceString("@\"hello world\"");
         Token token = source.parse();
         Node node = token.toNode();
-        assertEquals("interpret hello world", "hello world", node.interpretValue().valueString());
+        assertEquals("interpret hello world", "(hello world)", node.interpretValue().valueString());
     }
     @Test
     public void testInterpret3() {
         Source source = new SourceString("@(1+1)");
         Token token = source.parse();
         Node node = token.toNode();
-        assertEquals("interpret @(1+1)", "2", node.interpretValue().valueString());
+        assertEquals("interpret @(1+1)", "(2)", node.interpretValue().valueString());
     }
     @Test
     public void testInterpret4() {
@@ -54,6 +54,6 @@ public class InterpretTest {
         Source source = new SourceString("@!@?@[1,2,3]");
         Token token = source.parse();
         Node node = token.toNode();
-        assertEquals("interpret some operators and list literal", "false", node.interpretValue().valueString());
+        assertEquals("interpret some operators and list literal", "(false)", node.interpretValue().valueString());
     }
 }

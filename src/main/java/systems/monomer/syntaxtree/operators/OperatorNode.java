@@ -207,9 +207,9 @@ public abstract class OperatorNode extends Node {
 
         static {
             putData("=", 0, AssignNode::new);
-            putData(",", 100, TupleNode::new);
-            putData(";", -1000, TupleNode::new);
-            putData(":", 20, 10, TupleNode::new);
+            putData(",", 100, (self)->null, (self)->null);
+            putData(";", -1000, (self)->null, (self)->null);
+//            putData(":", 20, 10, TupleNode::new);
             putData("@", 5000, (self) -> {
                 //TODO
                 return null;

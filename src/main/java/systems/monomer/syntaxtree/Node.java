@@ -11,6 +11,7 @@ import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.variables.Type;
 import systems.monomer.variables.VariableKey;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -69,7 +70,7 @@ public abstract class Node extends ErrorBlock {
         return this;
     }
 
-    public void addAll(List<Node> children) {
+    public void addAll(Collection<? extends Node> children) {
         for (Node child : children)
             add(child);
     }

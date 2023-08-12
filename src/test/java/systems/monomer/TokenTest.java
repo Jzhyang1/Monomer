@@ -25,7 +25,7 @@ public class TokenTest {
         Token token = source.parse();
         Node node = token.toNode();
         System.out.println(node);
-        assertEquals("operator file token toNode", "OPERATOR ;[\n" +
+        assertEquals("operator file token toNode", "MODULE block[\n" +
                 "\tOPERATOR =[\n" +
                 "\t\tIDENTIFIER x\n" +
                 "\t\tLITERAL 0\n" +
@@ -44,6 +44,15 @@ public class TokenTest {
                 "\t\t\tIDENTIFIER x\n" +
                 "\t\t]\n" +
                 "\t]\n" +
+                "\tOPERATOR @[\n" +
+                "\t\tIDENTIFIER x\n" +
+                "\t]\n" +
+                "\tOPERATOR @[\n" +
+                "\t\tIDENTIFIER y\n" +
+                "\t]\n" +
+                "\tOPERATOR @[\n" +
+                "\t\tIDENTIFIER z\n" +
+                "\t]\n" +
                 "]", node.toString());
     }
 
@@ -56,7 +65,7 @@ public class TokenTest {
         Token token = source.parse();
         Node node = token.toNode();
         System.out.println(node);
-        assertEquals("condition file token toNode", "OPERATOR ; ;[\n" +
+        assertEquals("condition file token toNode", "OPERATOR ;[\n" +
                 "\tOPERATOR =[\n" +
                 "\t\tIDENTIFIER x\n" +
                 "\t\tLITERAL 0\n" +

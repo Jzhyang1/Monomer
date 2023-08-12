@@ -13,10 +13,9 @@ public class TupleNode extends LiteralNode {
     public TupleNode() {
         super("tuple");
     }
-
     public TupleNode(Collection<? extends Node> list) {
         super("tuple");
-        getChildren().addAll(list);
+        addAll(list);
     }
 
     public InterpretValue interpretValue() {

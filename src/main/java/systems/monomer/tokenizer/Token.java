@@ -119,7 +119,7 @@ public class Token extends ErrorBlock {
         if (cur != null) {
             if ((cur.getUsage() == Node.Usage.OPERATOR || cur.getUsage() == Node.Usage.LABEL)   //TODO this sucks
                     &&
-                    OperatorNode.isChained(cur.getName(), opNode.getName()))    //TODO doesn't work for ";" because tuple doesn't store the original operator
+                    OperatorNode.isChained(cur.getName(), opNode.getName()))
                 opNode = cur;
             else
                 opNode.add(cur);
@@ -199,7 +199,7 @@ public class Token extends ErrorBlock {
                     case "()" -> new TupleNode();
                     case "[]" -> new ListNode();
                     case "{}" -> new StructureNode();
-                    case "block" -> new ModuleNode("--block--"); //TODO make this better
+                    case "block" -> new ModuleNode("block"); //TODO make this better
                     default -> null;
                 };
                 if(children == null) return node;
@@ -216,8 +216,10 @@ public class Token extends ErrorBlock {
                     cur = partialOperatorToNode(null, cur, token, iter);
                 }
 
-                if(value.equals("()"))  return cur;    //TODO this is ugly
-                node.addAll(cur.getChildren());
+                //TODO this is ugly
+                if(cur.getName().equals(";") || cur.getName().equals(",")) node.addAll(cur.getChildren());
+                else if(value.equals("()"))  return cur;
+                else node.add(cur);
                 return node;
             }
             default -> {

@@ -65,6 +65,7 @@ public class ErrorBlock {
                     .append("\n");
         }
 
+//        System.out.println(errorMessage.toString());
         throw new RuntimeException(errorMessage.toString());
     }
 }

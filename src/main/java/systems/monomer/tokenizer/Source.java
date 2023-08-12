@@ -363,11 +363,12 @@ public abstract class Source {
                 throwParseError(start, line.getIndex(), Token.Usage.FLOAT, strbuild.toString(), "'E' before '.' in float literal");
             }
 
-            hasE = isE;
-            hasDot = isDot;
+            hasE = hasE || isE;
+            hasDot = hasDot || isDot;
             strbuild.append(line.get());
 
             if (isE && line.peek() == '-') strbuild.append(line.get());
+            isE = isDot = false;
         }
 
         return new Token(hasE || hasDot ? Token.Usage.FLOAT : Token.Usage.INTEGER, strbuild.toString())
@@ -407,7 +408,7 @@ public abstract class Source {
             if (!OperatorNode.signEndDelimiters().contains(endDelim))
                 throwParseError(ret, "Missing end delimiter");
             return ret.with("" + peek + endDelim);
-        } else if (Character.isDigit(peek)) {
+        } else if (Character.isDigit(peek) || peek == '.') {
             return parseNumberLiteral();
         } else if (peek == '"' || peek == '\'') {
             return parseStringLiteral();

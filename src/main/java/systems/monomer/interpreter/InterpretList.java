@@ -19,6 +19,10 @@ public class InterpretList extends InterpretCollectionValue {
     public Collection<InterpretValue> getValues() {
         return values;
     }
+    @Override
+    public String valueString() {
+        return "[" + super.valueString() + "]";
+    }
 
     public InterpretList clone() {
         throw new Error("TODO unimplemented");
