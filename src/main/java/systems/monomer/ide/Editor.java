@@ -55,8 +55,8 @@ public final class Editor extends JFrame {
 
             this.lineNumbers = new JTextPane();
             this.lineNumbers.setFont(new Font(FONT, Font.PLAIN, 14));
-            this.lineNumbers.setText("1");
             this.lineNumbers.setEditable(false);
+            this.lineNumbers.setText("1");
             this.lineNumbers.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
             this.lineNumbers.setMargin(new Insets(0, 5, 0, 10));
 
