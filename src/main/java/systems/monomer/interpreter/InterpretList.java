@@ -2,20 +2,22 @@ package systems.monomer.interpreter;
 
 import systems.monomer.syntaxtree.Node;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class InterpretList extends InterpretCollectionValue {
+    public static InterpretList EMPTY = new InterpretList();
+    private List<InterpretValue> values = new ArrayList<>();
 
-    public InterpretList(){
-
-    }
+    public InterpretList(){}
 
     public InterpretList(Collection<? extends Node> list) {
-        getValues().addAll(list.stream().map(Node::interpretValue).toList());
+        values.addAll(list.stream().map(Node::interpretValue).toList());
     }
 
-    protected Collection<InterpretValue> getValues() {
-        throw new Error("TODO unimplemented");
+    public Collection<InterpretValue> getValues() {
+        return values;
     }
 
     public InterpretList clone() {
