@@ -56,4 +56,12 @@ public class InterpretTest {
         Node node = token.toNode();
         assertEquals("interpret some operators and list literal", "(false)", node.interpretValue().valueString());
     }
+    @Test
+    public void testInterpret6() {
+        Source source = new SourceString("if 1 == 1: @1");
+        Token token = source.parse();
+        Node node = token.toNode();
+        System.out.println(node);
+        assertEquals("interpret some operators and list literal", "(1)", node.interpretValue().valueString());
+    }
 }

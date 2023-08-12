@@ -4,6 +4,7 @@ import lombok.NonNull;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.TupleNode;
 
 import static systems.monomer.syntaxtree.operators.Arithmetic.*;
@@ -161,55 +162,21 @@ public abstract class OperatorNode extends Node {
          * This range overlaps with some other operators
          */
         private static void initControl() {
-            putData("if", -20, (self) -> {
-                //TODO
-                return null;
-            }, (first, second) -> {
-                return null;
-            });
-            putData("repeat", -20, (self) -> {
-                //TODO
-                return null;
-            }, (first, second) -> {
-                return null;
-            });
-            putData("while", -20, (self) -> {
-                //TODO
-                return null;
-            }, (first, second) -> {
-                return null;
-            });
-            putData("for", -20, (self) -> {
-                //TODO
-                return null;
-            }, (first, second) -> {
-                return null;
-            });
-            putData("else", -20, (self) -> {
-                //TODO
-                return null;
-            }, (first, second) -> {
-                return null;
-            });
-            putData("any", -20, (self) -> {
-                //TODO
-                return null;
-            }, (first, second) -> {
-                return null;
-            });
-            putData("all", -20, (self) -> {
-                //TODO
-                return null;
-            }, (first, second) -> {
-                return null;
-            });
+            putData("if", -20, IfNode::new);
+            putData("repeat", -20, RepeatNode::new);
+            putData("while", -20, WhileNode::new);
+            putData("for", -20, ForNode::new);
+            putData("else", -20, ElseNode::new);
+            putData("any", -20, AnyNode::new);
+            putData("all", -20, AllNode::new);
         }
 
         static {
             putData("=", 0, AssignNode::new);
             putData(",", 100, (self)->null, (self)->null);
             putData(";", -1000, (self)->null, (self)->null);
-//            putData(":", 20, 10, TupleNode::new);
+            //TODO
+            putData(":", 20, 10, (self)->null, (self)->null);
             putData("@", 5000, (self) -> {
                 //TODO
                 return null;

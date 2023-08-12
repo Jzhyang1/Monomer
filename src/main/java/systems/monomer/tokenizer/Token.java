@@ -117,10 +117,12 @@ public class Token extends ErrorBlock {
 
         //check for chaining
         if (cur != null) {
-            if ((cur.getUsage() == Node.Usage.OPERATOR || cur.getUsage() == Node.Usage.LABEL)   //TODO this sucks
-                    &&
+            if (cur.getUsage() == Node.Usage.OPERATOR &&
                     OperatorNode.isChained(cur.getName(), opNode.getName()))
                 opNode = cur;
+            else if (cur.getUsage() == Node.Usage.LABEL){
+                System.out.println(cur);
+            }
             else
                 opNode.add(cur);
         }
@@ -132,7 +134,6 @@ public class Token extends ErrorBlock {
         Token nextOp = iter.next();
 
         if (op.rightPrec() >= nextOp.leftPrec()) {  //do current operation first
-//            iter.previous();
             opNode.add(next);
             if (iter.hasNext())
                 return partialOperatorToNode(prevOp, opNode, nextOp, iter);
@@ -140,12 +141,7 @@ public class Token extends ErrorBlock {
                 return opNode;
         } else {    //do second operation first
             next = partialOperatorToNode(op, next, nextOp, iter);
-//            if (OperatorNode.isChained(opNode.getName(), next.getName())) { //chaining
-//                opNode.addName(next.getName());
-//                opNode.addAll(next.getChildren());
-//            } else {
             opNode.add(next);
-//            }
             if (iter.hasNext())
                 return partialOperatorToNode(op, opNode, iter.next(), iter);
             else
@@ -183,23 +179,15 @@ public class Token extends ErrorBlock {
 //                    case ":", "to" -> new ConvertNode(value);
 //                    case ";", "," -> new TupleNode(value);
                     case "as" -> new CastNode();
-                    case "if" -> new IfNode();
-                    case "repeat" -> new RepeatNode();
-                    case "while" -> new WhileNode();
-                    case "for" -> new ForNode();
-                    case "else" -> new ElseNode();
-                    case "any" -> new AnyNode();
-                    case "all" -> new AllNode();
                     default ->
                             OperatorNode.getOperator(value);  //TODO make sure the GenericOperatorNode gets the function for interpret, compile, etc
                 };
             }
             case GROUP -> { //TODO account for all the different types of groups
                 Node node = switch (value) {
-                    case "()" -> new TupleNode();
+                    case "()", "block" -> new TupleNode();
                     case "[]" -> new ListNode();
                     case "{}" -> new StructureNode();
-                    case "block" -> new ModuleNode("block"); //TODO make this better
                     default -> null;
                 };
                 if(children == null) return node;
