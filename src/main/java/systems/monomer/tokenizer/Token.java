@@ -5,7 +5,12 @@ import org.jetbrains.annotations.Nullable;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.errorhandling.Index;
 import systems.monomer.syntaxtree.*;
-import systems.monomer.syntaxtree.controlNodes.*;
+import systems.monomer.syntaxtree.controls.*;
+import systems.monomer.syntaxtree.literals.*;
+import systems.monomer.syntaxtree.operators.AssignOperatorNode;
+import systems.monomer.syntaxtree.operators.CallOperatorNode;
+import systems.monomer.syntaxtree.operators.CastOperatorNode;
+import systems.monomer.syntaxtree.operators.FieldOperatorNode;
 
 import java.util.*;
 import java.util.stream.Collectors;

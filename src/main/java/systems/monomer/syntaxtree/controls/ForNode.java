@@ -1,4 +1,4 @@
-package systems.monomer.syntaxtree.controlNodes;
+package systems.monomer.syntaxtree.controls;
 
 import systems.monomer.syntaxtree.ControlOperatorNode;
 

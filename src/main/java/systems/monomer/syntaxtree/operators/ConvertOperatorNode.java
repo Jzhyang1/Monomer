@@ -1,31 +1,28 @@
-package systems.monomer.syntaxtree;
+package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.OperatorNode;
+import systems.monomer.variables.Type;
 
-import java.util.Collection;
+public class ConvertOperatorNode extends OperatorNode {
 
-public class TupleNode extends LiteralNode{
-
-    public TupleNode() {
-        super("tuple");
+    public ConvertOperatorNode() {
+        super("to");
     }
 
-    public TupleNode(Collection<? extends Node> list) {
-        super("tuple");
-        getChildren().addAll(list);
+    public Type getType() {
+        return getSecond().getType();
     }
 
     public InterpretValue interpretValue() {
         throw new Error("TODO unimplemented");
-        //  new InterpretTuple(getChildren());
     }
 
     public CompileValue compileValue() {
         throw new Error("TODO unimplemented");
     }
-
     public CompileSize compileSize() {
         throw new Error("TODO unimplemented");
     }

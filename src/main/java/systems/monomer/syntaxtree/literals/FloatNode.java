@@ -1,19 +1,23 @@
-package systems.monomer.syntaxtree;
+package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretCharValue;
+import systems.monomer.interpreter.InterpretNumberValue;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.LiteralNode;
 
-public class CharNode extends LiteralNode{
-    Character value;
-    public CharNode(Character c) {
-        super("char");
-        value = c;
+public class FloatNode extends LiteralNode {
+
+    private Double value;
+
+    public FloatNode(Double f) {
+        super(f.toString());
+        value = f;
     }
 
+    @Override
     public InterpretValue interpretValue() {
-        return new InterpretCharValue(value);
+        return new InterpretNumberValue<>(value);
     }
 
     @Override
@@ -27,8 +31,4 @@ public class CharNode extends LiteralNode{
         //TODO
         return null;
     }
-
-
-
-
 }

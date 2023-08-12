@@ -1,34 +1,30 @@
-package systems.monomer.syntaxtree;
+package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
-import systems.monomer.variables.Type;
+import systems.monomer.syntaxtree.OperatorNode;
 
-/**
- * The first child is the value
- * The second child is the type
- */
-public class CastOperatorNode extends OperatorNode{
-    public CastOperatorNode() {
-        super("as");
+public class AssignOperatorNode extends OperatorNode {
+    public AssignOperatorNode() {
+        super("=");
     }
 
-    public Type getType() {
-        return getSecond().getType();
+    public void matchTypes() {
+        throw new Error("TODO unimplemented");
     }
 
     public InterpretVariable interpretVariable() {
         throw new Error("TODO unimplemented");
     }
     public InterpretValue interpretValue() {
-        throw new Error("TODO unimplemented");
+        return null;
     }
 
     public CompileMemory compileMemory() {
-        return getFirst().compileMemory();
+        throw new Error("TODO unimplemented");
     }
     public CompileValue compileValue() {
         throw new Error("TODO unimplemented");

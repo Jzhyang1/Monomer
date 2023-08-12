@@ -1,17 +1,18 @@
-package systems.monomer.syntaxtree;
+package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretNumberValue;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.LiteralNode;
 
-public class FloatNode extends LiteralNode{
+public class IntNode extends LiteralNode {
 
-    private Double value;
+    private Integer value;
 
-    public FloatNode(Double f) {
-        super(f.toString());
-        value = f;
+    public IntNode(Integer i) {
+        super(i.toString());
+        value = i;
     }
 
     @Override

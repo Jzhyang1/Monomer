@@ -4,6 +4,11 @@ import lombok.NonNull;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretNumberValue;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.syntaxtree.operators.Arithmetic;
+import static systems.monomer.syntaxtree.operators.Arithmetic.*;
+import systems.monomer.syntaxtree.operators.AssignOperatorNode;
+import systems.monomer.syntaxtree.operators.GenericOperatorNode;
 import systems.monomer.util.Pair;
 
 import java.util.*;
@@ -43,12 +48,6 @@ public abstract class OperatorNode extends Node {
                 setInterpret((self) -> interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()));
             }}));
         }
-        private static void putData(String symbol, int leftPrec, int rightPrec, Function<GenericOperatorNode, CompileValue> compile, BiFunction<InterpretValue, InterpretValue, InterpretValue> interpret) {
-            operators.put(symbol, new Data(leftPrec, rightPrec, () -> new GenericOperatorNode(symbol) {{
-                setCompile(compile);
-                setInterpret((self) -> interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()));
-            }}));
-        }
 
         /**
          * Arithmetic operators inhabit the precedence range 1000-1200
@@ -57,128 +56,40 @@ public abstract class OperatorNode extends Node {
             putData("+", 1050, (self) -> {
                 //TODO
                 return null;
-            }, (self) -> {
-                InterpretValue first = self.getFirst().interpretValue();
-                InterpretValue second = self.getSecond().interpretValue();
-                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
-                    self.throwError("Unsupported operation \"+\" with non-numeric values");
-                }
-                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
-                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
-                if (firstInterpreted.getValue() instanceof Integer && secondInterpreted.getValue() instanceof Integer) {
-                    return new InterpretNumberValue<>(firstInterpreted.getValue().intValue() + secondInterpreted.getValue().intValue());
-                } else {
-                    return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue() + secondInterpreted.getValue().doubleValue());
-                }
-            });
+            }, numericalChecked("+", differentiatedIntFloat((a,b)->a+b, (a,b)->a+b)));
             putData("-", 1050, (self) -> {
                 //TODO
                 return null;
-            }, (self) -> {
-                InterpretValue first = self.getFirst().interpretValue();
-                InterpretValue second = self.getSecond().interpretValue();
-                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
-                    self.throwError("Unsupported operation \"-\" with non-numeric values");
-                }
-                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
-                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
-                if (firstInterpreted.getValue() instanceof Integer && secondInterpreted.getValue() instanceof Integer) {
-                    return new InterpretNumberValue<>(firstInterpreted.getValue().intValue() - secondInterpreted.getValue().intValue());
-                } else {
-                    return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue() - secondInterpreted.getValue().doubleValue());
-                }
-            });
+            }, numericalChecked("-", differentiatedIntFloat((a,b)->a-b, (a,b)->a-b)));
             putData("*", 1055, (self) -> {
                 //TODO
                 return null;
-            }, (self) -> {
-                InterpretValue first = self.getFirst().interpretValue();
-                InterpretValue second = self.getSecond().interpretValue();
-                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
-                    self.throwError("Unsupported operation \"*\" with non-numeric values");
-                }
-                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
-                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
-                if (firstInterpreted.getValue() instanceof Integer && secondInterpreted.getValue() instanceof Integer) {
-                    return new InterpretNumberValue<>(firstInterpreted.getValue().intValue() * secondInterpreted.getValue().intValue());
-                } else {
-                    return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue() * secondInterpreted.getValue().doubleValue());
-                }
-            });
+            }, numericalChecked("*", differentiatedIntFloat((a,b)->a*b, (a,b)->a*b)));
             putData("/", 1055, (self) -> {
                 //TODO
                 return null;
-            }, (self) -> {
-                InterpretValue first = self.getFirst().interpretValue();
-                InterpretValue second = self.getSecond().interpretValue();
-                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
-                    self.throwError("Unsupported operation \"/\" with non-numeric values");
-                }
-                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
-                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
-                if (firstInterpreted.getValue() instanceof Integer && secondInterpreted.getValue() instanceof Integer) {
-                    return new InterpretNumberValue<>(firstInterpreted.getValue().intValue() / secondInterpreted.getValue().intValue());
-                } else {
-                    return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue() / secondInterpreted.getValue().doubleValue());
-                }
-            });
+            }, numericalChecked("/", differentiatedIntFloat((a,b)->a/b, (a,b)->a/b)));
             putData("%", 1055, (self) -> {
                 //TODO
                 return null;
-            }, (self) -> {
-                InterpretValue first = self.getFirst().interpretValue();
-                if (!(first instanceof InterpretNumberValue<? extends Number>)) {
-                    self.throwError("Unsupported operation \"%\" with non-numeric values");
-                }
-                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
-                return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue()/100.0);
-            });
-
-
+            }, numericalChecked("%", differentiatedIntFloat((a,b)->a%b, (a,b)->a%b)));
             putData("||", 1065, (self) -> {
                 //TODO
                 return null;
-            }, (self) -> {
-                InterpretValue first = self.getFirst().interpretValue();
-                InterpretValue second = self.getSecond().interpretValue();
-                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
-                    self.throwError("Unsupported operation \"||\"");
-                }
-                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
-                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
-                Double firstDouble = firstInterpreted.getValue().doubleValue();
-                Double secondDouble = firstInterpreted.getValue().doubleValue();
-                return new InterpretNumberValue<>(firstDouble * secondDouble/(firstDouble + secondDouble));
-            });
+            }, numericalChecked("||", alwaysFloat((a,b)->a*b/(a+b))));
+            putData("**", 1075, (self) -> {
+                //TODO
+                return null;
+            }, numericalChecked("**", differentiatedIntFloat((a,b)->(int)StrictMath.pow(a,b), StrictMath::pow)));
+            putData("*/", 1075, (self) -> {
+                //TODO
+                return null;
+            }, numericalChecked("*/", differentiatedIntFloat((a,b)->(int)StrictMath.pow(a,1.0/b), (a,b)->StrictMath.pow(a,1.0/b))));
             putData("><", 1060, (self) -> {
                 //TODO
                 return null;
             }, (self) -> {
                 //TODO
-                return null;
-            });
-
-            putData("**", 1075, (self) -> {
-                //TODO
-                return null;
-            }, (self) -> {
-                InterpretValue first = self.getFirst().interpretValue();
-                InterpretValue second = self.getSecond().interpretValue();
-                if (!(first instanceof InterpretNumberValue<? extends Number>) || !(second instanceof InterpretNumberValue<? extends Number>)) {
-                    self.throwError("Unsupported operation \"/\" with non-numeric values");
-                }
-                InterpretNumberValue<? extends Number> firstInterpreted = (InterpretNumberValue<? extends Number>) first;
-                InterpretNumberValue<? extends Number> secondInterpreted = (InterpretNumberValue<? extends Number>) second;
-                if (firstInterpreted.getValue() instanceof Integer && secondInterpreted.getValue() instanceof Integer) {
-                    return new InterpretNumberValue<>((int) StrictMath.pow(firstInterpreted.getValue().intValue(), secondInterpreted.getValue().intValue()));
-                } else {
-                    return new InterpretNumberValue<>(firstInterpreted.getValue().doubleValue() / secondInterpreted.getValue().doubleValue());
-                }
-            });
-            putData("*/", 1075, (self) -> {
-                //TODO
-                return null;
-            }, (first, second) -> {
                 return null;
             });
         }
@@ -300,6 +211,14 @@ public abstract class OperatorNode extends Node {
             putData(",", 100, TupleNode::new);
             putData(";", -1000, TupleNode::new);
             putData(":", 20, 10, TupleNode::new);
+            putData("@", 5000, (self) -> {
+                //TODO
+                return null;
+            }, (self) -> {
+                InterpretValue first = self.getFirst().interpretValue();
+                System.out.println(first.valueString());
+                return first;
+            });
 
             initComparison();
             initBitwise();
@@ -326,7 +245,7 @@ public abstract class OperatorNode extends Node {
     }
 
     public static Set<String> symbolPrefixes() {
-        HashSet<String> delimiters = new HashSet<>(List.of("+", "-", "~", "#", "!", ":", "if", "else", "any", "all", "while", "repeat", "for"));   //TODO
+        HashSet<String> delimiters = new HashSet<>(List.of("+", "-", "~", "#", "!", ":", "@", "if", "else", "any", "all", "while", "repeat", "for"));   //TODO
         return delimiters;
     }
 

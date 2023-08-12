@@ -1,25 +1,17 @@
-package systems.monomer.syntaxtree;
+package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretSet;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.OperatorNode;
 
-import java.util.Collection;
-
-public class SetNode extends LiteralNode{
-
-    public SetNode(){
-        super("set");
-    }
-
-    public SetNode(Collection<Node> x) {
-        super("set");
-        getChildren().addAll(x);
+public class CallOperatorNode extends OperatorNode {
+    public CallOperatorNode() {
+        super("call");
     }
 
     public InterpretValue interpretValue() {
-        return new InterpretSet(getChildren());
+        throw new Error("TODO unimplemented");
     }
 
     public CompileValue compileValue() {

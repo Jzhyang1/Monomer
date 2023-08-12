@@ -22,7 +22,8 @@ public class ErrorBlockTest {
             errorBlock.throwError("Bad Number Format");
         } catch (RuntimeException e) {
             assertEquals("Error-printing for short string input",
-                    "ERROR Bad Number Format in String source:\n"+
+                    "ERROR Bad Number Format in String source:\n" +
+                            " |\n"+
                             "1| y = x + 500x;\n" +
                             " |         ^^^^\n",
                     e.getMessage());
@@ -48,7 +49,8 @@ public class ErrorBlockTest {
         try {
             errorBlock.throwError("Syntax");
         } catch (RuntimeException e) {
-            assertEquals("ERROR Syntax in String source:\n" +
+            assertEquals("ERROR Syntax in String source:\n"  +
+                            " |\n"+
                             "1| if (nextStarting > starting {\n" +
                             " |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
                             "2| \ttokens.add(tokenize(source));\n" +
@@ -80,7 +82,8 @@ public class ErrorBlockTest {
         try {
             errorBlock.throwError("Syntax");
         } catch (RuntimeException e) {
-            assertEquals("ERROR Syntax in " + path + ":\n" +
+            assertEquals("ERROR Syntax in " + path + ":\n"+
+                            " |\n" +
                             "1| if (nextStarting > starting {\n" +
                             " |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
                             "2| \ttokens.add(tokenize(source));\n" +

@@ -14,9 +14,14 @@ public class InterpretTest {
     public void testInterpret1() {
         Source source = new SourceString("1+1");
         Token token = source.parse();
-        System.out.println(token);
         Node node = token.toNode();
-        System.out.println(node);
         assertEquals("interpret 1+1", "2", node.interpretValue().valueString());
+    }
+    @Test
+    public void testInterpret2() {
+        Source source = new SourceString("1+@3");
+        Token token = source.parse();
+        Node node = token.toNode();
+        assertEquals("interpret 1+@3", "4", node.interpretValue().valueString());
     }
 }

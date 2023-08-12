@@ -1,13 +1,14 @@
-package systems.monomer.syntaxtree;
+package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.syntaxtree.OperatorNode;
 import systems.monomer.variables.VariableKey;
 
-public class FieldOperatorNode extends OperatorNode{
+public class FieldOperatorNode extends OperatorNode {
     private VariableKey key;
 
     public FieldOperatorNode(){

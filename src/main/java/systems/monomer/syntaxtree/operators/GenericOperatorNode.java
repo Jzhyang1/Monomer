@@ -1,12 +1,13 @@
-package systems.monomer.syntaxtree;
+package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.OperatorNode;
 
 import java.util.function.Function;
 
-public class GenericOperatorNode extends OperatorNode{
+public class GenericOperatorNode extends OperatorNode {
     private Function<GenericOperatorNode, InterpretValue> interpret;
     private Function<GenericOperatorNode, CompileValue> compile;
     private CompileSize compileSize;
