@@ -7,8 +7,8 @@ import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
 
 import static systems.monomer.syntaxtree.operators.Arithmetic.*;
-import systems.monomer.syntaxtree.operators.AssignNode;
-import systems.monomer.syntaxtree.operators.GenericOperatorNode;
+import static systems.monomer.syntaxtree.operators.Bitwise.*;
+
 import systems.monomer.util.Pair;
 
 import java.util.*;
@@ -56,35 +56,35 @@ public abstract class OperatorNode extends Node {
             putData("+", 1050, (self) -> {
                 //TODO
                 return null;
-            }, numericalChecked("+", differentiatedIntFloat((a,b)->a+b, (a,b)->a+b)));
+            }, numericalChecked(differentiatedIntFloat((a, b)->a+b, (a, b)->a+b))); //TODO positive oper
             putData("-", 1050, (self) -> {
                 //TODO
                 return null;
-            }, numericalChecked("-", differentiatedIntFloat((a,b)->a-b, (a,b)->a-b)));
+            }, numericalChecked(differentiatedIntFloat((a, b)->a-b, (a, b)->a-b))); //TODO negative oper
             putData("*", 1055, (self) -> {
                 //TODO
                 return null;
-            }, numericalChecked("*", differentiatedIntFloat((a,b)->a*b, (a,b)->a*b)));
+            }, numericalChecked(differentiatedIntFloat((a, b)->a*b, (a, b)->a*b)));
             putData("/", 1055, (self) -> {
                 //TODO
                 return null;
-            }, numericalChecked("/", differentiatedIntFloat((a,b)->a/b, (a,b)->a/b)));
+            }, numericalChecked(differentiatedIntFloat((a, b)->a/b, (a, b)->a/b)));
             putData("%", 1055, (self) -> {
                 //TODO
                 return null;
-            }, numericalChecked("%", differentiatedIntFloat((a,b)->a%b, (a,b)->a%b)));
+            }, numericalChecked(differentiatedIntFloat((a, b)->a%b, (a, b)->a%b)));
             putData("||", 1065, (self) -> {
                 //TODO
                 return null;
-            }, numericalChecked("||", alwaysFloat((a,b)->a*b/(a+b))));
+            }, numericalChecked(alwaysFloat((a, b)->a*b/(a+b))));
             putData("**", 1075, (self) -> {
                 //TODO
                 return null;
-            }, numericalChecked("**", differentiatedIntFloat((a,b)->(int)StrictMath.pow(a,b), StrictMath::pow)));
+            }, numericalChecked(differentiatedIntFloat((a, b)->(int)StrictMath.pow(a,b), StrictMath::pow)));
             putData("*/", 1075, (self) -> {
                 //TODO
                 return null;
-            }, numericalChecked("*/", differentiatedIntFloat((a,b)->(int)StrictMath.pow(a,1.0/b), (a,b)->StrictMath.pow(a,1.0/b))));
+            }, numericalChecked(differentiatedIntFloat((a, b)->(int)StrictMath.pow(a,1.0/b), (a, b)->StrictMath.pow(a,1.0/b))));
             putData("><", 1060, (self) -> {
                 //TODO
                 return null;
@@ -98,15 +98,14 @@ public abstract class OperatorNode extends Node {
          * Bitwise operators inhabit the precedence range 700-900
          */
         private static void initBitwise() {
-            //TODO
-            putData("!", 860, (self)->null, (self)->null);
-            putData("?", 860, (self)->null, (self)->null);
-            putData("&", 850, (self)->null, (self)->null);
-            putData("|", 820, (self)->null, (self)->null);
-            putData("^", 820, (self)->null, (self)->null);
-            putData("~&", 850, (self)->null, (self)->null);
-            putData("~|", 820, (self)->null, (self)->null);
-            putData("~^", 820, (self)->null, (self)->null);
+            putData("!", 860, (self)->null, oneBool((a)->!a));
+            putData("?", 860, (self)->null, isTruthy());
+            putData("&", 850, (self)->null, differentiatedIntBool((a,b)->a&b, (a, b)->a&&b));
+            putData("|", 820, (self)->null, differentiatedIntBool((a,b)->a|b, (a, b)->a||b));
+            putData("^", 820, (self)->null, differentiatedIntBool((a,b)->a^b, (a, b)->a^b));
+            putData("~&", 850, (self)->null, differentiatedIntBool((a,b)->~(a&b), (a, b)->!(a&&b)));
+            putData("~|", 820, (self)->null, differentiatedIntBool((a,b)->~(a|b), (a, b)->!(a||b)));
+            putData("~^", 820, (self)->null, differentiatedIntBool((a,b)->~(a^b), (a, b)->a==b));
         }
 
         /**
@@ -245,7 +244,7 @@ public abstract class OperatorNode extends Node {
     }
 
     public static Set<String> symbolPrefixes() {
-        HashSet<String> delimiters = new HashSet<>(List.of("+", "-", "~", "#", "!", ":", "@", "if", "else", "any", "all", "while", "repeat", "for"));   //TODO
+        HashSet<String> delimiters = new HashSet<>(List.of("+", "-", "~", "#", "!", "?", ":", "@", "if", "else", "any", "all", "while", "repeat", "for"));   //TODO
         return delimiters;
     }
 

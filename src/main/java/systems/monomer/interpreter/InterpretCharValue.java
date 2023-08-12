@@ -1,10 +1,14 @@
 package systems.monomer.interpreter;
 
 public class InterpretCharValue extends InterpretValue {
+    private char value;
     public InterpretCharValue(char value) {
-        //TODO
+        this.value = value;
+    }
+    public char getValue() {
+        return value;
     }
     public String valueString() {
-        throw new Error("TODO unimplemented");
+        return String.valueOf(value);
     }
 }

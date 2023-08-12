@@ -84,7 +84,7 @@ public class Token extends ErrorBlock {
         }
 
         //check if previous operation is before this op
-        if (prevOp != null && prevOp.rightPrec() >= op.leftPrec()) {
+        if (cur != null && prevOp != null && prevOp.rightPrec() >= op.leftPrec()) {
             iter.previous();
             return cur;
         }
@@ -150,7 +150,6 @@ public class Token extends ErrorBlock {
                 return partialOperatorToNode(op, opNode, iter.next(), iter);
             else
                 return opNode;
-
         }
     }
 

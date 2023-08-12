@@ -15,7 +15,7 @@ public class InterpretTuple extends InterpretCollectionValue {
         getValues().addAll(list.stream().map(Node::interpretValue).toList());
     }
 
-    protected Collection<InterpretValue> getValues() {
+    public Collection<InterpretValue> getValues() {
         return tuple;
     }
 

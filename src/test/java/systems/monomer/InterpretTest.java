@@ -49,4 +49,11 @@ public class InterpretTest {
         node.matchTypes();
         assertEquals("interpret assign", "(0,1,0,0,1,0)", node.interpretValue().valueString());
     }
+    @Test
+    public void testInterpret5() {
+        Source source = new SourceString("@!@?@[1,2,3]");
+        Token token = source.parse();
+        Node node = token.toNode();
+        assertEquals("interpret some operators and list literal", "false", node.interpretValue().valueString());
+    }
 }

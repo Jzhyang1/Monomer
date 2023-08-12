@@ -12,15 +12,15 @@ public class InterpretSet extends InterpretCollectionValue{
 
     public InterpretSet(Collection<? extends Node> list) {
         set = new HashSet<>();
-        getValues().addAll(list.stream().map(Node::interpretValue).toList());
+        set.addAll(list.stream().map(Node::interpretValue).toList());
     }
 
     public void add(Node node) {
         getValues().add(node.interpretValue());
     }
 
-    protected Collection<InterpretValue> getValues() {
-        throw new Error("TODO unimplemented");
+    public Collection<InterpretValue> getValues() {
+        return set;
     }
 
     public InterpretSet clone() {

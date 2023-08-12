@@ -5,6 +5,9 @@ public class InterpretStringValue extends InterpretValue {
     public InterpretStringValue(String value) {
         this.value = value;
     }
+    public String getValue() {
+        return value;
+    }
     public String valueString() {
         return value;
     }

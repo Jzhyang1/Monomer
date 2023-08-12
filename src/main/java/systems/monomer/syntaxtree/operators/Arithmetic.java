@@ -7,14 +7,14 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class Arithmetic {
-    public static Function<GenericOperatorNode, InterpretValue> numericalChecked(String operator, BiFunction<InterpretNumberValue<? extends Number>, InterpretNumberValue<? extends Number>, InterpretValue> callback) {
+    public static Function<GenericOperatorNode, InterpretValue> numericalChecked(BiFunction<InterpretNumberValue<? extends Number>, InterpretNumberValue<? extends Number>, InterpretValue> callback) {
         return (self) -> {
             InterpretValue first = self.getFirst().interpretValue();
             InterpretValue second = self.getSecond().interpretValue();
             if (first instanceof InterpretNumberValue<? extends Number> firstNum && second instanceof InterpretNumberValue<? extends Number> secondNum) {
                 return callback.apply(firstNum, secondNum);
             }
-            self.throwError("Unsupported operation \"" + operator + "\" with non-numeric values");
+            self.throwError("Unsupported operation \"" + self.getName() + "\" with non-numeric values");
             return null;
         };
     }
