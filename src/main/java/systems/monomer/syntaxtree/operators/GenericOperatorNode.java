@@ -27,7 +27,8 @@ public class GenericOperatorNode extends OperatorNode {
     }
 
     public void matchTypes() {
-        throw new Error("TODO unimplemented");
+        //TODO
+//        throw new Error("TODO unimplemented");
     }
 
     public CompileSize compileSize() {
