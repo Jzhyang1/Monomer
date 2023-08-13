@@ -58,7 +58,7 @@ public class InterpretTest {
     }
     @Test
     public void testInterpret6() {
-        Source source = new SourceString("if 1 == 1: @1");
+        Source source = new SourceString("if 1 == 1: \n\t@1");
         Token token = source.parse();
         Node node = token.toNode();
         System.out.println(node);

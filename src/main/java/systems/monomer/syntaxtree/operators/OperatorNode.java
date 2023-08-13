@@ -169,14 +169,16 @@ public abstract class OperatorNode extends Node {
             putData("else", -20, ElseNode::new);
             putData("any", -20, AnyNode::new);
             putData("all", -20, AllNode::new);
+            putData("break", -20, (self)->null, (self)->null);
+            putData("continue", -20, (self)->null, (self)->null);
         }
 
         static {
             putData("=", 0, AssignNode::new);
-            putData(",", 100, (self)->null, (self)->null);
-            putData(";", -1000, (self)->null, (self)->null);
-            //TODO
-            putData(":", 20, 10, (self)->null, (self)->null);
+            putData(",", 100, ()->new TupleNode(","));
+            putData(";", -1000, ()->new TupleNode(";"));
+            putData(":", 1500, 150, ConvertNode::new);
+            putData("as", 5, 5, ConvertNode::new);
             putData("@", 5000, (self) -> {
                 //TODO
                 return null;
@@ -227,6 +229,11 @@ public abstract class OperatorNode extends Node {
 
     public static Set<Character> signStartDelimiters() {
         HashSet<Character> delimiters = new HashSet<>(List.of('(', '[', '{'));   //TODO
+        return delimiters;
+    }
+
+    public static Set<String> symbolPrimaryControls() {
+        HashSet<String> delimiters = new HashSet<>(List.of("if", "repeat", "while", "for"));   //TODO
         return delimiters;
     }
 

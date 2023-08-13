@@ -11,10 +11,13 @@ import java.util.Collection;
 public class TupleNode extends LiteralNode {
 
     public TupleNode() {
-        super("tuple");
+        super(",");
+    }
+    public TupleNode(String name) {
+        super(name);
     }
     public TupleNode(Collection<? extends Node> list) {
-        super("tuple");
+        super(",");
         addAll(list);
     }
 

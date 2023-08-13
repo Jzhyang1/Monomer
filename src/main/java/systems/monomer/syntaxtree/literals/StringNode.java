@@ -12,7 +12,7 @@ public class StringNode extends LiteralNode {
 
 
     public StringNode(String s) {
-        super("\"" + s + "\"");
+        super("string");
         value = s;
     }
 
