@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 
 import static systems.monomer.syntaxtree.Node.Usage.LITERAL;
 
+@Getter
 public class Token extends ErrorBlock {
     public static enum Usage {
         OPERATOR, STRING_BUILDER, STRING, CHARACTER, INTEGER, FLOAT, GROUP, IDENTIFIER,
         CHARACTER_FROM_INT
     }
 
-    @Getter
     private String value;
     private List<Token> children = null;
     @Getter
@@ -66,7 +66,7 @@ public class Token extends ErrorBlock {
         Token token = iter.next();
 
         Node condition;
-        if (token.usage == Usage.OPERATOR && OperatorNode.symbolPrefixes().contains(token.value))
+        if (token.usage == Usage.OPERATOR && Operator.symbolPrefixes().contains(token.value))
              condition = partialOperatorToNode(control, null, token, iter, ":");
         else {
             condition = partialToNode(token.toNode(), iter);
@@ -82,7 +82,7 @@ public class Token extends ErrorBlock {
         if(token.usage == Usage.GROUP && token.value.equals("block"))
             body = token.toNode();
         else {
-            if (token.usage == Usage.OPERATOR && OperatorNode.symbolPrefixes().contains(token.value))
+            if (token.usage == Usage.OPERATOR && Operator.symbolPrefixes().contains(token.value))
                 body = partialOperatorToNode(control, null, token, iter);
             else {
                 body = partialToNode(token.toNode(), iter);
@@ -110,7 +110,7 @@ public class Token extends ErrorBlock {
         }
 
         //check if previous operation is before this op
-        boolean isAfter = prevOp != null && prevOp.rightPrec() >= op.leftPrec();
+        boolean isAfter = cur != null && prevOp != null && prevOp.rightPrec() >= op.leftPrec();
         boolean hardStop = op.value.equals(stopAt);
         if (isAfter || hardStop) {
             iter.previous();
@@ -119,15 +119,15 @@ public class Token extends ErrorBlock {
 
         if (!iter.hasNext()) {
             //check suffix
-            if (OperatorNode.symbolSuffixes().contains(op.value)) {
+            if (Operator.symbolSuffixes().contains(op.value)) {
                 return op.toNode().with(cur);
             } else op.throwError("Expected value after operator");
         }
 
         //check if condition operation
-        if(OperatorNode.symbolControls().contains(op.value)) {
+        if(Operator.symbolControls().contains(op.value)) {
             //TODO ugly
-            cur = OperatorNode.symbolPrimaryControls().contains(op.value)?
+            cur = Operator.symbolPrimaryControls().contains(op.value)?
                     new ControlGroupNode().with(partialControlToNode(op, iter)) :
                     cur.with(partialControlToNode(op, iter));
             cur = partialToNode(cur, iter);
@@ -144,9 +144,9 @@ public class Token extends ErrorBlock {
 //            if (OperatorNode.symbolControls().contains(op.value)) {
 //                next = partialControlToNode(op, iter);
 //            } else
-            if (OperatorNode.symbolPrefixes().contains(token.value))
+            if (Operator.symbolPrefixes().contains(token.value))
                 next = partialOperatorToNode(op, null, token, iter, stopAt);
-            else if (OperatorNode.symbolSuffixes().contains(op.value)) {
+            else if (Operator.symbolSuffixes().contains(op.value)) {
                 next = opNode.with(cur);
             } else token.throwError("Expected value or prefix");
         } else
@@ -158,7 +158,7 @@ public class Token extends ErrorBlock {
 
         //check for chaining
         if (cur != null) {
-            if (OperatorNode.isChained(cur.getName(), opNode.getName()))
+            if (Operator.isChained(cur.getName(), opNode.getName()))
                 opNode = cur;
             else if (cur.getUsage() == Node.Usage.CONTROL_GROUP && opNode.getUsage() == Node.Usage.LABEL){
                 cur.add(opNode);
@@ -202,7 +202,7 @@ public class Token extends ErrorBlock {
             case INTEGER -> new IntNode(Integer.valueOf(value));
             case FLOAT ->  new FloatNode(Double.valueOf(value));
             case IDENTIFIER -> new VariableNode(value);
-            case OPERATOR -> OperatorNode.getOperator(value);
+            case OPERATOR -> Operator.getOperator(value);
             case GROUP -> { //TODO account for all the different types of groups
                 Node node = switch (value) {
                     case "()", "block" -> new TupleNode("block");
@@ -215,7 +215,7 @@ public class Token extends ErrorBlock {
                 ListIterator<Token> iter = children.listIterator();
                 Token token = iter.next();
 
-                Node cur = (token.usage == Usage.OPERATOR && OperatorNode.symbolPrefixes().contains(token.value)) ?
+                Node cur = (token.usage == Usage.OPERATOR && Operator.symbolPrefixes().contains(token.value)) ?
                         partialOperatorToNode(null,null, token, iter) : partialToNode(token.toNode(), iter);
 
                 while (iter.hasNext()) {
@@ -250,10 +250,10 @@ public class Token extends ErrorBlock {
     }
 
     public int leftPrec() {
-        return OperatorNode.precedence(value).getFirst();
+        return Operator.precedence(value).getFirst();
     }
     public int rightPrec() {
-        return OperatorNode.precedence(value).getSecond();
+        return Operator.precedence(value).getSecond();
     }
 
     public Token with(String value) {
@@ -290,8 +290,10 @@ public class Token extends ErrorBlock {
     }
 
     public String toString() {
-        return usage + " " + value + (children == null ? "" : children.size() == 1 ? children :
-                "[\n\t" + children.stream().map(Objects::toString)
-                        .collect(Collectors.joining(",\n\t")) + "\n\t]\n");
+        String part1 = usage + " " + value;
+        if(children == null) return part1;
+        else if(children.size() == 1) return part1 + "[" + children.get(0) + "]";
+        else return part1 + "[\n\t" + children.stream().map(Objects::toString)
+                        .collect(Collectors.joining(",\n\t")) + "\n\t]\n";
     }
 }

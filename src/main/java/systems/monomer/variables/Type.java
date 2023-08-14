@@ -1,8 +1,11 @@
 package systems.monomer.variables;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public class Type implements Cloneable {
     private final Map<String, Type> fields = new HashMap<>();
 
@@ -14,9 +17,6 @@ public class Type implements Cloneable {
     }
     public boolean typeContains(Type type) {
         throw new Error("TODO unimplemented");
-    }
-    public Map<String, Type> getFields(){
-        return fields;
     }
 
     public Type clone() {

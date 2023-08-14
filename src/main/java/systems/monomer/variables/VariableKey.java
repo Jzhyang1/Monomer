@@ -1,8 +1,10 @@
 package systems.monomer.variables;
 
+import lombok.Getter;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 
+@Getter
 public class VariableKey extends InterpretVariable {
     private VariableKey parent;
     private InterpretValue value;
@@ -12,16 +14,10 @@ public class VariableKey extends InterpretVariable {
         this.parent = parent;
     }
 
-    public VariableKey getParent() {
-        return parent;
-    }
     public void setParent(VariableKey parent) {
         this.parent = parent;
     }
 
-    public InterpretValue getValue() {
-        return value;
-    }
     public void setValue(InterpretValue value) {
         this.value = value;
     }

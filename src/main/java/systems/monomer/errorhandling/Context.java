@@ -1,8 +1,10 @@
 package systems.monomer.errorhandling;
 
 
+import lombok.Getter;
 import systems.monomer.tokenizer.Source;
 
+@Getter
 public class Context {
     private Index start, stop;
     private Source source;
@@ -22,17 +24,5 @@ public class Context {
         this.start = new Index(startCol, startRow, -1);
         this.stop = new Index(stopCol, stopRow, -1);
         this.source = source;
-    }
-
-    public Source getSource() {
-        return source;
-    }
-
-    public Index getStart() {
-        return start;
-    }
-
-    public Index getStop() {
-        return stop;
     }
 }

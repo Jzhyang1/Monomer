@@ -19,13 +19,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 
+@Getter
 public abstract class Node extends ErrorBlock {
     public enum Usage {
         OPERATOR, LITERAL, IDENTIFIER, LABEL, CONTROL_GROUP, MODULE
     }
 
     private String name;
-    @Getter
     @Setter
     private Node parent = null;
     @Getter
@@ -41,9 +41,6 @@ public abstract class Node extends ErrorBlock {
 
     public void addName(String name) {
         this.name = name;
-    }
-    public String getName() {
-        return name;
     }
 
     public abstract Usage getUsage();

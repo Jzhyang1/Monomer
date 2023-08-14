@@ -4,6 +4,7 @@ import systems.monomer.Constants;
 import systems.monomer.commandline.Interpret;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
+import systems.monomer.util.Pair;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -503,41 +504,12 @@ public final class Editor extends JFrame {
                     }
                 }),
                 new Action("Cut", () -> {
+                    copySelectedFromTab();
                     Tab tab = getSelectedTab();
-                    if (tab.contents.getSelectedText() == null) {
-                        int caret = tab.contents.getCaretPosition();
-                        int start, end;
-                        try {
-                            start = Utilities.getRowStart(tab.contents, caret);
-                            end = Utilities.getRowEnd(tab.contents, caret);
-                        } catch (BadLocationException badLocationException) {
-                            throw new RuntimeException(badLocationException);
-                        }
-                        tab.contents.select(start, end);
-                    }
-                    String text = tab.contents.getSelectedText();
-                    StringSelection selection = new StringSelection(text);
-                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                    clipboard.setContents(selection, selection);
                     tab.contents.replaceSelection(null);
                 }),
                 new Action("Copy", () -> {
-                    Tab tab = getSelectedTab();
-                    if (tab.contents.getSelectedText() == null) {
-                        int caret = tab.contents.getCaretPosition();
-                        int start, end;
-                        try {
-                            start = Utilities.getRowStart(tab.contents, caret);
-                            end = Utilities.getRowEnd(tab.contents, caret);
-                        } catch (BadLocationException badLocationException) {
-                            throw new RuntimeException(badLocationException);
-                        }
-                        tab.contents.select(start, end);
-                    }
-                    String text = tab.contents.getSelectedText();
-                    StringSelection selection = new StringSelection(text);
-                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                    clipboard.setContents(selection, selection);
+                    copySelectedFromTab();
                 }),
                 new Action("Paste", () -> {
                     Tab tab = getSelectedTab();
@@ -655,19 +627,12 @@ public final class Editor extends JFrame {
                 new Action("Comment", () -> {
                     Tab tab = getSelectedTab();
                     if (tab.contents.getSelectedText() == null) {
-                        int caret = tab.contents.getCaretPosition();
-                        int lineStart, lineEnd;
-                        try {
-                            lineStart = Utilities.getRowStart(tab.contents, caret);
-                            lineEnd = Utilities.getRowEnd(tab.contents, caret);
-                        } catch (BadLocationException badLocationException) {
-                            throw new RuntimeException(badLocationException);
-                        }
-                        String line = tab.sanitizedText().substring(lineStart, lineEnd);
+                        Pair<Integer, Integer> lineStartEnd = selectCurrentLine();
+                        String line = tab.sanitizedText().substring(lineStartEnd.getFirst(), lineStartEnd.getSecond());
                         if (line.contains("\\\\")) {
-                            tab.replaceRange(line.replace("\\\\", ""), lineStart, lineEnd);
+                            tab.replaceRange(line.replace("\\\\", ""), lineStartEnd.getFirst(), lineStartEnd.getSecond());
                         } else {
-                            tab.replaceRange("\\\\ " + line, lineStart, lineEnd);
+                            tab.replaceRange("\\\\ " + line, lineStartEnd.getFirst(), lineStartEnd.getSecond());
                         }
                     } else {
                         int lineStart, lineEnd;
@@ -694,6 +659,31 @@ public final class Editor extends JFrame {
                     }
                 })
         );
+    }
+
+    private void copySelectedFromTab() {
+        Tab tab = getSelectedTab();
+        if (tab.contents.getSelectedText() == null) {
+            Pair<Integer, Integer> lineStartEnd = selectCurrentLine();
+            tab.contents.select(lineStartEnd.getFirst(), lineStartEnd.getSecond());
+        }
+        String text = tab.contents.getSelectedText();
+        StringSelection selection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, selection);
+    }
+
+    private Pair<Integer, Integer> selectCurrentLine(){
+        Tab tab = getSelectedTab();
+        int caret = tab.contents.getCaretPosition();
+        int lineStart, lineEnd;
+        try {
+            lineStart = Utilities.getRowStart(tab.contents, caret);
+            lineEnd = Utilities.getRowEnd(tab.contents, caret);
+        } catch (BadLocationException badLocationException) {
+            throw new RuntimeException(badLocationException);
+        }
+        return new Pair<>(lineStart, lineEnd);
     }
 
     private void askForReplace() {

@@ -6,8 +6,9 @@ import systems.monomer.tokenizer.Source;
 
 import java.util.List;
 
+@Getter
 public class ErrorBlock {
-    @Getter @Setter
+    @Setter
     private Context context = null;
 
     public void setContext(Index start, Index stop, Source source) {

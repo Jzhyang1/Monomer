@@ -1,6 +1,7 @@
 package systems.monomer;
 
 import org.junit.Test;
+import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.SourceFile;
@@ -35,19 +36,19 @@ public class InterpretTest {
     public void testInterpret4() {
         Source source = new SourceString("@(a=1);@a");
         Token token = source.parse();
-        Node node = token.toNode();
+        Node node = new ModuleNode("module").with(token.toNode());
         node.matchVariables();
         node.matchTypes();
-        assertEquals("interpret assign", "(1,1)", node.interpretValue().valueString());
+        assertEquals("interpret assign", "((1,1))", node.interpretValue().valueString());
     }
     @Test
     public void testInterpretFile() {
         Source source = new SourceFile("samples/operator-sample.m");
         Token token = source.parse();
-        Node node = token.toNode();
+        Node node = new ModuleNode("module").with(token.toNode());
         node.matchVariables();
         node.matchTypes();
-        assertEquals("interpret assign", "(0,1,0,0,1,0)", node.interpretValue().valueString());
+        assertEquals("interpret assign", "((0,1,0,0,1,0))", node.interpretValue().valueString());
     }
     @Test
     public void testInterpret5() {

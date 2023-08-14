@@ -1,6 +1,9 @@
 package systems.monomer.errorhandling;
 
 
+import lombok.Getter;
+
+@Getter
 public class Index {
     private int x, y;
     private int position;
@@ -11,22 +14,11 @@ public class Index {
         this.position = position;
     }
 
-    public int getX() {
-        return x;
-    }
-    public int getY() {
-        return y;
-    }
-
     public int getRow() {
         return y + 1;
     }
     public int getCol() {
         return x + 1;
-    }
-
-    public int getPosition() {
-        return position;
     }
 
     public String toString() {

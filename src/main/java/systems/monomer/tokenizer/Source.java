@@ -1,7 +1,9 @@
 package systems.monomer.tokenizer;
 
+import lombok.Getter;
 import systems.monomer.Constants;
 import systems.monomer.errorhandling.Index;
+import systems.monomer.syntaxtree.operators.Operator;
 import systems.monomer.syntaxtree.operators.OperatorNode;
 
 import java.util.*;
@@ -142,6 +144,7 @@ public abstract class Source {
     }
 
     private static final int DEFAULT_BUFFER_COUNT = 100;
+    @Getter
     private int y = 0;
     protected Deque<Line> buffer = new LinkedList<>();
     private Line line = null;
@@ -187,18 +190,18 @@ public abstract class Source {
                 if (nextStarting > startingSpaces) {
                     //child group
                     ret.add(parseBlock());
-                    ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
+//                    ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
                 } else if (nextStarting < startingSpaces) {
                     break;
                 } else {
                     Token lastToken = ret.getLast();
                     if (!(lastToken.getUsage() == Token.Usage.OPERATOR &&
-                            OperatorNode.isBreaking(lastToken.getValue()))) {
+                            Operator.isBreaking(lastToken.getValue()))) {
                         ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
                     }
                 }
             }
-            else if (OperatorNode.signEndDelimiters().contains(peek)) {
+            else if (Operator.signEndDelimiters().contains(peek)) {
                 break;
             }
             else {
@@ -395,20 +398,20 @@ public abstract class Source {
         Index start = line.getIndex();
         char peek = line.peek();
 
-        String operator = line.matchNext(OperatorNode.symbolOperators());
+        String operator = line.matchNext(Operator.symbolOperators());
         if (operator != null) {
             return new Token(Token.Usage.OPERATOR, operator)
                     .with(start, line.getIndex(), Source.this);
         }
 
-        if (OperatorNode.signStartDelimiters().contains(peek)) {
+        if (Operator.signStartDelimiters().contains(peek)) {
             line.get(); //clear start delim
             Token ret = parseBlock();
             char endDelim = line.get(); //clear end delim
             ret.setContext(start, line.getIndex(), Source.this);
-            if (!OperatorNode.signEndDelimiters().contains(endDelim))
+            if (!Operator.signEndDelimiters().contains(endDelim))
                 throwParseError(ret, "Missing end delimiter");
-            return ret.with("" + peek + endDelim);
+            return ret.with(Character.toString(peek) + Character.toString(endDelim));
         } else if (Character.isDigit(peek) || peek == '.') {
             return parseNumberLiteral();
         } else if (peek == '"' || peek == '\'') {
@@ -493,10 +496,6 @@ public abstract class Source {
 
     public boolean eof() {
         return buffer.isEmpty();
-    }
-
-    public int getY() {
-        return y;
     }
 
     public int getRow() {

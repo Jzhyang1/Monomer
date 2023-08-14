@@ -6,8 +6,9 @@ import systems.monomer.variables.Type;
 
 import java.util.Collection;
 
+@Getter
 public abstract class InterpretCollectionValue extends InterpretValue {
-    @Getter @Setter
+    @Setter
     private Type type;
 
     public abstract Collection<InterpretValue> getValues();

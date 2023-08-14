@@ -1,10 +1,14 @@
 package systems.monomer.interpreter;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  *
  * @param <T> The type of base value, can be Integer, Char, Float, Boolean
  */
 public class InterpretNumberValue<T extends Number> extends InterpretValue {
+    @Getter @Setter
     private T value;
     private String typeName;
 
@@ -13,12 +17,6 @@ public class InterpretNumberValue<T extends Number> extends InterpretValue {
         typeName = value.getClass().getName();
     }
 
-    public void setValue(T value){
-        this.value = value;
-    }
-    public T getValue(){
-        return value;
-    }
     public String valueString(){
         return value.toString();
     }

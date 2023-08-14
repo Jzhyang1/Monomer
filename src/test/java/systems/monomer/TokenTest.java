@@ -25,7 +25,7 @@ public class TokenTest {
         Token token = source.parse();
         Node node = token.toNode();
         System.out.println(node);
-        assertEquals("operator file token toNode", "MODULE block[\n" +
+        assertEquals("operator file token toNode", "LITERAL block[\n" +
                 "\tOPERATOR =[\n" +
                 "\t\tIDENTIFIER x\n" +
                 "\t\tLITERAL 0\n" +
