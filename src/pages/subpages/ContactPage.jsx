@@ -5,6 +5,7 @@ import Title from "../../components/Title";
 import Link from "../../components/Link";
 import { useContext } from "react";
 import { ThemeContext } from "../../contexts";
+import LargeText from "../../components/LargeText";
 
 const repos = [
   {
@@ -141,8 +142,8 @@ export default function ContactPage() {
     <>
       <Title>Sources</Title>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[10px] mt-[10px] mb-[30px]">
-        {repos.map((contact, index) => (
-          <ContactBox key={index} contact={contact} />
+        {repos.map((repo, index) => (
+          <RepoBox key={index} repo={repo} />
         ))}
       </div>
       <Title>Members</Title>
@@ -155,9 +156,49 @@ export default function ContactPage() {
   );
 }
 
+function RepoBox({ repo }) {
+  const { isDarkMode } = useContext(ThemeContext);
+  const { title, creds, link, image, desc, important } = repo;
+  return (
+    <Box
+      className={
+        "rounded-lg max-w-[300px] p-[10px] font-thin border-[2px] " +
+        (important
+          ? isDarkMode
+            ? "border-blue-800 "
+            : "border-orange-200 "
+          : "mx-[10px] my-[30px] border-slate-200 ") +
+        (isDarkMode ? "bg-slate-600" : "bg-slate-100")
+      }
+      header={
+        <div className="flex flex-row my-4 justify-evenly items-center">
+          <LargeText>{title}</LargeText>
+          <Image
+            src={image}
+            alt={title}
+            className={
+              "border-[2px] rounded-full object-cover " +
+              (important ? "h-[100px] w-[100px] " : "h-[50px] w-[50px] ") +
+              (isDarkMode ? "border-blue-800" : "border-slate-200")
+            }
+          />
+        </div>
+      }
+      link={link}
+    >
+      <div>
+        <small>{creds}</small>
+      </div>
+      <div className="uppercase">{desc}</div>
+      <div className="text-[14px] underline text-gray-400 pl-[5px]">
+        {link.replace(/(^\w+:|^)\/\//, "")}
+      </div>
+    </Box>
+  );
+}
+
 function ContactBox({ contact }) {
   const { isDarkMode } = useContext(ThemeContext);
-  //TODO make ContactBox pop out when clicked on
   const { title, creds, link, image, desc, links, important, tasks } = contact;
   return (
     <Box
