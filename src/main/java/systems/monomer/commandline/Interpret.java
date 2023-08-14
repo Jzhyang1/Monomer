@@ -18,7 +18,9 @@ import java.io.File;
 public class Interpret {
     public static void interpret(Source source) {
         Token body = source.parse();
+//        System.out.println(body);
         Node node = body.toNode();
+//        System.out.println(node);
         Node global = new ModuleNode(source.getTitle());
         //global constants here
         global.putVariable("true", new VariableKey(){{setValue(new InterpretBool(true));}});
@@ -32,8 +34,9 @@ public class Interpret {
         global.add(node);
 
         global.matchVariables();
-        global.matchTypes();
-        global.matchOverloads();
+        //TODO
+//        global.matchTypes();
+//        global.matchOverloads();
         global.interpretValue();
     }
     public static void interpret(File sourceFile) {

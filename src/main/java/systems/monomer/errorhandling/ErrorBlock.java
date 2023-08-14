@@ -62,7 +62,7 @@ public class ErrorBlock {
             errorMessage.append(" ".repeat(padding))
                     .append("| ")
                     .append(" ".repeat(okStart))
-                    .append("^".repeat(okEnd - okStart + 1))
+                    .append("^".repeat(okEnd - okStart))
                     .append("\n");
         }
 

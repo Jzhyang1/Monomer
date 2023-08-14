@@ -74,6 +74,9 @@ public class Token extends ErrorBlock {
                 token = iter.next();
                 condition = partialOperatorToNode(control, condition, token, iter, ":");
             }
+            else {
+                throwError("Expecting body after condition");
+            }
         }
         iter.next();    //skip colon
         token = iter.next();
@@ -125,14 +128,17 @@ public class Token extends ErrorBlock {
         }
 
         //check if condition operation
-        if(Operator.symbolControls().contains(op.value)) {
+        if(Operator.symbolPrimaryControls().contains(op.value)) {
+            cur = new ControlGroupNode().with(partialControlToNode(op, iter));
+
             //TODO ugly
-            cur = Operator.symbolPrimaryControls().contains(op.value)?
-                    new ControlGroupNode().with(partialControlToNode(op, iter)) :
-                    cur.with(partialControlToNode(op, iter));
-            cur = partialToNode(cur, iter);
-            if(iter.hasNext()) return partialOperatorToNode(prevOp, cur, iter.next(), iter, stopAt);
-            else return cur;
+            if(!iter.hasNext()) return cur;
+            Token peekToken = iter.next();
+            if(Operator.symbolSecondaryControls().contains(peekToken.value)) return cur.with(partialControlToNode(peekToken, iter));
+            else {
+                iter.previous();
+                return partialOperatorToNode(prevOp, cur, new Token(Usage.OPERATOR, ";"), iter);
+            }
         }
 
         Token token = iter.next();

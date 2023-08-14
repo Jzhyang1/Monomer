@@ -193,11 +193,6 @@ public class Operator {
         return delimiters;
     }
 
-    public static Set<String> symbolControls() {
-        HashSet<String> controls = new HashSet<>(List.of("if", "else", "any", "all", "while", "repeat", "for"));   //TODO
-        return controls;
-    }
-
     public static Set<String> symbolSuffixes() {
         HashSet<String> delimiters = new HashSet<>(List.of(";"));   //TODO
         return delimiters;
@@ -208,8 +203,16 @@ public class Operator {
         return delimiters;
     }
 
+    public static Set<String> symbolControls() {
+        HashSet<String> controls = new HashSet<>(List.of("if", "else", "any", "all", "while", "repeat", "for"));   //TODO
+        return controls;
+    }
     public static Set<String> symbolPrimaryControls() {
         HashSet<String> delimiters = new HashSet<>(List.of("if", "repeat", "while", "for"));   //TODO
+        return delimiters;
+    }
+    public static Set<String> symbolSecondaryControls() {
+        HashSet<String> delimiters = new HashSet<>(List.of("else", "any", "all"));   //TODO
         return delimiters;
     }
 
