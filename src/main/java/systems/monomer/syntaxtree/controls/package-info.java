@@ -13,10 +13,9 @@
  *     <li>{@link systems.monomer.syntaxtree.controls.AllNode}</li>
  * </ul>
  * This module should only be accessed with the rest of the syntax tree.
- * </p>
  *
  * @since 1.0
- * @author baeldung
- * @version 1.1
+ * @author jzhyang
+ * @version 1.0
  */
 package systems.monomer.syntaxtree.controls;
