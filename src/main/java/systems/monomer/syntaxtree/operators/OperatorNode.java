@@ -116,39 +116,27 @@ public abstract class OperatorNode extends Node {
             putData("==", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
-            });
+            }, Comparison.generalIntFloatCharString(Objects::equals));
             putData("!=", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
-            });
+            }, Comparison.generalIntFloatCharString((a,b)-> !Objects.equals(a, b)));
             putData(">", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
-            });
+            }, Comparison.generalIntFloatCharString((a,b)-> a.compareTo(b)>0));
             putData("<", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
-            });
+            }, Comparison.generalIntFloatCharString((a,b)-> a.compareTo(b)<0));
             putData(">=", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
-            });
+            }, Comparison.generalIntFloatCharString((a,b)-> a.compareTo(b)>=0));
             putData("<=", 550, (self) -> {
                 //TODO
                 return null;
-            }, (first, second) -> {
-                return null;
-            });
+            }, Comparison.generalIntFloatCharString((a,b)-> a.compareTo(b)<=0));
             putData("?=", 555, (self) -> {
                 //TODO
                 return null;

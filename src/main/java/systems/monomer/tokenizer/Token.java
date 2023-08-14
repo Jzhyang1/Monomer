@@ -80,7 +80,7 @@ public class Token extends ErrorBlock {
 
         Node body;
         if(token.usage == Usage.GROUP && token.value.equals("block"))
-            body = partialToNode(token.toNode(), iter);
+            body = token.toNode();
         else {
             if (token.usage == Usage.OPERATOR && OperatorNode.symbolPrefixes().contains(token.value))
                 body = partialOperatorToNode(control, null, token, iter);
@@ -91,7 +91,7 @@ public class Token extends ErrorBlock {
             }
         }
 
-        return controlNode.with(condition == null ? new BoolNode() : condition).with(body); //TODO set BoolNode to true
+        return controlNode.with(condition == null ? new BoolNode(true) : condition).with(body); //TODO set BoolNode to true
     }
 
     private Node partialOperatorToNode(@Nullable Token prevOp, @Nullable Node cur, @Nullable Token nullableOp, ListIterator<Token> iter) {
@@ -191,36 +191,18 @@ public class Token extends ErrorBlock {
     }
 
     public Node toNode() {
-        switch (usage) {
-            case STRING_BUILDER -> {
-                if(children == null) return new StringBuilderNode(List.of(StringNode.EMPTY));
-                return new StringBuilderNode(children.stream().map(Token::toNode).collect(Collectors.toList()));
-            }
-            case STRING -> {
-                return new StringNode(value);
-            }
-            case CHARACTER -> {
-                return new CharNode(value.charAt(0));
-            }
-            case CHARACTER_FROM_INT -> {
-                return new CharNode((char) Integer.parseInt(value));
-            }
-            case INTEGER -> {
-                return new IntNode(Integer.valueOf(value));
-            }
-            case FLOAT -> {
-                return new FloatNode(Double.valueOf(value));
-            }
-            case IDENTIFIER -> {
-                return new VariableNode(value);
-            }
-            case OPERATOR -> {
-                return switch (value) {
-                    case "as" -> new CastNode();
-                    default ->
-                            OperatorNode.getOperator(value);  //TODO make sure the GenericOperatorNode gets the function for interpret, compile, etc
-                };
-            }
+        return (switch (usage) {
+            case STRING_BUILDER ->
+                (children == null) ? new StringBuilderNode(List.of(StringNode.EMPTY)) :
+                        new StringBuilderNode(children.stream().map(Token::toNode).collect(Collectors.toList()));
+
+            case STRING -> new StringNode(value);
+            case CHARACTER -> new CharNode(value.charAt(0));
+            case CHARACTER_FROM_INT -> new CharNode((char) Integer.parseInt(value));
+            case INTEGER -> new IntNode(Integer.valueOf(value));
+            case FLOAT ->  new FloatNode(Double.valueOf(value));
+            case IDENTIFIER -> new VariableNode(value);
+            case OPERATOR -> OperatorNode.getOperator(value);
             case GROUP -> { //TODO account for all the different types of groups
                 Node node = switch (value) {
                     case "()", "block" -> new TupleNode("block");
@@ -228,7 +210,7 @@ public class Token extends ErrorBlock {
                     case "{}" -> new StructureNode();
                     default -> null;
                 };
-                if(children == null) return node;
+                if(children == null) yield node;
 
                 ListIterator<Token> iter = children.listIterator();
                 Token token = iter.next();
@@ -244,14 +226,11 @@ public class Token extends ErrorBlock {
 
                 //TODO this is ugly
                 if(cur instanceof TupleNode) node.addAll(cur.getChildren());
-                else if(value.equals("()"))  return cur;
+                else if(value.equals("()"))  yield cur;
                 else node.add(cur);
-                return node;
+                yield node;
             }
-            default -> {
-                throw new Error("reached unreachable statement");
-            }
-        }
+        }).with(getContext());
     }
 
     public void add(Token child) {

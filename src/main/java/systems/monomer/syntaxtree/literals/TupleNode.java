@@ -7,17 +7,22 @@ import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
 
 import java.util.Collection;
+import java.util.List;
 
 public class TupleNode extends LiteralNode {
+    public static boolean isTuple(Node node) {
+        //TODO this is ugly
+        return node.getUsage() == Usage.LITERAL && List.of("block", ",", ";").contains(node.getName());
+    }
 
     public TupleNode() {
-        super(",");
+        super("block");
     }
     public TupleNode(String name) {
         super(name);
     }
     public TupleNode(Collection<? extends Node> list) {
-        super(",");
+        super("block");
         addAll(list);
     }
 

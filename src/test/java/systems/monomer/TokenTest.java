@@ -64,7 +64,6 @@ public class TokenTest {
 
         Token token = source.parse();
         Node node = token.toNode();
-        System.out.println(node);
         assertEquals("condition file token toNode", "LITERAL block[\n" +
                 "\tCONTROL_GROUP control[\n" +
                 "\t\tLABEL if[\n" +
@@ -98,7 +97,7 @@ public class TokenTest {
                 "\t\t\t]\n" +
                 "\t\t]\n" +
                 "\t\tLABEL else[\n" +
-                "\t\t\tLITERAL true\n" +
+                "\t\t\tLITERAL bool\n" +
                 "\t\t\tLITERAL block[\n" +
                 "\t\t\t\tOPERATOR call[\n" +
                 "\t\t\t\t\tOPERATOR field[\n" +

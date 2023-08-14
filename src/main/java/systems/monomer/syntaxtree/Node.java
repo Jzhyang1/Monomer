@@ -5,9 +5,13 @@ import lombok.Setter;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
+import systems.monomer.errorhandling.Context;
+import systems.monomer.errorhandling.Index;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.errorhandling.ErrorBlock;
+import systems.monomer.tokenizer.Source;
+import systems.monomer.tokenizer.Token;
 import systems.monomer.variables.Type;
 import systems.monomer.variables.VariableKey;
 
@@ -67,6 +71,10 @@ public abstract class Node extends ErrorBlock {
     }
     public Node with(Node node) {
         add(node);
+        return this;
+    }
+    public Node with(Context context) {
+        setContext(context);
         return this;
     }
 

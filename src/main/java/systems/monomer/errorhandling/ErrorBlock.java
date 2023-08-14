@@ -1,15 +1,15 @@
 package systems.monomer.errorhandling;
 
+import lombok.Getter;
+import lombok.Setter;
 import systems.monomer.tokenizer.Source;
 
 import java.util.List;
 
 public class ErrorBlock {
+    @Getter @Setter
     private Context context = null;
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
     public void setContext(Index start, Index stop, Source source) {
         this.context = new Context(start, stop, source);
     }

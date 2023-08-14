@@ -187,6 +187,7 @@ public abstract class Source {
                 if (nextStarting > startingSpaces) {
                     //child group
                     ret.add(parseBlock());
+                    ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
                 } else if (nextStarting < startingSpaces) {
                     break;
                 } else {
