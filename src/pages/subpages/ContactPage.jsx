@@ -101,7 +101,7 @@ const contacts = [
     creds: "Seven Lakes High School",
     link: "",
     desc: "developer",
-    tasks: ["IDE"],
+    tasks: ["Code editor", "Development integration"],
     links: [],
     important: true,
   },
@@ -141,13 +141,13 @@ export default function ContactPage() {
   return (
     <>
       <Title>Sources</Title>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[10px] mt-[10px] mb-[30px]">
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-[20px] mt-[10px] mb-[30px]">
         {repos.map((repo, index) => (
           <RepoBox key={index} repo={repo} />
         ))}
       </div>
       <Title>Members</Title>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[10px] mt-[10px] mb-[30px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-[10px] mt-[10px] mb-[30px]">
         {contacts.map((contact, index) => (
           <ContactBox key={index} contact={contact} />
         ))}
@@ -158,20 +158,18 @@ export default function ContactPage() {
 
 function RepoBox({ repo }) {
   const { isDarkMode } = useContext(ThemeContext);
-  const { title, creds, link, image, desc, important } = repo;
+  const { title, link, image, desc, important } = repo;
   return (
     <Box
       className={
-        "rounded-lg max-w-[300px] p-[10px] font-thin border-[2px] " +
-        (important
-          ? isDarkMode
-            ? "border-blue-800 "
-            : "border-orange-200 "
-          : "mx-[10px] my-[30px] border-slate-200 ") +
-        (isDarkMode ? "bg-slate-600" : "bg-slate-100")
+        "rounded-lg max-w-[400px] p-[10px] font-thin border-[2px] text-end " +
+        (important ? "" : "my-[30px] ") +
+        (isDarkMode
+          ? "border-blue-800 bg-slate-600"
+          : "border-orange-200 bg-slate-100")
       }
       header={
-        <div className="flex flex-row my-4 justify-evenly items-center">
+        <div className="flex flex-row my-4 gap-4 justify-evenly items-center">
           <LargeText>{title}</LargeText>
           <Image
             src={image}
@@ -186,11 +184,8 @@ function RepoBox({ repo }) {
       }
       link={link}
     >
-      <div>
-        <small>{creds}</small>
-      </div>
       <div className="uppercase">{desc}</div>
-      <div className="text-[14px] underline text-gray-400 pl-[5px]">
+      <div className="text-[14px] underline text-gray-400">
         {link.replace(/(^\w+:|^)\/\//, "")}
       </div>
     </Box>
