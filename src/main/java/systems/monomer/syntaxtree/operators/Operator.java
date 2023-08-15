@@ -209,22 +209,22 @@ public final class Operator {
     }
 
     public static boolean isSuffix(String symbol) {
-        return (operators.get(symbol).info & SUFFIX) != NONE;
+        return (operators.get(symbol).info & SUFFIX) == SUFFIX;
     }
     public static boolean isPrefix(String symbol) {
-        return (operators.get(symbol).info & PREFIX) != NONE;
+        return (operators.get(symbol).info & PREFIX) == PREFIX;
     }
     public static boolean isBinary(String symbol) {
-        return (operators.get(symbol).info & BINARY) != NONE;
+        return (operators.get(symbol).info & BINARY) == BINARY;
     }
     public static boolean isControl(String symbol) {
-        return (operators.get(symbol).info & CONTROL) != NONE;
+        return (operators.get(symbol).info & CONTROL) == CONTROL;
     }
     public static boolean isPrimaryControl(String symbol) {
-        return (operators.get(symbol).info & PRIMARY_CONTROL) != NONE;
+        return (operators.get(symbol).info & PRIMARY_CONTROL) == PRIMARY_CONTROL;
     }
     public static boolean isSecondaryControl(String symbol) {
-        return (operators.get(symbol).info & SECONDARY_CONTROL) != NONE;
+        return (operators.get(symbol).info & SECONDARY_CONTROL) == SECONDARY_CONTROL;
     }
     public static boolean isOperator(String symbol) {
         return operators.containsKey(symbol);
