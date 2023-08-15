@@ -5,6 +5,9 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.VariableNode;
+import systems.monomer.variables.Type;
 import systems.monomer.variables.VariableKey;
 
 public class FieldNode extends OperatorNode {
@@ -19,23 +22,30 @@ public class FieldNode extends OperatorNode {
     }
 
     public void matchVariables() {
-        //TODO this needs restructuring. Have getVariableKey -> getVariableEntry and
-        // return the name and key of the Node, then use that name in the variable
-        // name (ie "parentName.rhsName")
+        getFirst().matchVariables();
+
         VariableKey parentKey = getFirst().getVariableKey();
-        VariableKey existing = getVariable(getName());
+        Node fieldNode = getSecond();
+        if(!(fieldNode instanceof VariableNode)) {
+            fieldNode.throwError("Expected variable name");
+        }
+
+        VariableNode field = (VariableNode)fieldNode;
+        String fieldName = field.getName();
+        VariableKey existing = parentKey.get(fieldName);
         if(existing == null) {
             existing = new VariableKey();
-            putVariable(getName(), existing);
+            parentKey.put(fieldName, existing);
         }
+
         key = existing;
     }
 
     public InterpretVariable interpretVariable() {
-        throw new Error("TODO unimplemented");
+        return key;
     }
     public InterpretValue interpretValue() {
-        return null;
+        return key.getValue();
     }
 
     public CompileMemory compileMemory() {

@@ -31,11 +31,13 @@ public class AssignNode extends OperatorNode {
 
     public void matchTypes() {
         //TODO chained assignment
+        //TODO function
         matchTypes(getFirst(), getSecond());
     }
 
     public InterpretVariable interpretVariable() {
-        return getFirst().interpretVariable();
+        throw new Error("TODO unimplemented");
+//        return getFirst().interpretVariable();
     }
     public InterpretValue interpretValue() {
         InterpretValue val = getSecond().interpretValue();

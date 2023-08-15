@@ -65,4 +65,33 @@ public class InterpretTest {
         System.out.println(node);
         assertEquals("interpret some operators and list literal", "(1)", node.interpretValue().valueString());
     }
+    @Test
+    public void testInterpret7() {
+        Source source = new SourceString("a number = 1\n" +
+                "@(a number)");
+        Token token = source.parse();
+        Node node = token.toNode();
+        Node global = new ModuleNode(source.getTitle());
+        global.add(node);
+        global.matchVariables();
+
+        System.out.println(node);
+        assertEquals("interpret multiword variables", "(1,1)", node.interpretValue().valueString());
+    }
+
+    @Test
+    public void interpretTest8() {
+        Source source = new SourceString("a x = 1\n" +
+                "a y = 2\n" +
+                "a z = 3\n" +
+                "@a");
+        Token token = source.parse();
+        Node node = token.toNode();
+        Node global = new ModuleNode(source.getTitle());
+        global.add(node);
+        global.matchVariables();
+
+        System.out.println(node);
+        assertEquals("print multiword variable", "(1,2,3,{x=1,y=2,z=3})", node.interpretValue().valueString());
+    }
 }

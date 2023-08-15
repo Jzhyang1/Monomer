@@ -13,6 +13,7 @@ public abstract class Source {
     public static class Line {
         public static final Map<Character, Integer> SPACE_CHARS = new HashMap<>() {{
             put(' ', 1);
+            put('\r', 1);
             put('\t', Constants.TAB_SIZE);
         }};
 
@@ -90,7 +91,7 @@ public abstract class Source {
             return spaces;
         }
 
-        private boolean isNext(String next) {
+        public boolean isNext(String next) {
             for (int i = 0; i < next.length(); ++i) {
                 if (line.charAt(x + i) != next.charAt(i)) return false;
             }
@@ -117,6 +118,13 @@ public abstract class Source {
             if (isNext(next)) {
                 x += next.length();
                 position += next.length();
+                return true;
+            }
+            return false;
+        }
+        public boolean matchNext(char next) {
+            if (peek() == next) {
+                get();
                 return true;
             }
             return false;

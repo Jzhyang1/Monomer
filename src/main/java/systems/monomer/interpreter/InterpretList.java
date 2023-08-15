@@ -11,7 +11,9 @@ public class InterpretList extends InterpretCollectionValue {
     private List<InterpretValue> values = new ArrayList<>();
 
     public InterpretList(){}
-
+    public InterpretList(List<InterpretValue> list) {
+        values = list;
+    }
     public InterpretList(Collection<? extends Node> list) {
         values.addAll(list.stream().map(Node::interpretValue).toList());
     }

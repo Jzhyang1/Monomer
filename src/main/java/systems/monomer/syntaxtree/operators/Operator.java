@@ -2,7 +2,7 @@ package systems.monomer.syntaxtree.operators;
 
 import lombok.NonNull;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.TupleNode;
@@ -12,10 +12,11 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static systems.monomer.syntaxtree.operators.Arithmetic.*;
 import static systems.monomer.syntaxtree.operators.Bitwise.*;
-import static systems.monomer.syntaxtree.operators.Bitwise.differentiatedIntBool;
+import static systems.monomer.syntaxtree.operators.Lists.*;
 
 public class Operator {
     private static Map<String, Operator> operators = new HashMap<>();
@@ -145,6 +146,20 @@ public class Operator {
     }
 
     /**
+     * List operators inhabit the precedence range 400-500 with 1 exception
+     */
+    private static void initList() {
+        putData(".", 430, (self)->null, listChecked(
+                (lists)->
+                        //TODO not just lists
+                        new InterpretList(lists.stream().flatMap((list)->list.getValues().stream()).collect(Collectors.toList()))
+                ));
+        putData("...", 440, (self)->null, isTruthy());
+        putData("in", 820, (self)->null, (self)->new InterpretBool(((InterpretCollectionValue)self.getSecond().interpretValue()).getValues().contains(self.getFirst().interpretValue()))); //TODO fix and clean
+        putData("#", 1800, (self)->null, listChecked((list)->new InterpretNumberValue<>(list.get(0).getValues().size())));
+    }
+
+    /**
      * Control operators inhabit the precedence range -100-50
      * This range overlaps with some other operators
      */
@@ -178,6 +193,7 @@ public class Operator {
         initComparison();
         initBitwise();
         initArithmetic();
+        initList();
         initControl();
     }
     public static Node getOperator(String name) {
@@ -230,6 +246,7 @@ public class Operator {
         List<Set<String>> chains = List.of(
                 new TreeSet<>(List.of(",")),
                 new TreeSet<>(List.of(";")),
+                new TreeSet<>(List.of(".")),
                 new HashSet<>(List.of("<", "<=", "==")),
                 new HashSet<>(List.of(">", ">=", "==")),
                 new TreeSet<>(List.of("==", "!=")),

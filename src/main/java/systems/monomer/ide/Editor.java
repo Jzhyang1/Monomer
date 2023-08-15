@@ -328,7 +328,7 @@ public final class Editor extends JFrame {
         }
 
         public String sanitizedText() {
-            return contents.getText().replace("\r", "");
+            return contents.getText();
         }
 
     }

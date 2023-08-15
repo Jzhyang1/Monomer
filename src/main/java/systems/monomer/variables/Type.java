@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 public class Type implements Cloneable {
@@ -30,5 +31,9 @@ public class Type implements Cloneable {
     }
     public boolean equals(Object other) {
         return (other instanceof Type typeOther) && typeOther.fields.equals(fields);
+    }
+
+    public String valueString() {
+        return "{" + fields.entrySet().stream().map((entry)->entry.getKey()+"="+entry.getValue().valueString()).collect(Collectors.joining(",")) + "}";
     }
 }
