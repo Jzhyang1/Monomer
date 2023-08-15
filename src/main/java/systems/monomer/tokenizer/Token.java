@@ -66,7 +66,7 @@ public class Token extends ErrorBlock {
         Token token = iter.next();
 
         Node condition;
-        if (token.usage == Usage.OPERATOR && Operator.symbolPrefixes().contains(token.value))
+        if (token.usage == Usage.OPERATOR && Operator.isPrefix(token.value))
              condition = partialOperatorToNode(control, null, token, iter, ":");
         else {
             condition = partialToNode(token.toNode(), iter);
@@ -85,7 +85,7 @@ public class Token extends ErrorBlock {
         if(token.usage == Usage.GROUP && token.value.equals("block"))
             body = token.toNode();
         else {
-            if (token.usage == Usage.OPERATOR && Operator.symbolPrefixes().contains(token.value))
+            if (token.usage == Usage.OPERATOR && Operator.isPrefix(token.value))
                 body = partialOperatorToNode(control, null, token, iter);
             else {
                 body = partialToNode(token.toNode(), iter);
@@ -122,19 +122,19 @@ public class Token extends ErrorBlock {
 
         if (!iter.hasNext()) {
             //check suffix
-            if (Operator.symbolSuffixes().contains(op.value)) {
+            if (Operator.isSuffix(op.value)) {
                 return op.toNode().with(cur);
             } else op.throwError("Expected value after operator");
         }
 
         //check if condition operation
-        if(Operator.symbolPrimaryControls().contains(op.value)) {
+        if(Operator.isPrimaryControl(op.value)) {
             cur = new ControlGroupNode().with(partialControlToNode(op, iter));
 
             //TODO ugly
             if(!iter.hasNext()) return cur;
             Token peekToken = iter.next();
-            if(Operator.symbolSecondaryControls().contains(peekToken.value)) return cur.with(partialControlToNode(peekToken, iter));
+            if(Operator.isSecondaryControl(peekToken.value)) return cur.with(partialControlToNode(peekToken, iter));
             else {
                 iter.previous();
                 return partialOperatorToNode(prevOp, cur, new Token(Usage.OPERATOR, ";"), iter);
@@ -147,12 +147,9 @@ public class Token extends ErrorBlock {
 
         //check prefixes/suffixes
         if (token.usage == Usage.OPERATOR) {
-//            if (OperatorNode.symbolControls().contains(op.value)) {
-//                next = partialControlToNode(op, iter);
-//            } else
-            if (Operator.symbolPrefixes().contains(token.value))
+            if (Operator.isPrefix(token.value))
                 next = partialOperatorToNode(op, null, token, iter, stopAt);
-            else if (Operator.symbolSuffixes().contains(op.value)) {
+            else if (Operator.isSuffix(op.value)) {
                 next = opNode.with(cur);
             } else token.throwError("Expected value or prefix");
         } else
@@ -221,7 +218,7 @@ public class Token extends ErrorBlock {
                 ListIterator<Token> iter = children.listIterator();
                 Token token = iter.next();
 
-                Node cur = (token.usage == Usage.OPERATOR && Operator.symbolPrefixes().contains(token.value)) ?
+                Node cur = (token.usage == Usage.OPERATOR && Operator.isPrefix(token.value)) ?
                         partialOperatorToNode(null,null, token, iter) : partialToNode(token.toNode(), iter);
 
                 while (iter.hasNext()) {

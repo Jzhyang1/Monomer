@@ -7,11 +7,12 @@ import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.variables.Type;
 
-public class ControlGroupNode extends OperatorNode {
+public final class ControlGroupNode extends OperatorNode {
     public ControlGroupNode(){
         super("control");
     }
 
+    @Override
     public Usage getUsage() {
         return Usage.CONTROL_GROUP;
     }

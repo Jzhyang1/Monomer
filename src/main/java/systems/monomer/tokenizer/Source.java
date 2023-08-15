@@ -499,6 +499,9 @@ public abstract class Source {
     /**
      * returns all lines of the files from the startLine and ending at endLine
      * both are inclusive
+     * @param startLine
+     * @param endLine
+     * @return
      */
     public abstract List<String> getCodeBlock(int startLine, int endLine);
 

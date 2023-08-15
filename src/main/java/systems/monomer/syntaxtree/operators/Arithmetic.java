@@ -6,7 +6,7 @@ import systems.monomer.interpreter.InterpretValue;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class Arithmetic {
+public final class Arithmetic {
     public static Function<GenericOperatorNode, InterpretValue> numericalChecked(BiFunction<InterpretNumberValue<? extends Number>, InterpretNumberValue<? extends Number>, InterpretValue> callback) {
         return (self) -> {
             InterpretValue first = self.getFirst().interpretValue();

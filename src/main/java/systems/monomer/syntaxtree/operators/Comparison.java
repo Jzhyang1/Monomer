@@ -6,7 +6,7 @@ import systems.monomer.syntaxtree.Node;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class Comparison {
+public final class Comparison {
     public static Function<GenericOperatorNode, InterpretValue> differentiatedIntFloatCharString(BiFunction<Integer, Integer, Boolean> intCallback, BiFunction<Double, Double, Boolean> floatCallback, BiFunction<Character, Character, Boolean> charCallback, BiFunction<String, String, Boolean> stringCallback) {
         return (self) -> {
             InterpretValue first = self.getFirst().interpretValue(), second = self.getSecond().interpretValue();

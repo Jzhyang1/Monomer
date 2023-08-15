@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class Lists {
+public final class Lists {
     public static Function<GenericOperatorNode, InterpretValue> listChecked(Function<List<? extends InterpretCollectionValue>, InterpretValue> callback) {
         return (self) -> {
             List<InterpretCollectionValue> values = new ArrayList<>();

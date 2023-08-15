@@ -6,7 +6,7 @@ import systems.monomer.syntaxtree.Node;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class Bitwise {
+public final class Bitwise {
     public static Function<GenericOperatorNode, InterpretValue> differentiatedIntBool(BiFunction<Integer, Integer, Integer> intCallback, BiFunction<Boolean, Boolean, Boolean> boolCallback) {
         return (self) -> {
             InterpretValue first = self.getFirst().interpretValue();
