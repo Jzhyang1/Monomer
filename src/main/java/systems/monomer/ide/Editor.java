@@ -1,5 +1,6 @@
 package systems.monomer.ide;
 
+import lombok.SneakyThrows;
 import systems.monomer.Constants;
 import systems.monomer.commandline.Interpret;
 import systems.monomer.tokenizer.SourceString;
@@ -16,6 +17,10 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Timer;
 import java.util.*;
@@ -39,7 +44,7 @@ public final class Editor extends JFrame {
         }
     }
 
-    static class Tab extends JPanel {
+    static final class Tab extends JPanel {
         //create a panel with line numbers and a content text area
         private TabSource source;
         private final JTextPane contents;
@@ -47,8 +52,12 @@ public final class Editor extends JFrame {
         private final UndoManager undoManager = new UndoManager();
         private boolean editedSinceLastSave = false;
         private boolean editedSinceLastColor = false;
+        private final JTextPane console = new JTextPane();
+        private final JTextField consoleInput = new JTextField();
         private int existingLineCount = 1;
         private final JLabel location = new JLabel();
+
+        final Piping piping;
 
         public Tab(TabSource source) {
             this.source = source;
@@ -65,6 +74,12 @@ public final class Editor extends JFrame {
             this.contents.setFont(new Font(FONT, Font.PLAIN, 14));
             this.contents.setText(source.getContents());
             this.contents.setEditable(isEditable);
+
+            this.console.setFont(new Font(FONT, Font.PLAIN, 14));
+            this.console.setEditable(false);
+
+            this.consoleInput.setFont(new Font(FONT, Font.PLAIN, 14));
+            this.consoleInput.setText("");
 
             this.contents.getDocument().addDocumentListener(new DocumentListener() {
                 private void update() {
@@ -94,9 +109,9 @@ public final class Editor extends JFrame {
 
             InputMap inputMap = contents.getInputMap(JComponent.WHEN_FOCUSED);
             ActionMap actionMap = contents.getActionMap();
-            KeyStroke enterStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-            inputMap.put(enterStroke, enterStroke.toString());
-            actionMap.put(enterStroke.toString(), new AbstractAction() {
+            KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+            inputMap.put(keyStroke, keyStroke.toString());
+            actionMap.put(keyStroke.toString(), new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
                     int pos = contents.getCaretPosition();
@@ -130,9 +145,9 @@ public final class Editor extends JFrame {
                 }
             });
 
-            enterStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
-            inputMap.put(enterStroke, enterStroke.toString());
-            actionMap.put(enterStroke.toString(), new AbstractAction() {
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
+            inputMap.put(keyStroke, keyStroke.toString());
+            actionMap.put(keyStroke.toString(), new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
                     if (contents.getSelectedText() == null) {
@@ -171,6 +186,40 @@ public final class Editor extends JFrame {
             });
 
             this.contents.getDocument().addUndoableEditListener((event) -> undoManager.addEdit(event.getEdit()));
+            OutputStream display = new OutputStream() {
+                @Override
+                public void write(int b) {
+                    SwingUtilities.invokeLater(() -> {
+                        try {
+                            Document document = console.getDocument();
+                            document.insertString(document.getLength(), String.valueOf((char) b), null);
+                        } catch (BadLocationException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                }
+            };
+
+            PrintStream printStream = new PrintStream(display, true);
+
+            try {
+                piping = new Piping(printStream);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+
+            consoleInput.addActionListener((event) -> {
+                String text = consoleInput.getText();
+                consoleInput.setText("");
+                try {
+                    byte[] bytes = (text + "\n").getBytes();
+                    piping.getConsoleOutputStream().write(bytes);
+                    display.write(bytes);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
             JScrollPane scrollPane = new JScrollPane(contents);
             scrollPane.setRowHeaderView(lineNumbers);
@@ -181,6 +230,13 @@ public final class Editor extends JFrame {
             updateLocationLabelText();
             contents.getDocument().putProperty(PlainDocument.tabSizeAttribute, 4);
             this.add(location, BorderLayout.SOUTH);
+            Box box = new Box(BoxLayout.PAGE_AXIS);
+            JScrollPane consoleScrollPane = new JScrollPane(console);
+            consoleScrollPane.setPreferredSize(new Dimension(300, Integer.MAX_VALUE ));
+            box.add(consoleScrollPane);
+            box.add(consoleInput);
+
+            this.add(box, BorderLayout.EAST);
         }
 
         private void updateLocationLabelText() {
@@ -563,7 +619,10 @@ public final class Editor extends JFrame {
                 new Action("Run File", () -> {
                     Tab tab = getSelectedTab();
                     String contents = tab.sanitizedText();
-                    Interpret.interpret(contents);
+                    tab.piping.registerSystem();
+                    new Thread(() -> {
+                        Interpret.interpret(contents);
+                    }).start();
                 }),
                 new Action("Find Action", this::showActionListWindow),
                 new Action("Indent", () -> {
@@ -673,7 +732,7 @@ public final class Editor extends JFrame {
         clipboard.setContents(selection, selection);
     }
 
-    private Pair<Integer, Integer> selectCurrentLine(){
+    private Pair<Integer, Integer> selectCurrentLine() {
         Tab tab = getSelectedTab();
         int caret = tab.contents.getCaretPosition();
         int lineStart, lineEnd;
@@ -818,7 +877,7 @@ public final class Editor extends JFrame {
     private JMenuItem createMenuItem(String name, int keyEvent, int inputEvent, int inputEventMac) {
         JMenuItem item = new JMenuItem(name);
         item.addActionListener(Action.getAction(name).asActionListener());
-        item.setAccelerator(KeyStroke.getKeyStroke( keyEvent, Constants.IS_MAC ? inputEventMac : inputEvent));
+        item.setAccelerator(KeyStroke.getKeyStroke(keyEvent, Constants.IS_MAC ? inputEventMac : inputEvent));
         return item;
     }
 
