@@ -213,9 +213,20 @@ public final class Editor extends JFrame {
                 String text = consoleInput.getText();
                 consoleInput.setText("");
                 try {
-                    byte[] bytes = (text + "\n").getBytes();
+                    int start = console.getDocument().getLength();
+                    byte[] bytes = (text + "\n").getBytes(StandardCharsets.UTF_8);
                     piping.getConsoleOutputStream().write(bytes);
                     display.write(bytes);
+                    // color the last bytes.length bytes green
+
+                    SwingUtilities.invokeLater(() -> {
+                        console.getStyledDocument().setCharacterAttributes(
+                                start,
+                                bytes.length,
+                                COLOR_ATTRIBUTE_SET_HASH_MAP.get(Colors.GREEN.getColor()),
+                                true
+                        );
+                    });
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -232,7 +243,7 @@ public final class Editor extends JFrame {
             this.add(location, BorderLayout.SOUTH);
             Box box = new Box(BoxLayout.PAGE_AXIS);
             JScrollPane consoleScrollPane = new JScrollPane(console);
-            consoleScrollPane.setPreferredSize(new Dimension(300, Integer.MAX_VALUE ));
+            consoleScrollPane.setPreferredSize(new Dimension(300, Integer.MAX_VALUE));
             box.add(consoleScrollPane);
             box.add(consoleInput);
 
@@ -384,7 +395,7 @@ public final class Editor extends JFrame {
         }
 
         public String sanitizedText() {
-            return contents.getText();
+            return contents.getText().replace("\r", "");
         }
 
     }
