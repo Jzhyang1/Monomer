@@ -4,14 +4,17 @@ import lombok.Getter;
 import systems.monomer.Constants;
 import systems.monomer.errorhandling.Index;
 import systems.monomer.syntaxtree.operators.Operator;
-import systems.monomer.syntaxtree.operators.OperatorNode;
 
 import java.util.*;
+import java.util.stream.IntStream;
+
+import static systems.monomer.Constants.*;
 
 //TODO needs optimization, especially for matching operators
 public abstract class Source {
     public static class Line {
         public static final Map<Character, Integer> SPACE_CHARS = new HashMap<>() {{
+            put('\n', 0);
             put(' ', 1);
             put('\r', 1);
             put('\t', Constants.TAB_SIZE);
@@ -92,10 +95,32 @@ public abstract class Source {
         }
 
         public boolean isNext(String next) {
+            if(next.length() + x > line.length()) return false;
             for (int i = 0; i < next.length(); ++i) {
                 if (line.charAt(x + i) != next.charAt(i)) return false;
             }
             return true;
+        }
+
+        public boolean isNextWithSpace(String next) {
+            if(next.length() + x >= line.length()) return false;
+            if(!SPACE_CHARS.containsKey(line.charAt(x + next.length()))) return false;
+            return IntStream.range(0, next.length()).noneMatch(i -> line.charAt(x + i) != next.charAt(i));
+        }
+
+        public String matchNextWithSpace(Collection<String> next) {
+            String bestOption = null;
+            for (String option : next) {
+                if (isNextWithSpace(option)) {
+                    if (bestOption == null || bestOption.length() < option.length())
+                        bestOption = option;
+                }
+            }
+
+            if (bestOption != null) {
+                x += bestOption.length() + 1;   //1 for space
+            }
+            return bestOption;
         }
 
         public String matchNext(Collection<String> next) {
@@ -406,7 +431,7 @@ public abstract class Source {
         Index start = line.getIndex();
         char peek = line.peek();
 
-        String operator = line.matchNext(Operator.symbolOperators());
+        String operator = isIdentifierChar(peek) ? line.matchNextWithSpace(Operator.wordOperators()) : line.matchNext(Operator.symbolOperators());
         if (operator != null) {
             return new Token(Token.Usage.OPERATOR, operator)
                     .with(start, line.getIndex(), Source.this);
@@ -440,15 +465,6 @@ public abstract class Source {
 
     private void throwParseError(Token token, String reason) {
         token.throwError(reason);
-    }
-
-
-    public boolean isIdentifierChar(char c) {
-        return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||  //common english letters
-                ('0' <= c && c <= '9') ||   //numbers
-                c == '_' ||                 //underscore
-                ('\u0391' <= c && c <= '\u03ff') ||  //greek characters
-                ('\u0400' <= c && c <= '\u04ff');  //cryllic characters
     }
 
 

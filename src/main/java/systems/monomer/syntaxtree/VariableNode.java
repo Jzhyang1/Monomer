@@ -5,7 +5,7 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
-import systems.monomer.variables.Type;
+import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
 public class VariableNode extends Node {

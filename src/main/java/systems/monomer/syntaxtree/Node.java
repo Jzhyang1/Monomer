@@ -6,13 +6,10 @@ import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.errorhandling.Context;
-import systems.monomer.errorhandling.Index;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.errorhandling.ErrorBlock;
-import systems.monomer.tokenizer.Source;
-import systems.monomer.tokenizer.Token;
-import systems.monomer.variables.Type;
+import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
 import java.util.Collection;
@@ -53,8 +50,13 @@ public abstract class Node extends ErrorBlock {
         parent.putVariable(name, key);
     }
 
+    /**
+     * this returns null if not variable. To be used only in checking stages of compilation
+     * @return the variable key
+     */
     public VariableKey getVariableKey() {
-        throwError("Attempting to access " + name + " as a variable");
+//        throwError("Attempting to access " + name + " as a variable");
+        //TODO make sure that nothing accesses variable keys that shouldn't
         return null;
     }
 

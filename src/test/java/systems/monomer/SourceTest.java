@@ -118,4 +118,12 @@ public class SourceTest {
                 "\t]\n",
                 token.toString());
     }
+
+    @Test
+    public void testShortStringSourceParse3() {
+        SourceString source = new SourceString("as");
+        Token token = source.parse();
+        assertEquals("test parse short string source 3", "IDENTIFIER asterisk",
+                token.toString());
+    }
 }

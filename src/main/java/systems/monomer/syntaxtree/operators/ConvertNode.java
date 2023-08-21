@@ -3,7 +3,7 @@ package systems.monomer.syntaxtree.operators;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.variables.Type;
+import systems.monomer.types.Type;
 
 public class ConvertNode extends OperatorNode {
 

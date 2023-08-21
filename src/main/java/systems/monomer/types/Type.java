@@ -1,4 +1,4 @@
-package systems.monomer.variables;
+package systems.monomer.types;
 
 import lombok.Getter;
 

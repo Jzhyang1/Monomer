@@ -5,7 +5,7 @@ import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
-import systems.monomer.variables.Type;
+import systems.monomer.types.Type;
 
 public final class ControlGroupNode extends OperatorNode {
     public ControlGroupNode(){

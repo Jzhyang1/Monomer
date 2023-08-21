@@ -15,6 +15,15 @@ public class TupleNode extends LiteralNode {
         return node.getUsage() == Usage.LITERAL && List.of("block", ",", ";").contains(node.getName());
     }
 
+    public static TupleNode asTuple(Node node) {
+        return isTuple(node) ? (TupleNode)node : new TupleNode(List.of(node));
+    }
+
+    @Override
+    public InterpretTuple getType() {
+        return new InterpretTuple(getChildren().stream().map((e)->(InterpretValue)e.getType()).toList());
+    }
+
     public TupleNode() {
         super("block");
     }
@@ -27,7 +36,7 @@ public class TupleNode extends LiteralNode {
     }
 
     public InterpretValue interpretValue() {
-        return new InterpretTuple(getChildren());
+        return InterpretTuple.toTuple(getChildren());
     }
 
     public CompileValue compileValue() {

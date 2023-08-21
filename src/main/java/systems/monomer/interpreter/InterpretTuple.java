@@ -8,11 +8,14 @@ import java.util.List;
 
 public class InterpretTuple extends InterpretCollectionValue {
     public static InterpretTuple EMPTY = new InterpretTuple(List.of());
+    public static InterpretTuple toTuple(Collection<? extends Node> list) {
+        return new InterpretTuple(list.stream().map(Node::interpretValue).toList());
+    }
 
-    List<InterpretValue> tuple = new ArrayList<>();
+    private List<InterpretValue> tuple = new ArrayList<>();
 
-    public InterpretTuple(Collection<? extends Node> list) {
-        getValues().addAll(list.stream().map(Node::interpretValue).toList());
+    public InterpretTuple(Collection<? extends InterpretValue> list) {
+        getValues().addAll(list);
     }
 
     public Collection<InterpretValue> getValues() {

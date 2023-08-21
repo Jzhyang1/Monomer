@@ -3,14 +3,19 @@ package systems.monomer.syntaxtree.operators;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretTuple;
-import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.*;
+import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
-import systems.monomer.variables.VariableKey;
+import systems.monomer.variables.FunctionKey;
+import systems.monomer.types.Signature;
 
 public class AssignNode extends OperatorNode {
+    /**
+     * use only with function declarations
+     */
+    private FunctionKey functionKey = null;
+
     public AssignNode() {
         super("=");
     }
@@ -30,9 +35,33 @@ public class AssignNode extends OperatorNode {
     }
 
     public void matchTypes() {
+        if(functionKey != null) {
+            Node first = getFirst();
+            Node second = getSecond();
+            CallNode callNode = (CallNode)first;
+            TupleNode param = TupleNode.asTuple(callNode.getSecond());
+            functionKey.putOverload(new Signature(second.getType(), param.getType()), new InterpretFunction(param, second));
+        }
         //TODO chained assignment
         //TODO function
         matchTypes(getFirst(), getSecond());
+
+        //TODO match param (first.second) to some open callable
+
+    }
+
+    @Override
+    public void matchVariables() {
+        Node first = getFirst(), second = getSecond();
+        if(first instanceof CallNode callNode) {
+            ModuleNode wrapper = new ModuleNode("function");
+            wrapper.setParent(this);
+            wrapper.with(first).with(second).matchVariables();
+            functionKey = callNode.getVariableKey();
+        }
+        else {
+            super.matchVariables();
+        }
     }
 
     public InterpretVariable interpretVariable() {

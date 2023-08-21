@@ -28,7 +28,7 @@ public class ModuleNode extends Node {
     }
 
     public InterpretValue interpretValue() {
-        return new InterpretTuple(getChildren());   //TODO replace Tuple with Module
+        return InterpretTuple.toTuple(getChildren());   //TODO replace Tuple with Module
     }
 
     public CompileValue compileValue() {

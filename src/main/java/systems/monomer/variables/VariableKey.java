@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.types.Type;
 
 @Getter @Setter
 public class VariableKey extends InterpretVariable {

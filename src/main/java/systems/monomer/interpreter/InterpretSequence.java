@@ -1,6 +1,6 @@
 package systems.monomer.interpreter;
 
-import systems.monomer.variables.Type;
+import systems.monomer.types.Type;
 
 import java.util.ArrayList;
 import java.util.Collection;

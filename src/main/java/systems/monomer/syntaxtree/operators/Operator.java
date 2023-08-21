@@ -1,6 +1,7 @@
 package systems.monomer.syntaxtree.operators;
 
 import lombok.NonNull;
+import systems.monomer.Constants;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
@@ -21,34 +22,42 @@ import static systems.monomer.syntaxtree.operators.Lists.*;
 public final class Operator {
     private static Map<String, Operator> operators = new HashMap<>();
     private static final int NONE = 0;
-    private static final int BINARY = 1, PREFIX = 2, SUFFIX = 4, CHAINED = 8;
-    private static final int CONTROL = PREFIX | CHAINED | 32;
-    private static final int PRIMARY_CONTROL = CONTROL | 64, SECONDARY_CONTROL = CONTROL | 128;
+    private static final int BINARY = 0b1, PREFIX = 0b10, SUFFIX = 0b100, CHAINED = 0b1000, ASSIGN = 0b10000;
+    private static final int CONTROL = PREFIX | CHAINED | 0b100000;
+    private static final int PRIMARY_CONTROL = CONTROL | 0b10000000, SECONDARY_CONTROL = CONTROL | 0b100000000;
+    private static final int WORD = 0b1000000000;
 
+
+    private static int fillInfo(int info, String symbol) {
+        if(Constants.isIdentifierChar(symbol.charAt(0))) {
+            info |= WORD;
+        }
+        return info;
+    }
     /**
      * @param leftPrec  a higher number signals a higher precedence
      * @param rightPrec a higher number signals a higher precedence
      */
     private static void putData(String symbol, int leftPrec, int rightPrec, int info, Supplier<Node> constructor) {
-        operators.put(symbol, new Operator(info, leftPrec, rightPrec, constructor));
+        operators.put(symbol, new Operator(fillInfo(info, symbol), leftPrec, rightPrec, constructor));
     }
     private static void putData(String symbol, int prec, int info, Supplier<Node> constructor) {
-        operators.put(symbol, new Operator(info, prec, prec, constructor));
+        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, constructor));
     }
     private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
-        operators.put(symbol, new Operator(info, prec, prec, () -> new GenericOperatorNode(symbol) {{
+        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol) {{
             setCompile(compile);
             setInterpret(interpret);
         }}));
     }
     private static void putData(String symbol, int leftPrec, int rightPrec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
-        operators.put(symbol, new Operator(info, leftPrec, rightPrec, () -> new GenericOperatorNode(symbol) {{
+        operators.put(symbol, new Operator(fillInfo(info, symbol), leftPrec, rightPrec, () -> new GenericOperatorNode(symbol) {{
             setCompile(compile);
             setInterpret(interpret);
         }}));
     }
     private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, BiFunction<InterpretValue, InterpretValue, InterpretValue> interpret) {
-        operators.put(symbol, new Operator(info, prec, prec, () -> new GenericOperatorNode(symbol) {{
+        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol) {{
             setCompile(compile);
             setInterpret((self) -> interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()));
         }}));
@@ -180,7 +189,15 @@ public final class Operator {
     }
 
     static {
-        putData("=", 0,  BINARY | CHAINED,AssignNode::new);
+        putData("=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
+//        putData("+=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
+//        putData("-=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
+//        putData("*=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
+//        putData("/=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
+//        putData("%=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
+//        putData("&=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
+//        putData("|=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
+//        putData("^=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
         putData(",", 100, BINARY | CHAINED | SUFFIX, ()->new TupleNode(","));
         putData(";", -1000, BINARY | CHAINED | SUFFIX, ()->new TupleNode(";"));
         putData(":", 1500, 150, BINARY, ConvertNode::new);
@@ -199,13 +216,21 @@ public final class Operator {
         initArithmetic();
         initList();
         initControl();
+
+        symbolOperatorSet = operators.entrySet().stream().filter((entry)->(entry.getValue().info & WORD) != WORD).map(Map.Entry::getKey).collect(Collectors.toSet());
+        wordOperatorSet = operators.entrySet().stream().filter((entry)->(entry.getValue().info & WORD) == WORD).map(Map.Entry::getKey).collect(Collectors.toSet());
     }
     public static Node getOperator(String name) {
         return operators.get(name).getOperator();
     }
 
-    public static Set<String> symbolOperators() {  //TODO
-        return operators.keySet();
+    private static final Set<String> symbolOperatorSet;
+    public static Set<String> symbolOperators() {
+        return symbolOperatorSet;
+    }
+    private static final Set<String> wordOperatorSet;
+    public static Set<String> wordOperators() {
+        return wordOperatorSet;
     }
 
     public static boolean isSuffix(String symbol) {
@@ -225,6 +250,9 @@ public final class Operator {
     }
     public static boolean isSecondaryControl(String symbol) {
         return (operators.get(symbol).info & SECONDARY_CONTROL) == SECONDARY_CONTROL;
+    }
+    public static boolean isAssign(String symbol) {
+        return (operators.get(symbol).info & ASSIGN) == ASSIGN;
     }
     public static boolean isOperator(String symbol) {
         return operators.containsKey(symbol);

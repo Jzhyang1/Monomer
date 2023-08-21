@@ -129,6 +129,7 @@ public class Token extends ErrorBlock {
 
         //check if condition operation
         if(Operator.isPrimaryControl(op.value)) {
+            assert cur == null;
             cur = new ControlGroupNode().with(partialControlToNode(op, iter));
 
             //TODO ugly
