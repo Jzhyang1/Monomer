@@ -1,6 +1,6 @@
 package systems.monomer.syntaxtree.controls;
 
-import systems.monomer.interpreter.InterpretNumberValue;
+import systems.monomer.interpreter.InterpretNumber;
 import systems.monomer.interpreter.InterpretSequence;
 import systems.monomer.interpreter.InterpretValue;
 
@@ -15,7 +15,7 @@ public class RepeatNode extends ControlOperatorNode {
 
     public InterpretControlResult interpretControl(boolean previousSuccess, boolean previousFailure, InterpretValue previousValue) {
         InterpretValue maybeRepetitions = getFirst().interpretValue();
-        if(maybeRepetitions instanceof InterpretNumberValue<?> repetitions) {
+        if(maybeRepetitions instanceof InterpretNumber<?> repetitions) {
             int numRepetitions = repetitions.getValue().intValue();
             for(int i = 0; i < numRepetitions; i++) {
                 InterpretValue result = getSecond().interpretValue();

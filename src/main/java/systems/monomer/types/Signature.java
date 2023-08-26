@@ -2,11 +2,11 @@ package systems.monomer.types;
 
 import systems.monomer.interpreter.InterpretTuple;
 
-public class Signature extends Type {
+public class Signature extends AnyType {
     private Type returnType;
-    private InterpretTuple args;
+    private Type args;
 
-    public Signature(Type returnType, InterpretTuple args) {
+    public Signature(Type returnType, Type args) {
         this.returnType = returnType;
         this.args = args;
     }
@@ -15,7 +15,7 @@ public class Signature extends Type {
         return returnType;
     }
 
-    public InterpretTuple getArgs() {
+    public Type getArgs() {
         return args;
     }
 }

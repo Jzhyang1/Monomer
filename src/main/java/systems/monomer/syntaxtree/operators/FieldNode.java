@@ -1,7 +1,5 @@
 package systems.monomer.syntaxtree.operators;
 
-import lombok.Getter;
-import lombok.Setter;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;

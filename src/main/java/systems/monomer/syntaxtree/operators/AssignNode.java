@@ -3,10 +3,12 @@ package systems.monomer.syntaxtree.operators;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.interpreter.InterpretFunction;
+import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.variables.FunctionKey;
 import systems.monomer.types.Signature;
 

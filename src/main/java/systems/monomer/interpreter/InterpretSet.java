@@ -4,15 +4,20 @@ import systems.monomer.syntaxtree.Node;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-public class InterpretSet extends InterpretCollectionValue{
+public class InterpretSet extends InterpretCollection {
 
-    private final Set<InterpretValue> set;
+    private final Set<InterpretValue> set = new HashSet<>();
+
+    public InterpretSet(List<? extends InterpretValue> list) {
+        super(list.get(0));
+        getValues().addAll(list);
+    }
 
     public InterpretSet(Collection<? extends Node> list) {
-        set = new HashSet<>();
-        set.addAll(list.stream().map(Node::interpretValue).toList());
+        this(list.stream().map(Node::interpretValue).toList());
     }
 
     public void add(Node node) {
@@ -25,5 +30,14 @@ public class InterpretSet extends InterpretCollectionValue{
 
     public InterpretSet clone() {
         throw new Error("TODO unimplemented");
+    }
+
+    @Override
+    public String valueString() {
+        return "{" + set.stream()
+                .map(InterpretValue::valueString)
+                .reduce((a, b) -> a + "," + b)
+                .orElse("")
+                + "}";
     }
 }

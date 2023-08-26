@@ -1,7 +1,7 @@
 package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.interpreter.*;
-import systems.monomer.syntaxtree.Node;
+import systems.monomer.types.interpreter.*;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -11,9 +11,9 @@ public final class Bitwise {
         return (self) -> {
             InterpretValue first = self.getFirst().interpretValue();
             InterpretValue second = self.getSecond().interpretValue();
-            if (first instanceof InterpretNumberValue<? extends Number> firstNum && second instanceof InterpretNumberValue<? extends Number> secondNum) {
+            if (first instanceof InterpretNumber<? extends Number> firstNum && second instanceof InterpretNumber<? extends Number> secondNum) {
                 if(firstNum.getValue() instanceof Integer && secondNum.getValue() instanceof Integer)
-                    return new InterpretNumberValue<>(intCallback.apply(firstNum.getValue().intValue(), secondNum.getValue().intValue()));
+                    return new InterpretNumber<>(intCallback.apply(firstNum.getValue().intValue(), secondNum.getValue().intValue()));
             } else if(first instanceof InterpretBool firstBool && second instanceof InterpretBool secondBool){
                 return new InterpretBool(boolCallback.apply(firstBool.getValue(), secondBool.getValue()));
             }
@@ -44,13 +44,13 @@ public final class Bitwise {
             InterpretValue first = self.getFirst().interpretValue();
             if(first instanceof InterpretBool firstBool)
                 return firstBool;
-            else if(first instanceof InterpretNumberValue<? extends Number> firstNum)
+            else if(first instanceof InterpretNumber<? extends Number> firstNum)
                 return new InterpretBool(firstNum.getValue().doubleValue() != 0.0);
-            else if(first instanceof InterpretStringValue firstString)
+            else if(first instanceof InterpretString firstString)
                 return new InterpretBool(firstString.getValue().length() != 0);
-            else if(first instanceof InterpretCharValue firstChar)
+            else if(first instanceof InterpretChar firstChar)
                 return new InterpretBool(firstChar.getValue() != '\0');
-            else if(first instanceof InterpretCollectionValue firstCollection)
+            else if(first instanceof InterpretCollection firstCollection)
                 return new InterpretBool(firstCollection.getValues().size() != 0);
             else
                 return new InterpretBool(first.getFields().isEmpty());

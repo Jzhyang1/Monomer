@@ -1,9 +1,9 @@
 package systems.monomer.commandline;
 
 import systems.monomer.interpreter.InterpretBool;
-import systems.monomer.interpreter.InterpretCharValue;
-import systems.monomer.interpreter.InterpretNumberValue;
-import systems.monomer.interpreter.InterpretStringValue;
+import systems.monomer.interpreter.InterpretChar;
+import systems.monomer.interpreter.InterpretNumber;
+import systems.monomer.interpreter.InterpretString;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.tokenizer.Source;
@@ -13,7 +13,6 @@ import systems.monomer.tokenizer.Token;
 import systems.monomer.variables.VariableKey;
 
 import java.io.File;
-import java.util.Scanner;
 
 
 public class Interpret {
@@ -27,10 +26,10 @@ public class Interpret {
         global.putVariable("true", new VariableKey(){{setValue(new InterpretBool(true));}});
         global.putVariable("false", new VariableKey(){{setValue(new InterpretBool(false));}});
         global.putVariable("bool", new VariableKey(){{setValue(new InterpretBool(false));}});
-        global.putVariable("int", new VariableKey(){{setValue(new InterpretNumberValue<>(0));}});
-        global.putVariable("float", new VariableKey(){{setValue(new InterpretNumberValue<>(0.0));}});
-        global.putVariable("char", new VariableKey(){{setValue(new InterpretCharValue('\0'));}});
-        global.putVariable("string", new VariableKey(){{setValue(new InterpretStringValue(""));}});
+        global.putVariable("int", new VariableKey(){{setValue(new InterpretNumber<>(0));}});
+        global.putVariable("float", new VariableKey(){{setValue(new InterpretNumber<>(0.0));}});
+        global.putVariable("char", new VariableKey(){{setValue(new InterpretChar('\0'));}});
+        global.putVariable("string", new VariableKey(){{setValue(new InterpretString(""));}});
 
         global.add(node);
 

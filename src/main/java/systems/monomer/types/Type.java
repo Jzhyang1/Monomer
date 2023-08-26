@@ -6,34 +6,50 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Getter
-public class Type implements Cloneable {
-    private final Map<String, Type> fields = new HashMap<>();
+public interface Type extends Cloneable {
+    Type clone();
 
-    public void put(String field, Type value) {
-        fields.put(field, value);
+    /**
+     * @return a string representation of the value of this type
+     */
+    String valueString();
+
+    /**
+     * true if the type given can be obtained as a part of this type
+     * @param type the other type
+     * @return this type contains the other type
+     */
+    boolean typeContains(Type type);
+
+    /**
+     * true if the types are equal
+     * @param other the other type
+     * @return if the types are exactly equal
+     */
+    boolean equals(Object other);
+
+    /**
+     *
+     * @param field the name of the field
+     * @return whether this type has a field with the given name
+     */
+    default boolean hasField(String field) {
+        return false;
     }
-    public Type get(String field) {
-        return fields.get(field);
-    }
-    public boolean typeContains(Type type) {
+
+    /**
+     * @param field the name of the field
+     * @param value the type of the field with the given name
+     */
+    default void setField(String field, Type value) {
         throw new Error("TODO unimplemented");
     }
 
-    public Type clone() {
-        try {
-            Type cloned = (Type)super.clone();
-            fields.forEach((key, value) -> cloned.fields.put(key, value.clone()));
-            return cloned;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public boolean equals(Object other) {
-        return (other instanceof Type typeOther) && typeOther.fields.equals(fields);
-    }
-
-    public String valueString() {
-        return "{" + fields.entrySet().stream().map((entry)->entry.getKey()+"="+entry.getValue().valueString()).collect(Collectors.joining(",")) + "}";
+    /**
+     * @param field the name of the field
+     * @return the type of the field with the given name
+     */
+    default Type getField(String field) {
+        throw new Error("TODO unimplemented");
     }
 }

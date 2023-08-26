@@ -1,6 +1,5 @@
 package systems.monomer.syntaxtree.controls;
 
-import systems.monomer.interpreter.InterpretNumberValue;
 import systems.monomer.interpreter.InterpretSequence;
 import systems.monomer.interpreter.InterpretValue;
 

@@ -1,0 +1,33 @@
+package systems.monomer.types;
+
+import lombok.Getter;
+
+@Getter
+public class MapType extends CollectionType {
+    private final Type valueType;
+
+    public MapType(Type elementType, Type valueType) {
+        super(elementType);
+        this.valueType = valueType;
+    }
+
+    @Override
+    public String valueString() {
+        return "map{" + getElementType().valueString() + ", " + valueType.valueString() + "}";
+    }
+
+    @Override
+    public MapType clone(){
+        return (MapType) super.clone();
+    }
+
+    @Override
+    public boolean typeContains(Type type) {
+        return type instanceof MapType mapType && super.typeContains(mapType) && valueType.typeContains(mapType.valueType);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof MapType mapType && super.equals(mapType) && valueType.equals(mapType.valueType);
+    }
+}

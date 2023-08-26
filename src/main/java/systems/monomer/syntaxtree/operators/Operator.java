@@ -7,6 +7,7 @@ import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.types.interpreter.*;
 import systems.monomer.util.Pair;
 
 import java.util.*;
@@ -168,8 +169,8 @@ public final class Operator {
                         new InterpretList(lists.stream().flatMap((list)->list.getValues().stream()).collect(Collectors.toList()))
                 ));
         putData("...", 440, BINARY, (self)->null, isTruthy());
-        putData("in", 820, BINARY, (self)->null, (self)->new InterpretBool(((InterpretCollectionValue)self.getSecond().interpretValue()).getValues().contains(self.getFirst().interpretValue()))); //TODO fix and clean
-        putData("#", 1800, PREFIX, (self)->null, listChecked((list)->new InterpretNumberValue<>(list.get(0).getValues().size())));
+        putData("in", 820, BINARY, (self)->null, (self)->new InterpretBool(((InterpretCollection)self.getSecond().interpretValue()).getValues().contains(self.getFirst().interpretValue()))); //TODO fix and clean
+        putData("#", 1800, PREFIX, (self)->null, listChecked((list)->new InterpretNumber<>(list.get(0).getValues().size())));
     }
 
     /**

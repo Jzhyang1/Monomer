@@ -1,6 +1,5 @@
 package systems.monomer.syntaxtree.controls;
-import systems.monomer.interpreter.InterpretCollectionValue;
-import systems.monomer.interpreter.InterpretNumberValue;
+import systems.monomer.interpreter.InterpretCollection;
 import systems.monomer.interpreter.InterpretSequence;
 import systems.monomer.interpreter.InterpretValue;
 
@@ -18,7 +17,7 @@ public class ForNode extends ControlOperatorNode {
 
     public InterpretControlResult interpretControl(boolean previousSuccess, boolean previousFailure, InterpretValue previousValue) {
         InterpretValue maybeIterable = getFirst().interpretValue();
-        if(maybeIterable instanceof InterpretCollectionValue iterable) {
+        if(maybeIterable instanceof InterpretCollection iterable) {
             Iterator<InterpretValue> iter = iterable.getValues().iterator();
             while(iter.hasNext()) {
                 //TODO set iterator variable within the Monomer loop

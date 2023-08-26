@@ -2,7 +2,7 @@ package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretStringValue;
+import systems.monomer.interpreter.InterpretString;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
 
@@ -18,7 +18,7 @@ public class StringNode extends LiteralNode {
 
     @Override
     public InterpretValue interpretValue() {
-        return new InterpretStringValue(value);
+        return new InterpretString(value);
     }
 
     @Override

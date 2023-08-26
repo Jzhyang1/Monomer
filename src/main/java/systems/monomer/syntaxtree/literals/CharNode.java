@@ -2,7 +2,7 @@ package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretCharValue;
+import systems.monomer.interpreter.InterpretChar;
 import systems.monomer.interpreter.InterpretValue;
 
 public class CharNode extends LiteralNode {
@@ -13,7 +13,7 @@ public class CharNode extends LiteralNode {
     }
 
     public InterpretValue interpretValue() {
-        return new InterpretCharValue(value);
+        return new InterpretChar(value);
     }
 
     @Override

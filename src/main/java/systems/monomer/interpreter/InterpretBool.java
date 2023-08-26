@@ -1,6 +1,8 @@
 package systems.monomer.interpreter;
 
-public class InterpretBool extends InterpretValue {
+import systems.monomer.types.BoolType;
+
+public class InterpretBool extends BoolType implements InterpretValue {
     private boolean value;
 
     public InterpretBool(boolean value) {
@@ -16,6 +18,6 @@ public class InterpretBool extends InterpretValue {
     }
 
     public InterpretBool clone() {
-        return new InterpretBool(value);
+        return (InterpretBool) super.clone();
     }
 }

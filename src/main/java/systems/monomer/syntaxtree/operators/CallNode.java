@@ -5,6 +5,7 @@ import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.VariableNode;
+import systems.monomer.types.Signature;
 import systems.monomer.variables.FunctionKey;
 import systems.monomer.types.Type;
 
@@ -14,7 +15,7 @@ public class CallNode extends OperatorNode {
     }
 
     public Type getSignature() {
-        return new InterpretFunction(getType(), getSecond().getType());
+        return new Signature(getType(), getSecond().getType());
     }
 
     @Override

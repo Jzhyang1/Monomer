@@ -3,15 +3,15 @@ package systems.monomer.interpreter;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.types.Signature;
 
-import java.util.List;
-
-public class InterpretFunction extends InterpretValue {
+public class InterpretFunction extends Signature implements InterpretValue {
     private TupleNode args;
     private Node body;
 
     //TODO handle args and named args
     public InterpretFunction(TupleNode args, Node body) {
+        super(args.getType(), body.getType());
         ModuleNode wrapper = new ModuleNode("function");
         wrapper.add(body);
         body.matchVariables();
