@@ -28,6 +28,7 @@ public class Token extends ErrorBlock {
 
     private Node partialToNode(Node cur, ListIterator<Token> iter) {
         if (!iter.hasNext()) return cur;
+//        if(cur.getUsage() == LITERAL && "block".equals(cur.getName())) return cur;
 
         Token nextOp = iter.next();
         switch (nextOp.usage) {
@@ -66,24 +67,29 @@ public class Token extends ErrorBlock {
         Token token = iter.next();
 
         Node condition;
-        if (token.usage == Usage.OPERATOR && Operator.isPrefix(token.value))
-             condition = partialOperatorToNode(control, null, token, iter, ":");
+        if (token.usage == Usage.OPERATOR && ":".equals(token.getValue()))
+            condition = new BoolNode(true);
         else {
-            condition = partialToNode(token.toNode(), iter);
-            if(iter.hasNext()) {
-                token = iter.next();
-                condition = partialOperatorToNode(control, condition, token, iter, ":");
-            }
+            if (token.usage == Usage.OPERATOR && Operator.isPrefix(token.value))
+                condition = partialOperatorToNode(control, null, token, iter, ":");
             else {
-                throwError("Expecting body after condition");
+                condition = partialToNode(token.toNode(), iter);
+                if (iter.hasNext()) {
+                    token = iter.next();
+                    condition = partialOperatorToNode(control, condition, token, iter, ":");
+                } else {
+                    throwError("Expecting body after condition");
+                }
             }
+            iter.next();   //skip colon
         }
-        iter.next();    //skip colon
         token = iter.next();
 
         Node body;
-        if(token.usage == Usage.GROUP && token.value.equals("block"))
+        if(token.usage == Usage.GROUP && token.value.equals("block")) {
             body = token.toNode();
+            iter.next();    //skip semicolon
+        }
         else {
             if (token.usage == Usage.OPERATOR && Operator.isPrefix(token.value))
                 body = partialOperatorToNode(control, null, token, iter);
@@ -94,7 +100,7 @@ public class Token extends ErrorBlock {
             }
         }
 
-        return controlNode.with(condition == null ? new BoolNode(true) : condition).with(body); //TODO set BoolNode to true
+        return controlNode.with(condition).with(body);
     }
 
     private Node partialOperatorToNode(@Nullable Token prevOp, @Nullable Node cur, @Nullable Token nullableOp, ListIterator<Token> iter) {
@@ -134,12 +140,19 @@ public class Token extends ErrorBlock {
 
             //TODO ugly
             if(!iter.hasNext()) return cur;
-            Token peekToken = iter.next();
-            if(Operator.isSecondaryControl(peekToken.value)) return cur.with(partialControlToNode(peekToken, iter));
-            else {
-                iter.previous();
-                return partialOperatorToNode(prevOp, cur, new Token(Usage.OPERATOR, ";"), iter);
+            Token peekToken;
+            while(iter.hasNext()) {
+                peekToken = iter.next();
+                if(Operator.isSecondaryControl(peekToken.value))
+                    cur.add(partialControlToNode(peekToken, iter));
+                else {
+                    iter.previous();
+                    break;
+                }
             }
+//                return partialOperatorToNode(prevOp, cur, null, iter);
+            return partialOperatorToNode(prevOp, cur, new Token(Usage.OPERATOR, ";"), iter);
+
         }
 
         Token token = iter.next();
@@ -224,7 +237,7 @@ public class Token extends ErrorBlock {
 
                 while (iter.hasNext()) {
                     token = iter.next();
-                    if (token.usage != Usage.OPERATOR) token.throwError("Expected operator");
+                    if (token.usage != Usage.OPERATOR) token.throwError("Expected operator");   //TODO **
                     cur = partialOperatorToNode(null, cur, token, iter);
                 }
 

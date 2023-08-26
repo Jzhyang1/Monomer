@@ -108,4 +108,21 @@ public class InterpretTest {
 //        System.out.println(node);
         assertEquals("print multiword variable", "({},1991)", node.interpretValue().valueString());
     }
+
+    @Test
+    public void interpretTest10() {
+        Source source = new SourceString("f(x) = \n" +
+                "\t@x\n" +
+                "\tif ?x: f(x-1)\n" +
+                "\t@x\n" +
+                "f(3)");
+        Token token = source.parse();
+        Node node = token.toNode();
+        Node global = new ModuleNode(source.getTitle());
+        global.add(node);
+        global.matchVariables();
+
+        System.out.println(node);
+        assertEquals("print multiword variable", "({},1991)", node.interpretValue().valueString());
+    }
 }

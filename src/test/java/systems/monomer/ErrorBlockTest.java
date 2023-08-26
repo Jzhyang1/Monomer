@@ -25,7 +25,7 @@ public class ErrorBlockTest {
                     "ERROR Bad Number Format in String source:\n" +
                             " |\n"+
                             "1| y = x + 500x;\n" +
-                            " |         ^^^^\n",
+                            " |         ^^^\n",
                     e.getMessage());
         }
     }
@@ -52,19 +52,19 @@ public class ErrorBlockTest {
             assertEquals("ERROR Syntax in String source:\n"  +
                             " |\n"+
                             "1| if (nextStarting > starting {\n" +
-                            " |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+                            " |    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
                             "2| \ttokens.add(tokenize(source));\n" +
-                            " | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+                            " | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
                             "3| } else if (nextStarting < starting) {\n" +
-                            " | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+                            " | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
                             "4| \treturn tokens;\n" +
-                            " | ^^^^^^^^^^^^^^^^\n" +
+                            " | ^^^^^^^^^^^^^^^\n" +
                             "5| } else {\n" +
-                            " | ^^^^^^^^^\n" +
+                            " | ^^^^^^^^\n" +
                             "6| \tline.skipSpaces();\n" +
-                            " | ^^^^^^^^^^^^^^^^^^^^\n" +
+                            " | ^^^^^^^^^^^^^^^^^^^\n" +
                             "7| }\n" +
-                            " | ^\n",
+                            " | \n",
                     e.getMessage());
         }
     }
@@ -85,19 +85,19 @@ public class ErrorBlockTest {
             assertEquals("ERROR Syntax in " + path + ":\n"+
                             " |\n" +
                             "1| if (nextStarting > starting {\n" +
-                            " |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+                            " |    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
                             "2| \ttokens.add(tokenize(source));\n" +
-                            " | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+                            " | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
                             "3| } else if (nextStarting < starting) {\n" +
-                            " | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
+                            " | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n" +
                             "4| \treturn tokens;\n" +
-                            " | ^^^^^^^^^^^^^^^^\n" +
+                            " | ^^^^^^^^^^^^^^^\n" +
                             "5| } else {\n" +
-                            " | ^^^^^^^^^\n" +
+                            " | ^^^^^^^^\n" +
                             "6| \tline.skipSpaces();\n" +
-                            " | ^^^^^^^^^^^^^^^^^^^^\n" +
+                            " | ^^^^^^^^^^^^^^^^^^^\n" +
                             "7| }\n" +
-                            " | ^\n",
+                            " | \n",
                     e.getMessage());
         }
     }

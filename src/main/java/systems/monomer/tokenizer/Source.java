@@ -102,23 +102,24 @@ public abstract class Source {
             return true;
         }
 
-        public boolean isNextWithSpace(String next) {
-            if(next.length() + x >= line.length()) return false;
-            if(!SPACE_CHARS.containsKey(line.charAt(x + next.length()))) return false;
+        public boolean isNextWithSpace(String next, Collection<Character> alternatives) {
+            int end = x + next.length();
+            if(end >= line.length()) return false;
+            if(!SPACE_CHARS.containsKey(line.charAt(end)) && !alternatives.contains(line.charAt(end))) return false;
             return IntStream.range(0, next.length()).noneMatch(i -> line.charAt(x + i) != next.charAt(i));
         }
 
-        public String matchNextWithSpace(Collection<String> next) {
+        public String matchNextWithSpace(Collection<String> next, Collection<Character> alternatives) {
             String bestOption = null;
             for (String option : next) {
-                if (isNextWithSpace(option)) {
+                if (isNextWithSpace(option, alternatives)) {
                     if (bestOption == null || bestOption.length() < option.length())
                         bestOption = option;
                 }
             }
 
             if (bestOption != null) {
-                x += bestOption.length() + 1;   //1 for space
+                x += bestOption.length();   //1 for space
             }
             return bestOption;
         }
@@ -223,7 +224,7 @@ public abstract class Source {
                 if (nextStarting > startingSpaces) {
                     //child group
                     ret.add(parseBlock());
-//                    ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
+                    ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
                 } else if (nextStarting < startingSpaces) {
                     break;
                 } else {
@@ -431,7 +432,7 @@ public abstract class Source {
         Index start = line.getIndex();
         char peek = line.peek();
 
-        String operator = isIdentifierChar(peek) ? line.matchNextWithSpace(Operator.wordOperators()) : line.matchNext(Operator.symbolOperators());
+        String operator = isIdentifierChar(peek) ? line.matchNextWithSpace(Operator.wordOperators(), Operator.startingSymbolOperatorCharacters()) : line.matchNext(Operator.symbolOperators());
         if (operator != null) {
             return new Token(Token.Usage.OPERATOR, operator)
                     .with(start, line.getIndex(), Source.this);

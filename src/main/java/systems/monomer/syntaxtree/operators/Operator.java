@@ -217,8 +217,11 @@ public final class Operator {
         initList();
         initControl();
 
-        symbolOperatorSet = operators.entrySet().stream().filter((entry)->(entry.getValue().info & WORD) != WORD).map(Map.Entry::getKey).collect(Collectors.toSet());
+        Set<String> tempSymbols = operators.entrySet().stream().filter((entry)->(entry.getValue().info & WORD) != WORD).map(Map.Entry::getKey).collect(Collectors.toSet());
+
+        symbolOperatorSet = tempSymbols;
         wordOperatorSet = operators.entrySet().stream().filter((entry)->(entry.getValue().info & WORD) == WORD).map(Map.Entry::getKey).collect(Collectors.toSet());
+        startingSymobolOperatorCharacterSet = tempSymbols.stream().map((s)->s.charAt(0)).collect(Collectors.toSet());
     }
     public static Node getOperator(String name) {
         return operators.get(name).getOperator();
@@ -231,6 +234,14 @@ public final class Operator {
     private static final Set<String> wordOperatorSet;
     public static Set<String> wordOperators() {
         return wordOperatorSet;
+    }
+
+    /**
+     * optimization for the lexer
+     */
+    private static final Set<Character> startingSymobolOperatorCharacterSet;
+    public static Set<Character> startingSymbolOperatorCharacters() {
+        return startingSymobolOperatorCharacterSet;
     }
 
     public static boolean isSuffix(String symbol) {

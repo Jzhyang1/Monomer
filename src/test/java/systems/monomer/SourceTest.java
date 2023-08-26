@@ -81,49 +81,52 @@ public class SourceTest {
         Source source = new SourceFile(path);
 
         Token token = source.parse();
-        assertEquals("test parse small file source", "GROUP block[\n" +
-                "\tOPERATOR if,\n" +
-                "\tIDENTIFIER nextStarting,\n" +
-                "\tOPERATOR >,\n" +
-                "\tIDENTIFIER starting,\n" +
-                "\tOPERATOR :,\n" +
-                "\tGROUP block[\n" +
-                "\tIDENTIFIER tokens,\n" +
-                "\tIDENTIFIER add,\n" +
-                "\tGROUP ()[\n" +
-                "\tIDENTIFIER tokenize,\n" +
-                "\tGROUP ()[IDENTIFIER source]\n" +
-                "\t]\n" +
-                "\n" +
-                "\t]\n" +
-                ",\n" +
-                "\tOPERATOR else,\n" +
-                "\tIDENTIFIER nextStarting,\n" +
-                "\tOPERATOR <,\n" +
-                "\tIDENTIFIER starting,\n" +
-                "\tOPERATOR :,\n" +
-                "\tGROUP block[\n" +
-                "\tIDENTIFIER return,\n" +
-                "\tIDENTIFIER tokens\n" +
-                "\t]\n" +
-                ",\n" +
-                "\tOPERATOR else,\n" +
-                "\tOPERATOR :,\n" +
-                "\tGROUP block[\n" +
-                "\tIDENTIFIER line,\n" +
-                "\tIDENTIFIER skipSpaces,\n" +
-                "\tGROUP ()\n" +
-                "\t]\n" +
-                "\n" +
-                "\t]\n",
+        assertEquals("GROUP block[\n" +
+                        "\tOPERATOR if,\n" +
+                        "\tIDENTIFIER nextStarting,\n" +
+                        "\tOPERATOR >,\n" +
+                        "\tIDENTIFIER starting,\n" +
+                        "\tOPERATOR :,\n" +
+                        "\tGROUP block[\n" +
+                        "\tIDENTIFIER tokens,\n" +
+                        "\tIDENTIFIER add,\n" +
+                        "\tGROUP ()[\n" +
+                        "\tIDENTIFIER tokenize,\n" +
+                        "\tGROUP ()[IDENTIFIER source]\n" +
+                        "\t]\n" +
+                        "\n" +
+                        "\t]\n" +
+                        ",\n" +
+                        "\tOPERATOR ;,\n" +
+                        "\tOPERATOR else,\n" +
+                        "\tIDENTIFIER nextStarting,\n" +
+                        "\tOPERATOR <,\n" +
+                        "\tIDENTIFIER starting,\n" +
+                        "\tOPERATOR :,\n" +
+                        "\tGROUP block[\n" +
+                        "\tIDENTIFIER return,\n" +
+                        "\tIDENTIFIER tokens\n" +
+                        "\t]\n" +
+                        ",\n" +
+                        "\tOPERATOR ;,\n" +
+                        "\tIDENTIFIER else,\n" +
+                        "\tOPERATOR :,\n" +
+                        "\tGROUP block[\n" +
+                        "\tIDENTIFIER line,\n" +
+                        "\tIDENTIFIER skipSpaces,\n" +
+                        "\tGROUP ()\n" +
+                        "\t]\n" +
+                        ",\n" +
+                        "\tOPERATOR ;\n" +
+                        "\t]\n",
                 token.toString());
     }
 
     @Test
     public void testShortStringSourceParse3() {
-        SourceString source = new SourceString("as");
+        SourceString source = new SourceString("asterisk");
         Token token = source.parse();
-        assertEquals("test parse short string source 3", "IDENTIFIER asterisk",
+        assertEquals("test parse short string source 3", "GROUP block[IDENTIFIER asterisk]",
                 token.toString());
     }
 }
