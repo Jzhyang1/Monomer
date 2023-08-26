@@ -2,6 +2,7 @@ package systems.monomer.syntaxtree.controls;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
+import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
@@ -36,7 +37,7 @@ public final class ControlGroupNode extends OperatorNode {
         for (int i = 1; i < size(); i++) {
             result = get(i).interpretControl(result.isSuccess, !result.isSuccess, result.value);
         }
-        return result.value;
+        return result.value != null ? result.value : InterpretTuple.EMPTY;
     }
 
     public void add(Node node) {

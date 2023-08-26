@@ -66,7 +66,8 @@ public class AssignNode extends OperatorNode {
             Node second = getSecond();
             CallNode callNode = (CallNode)first;
             TupleNode param = TupleNode.asTuple(callNode.getSecond());
-            functionKey.putOverload(new Signature(second.getType(), param.getType()), new InterpretFunction(param, second));
+            //TODO
+//            functionKey.putOverload(new Signature(second.getType(), param.getType()), new InterpretFunction(param, second));
         }
         //TODO chained assignment
         //TODO function
@@ -91,7 +92,7 @@ public class AssignNode extends OperatorNode {
             ModuleNode wrapper = new ModuleNode("function");
             wrapper.setParent(this);
             wrapper.with(args).with(second).matchVariables();
-            functionKey.putOverload(args, second);
+            functionKey.putOverload(args, second, wrapper);
         }
         else {
             super.matchVariables();

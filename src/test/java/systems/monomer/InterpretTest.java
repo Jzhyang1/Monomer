@@ -1,6 +1,7 @@
 package systems.monomer;
 
 import org.junit.Test;
+import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.tokenizer.Source;
@@ -123,6 +124,7 @@ public class InterpretTest {
         global.matchVariables();
 
         System.out.println(node);
-        assertEquals("print multiword variable", "({},1991)", node.interpretValue().valueString());
+        InterpretValue value = node.interpretValue();
+        assertEquals("recursion", "({},(3,(2,(1,(0,(),0),1),2),3))", value.valueString());
     }
 }

@@ -2,6 +2,7 @@ package systems.monomer.variables;
 
 import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.AnyType;
@@ -21,8 +22,8 @@ public class FunctionKey extends VariableKey {
         overloads.put(type, function);
     }
 
-    public void putOverload(Node args, Node body) {
-        putOverload(new Signature(args.getType(), body.getType()), new InterpretFunction(TupleNode.asTuple(args), body));
+    public void putOverload(Node args, Node body, ModuleNode wrapper) {
+        putOverload(new Signature(args.getType(), body.getType()), new InterpretFunction(TupleNode.asTuple(args), body, wrapper));
     }
 
     @Override

@@ -8,6 +8,7 @@ import systems.monomer.variables.VariableKey;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ModuleNode extends Node {
     public ModuleNode(String name) {
@@ -24,7 +25,24 @@ public class ModuleNode extends Node {
         variables.put(name, key);
     }
     public VariableKey getVariable(String name) {
-        return variables.get(name);
+        VariableKey ret = variables.get(name);
+        if(ret != null) return ret;
+        return getParent() == null ? null : getParent().getVariable(name);
+    }
+    public Map<String, InterpretValue> getVariableValuesMap() {
+        return variables.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().getValue(),
+                        (a, b) -> b,
+                        HashMap::new
+                ));
+    }
+    public void setVariableValues(Map<String, InterpretValue> values) {
+        for(Map.Entry<String, InterpretValue> entry : values.entrySet()) {
+            variables.get(entry.getKey()).setValue(entry.getValue());
+        }
     }
 
     public InterpretValue interpretValue() {

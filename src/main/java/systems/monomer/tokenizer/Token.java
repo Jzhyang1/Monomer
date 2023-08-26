@@ -88,7 +88,6 @@ public class Token extends ErrorBlock {
         Node body;
         if(token.usage == Usage.GROUP && token.value.equals("block")) {
             body = token.toNode();
-            iter.next();    //skip semicolon
         }
         else {
             if (token.usage == Usage.OPERATOR && Operator.isPrefix(token.value))
@@ -99,6 +98,7 @@ public class Token extends ErrorBlock {
                 body = partialOperatorToNode(control, body, token, iter);
             }
         }
+        if(iter.hasNext()) iter.next();    //skip semicolon
 
         return controlNode.with(condition).with(body);
     }
