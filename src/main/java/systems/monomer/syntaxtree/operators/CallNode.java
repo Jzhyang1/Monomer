@@ -8,6 +8,7 @@ import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.types.Signature;
 import systems.monomer.variables.FunctionKey;
 import systems.monomer.types.Type;
+import systems.monomer.variables.VariableKey;
 
 public class CallNode extends OperatorNode {
     public CallNode() {
@@ -23,7 +24,14 @@ public class CallNode extends OperatorNode {
         //TODO this is temporary
         if(getFirst() instanceof VariableNode variableNode) {
             String name = variableNode.getName();
-            putVariable(name, new FunctionKey());
+            VariableKey existing = getVariable(name);
+
+            if(existing == null) {
+                putVariable(name, new FunctionKey());
+            } else if (!(existing instanceof FunctionKey)) {
+                throwError("Cannot call non-function");
+            }
+
             super.matchVariables();
         }
     }

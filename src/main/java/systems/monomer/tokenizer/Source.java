@@ -14,7 +14,7 @@ import static systems.monomer.Constants.*;
 public abstract class Source {
     public static class Line {
         public static final Map<Character, Integer> SPACE_CHARS = new HashMap<>() {{
-            put('\n', 0);
+//            put('\n', 0);
             put(' ', 1);
             put('\r', 1);
             put('\t', Constants.TAB_SIZE);

@@ -20,9 +20,8 @@ public class VariableKey extends InterpretVariable {
         return false;   //TODO
     }
 
-    @Override
     public void put(String field, Type value) {
-        super.put(field, value);
+        setField(field, value);   //uses the Type class's setField to store the value as a field
         if(value instanceof VariableKey key)
             key.setParent(this);
         else
@@ -30,7 +29,12 @@ public class VariableKey extends InterpretVariable {
     }
 
     public VariableKey get(String field) {
-        return (VariableKey)super.get(field); //TODO check and throwError
+        return (VariableKey) getField(field); //TODO check and throwError
+    }
+
+    @Override
+    public InterpretValue call(InterpretValue args) {
+        return super.call(args);
     }
 
     public InterpretValue getValue() {
@@ -39,5 +43,25 @@ public class VariableKey extends InterpretVariable {
 
     public String valueString() {
         return value == null ? super.valueString() : value.valueString();
+    }
+
+    @Override
+    public boolean typeContains(Type type) {
+        return false;
+    }
+
+    @Override
+    public boolean hasField(String field) {
+        return super.hasField(field);
+    }
+
+    @Override
+    public void assertField(String field, Type value) {
+        super.assertField(field, value);
+    }
+
+    @Override
+    public Type getField(String field) {
+        return super.getField(field);
     }
 }

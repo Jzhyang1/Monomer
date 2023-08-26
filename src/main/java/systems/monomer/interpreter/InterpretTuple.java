@@ -12,6 +12,13 @@ public class InterpretTuple extends TupleType implements InterpretValue {
     public static InterpretTuple toTuple(Collection<? extends Node> list) {
         return new InterpretTuple(list.stream().map(Node::interpretValue).toList());
     }
+    public static InterpretTuple toTuple(InterpretValue value) {
+        if (value instanceof InterpretTuple) {
+            return (InterpretTuple) value;
+        } else {
+            return new InterpretTuple(List.of(value));
+        }
+    }
 
     public InterpretTuple(List<? extends InterpretValue> list) {
         addAll(list);
@@ -19,6 +26,10 @@ public class InterpretTuple extends TupleType implements InterpretValue {
 
     public List<InterpretValue> getValues() {
         return (List<InterpretValue>) (List) getTypes();    //TODO fix this
+    }
+    
+    public InterpretValue get(int index) {
+        return getValues().get(index);
     }
 
     @Override

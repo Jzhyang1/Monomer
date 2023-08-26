@@ -7,7 +7,6 @@ import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.TupleNode;
-import systems.monomer.types.interpreter.*;
 import systems.monomer.util.Pair;
 
 import java.util.*;

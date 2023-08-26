@@ -46,6 +46,17 @@ public interface Type extends Cloneable {
     }
 
     /**
+     * checks if the field exists and if it contains the given type
+     * if the field does not exist, sets the field to the given type
+     * if the field does exist, checks if the type contains the given type, and if not, throws an error
+     * @param field the name of the field
+     * @param value the type of the field with the given name
+     */
+    default void assertField(String field, Type value) {
+        throw new Error("TODO unimplemented");
+    }
+
+    /**
      * @param field the name of the field
      * @return the type of the field with the given name
      */

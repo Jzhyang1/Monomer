@@ -1,7 +1,6 @@
 package systems.monomer.types;
 
 import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.stream.IntStream;
 public class TupleType extends AnyType {
     private final List<Type> types = new ArrayList<>();
 
-    public void add(Type type) {
+    public void addType(Type type) {
         types.add(type);
     }
     public void addAll(List<? extends Type> types) {
@@ -19,6 +18,14 @@ public class TupleType extends AnyType {
     }
     public void addAll(TupleType tuple) {
         types.addAll(tuple.types);
+    }
+
+    public Type getType(int index) {
+        return types.get(index);
+    }
+
+    public int size() {
+        return types.size();
     }
 
     @Override

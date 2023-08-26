@@ -1,7 +1,12 @@
 package systems.monomer.types;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class AnyType implements Type {
     public static final AnyType ANY = new AnyType();
+    private boolean mutable = false;
 
     @Override
     public Type clone() {

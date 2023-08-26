@@ -1,7 +1,6 @@
 package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.interpreter.*;
-import systems.monomer.types.interpreter.*;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

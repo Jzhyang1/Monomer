@@ -34,6 +34,17 @@ public class ObjectType extends AnyType {
     }
 
     @Override
+    public void assertField(String field, Type value) {
+        if(fields.containsKey(field)) {
+            Type type = fields.get(field);
+            if(!type.typeContains(value))
+                throw new Error("Field " + field + " does not contain " + value);
+        }
+        else
+            fields.put(field, value);
+    }
+
+    @Override
     public Type getField(String field) {
         return fields.get(field);
     }

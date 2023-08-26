@@ -1,7 +1,6 @@
 package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.interpreter.*;
-import systems.monomer.types.interpreter.*;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -53,7 +52,7 @@ public final class Bitwise {
             else if(first instanceof InterpretCollection firstCollection)
                 return new InterpretBool(firstCollection.getValues().size() != 0);
             else
-                return new InterpretBool(first.getFields().isEmpty());
+                throw new Error("Expected a boolean-y value, got " + first);
         };
     }
 }
