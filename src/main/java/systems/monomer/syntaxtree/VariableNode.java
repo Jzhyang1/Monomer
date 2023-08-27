@@ -25,10 +25,15 @@ public class VariableNode extends Node {
             putVariable(getName(), existing);
         }
         key = existing;
-    }
-    public void setType(Type type) {
-        super.setType(type);
-        key.setValue((InterpretValue) type);    //TODO this is a hack
+        if(getType() == null ^ key.getType() == null) {
+            if(getType() == null)
+                setType(key.getType());
+            else
+                key.setType(getType());
+        }
+        else if(getType() != null && !getType().equals(key.getType())) {
+            throwError("Type mismatch: " + getType() + " != " + key.getType());
+        }
     }
 
     public VariableKey getVariableKey() {

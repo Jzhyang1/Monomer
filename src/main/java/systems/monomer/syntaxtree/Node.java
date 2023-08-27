@@ -2,6 +2,7 @@ package systems.monomer.syntaxtree;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
@@ -54,7 +55,7 @@ public abstract class Node extends ErrorBlock {
      * this returns null if not variable. To be used only in checking stages of compilation
      * @return the variable key
      */
-    public VariableKey getVariableKey() {
+    public @Nullable VariableKey getVariableKey() {
 //        throwError("Attempting to access " + name + " as a variable");
         //TODO make sure that nothing accesses variable keys that shouldn't
         return null;
