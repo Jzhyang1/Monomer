@@ -21,24 +21,17 @@ public class CallNode extends OperatorNode {
 
     @Override
     public void matchVariables() {
-        //TODO this is temporary
-        if(getFirst() instanceof VariableNode variableNode) {
-            String name = variableNode.getName();
-            VariableKey existing = getVariable(name);
+        super.matchVariables();
+        VariableKey existing = getFirst().getVariableKey();
+        assert existing != null;
 
-            if(existing == null) {
-                putVariable(name, new FunctionKey());
-            } else if (!(existing instanceof FunctionKey)) {
-                throwError("Cannot call non-function");
-            }
-
-            super.matchVariables();
+        if (existing.getValue() != null && !(existing.getValue() instanceof FunctionKey)) {
+            throwError("Cannot call non-function");
+        } else {
+            existing = new VariableKey();
+            existing.setValue(new FunctionKey());
+//                existing.setType(new Signature(getType(), getSecond().getType()));
         }
-    }
-
-    @Override
-    public FunctionKey getVariableKey() {
-        return (FunctionKey)getFirst().getVariableKey();
     }
 
     public InterpretValue interpretValue() {

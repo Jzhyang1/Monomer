@@ -2,6 +2,7 @@ package systems.monomer.variables;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.types.Type;
@@ -38,8 +39,8 @@ public class VariableKey extends InterpretVariable {
         return super.call(args);
     }
 
-    public InterpretValue getValue() {
-        return value == null ? this : value;
+    public @Nullable InterpretValue getValue() {
+        return value;
     }
 
     public String valueString() {

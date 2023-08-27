@@ -34,10 +34,12 @@ public class Token extends ErrorBlock {
         switch (nextOp.usage) {
             case IDENTIFIER -> {    //TODO move this under partialOperator or remember to call after every operation
                 Node fieldNode = new FieldNode().with(cur).with(nextOp.toNode());
+                fieldNode.setContext(cur.getStart(), nextOp.getStop(), cur.getSource());
                 return partialToNode(fieldNode, iter);
             }
             case GROUP -> { //TODO move this as well
                 Node callNode = new CallNode().with(cur).with(nextOp.toNode());
+                callNode.setContext(cur.getStart(), nextOp.getStop(), cur.getSource());
                 return partialToNode(callNode, iter);
             }
             case OPERATOR -> {

@@ -130,6 +130,12 @@ public class InterpretTest {
     }
 
     @Test
+    public void interpretTest10_1() {
+        Source source = new SourceString("@true");
+        Interpret.interpret(source);
+    }
+
+    @Test
     public void interpretTest11() {
         Source source = new SourceString("io write(10)");
         Interpret.interpret(source);

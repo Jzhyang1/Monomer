@@ -13,6 +13,7 @@ import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.types.Type;
 import systems.monomer.variables.FunctionKey;
 import systems.monomer.types.Signature;
+import systems.monomer.variables.VariableKey;
 
 public class AssignNode extends OperatorNode {
     /**
@@ -83,11 +84,14 @@ public class AssignNode extends OperatorNode {
         if(first instanceof CallNode callNode) {
             Node identifier = callNode.getFirst(), args = callNode.getSecond();
 
+            identifier.matchVariables();
             functionKey = new FunctionKey();
 
+            VariableKey identifierKey = identifier.getVariableKey();
+            assert identifierKey != null;
+
             //TODO name.getName() is temporary
-            String name = identifier.getName();
-            putVariable(name, functionKey);
+            identifierKey.setValue(functionKey);
 
             ModuleNode wrapper = new ModuleNode("function");
             wrapper.setParent(this);
@@ -100,7 +104,7 @@ public class AssignNode extends OperatorNode {
     }
 
     public InterpretVariable interpretVariable() {
-        if(functionKey != null) return functionKey;
+        if(functionKey != null) throwError("Cannot assign to function");
 
         //needed for functions to work
         return getFirst().interpretVariable();  //TODO does this look right?

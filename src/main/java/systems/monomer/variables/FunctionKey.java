@@ -3,6 +3,7 @@ package systems.monomer.variables;
 import systems.monomer.interpreter.InterpretFile;
 import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.VariableNode;
@@ -19,7 +20,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class FunctionKey extends VariableKey {
+public class FunctionKey implements InterpretValue {
     private Map<Signature, InterpretFunction> overloads = new HashMap<>();
 
     public InterpretFunction getOverload(Type type) {
@@ -57,5 +58,29 @@ public class FunctionKey extends VariableKey {
         } else {
             throw new Error("TODO unimplemented");  //TODO throwError
         }
+    }
+
+    @Override
+    public FunctionKey clone() {
+        try {
+            return (FunctionKey) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String valueString() {
+        return "function";
+    }
+
+    @Override
+    public boolean typeContains(Type type) {
+        throw new Error("TODO unimplemented");
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        throw new Error("TODO unimplemented");
     }
 }
