@@ -76,6 +76,10 @@ public abstract class Node extends ErrorBlock {
         setContext(context);
         return this;
     }
+    public Node with(Type type) {
+        setType(type);
+        return this;
+    }
 
     public void addAll(Collection<? extends Node> children) {
         for (Node child : children)

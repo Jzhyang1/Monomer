@@ -32,6 +32,7 @@ public class InterpretFunction extends Signature implements InterpretValue {
         if(recursiveSlices.size() > Constants.RECURSIVE_LIMIT) {
             throw new Error("Recursive limit exceeded (" + Constants.RECURSIVE_LIMIT + ")");
         }
+        //TODO optimize to not push if args is empty or if tail recursion
         recursiveSlices.push(parent.getVariableValuesMap());
 
         InterpretTuple argsTuple = InterpretTuple.toTuple(args);
