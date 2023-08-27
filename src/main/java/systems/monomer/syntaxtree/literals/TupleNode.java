@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class TupleNode extends LiteralNode {
+    public static TupleNode EMPTY = new TupleNode(List.of());
     public static boolean isTuple(Node node) {
         //TODO this is ugly
         return node.getUsage() == Usage.LITERAL && List.of("block", ",", ";").contains(node.getName());
@@ -21,8 +22,9 @@ public class TupleNode extends LiteralNode {
     }
 
     @Override
-    public TupleType getType() {
-        return new TupleType(getChildren().stream().map((e)->e.getType()).toList());
+    public void matchTypes() {
+        super.matchTypes();
+        setType(new TupleType(getChildren().stream().map((e)->e.getType()).toList()));
     }
 
     public TupleNode() {

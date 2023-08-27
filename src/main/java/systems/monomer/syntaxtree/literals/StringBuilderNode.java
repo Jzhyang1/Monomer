@@ -5,6 +5,7 @@ import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretString;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.types.StringType;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -14,6 +15,12 @@ public class StringBuilderNode extends LiteralNode {
     public StringBuilderNode(Collection<? extends Node> list) {
         super("stringbuilder");
         getChildren().addAll(list);
+    }
+
+    @Override
+    public void matchTypes() {
+        super.matchTypes();
+        setType(StringType.STRING);
     }
 
     public InterpretValue interpretValue() {

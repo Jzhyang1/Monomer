@@ -7,19 +7,13 @@ import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
-import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.types.Type;
-import systems.monomer.variables.FunctionKey;
-import systems.monomer.types.Signature;
 import systems.monomer.variables.VariableKey;
 
 public class AssignNode extends OperatorNode {
-    /**
-     * use only with function declarations
-     */
-    private FunctionKey functionKey = null;
+    private boolean isFunction = false; //TODO possibly unnecessary
 
     public AssignNode() {
         super("=");
@@ -62,7 +56,7 @@ public class AssignNode extends OperatorNode {
     }
 
     public void matchTypes() {
-        if(functionKey != null) {
+        if(isFunction) {
             Node first = getFirst();
             Node second = getSecond();
             CallNode callNode = (CallNode)first;
@@ -83,20 +77,16 @@ public class AssignNode extends OperatorNode {
         Node first = getFirst(), second = getSecond();
         if(first instanceof CallNode callNode) {
             Node identifier = callNode.getFirst(), args = callNode.getSecond();
+            isFunction = true;
 
             identifier.matchVariables();
-            functionKey = new FunctionKey();
-
             VariableKey identifierKey = identifier.getVariableKey();
             assert identifierKey != null;
-
-            //TODO name.getName() is temporary
-            identifierKey.setValue(functionKey);
 
             ModuleNode wrapper = new ModuleNode("function");
             wrapper.setParent(this);
             wrapper.with(args).with(second).matchVariables();
-            functionKey.putOverload(args, second, wrapper);
+            identifierKey.putOverload(args, second, wrapper);
         }
         else {
             super.matchVariables();
@@ -104,13 +94,11 @@ public class AssignNode extends OperatorNode {
     }
 
     public InterpretVariable interpretVariable() {
-        if(functionKey != null) throwError("Cannot assign to function");
-
         //needed for functions to work
         return getFirst().interpretVariable();  //TODO does this look right?
     }
     public InterpretValue interpretValue() {
-        if(functionKey != null) return functionKey;
+        if(isFunction) return InterpretTuple.EMPTY;
 
         InterpretValue val = getSecond().interpretValue();
         getFirst().interpretVariable().setValue(val);

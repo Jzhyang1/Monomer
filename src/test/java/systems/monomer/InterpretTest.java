@@ -108,7 +108,7 @@ public class InterpretTest {
         global.matchVariables();
 
 //        System.out.println(node);
-        assertEquals("print multiword variable", "({},1991)", node.interpretValue().valueString());
+        assertEquals("print multiword variable", "((),1991)", node.interpretValue().valueString());
     }
 
     @Test
@@ -126,7 +126,7 @@ public class InterpretTest {
 
         System.out.println(node);
         InterpretValue value = node.interpretValue();
-        assertEquals("recursion", "({},(3,(2,(1,(0,(),0),1),2),3))", value.valueString());
+        assertEquals("recursion", "((),(3,(2,(1,(0,(),0),1),2),3))", value.valueString());
     }
 
     @Test
@@ -137,7 +137,13 @@ public class InterpretTest {
 
     @Test
     public void interpretTest11() {
-        Source source = new SourceString("io write(10)");
+        Source source = new SourceString("io write(10); io write(\"\n\")");
+        Interpret.interpret(source);
+    }
+    @Test
+    public void interpretTest11_1() {
+        Source source = new SourceString("a function(x) = @x\n" +
+                "a function(1991)");
         Interpret.interpret(source);
     }
 }

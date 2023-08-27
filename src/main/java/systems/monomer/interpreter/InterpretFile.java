@@ -3,17 +3,16 @@ package systems.monomer.interpreter;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.syntaxtree.ModuleNode;
-import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.LiteralNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
-import systems.monomer.variables.FunctionKey;
+import systems.monomer.variables.VariableKey;
 
 import java.io.*;
 import java.util.List;
 
-public class InterpretFile extends ObjectType implements InterpretValue {
+public class InterpretFile extends VariableKey {
     private Reader reader;
     private Writer writer;
 
@@ -35,14 +34,14 @@ public class InterpretFile extends ObjectType implements InterpretValue {
         this(new BufferedReader(safeReader(source)), new BufferedWriter(safeWriter(source)));
     }
     public InterpretFile(Reader reader, Writer writer){
-        setField("read", new FunctionKey(){{
-            putOverload(new TupleNode(), new CharReader(reader), new ModuleNode("function"));
-            putOverload(new TupleNode(), new StringReader(reader), new ModuleNode("function"));
+        setField("read", new VariableKey(){{
+            putOverload(List.of(), (args)->new CharReader(reader));
+            putOverload(List.of(), (args)->new StringReader(reader));
 
             putOverload(List.of(NumberType.INTEGER), (args) -> new MultiCharReader(reader, args.get(0)));
         }});
 
-        setField("write", new FunctionKey(){{
+        setField("write", new VariableKey(){{
             putOverload(List.of(NumberType.INTEGER), (args) -> new IntWriter(writer, args.get(0)));
             putOverload(List.of(CharType.CHAR), (args) -> new CharWriter(writer, args.get(0)));
             putOverload(List.of(StringType.STRING), (args) -> new StringWriter(writer, args.get(0)));
@@ -50,7 +49,7 @@ public class InterpretFile extends ObjectType implements InterpretValue {
     }
 
 
-    private static class CharReader extends LiteralNode {
+    public static class CharReader extends LiteralNode {
         private Reader reader;
         public CharReader(Reader reader) {
             this.reader = reader;
@@ -79,7 +78,7 @@ public class InterpretFile extends ObjectType implements InterpretValue {
         }
     }
 
-    private static class MultiCharReader extends LiteralNode {
+    public static class MultiCharReader extends LiteralNode {
         private Reader reader;
         private VariableNode count;
 
@@ -122,7 +121,7 @@ public class InterpretFile extends ObjectType implements InterpretValue {
         }
     }
 
-    private static class StringReader extends LiteralNode {
+    public static class StringReader extends LiteralNode {
         private Reader reader;
 
         public StringReader(Reader reader) {
@@ -158,7 +157,7 @@ public class InterpretFile extends ObjectType implements InterpretValue {
         }
     }
 
-    private static class IntWriter extends LiteralNode {
+    public static class IntWriter extends LiteralNode {
         private Writer writer;
         private VariableNode val;
 
@@ -172,6 +171,7 @@ public class InterpretFile extends ObjectType implements InterpretValue {
             if(iValue instanceof InterpretNumber number) {
                 try {
                     writer.write(String.valueOf(number.getValue().intValue()));
+                    writer.flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -197,7 +197,7 @@ public class InterpretFile extends ObjectType implements InterpretValue {
         }
     }
 
-    private static class CharWriter extends LiteralNode {
+    public static class CharWriter extends LiteralNode {
         private Writer writer;
         private VariableNode val;
 
@@ -211,6 +211,7 @@ public class InterpretFile extends ObjectType implements InterpretValue {
             if(cValue instanceof InterpretChar chr) {
                 try {
                     writer.write(chr.getValue());
+                    writer.flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -236,7 +237,7 @@ public class InterpretFile extends ObjectType implements InterpretValue {
         }
     }
 
-    private static class StringWriter extends LiteralNode {
+    public static class StringWriter extends LiteralNode {
         private Writer writer;
         private VariableNode val;
 
@@ -250,6 +251,7 @@ public class InterpretFile extends ObjectType implements InterpretValue {
             if(sValue instanceof InterpretString str) {
                 try {
                     writer.write(str.getValue());
+                    writer.flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

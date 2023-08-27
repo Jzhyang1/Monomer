@@ -4,6 +4,8 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretBool;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.types.BoolType;
+import systems.monomer.types.NumberType;
 
 public class BoolNode extends LiteralNode {
     private boolean value;
@@ -11,6 +13,11 @@ public class BoolNode extends LiteralNode {
     public BoolNode(boolean value){
         super("bool");
         this.value = value;
+    }
+
+    @Override
+    public void matchTypes() {
+        setType(BoolType.BOOL);
     }
 
     public InterpretValue interpretValue() {
