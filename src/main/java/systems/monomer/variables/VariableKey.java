@@ -107,7 +107,7 @@ public class VariableKey extends InterpretVariable {
         } else if(overloads.size() == 1) {
             return overloads.values().iterator().next();
         } else {
-            throw new Error("No matching signature found for " + signature + " in " + overloads);  //TODO throwError
+            throw new Error("No matching signature found for " + signature);  //TODO throwError
         }
     }
 

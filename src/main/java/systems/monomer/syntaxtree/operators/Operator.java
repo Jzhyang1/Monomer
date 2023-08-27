@@ -7,6 +7,7 @@ import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.types.Type;
 import systems.monomer.util.Pair;
 
 import java.util.*;
@@ -48,6 +49,13 @@ public final class Operator {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol) {{
             setCompile(compile);
             setInterpret(interpret);
+        }}));
+    }
+    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret, Function<GenericOperatorNode, Type> type) {
+        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol) {{
+            setCompile(compile);
+            setInterpret(interpret);
+            setType(type);
         }}));
     }
     private static void putData(String symbol, int leftPrec, int rightPrec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
@@ -209,7 +217,22 @@ public final class Operator {
             InterpretValue first = self.getFirst().interpretValue();
             System.out.println(first.valueString());
             return first;
-        });
+        }, (self) -> self.getFirst().getType());
+        putData("with", -5, PREFIX, (self) -> {
+            //TODO
+            return null;
+        }, (self) -> {
+            InterpretValue first = self.getFirst().interpretValue();
+            self.getSecond().interpretValue();
+            return first;
+        }, (self) -> self.getFirst().getType());
+        putData("then", -5, PREFIX, (self) -> {
+            //TODO
+            return null;
+        }, (self) -> {
+            self.getFirst().interpretValue();
+            return self.getSecond().interpretValue();
+        }, (self) -> self.getSecond().getType());
 
         initComparison();
         initBitwise();
