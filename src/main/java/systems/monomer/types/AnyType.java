@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class AnyType implements Type {
+public class AnyType implements Type, Cloneable {
     public static final AnyType ANY = new AnyType();
     private boolean mutable = false;
 
@@ -30,5 +30,10 @@ public class AnyType implements Type {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Type;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().hashCode();
     }
 }

@@ -10,6 +10,7 @@ import systems.monomer.types.Type;
 public class VariableKey extends InterpretVariable {
     private VariableKey parent;
     private InterpretValue value;
+    private Type type;
 
     public VariableKey(){}
     public VariableKey(VariableKey parent) {

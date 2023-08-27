@@ -1,6 +1,7 @@
 package systems.monomer;
 
 import org.junit.Test;
+import systems.monomer.commandline.Interpret;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
@@ -126,5 +127,11 @@ public class InterpretTest {
         System.out.println(node);
         InterpretValue value = node.interpretValue();
         assertEquals("recursion", "({},(3,(2,(1,(0,(),0),1),2),3))", value.valueString());
+    }
+
+    @Test
+    public void interpretTest11() {
+        Source source = new SourceString("io write(10)");
+        Interpret.interpret(source);
     }
 }

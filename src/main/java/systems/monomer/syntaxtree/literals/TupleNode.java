@@ -5,6 +5,7 @@ import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.types.TupleType;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,8 +21,8 @@ public class TupleNode extends LiteralNode {
     }
 
     @Override
-    public InterpretTuple getType() {
-        return new InterpretTuple(getChildren().stream().map((e)->(InterpretValue)e.getType()).toList());
+    public TupleType getType() {
+        return new TupleType(getChildren().stream().map((e)->e.getType()).toList());
     }
 
     public TupleNode() {

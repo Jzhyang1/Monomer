@@ -10,6 +10,11 @@ import java.util.stream.IntStream;
 public class TupleType extends AnyType {
     private final List<Type> types = new ArrayList<>();
 
+    public TupleType() {}
+    public TupleType(List<? extends Type> types) {
+        this.types.addAll(types);
+    }
+
     public void addType(Type type) {
         types.add(type);
     }
@@ -51,5 +56,10 @@ public class TupleType extends AnyType {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof TupleType tuple && tuple.types.size() == types.size() && IntStream.range(0, types.size()).allMatch(i -> types.get(i).equals(tuple.types.get(i)));
+    }
+
+    @Override
+    public int hashCode() {
+        return types.hashCode()*31 + this.getClass().hashCode();
     }
 }

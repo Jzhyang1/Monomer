@@ -30,4 +30,9 @@ public class CollectionType extends ObjectType {
     public boolean equals(Object obj) {
         return super.equals(obj) && obj instanceof CollectionType collection && elementType.equals(collection.elementType);
     }
+
+    @Override
+    public int hashCode() {
+        return elementType.hashCode()*31 + this.getClass().hashCode();
+    }
 }
