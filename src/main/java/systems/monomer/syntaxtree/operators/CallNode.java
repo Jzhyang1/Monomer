@@ -38,7 +38,11 @@ public class CallNode extends OperatorNode {
         function = getFirst().getVariableKey().matchingOverload(new Signature(returnType, argType));
         if(function == null)
             throwError("No matching overload for " + getFirst().getName() + "(" + argType + "):" + returnType);
-        setType(function.getReturnType());
+        Type actualReturnType = function.getReturnType();
+        //TODO find out why it returns null
+        //TODO make this not change values within the function
+        if(actualReturnType == null || actualReturnType.equals(AnyType.ANY)) actualReturnType = function.testReturnType(argType);
+        setType(actualReturnType);
     }
 
     public CompileValue compileValue() {

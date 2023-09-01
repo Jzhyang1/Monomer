@@ -6,11 +6,14 @@ import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.syntaxtree.operators.AssignNode;
 import systems.monomer.types.Signature;
+import systems.monomer.types.TupleType;
+import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Stack;
+import java.util.stream.IntStream;
 
 public class InterpretFunction extends Signature implements InterpretValue {
     private TupleNode args;
@@ -44,5 +47,15 @@ public class InterpretFunction extends Signature implements InterpretValue {
         InterpretValue ret = body.interpretValue();
         parent.setVariableValues(recursiveSlices.pop());
         return ret;
+    }
+
+    public Type testReturnType(Type argType) {
+        TupleType argTypes = TupleType.asTuple(argType);
+        IntStream.range(0, args.size()).forEach((i)->args.get(i).getVariableKey().setType(argTypes.getType(i)));
+//        args.getChildren().forEach((e)->e.getVariableKey().setType(argType));
+//        args.setType(TupleType.asTuple(argType));
+        args.matchTypes();
+        body.matchTypes();
+        return body.getType();
     }
 }

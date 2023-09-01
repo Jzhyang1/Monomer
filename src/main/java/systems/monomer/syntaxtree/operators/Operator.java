@@ -210,7 +210,7 @@ public final class Operator {
 //        putData("^=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
         putData(",", 100, BINARY | CHAINED | SUFFIX, ()->new TupleNode(","));
         putData(";", -1000, BINARY | CHAINED | SUFFIX, ()->new TupleNode(";"));
-        putData(":", 1500, 150, BINARY, ConvertNode::new);
+        putData(":", 1500, 150, BINARY, AssertTypeNode::new);
         putData("as", 5, 5, BINARY, ConvertNode::new);
         putData("@", 5000, PREFIX, (self) -> {
             //TODO

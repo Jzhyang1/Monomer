@@ -150,4 +150,18 @@ public class InterpretTest {
                 "a function(1991)");
         Interpret.interpret(source);
     }
+
+    @Test
+    public void interpretTest12() {
+        Source source = new SourceString("a(x) = x\n" +
+                "io write(a(2))");
+        Interpret.interpret(source);
+    }
+
+    @Test
+    public void interpretTest13() {
+        Source source = new SourceString("x = string: io read()\n" +
+                "io write(x)");
+        Interpret.interpret(source);
+    }
 }

@@ -50,6 +50,10 @@ public class VariableKey extends InterpretVariable {
         return (VariableKey) getField(field); //TODO check and throwError
     }
 
+    public void setValue(InterpretValue value) {
+        this.type = this.value = value;
+    }
+
     /**
      * gets the exact overload matching _signature_
      * @param signature

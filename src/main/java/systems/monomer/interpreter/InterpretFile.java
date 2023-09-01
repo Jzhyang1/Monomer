@@ -37,6 +37,7 @@ public class InterpretFile extends VariableKey {
         setField("read", new VariableKey(){{
             putOverload(List.of(), (args)->new CharReader(reader));
             putOverload(List.of(), (args)->new StringReader(reader));
+            putOverload(List.of(), (args)->new IntReader(reader));
 
             putOverload(List.of(NumberType.INTEGER), (args) -> new MultiCharReader(reader, args.get(0)));
         }});
@@ -144,6 +145,42 @@ public class InterpretFile extends VariableKey {
         @Override
         public void matchTypes() {
             setType(StringType.STRING);
+        }
+
+        @Override
+        public CompileValue compileValue() {
+            return null;
+        }
+
+        @Override
+        public CompileSize compileSize() {
+            return null;
+        }
+    }
+
+    public static class IntReader extends LiteralNode {
+        private Reader reader;
+
+        public IntReader(Reader reader) {
+            this.reader = reader;
+        }
+
+        public InterpretValue interpretValue() {
+            try {
+                StringBuilder ret = new StringBuilder();
+                int c;
+                while((c = reader.read()) != -1 && c != '\n') {
+                    ret.append((char) c);
+                }
+                return new InterpretNumber<>(Integer.valueOf(ret.toString()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void matchTypes() {
+            setType(NumberType.INTEGER);
         }
 
         @Override

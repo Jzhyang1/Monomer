@@ -38,12 +38,12 @@ public class VariableNode extends Node {
     }
 
     public void matchTypes() {
-        if(getType() == null)
+        if(getType() == null || getType().equals(AnyType.ANY))  //TODO remove the AnyType.ANY condition and uncomment code below
             setType(key.getType());
-        else if(key.getType().equals(AnyType.ANY))
+        else // if(key.getType().equals(AnyType.ANY))
             key.setType(getType());
-        else if(!key.getType().typeContains(getType()))
-            throwError("Type mismatch: " + getType() + " != " + key.getType());
+//        else if(!key.getType().typeContains(getType()))
+//            throwError("Type mismatch: " + getType() + " is not matchable to " + key.getType());
     }
 
     public VariableKey getVariableKey() {

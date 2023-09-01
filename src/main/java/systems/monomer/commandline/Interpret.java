@@ -25,13 +25,34 @@ public class Interpret {
 //        System.out.println(node);
         Node global = new ModuleNode(source.getTitle());
         //global constants here
-        global.putVariable("true", new VariableKey(){{setValue(new InterpretBool(true));}});
-        global.putVariable("false", new VariableKey(){{setValue(new InterpretBool(false));}});
-        global.putVariable("bool", new VariableKey(){{setValue(new InterpretBool(false));}});
-        global.putVariable("int", new VariableKey(){{setValue(new InterpretNumber<>(0));}});
-        global.putVariable("float", new VariableKey(){{setValue(new InterpretNumber<>(0.0));}});
-        global.putVariable("char", new VariableKey(){{setValue(new InterpretChar('\0'));}});
-        global.putVariable("string", new VariableKey(){{setValue(new InterpretString(""));}});
+        global.putVariable("true", new VariableKey(){{
+            setValue(new InterpretBool(true));
+            setType(InterpretBool.BOOL);
+        }});
+        global.putVariable("false", new VariableKey(){{
+            setValue(new InterpretBool(false));
+            setType(InterpretBool.BOOL);
+        }});
+        global.putVariable("bool", new VariableKey(){{
+            setValue(new InterpretBool(false));
+            setType(InterpretBool.BOOL);
+        }});
+        global.putVariable("int", new VariableKey(){{
+            setValue(new InterpretNumber<>(0));
+            setType(InterpretNumber.INTEGER);
+        }});
+        global.putVariable("float", new VariableKey(){{
+            setValue(new InterpretNumber<>(0.0));
+            setType(InterpretNumber.FLOAT);
+        }});
+        global.putVariable("char", new VariableKey(){{
+            setValue(new InterpretChar('\0'));
+            setType(CharType.CHAR);
+        }});
+        global.putVariable("string", new VariableKey(){{
+            setValue(new InterpretString(""));
+            setType(StringType.STRING);
+        }});
         global.putVariable("io", new InterpretFile(new InputStreamReader(System.in), new OutputStreamWriter(System.out)));
 
         global.add(node);
@@ -39,7 +60,6 @@ public class Interpret {
         global.matchVariables();
         //TODO
         global.matchTypes();
-//        global.matchOverloads();
         global.interpretValue();
     }
     public static void interpret(File sourceFile) {

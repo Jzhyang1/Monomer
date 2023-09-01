@@ -3,22 +3,23 @@ package systems.monomer.syntaxtree.operators;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.Type;
 
-public class ConvertNode extends OperatorNode {
+public class AssertTypeNode extends OperatorNode {
 
-    public ConvertNode() {
-        super("to");
+    public AssertTypeNode() {
+        super(":");
     }
 
     public void matchTypes() {
-        super.matchTypes();
-        setType(getSecond().getType());
-        getFirst().setType(getType());
+        getFirst().matchTypes();
+        setType(getFirst().getType());
+        getSecond().setType(getType());
+        getSecond().matchTypes();
     }
 
     public InterpretValue interpretValue() {
-        throw new Error("TODO unimplemented");
+        //TODO check that the type is a subtype of the type
+        return getSecond().interpretValue();
     }
 
     public CompileValue compileValue() {

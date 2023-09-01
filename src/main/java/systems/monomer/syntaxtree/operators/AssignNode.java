@@ -16,6 +16,8 @@ import systems.monomer.types.Signature;
 import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
+import java.util.List;
+
 public class AssignNode extends OperatorNode {
     private static record FunctionInitInfo(VariableKey function, Node args, Node body, ModuleNode parent) {};
     private FunctionInitInfo functionInit = null;
@@ -68,9 +70,18 @@ public class AssignNode extends OperatorNode {
 //            functionInit.function.putOverload(functionInit.args, functionInit.body, functionInit.parent);
             functionInit.function.putOverload(new Signature(AnyType.ANY, AnyType.ANY), new InterpretFunction(TupleNode.asTuple(functionInit.args), functionInit.body, functionInit.parent));
             functionInit.parent.matchTypes();
+            setType(functionInit.body.getType());
+            getFirst().matchTypes();
         }
         else {
-            super.matchTypes();
+            List<Node> children = getChildren();
+            Node value = children.get(children.size() - 1);
+            value.matchTypes();
+            Type type = value.getType();
+            for(int i = children.size() - 2; i >= 0; --i) {
+//                children.get(i).matchTypes();
+                children.get(i).setType(type);
+            }
             //TODO chained assignment
             setType(matchTypes(getFirst(), getSecond()));
 
@@ -91,8 +102,9 @@ public class AssignNode extends OperatorNode {
             assert identifierKey != null;
 
             ModuleNode wrapper = new ModuleNode("function");
+            wrapper.with(args).matchVariables();
             wrapper.setParent(this);
-            wrapper.with(args).with(second).matchVariables();
+            wrapper.with(second).matchVariables();
             functionInit = new FunctionInitInfo(identifierKey, args, second, wrapper);
         }
         else {
