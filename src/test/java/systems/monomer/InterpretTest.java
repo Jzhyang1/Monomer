@@ -1,6 +1,7 @@
 package systems.monomer;
 
 import org.junit.Test;
+import systems.monomer.commandline.Interpret;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
@@ -105,9 +106,11 @@ public class InterpretTest {
         Node global = new ModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
+        global.matchTypes();
+//        global.matchOverloads();
 
 //        System.out.println(node);
-        assertEquals("print multiword variable", "({},1991)", node.interpretValue().valueString());
+        assertEquals("print multiword variable", "((),1991)", node.interpretValue().valueString());
     }
 
     @Test
@@ -122,9 +125,43 @@ public class InterpretTest {
         Node global = new ModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
+        global.matchTypes();
+//        global.matchOverloads();
 
         System.out.println(node);
         InterpretValue value = node.interpretValue();
-        assertEquals("recursion", "({},(3,(2,(1,(0,(),0),1),2),3))", value.valueString());
+        assertEquals("recursion", "((),(3,(2,(1,(0,(),0),1),2),3))", value.valueString());
+    }
+
+    @Test
+    public void interpretTest10_1() {
+        Source source = new SourceString("@true");
+        Interpret.interpret(source);
+    }
+
+    @Test
+    public void interpretTest11() {
+        Source source = new SourceString("io write(10); io write(\"\n\")");
+        Interpret.interpret(source);
+    }
+    @Test
+    public void interpretTest11_1() {
+        Source source = new SourceString("a function(x) = @x\n" +
+                "a function(1991)");
+        Interpret.interpret(source);
+    }
+
+    @Test
+    public void interpretTest12() {
+        Source source = new SourceString("a(x) = x\n" +
+                "io write(a(2))");
+        Interpret.interpret(source);
+    }
+
+    @Test
+    public void interpretTest13() {
+        Source source = new SourceString("x = string: io read()\n" +
+                "io write(x)");
+        Interpret.interpret(source);
     }
 }

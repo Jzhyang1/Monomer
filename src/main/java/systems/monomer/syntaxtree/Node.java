@@ -2,6 +2,7 @@ package systems.monomer.syntaxtree;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
@@ -54,7 +55,7 @@ public abstract class Node extends ErrorBlock {
      * this returns null if not variable. To be used only in checking stages of compilation
      * @return the variable key
      */
-    public VariableKey getVariableKey() {
+    public @Nullable VariableKey getVariableKey() {
 //        throwError("Attempting to access " + name + " as a variable");
         //TODO make sure that nothing accesses variable keys that shouldn't
         return null;
@@ -76,6 +77,10 @@ public abstract class Node extends ErrorBlock {
         setContext(context);
         return this;
     }
+    public Node with(Type type) {
+        setType(type);
+        return this;
+    }
 
     public void addAll(Collection<? extends Node> children) {
         for (Node child : children)
@@ -94,12 +99,6 @@ public abstract class Node extends ErrorBlock {
     public void matchTypes() {
         for (Node child : children) {
             child.matchTypes();
-        }
-    }
-
-    public void matchOverloads() {
-        for (Node child : children) {
-            child.matchOverloads();
         }
     }
 

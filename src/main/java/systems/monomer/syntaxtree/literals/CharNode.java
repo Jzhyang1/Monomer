@@ -4,12 +4,19 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretChar;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.types.CharType;
+import systems.monomer.types.NumberType;
 
 public class CharNode extends LiteralNode {
     Character value;
     public CharNode(Character c) {
         super("char");
         value = c;
+    }
+
+    @Override
+    public void matchTypes() {
+        setType(CharType.CHAR);
     }
 
     public InterpretValue interpretValue() {

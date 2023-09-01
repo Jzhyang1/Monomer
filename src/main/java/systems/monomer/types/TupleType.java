@@ -8,7 +8,17 @@ import java.util.stream.IntStream;
 
 @Getter
 public class TupleType extends AnyType {
+    public static TupleType asTuple(Type type) {
+        if(type instanceof TupleType tuple) return tuple;
+        return new TupleType(List.of(type));
+    }
+
     private final List<Type> types = new ArrayList<>();
+
+    public TupleType() {}
+    public TupleType(List<? extends Type> types) {
+        this.types.addAll(types);
+    }
 
     public void addType(Type type) {
         types.add(type);
@@ -51,5 +61,15 @@ public class TupleType extends AnyType {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof TupleType tuple && tuple.types.size() == types.size() && IntStream.range(0, types.size()).allMatch(i -> types.get(i).equals(tuple.types.get(i)));
+    }
+
+    @Override
+    public int hashCode() {
+        return types.hashCode()*31 + this.getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().toString() + types.toString();
     }
 }

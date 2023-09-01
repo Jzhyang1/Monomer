@@ -21,7 +21,9 @@ public final class FieldNode extends OperatorNode {
         }
 
         public InterpretValue interpretValue() {
-            return key == null ? FieldNode.this.getParent().interpretValue().get(name) : key.getValue();
+            return key == null ?
+                    FieldNode.this.getFirst().interpretValue().get(name) :
+                    key.getValue();
         }
 
         public VariableKey getVariableKey() {
@@ -62,6 +64,11 @@ public final class FieldNode extends OperatorNode {
 
             key = new FieldKey(fieldName, existing);
         }
+    }
+
+    @Override
+    public void matchTypes() {
+        setType(key.key.getType());
     }
 
     public InterpretVariable interpretVariable() {

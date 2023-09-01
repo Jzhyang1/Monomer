@@ -6,6 +6,7 @@ import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
+import systems.monomer.types.AnyType;
 import systems.monomer.types.Type;
 
 public final class ControlGroupNode extends OperatorNode {
@@ -20,8 +21,8 @@ public final class ControlGroupNode extends OperatorNode {
 
     public void matchTypes() {
         super.matchTypes();
-        Type closestType = getFirst().getType();
-        for (int i = 1; i < size(); i++) {
+        Type closestType = AnyType.ANY;
+        for (int i = 0; i < size(); i++) {
             Type type = get(i).getType();
             if(closestType.typeContains(type)) {
                 closestType = type;

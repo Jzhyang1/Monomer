@@ -7,6 +7,8 @@ import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.types.BoolType;
+import systems.monomer.types.Type;
 import systems.monomer.util.Pair;
 
 import java.util.*;
@@ -20,7 +22,7 @@ import static systems.monomer.syntaxtree.operators.Bitwise.*;
 import static systems.monomer.syntaxtree.operators.Lists.*;
 
 public final class Operator {
-    private static Map<String, Operator> operators = new HashMap<>();
+    private static final Map<String, Operator> operators = new HashMap<>();
     private static final int NONE = 0;
     private static final int BINARY = 0b1, PREFIX = 0b10, SUFFIX = 0b100, CHAINED = 0b1000, ASSIGN = 0b10000;
     private static final int CONTROL = PREFIX | CHAINED | 0b100000;
@@ -50,6 +52,13 @@ public final class Operator {
             setInterpret(interpret);
         }}));
     }
+    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret, Function<GenericOperatorNode, Type> type) {
+        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol) {{
+            setCompile(compile);
+            setInterpret(interpret);
+            setType(type);
+        }}));
+    }
     private static void putData(String symbol, int leftPrec, int rightPrec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), leftPrec, rightPrec, () -> new GenericOperatorNode(symbol) {{
             setCompile(compile);
@@ -70,35 +79,35 @@ public final class Operator {
         putData("+", 1050, BINARY, (self) -> {
             //TODO
             return null;
-        }, numericalChecked(differentiatedIntFloat((a, b)->a+b, (a, b)->a+b))); //TODO positive oper
+        }, numericalChecked(differentiatedIntFloat((a, b)->a+b, (a, b)->a+b)), Arithmetic::typeFor); //TODO positive oper
         putData("-", 1050, BINARY, (self) -> {
             //TODO
             return null;
-        }, numericalChecked(differentiatedIntFloat((a, b)->a-b, (a, b)->a-b))); //TODO negative oper
+        }, numericalChecked(differentiatedIntFloat((a, b)->a-b, (a, b)->a-b)), Arithmetic::typeFor); //TODO negative oper
         putData("*", 1055, BINARY, (self) -> {
             //TODO
             return null;
-        }, numericalChecked(differentiatedIntFloat((a, b)->a*b, (a, b)->a*b)));
+        }, numericalChecked(differentiatedIntFloat((a, b)->a*b, (a, b)->a*b)), Arithmetic::typeFor);
         putData("/", 1055, BINARY, (self) -> {
             //TODO
             return null;
-        }, numericalChecked(differentiatedIntFloat((a, b)->a/b, (a, b)->a/b)));
+        }, numericalChecked(differentiatedIntFloat((a, b)->a/b, (a, b)->a/b)), Arithmetic::typeFor);
         putData("%", 1055, BINARY, (self) -> {
             //TODO
             return null;
-        }, numericalChecked(differentiatedIntFloat((a, b)->a%b, (a, b)->a%b)));
+        }, numericalChecked(differentiatedIntFloat((a, b)->a%b, (a, b)->a%b)), Arithmetic::typeFor);
         putData("||", 1065, BINARY, (self) -> {
             //TODO
             return null;
-        }, numericalChecked(alwaysFloat((a, b)->a*b/(a+b))));
+        }, numericalChecked(alwaysFloat((a, b)->a*b/(a+b))), Arithmetic::typeFor);
         putData("**", 1075, BINARY, (self) -> {
             //TODO
             return null;
-        }, numericalChecked(differentiatedIntFloat((a, b)->(int)StrictMath.pow(a,b), StrictMath::pow)));
+        }, numericalChecked(differentiatedIntFloat((a, b)->(int)StrictMath.pow(a,b), StrictMath::pow)), Arithmetic::typeFor);
         putData("*/", 1075, BINARY, (self) -> {
             //TODO
             return null;
-        }, numericalChecked(differentiatedIntFloat((a, b)->(int)StrictMath.pow(a,1.0/b), (a, b)->StrictMath.pow(a,1.0/b))));
+        }, numericalChecked(differentiatedIntFloat((a, b)->(int)StrictMath.pow(a,1.0/b), (a, b)->StrictMath.pow(a,1.0/b))), Arithmetic::typeFor);
         putData("><", 1060, BINARY, (self) -> {
             //TODO
             return null;
@@ -112,14 +121,15 @@ public final class Operator {
      * Bitwise operators inhabit the precedence range 700-900
      */
     private static void initBitwise() {
-        putData("!", 860, PREFIX, (self)->null, oneBool((a)->!a));
-        putData("?", 860, PREFIX, (self)->null, isTruthy());
-        putData("&", 850, BINARY, (self)->null, differentiatedIntBool((a,b)->a&b, (a, b)->a&&b));
-        putData("|", 820, BINARY, (self)->null, differentiatedIntBool((a,b)->a|b, (a, b)->a||b));
-        putData("^", 820, BINARY, (self)->null, differentiatedIntBool((a,b)->a^b, (a, b)->a^b));
-        putData("~&", 850, BINARY, (self)->null, differentiatedIntBool((a,b)->~(a&b), (a, b)->!(a&&b)));
-        putData("~|", 820, BINARY, (self)->null, differentiatedIntBool((a,b)->~(a|b), (a, b)->!(a||b)));
-        putData("~^", 820, BINARY, (self)->null, differentiatedIntBool((a,b)->~(a^b), (a, b)->a==b));
+        //TODO replace (self) -> BoolType.BOOL with a named function that also handles non-bool
+        putData("!", 860, PREFIX, (self)->null, oneBool((a)->!a), (self) -> BoolType.BOOL);
+        putData("?", 860, PREFIX, (self)->null, isTruthy(), (self) -> BoolType.BOOL);
+        putData("&", 850, BINARY, (self)->null, differentiatedIntBool((a,b)->a&b, (a, b)->a&&b), (self) -> BoolType.BOOL);
+        putData("|", 820, BINARY, (self)->null, differentiatedIntBool((a,b)->a|b, (a, b)->a||b), (self) -> BoolType.BOOL);
+        putData("^", 820, BINARY, (self)->null, differentiatedIntBool((a,b)->a^b, (a, b)->a^b), (self) -> BoolType.BOOL);
+        putData("~&", 850, BINARY, (self)->null, differentiatedIntBool((a,b)->~(a&b), (a, b)->!(a&&b)), (self) -> BoolType.BOOL);
+        putData("~|", 820, BINARY, (self)->null, differentiatedIntBool((a,b)->~(a|b), (a, b)->!(a||b)), (self) -> BoolType.BOOL);
+        putData("~^", 820, BINARY, (self)->null, differentiatedIntBool((a,b)->~(a^b), (a, b)->a==b), (self) -> BoolType.BOOL);
     }
 
     /**
@@ -200,7 +210,7 @@ public final class Operator {
 //        putData("^=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
         putData(",", 100, BINARY | CHAINED | SUFFIX, ()->new TupleNode(","));
         putData(";", -1000, BINARY | CHAINED | SUFFIX, ()->new TupleNode(";"));
-        putData(":", 1500, 150, BINARY, ConvertNode::new);
+        putData(":", 1500, 150, BINARY, AssertTypeNode::new);
         putData("as", 5, 5, BINARY, ConvertNode::new);
         putData("@", 5000, PREFIX, (self) -> {
             //TODO
@@ -209,7 +219,22 @@ public final class Operator {
             InterpretValue first = self.getFirst().interpretValue();
             System.out.println(first.valueString());
             return first;
-        });
+        }, (self) -> self.getFirst().getType());
+        putData("with", -5, PREFIX, (self) -> {
+            //TODO
+            return null;
+        }, (self) -> {
+            InterpretValue first = self.getFirst().interpretValue();
+            self.getSecond().interpretValue();
+            return first;
+        }, (self) -> self.getFirst().getType());
+        putData("then", -5, PREFIX, (self) -> {
+            //TODO
+            return null;
+        }, (self) -> {
+            self.getFirst().interpretValue();
+            return self.getSecond().interpretValue();
+        }, (self) -> self.getSecond().getType());
 
         initComparison();
         initBitwise();

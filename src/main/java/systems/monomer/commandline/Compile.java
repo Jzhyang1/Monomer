@@ -14,7 +14,7 @@ public class Compile {
         Node node = body.toNode();
         node.matchVariables();
         node.matchTypes();
-        node.matchOverloads();
+//        node.matchOverloads();
         node.compileValue();    //TODO <--- write result to file
     }
     public static void compile(File sourceFile) {

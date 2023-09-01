@@ -1,33 +1,30 @@
-package systems.monomer.syntaxtree.literals;
+package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretBool;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.BoolType;
-import systems.monomer.types.NumberType;
 
-public class BoolNode extends LiteralNode {
-    private boolean value;
+public class AssertTypeNode extends OperatorNode {
 
-    public BoolNode(boolean value){
-        super("bool");
-        this.value = value;
+    public AssertTypeNode() {
+        super(":");
     }
 
-    @Override
     public void matchTypes() {
-        setType(BoolType.BOOL);
+        getFirst().matchTypes();
+        setType(getFirst().getType());
+        getSecond().setType(getType());
+        getSecond().matchTypes();
     }
 
     public InterpretValue interpretValue() {
-        return new InterpretBool(value);
+        //TODO check that the type is a subtype of the type
+        return getSecond().interpretValue();
     }
 
     public CompileValue compileValue() {
         throw new Error("TODO unimplemented");
     }
-
     public CompileSize compileSize() {
         throw new Error("TODO unimplemented");
     }

@@ -29,19 +29,21 @@ public class ModuleNode extends Node {
         if(ret != null) return ret;
         return getParent() == null ? null : getParent().getVariable(name);
     }
-    public Map<String, InterpretValue> getVariableValuesMap() {
+    public Map<String, VariableKey> getVariableValuesMap() {
         return variables.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        e -> e.getValue().getValue(),
+                        e -> e.getValue().clone(),
                         (a, b) -> b,
                         HashMap::new
                 ));
     }
-    public void setVariableValues(Map<String, InterpretValue> values) {
-        for(Map.Entry<String, InterpretValue> entry : values.entrySet()) {
-            variables.get(entry.getKey()).setValue(entry.getValue());
+    public void setVariableValues(Map<String, VariableKey> values) {
+        for(Map.Entry<String, VariableKey> entry : values.entrySet()) {
+            VariableKey original = variables.get(entry.getKey());
+            original.setValue(entry.getValue());
+            original.getFields().putAll(entry.getValue().getFields());
         }
     }
 

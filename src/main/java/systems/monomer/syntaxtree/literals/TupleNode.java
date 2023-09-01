@@ -5,11 +5,15 @@ import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.types.AnyType;
+import systems.monomer.types.TupleType;
+import systems.monomer.types.Type;
 
 import java.util.Collection;
 import java.util.List;
 
 public class TupleNode extends LiteralNode {
+    public static TupleNode EMPTY = new TupleNode(List.of());
     public static boolean isTuple(Node node) {
         //TODO this is ugly
         return node.getUsage() == Usage.LITERAL && List.of("block", ",", ";").contains(node.getName());
@@ -20,8 +24,19 @@ public class TupleNode extends LiteralNode {
     }
 
     @Override
-    public InterpretTuple getType() {
-        return new InterpretTuple(getChildren().stream().map((e)->(InterpretValue)e.getType()).toList());
+    public void matchTypes() {
+        super.matchTypes();
+        setType(new TupleType(getChildren().stream().map((e)->e.getType()).toList()));
+    }
+
+    public void setType(Type type) {
+        super.setType(type);
+        if(type instanceof TupleType tupleType) {
+            List<Node> nodeList = getChildren();
+            for (int i = 0; i < nodeList.size(); i++) {
+                nodeList.get(i).setType(tupleType.getType(i));
+            }
+        }
     }
 
     public TupleNode() {

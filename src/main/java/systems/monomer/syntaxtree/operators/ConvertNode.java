@@ -11,8 +11,10 @@ public class ConvertNode extends OperatorNode {
         super("to");
     }
 
-    public Type getType() {
-        return getSecond().getType();
+    public void matchTypes() {
+        super.matchTypes();
+        setType(getSecond().getType());
+        getFirst().setType(getType());
     }
 
     public InterpretValue interpretValue() {

@@ -4,13 +4,16 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.VariableNode;
+import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.types.AnyType;
 import systems.monomer.types.Signature;
-import systems.monomer.variables.FunctionKey;
+import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
 public class CallNode extends OperatorNode {
+    private InterpretFunction function;
+
     public CallNode() {
         super("call");
     }
@@ -19,30 +22,27 @@ public class CallNode extends OperatorNode {
         return new Signature(getType(), getSecond().getType());
     }
 
-    @Override
-    public void matchVariables() {
-        //TODO this is temporary
-        if(getFirst() instanceof VariableNode variableNode) {
-            String name = variableNode.getName();
-            VariableKey existing = getVariable(name);
-
-            if(existing == null) {
-                putVariable(name, new FunctionKey());
-            } else if (!(existing instanceof FunctionKey)) {
-                throwError("Cannot call non-function");
-            }
-
-            super.matchVariables();
-        }
-    }
-
-    @Override
-    public FunctionKey getVariableKey() {
-        return (FunctionKey)getFirst().getVariableKey();
-    }
-
     public InterpretValue interpretValue() {
-        return getFirst().interpretValue().call(getSecond().interpretValue());
+//        return getFirst().interpretValue().call(getSecond().interpretValue());
+        return function.call(getSecond().interpretValue());
+    }
+
+    @Override
+    public void matchTypes() {
+        super.matchTypes();
+        Type argType = TupleType.asTuple(getSecond().getType());    //TODO fix the initial setting of signatures such that single args are not tuples
+//        if(argType == null) argType = AnyType.ANY;
+        Type returnType = getType();
+        if(returnType == null) returnType = AnyType.ANY;
+
+        function = getFirst().getVariableKey().matchingOverload(new Signature(returnType, argType));
+        if(function == null)
+            throwError("No matching overload for " + getFirst().getName() + "(" + argType + "):" + returnType);
+        Type actualReturnType = function.getReturnType();
+        //TODO find out why it returns null
+        //TODO make this not change values within the function
+        if(actualReturnType == null || actualReturnType.equals(AnyType.ANY)) actualReturnType = function.testReturnType(argType);
+        setType(actualReturnType);
     }
 
     public CompileValue compileValue() {

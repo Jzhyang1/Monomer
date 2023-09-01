@@ -5,6 +5,7 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.types.AnyType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
@@ -25,10 +26,24 @@ public class VariableNode extends Node {
             putVariable(getName(), existing);
         }
         key = existing;
+        if(getType() == null ^ key.getType() == null) {
+            if(getType() == null)
+                setType(key.getType());
+            else
+                key.setType(getType());
+        }
+        else if(getType() != null && !key.getType().typeContains(getType())) {
+            throwError("Type mismatch: " + getType() + " != " + key.getType());
+        }
     }
-    public void setType(Type type) {
-        super.setType(type);
-        key.setValue((InterpretValue) type);    //TODO this is a hack
+
+    public void matchTypes() {
+        if(getType() == null || getType().equals(AnyType.ANY))  //TODO remove the AnyType.ANY condition and uncomment code below
+            setType(key.getType());
+        else // if(key.getType().equals(AnyType.ANY))
+            key.setType(getType());
+//        else if(!key.getType().typeContains(getType()))
+//            throwError("Type mismatch: " + getType() + " is not matchable to " + key.getType());
     }
 
     public VariableKey getVariableKey() {
