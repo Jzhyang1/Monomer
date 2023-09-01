@@ -26,7 +26,7 @@ import java.util.stream.IntStream;
 public class VariableKey extends InterpretVariable {
     private VariableKey parent;
     private InterpretValue value;
-    private Type type;
+    private Type type = AnyType.ANY;
     private Map<Signature, InterpretFunction> overloads;    //TODO multikey map with Signature broken into returnType and args
 
     public VariableKey(){}
@@ -74,7 +74,11 @@ public class VariableKey extends InterpretVariable {
 
     public void putOverload(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {
         List<VariableNode> args = IntStream.range(0, argTypes.size())
-                .mapToObj(i -> (VariableNode)(new VariableNode("arg"+i)).with(argTypes.get(i))) //TODO type is wrong
+                .mapToObj(i -> {
+                    VariableNode ret = new VariableNode("arg"+i);
+                    ret.setType(argTypes.get(i));
+                    return ret;
+                }) //TODO type is wrong
                 .collect(Collectors.toList());
         Node body = bodyCallback.apply(args);
         TupleNode argsTuple = new TupleNode(args);
@@ -137,5 +141,11 @@ public class VariableKey extends InterpretVariable {
     @Override
     public Type getField(String field) {
         return super.getField(field);
+    }
+
+    @Override
+    public VariableKey clone() {
+        VariableKey key = (VariableKey) super.clone();  //TODO also clone value, overloads, etc
+        return key;
     }
 }

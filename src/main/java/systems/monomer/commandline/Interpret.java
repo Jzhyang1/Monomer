@@ -39,7 +39,7 @@ public class Interpret {
         global.matchVariables();
         //TODO
         global.matchTypes();
-        global.matchOverloads();
+//        global.matchOverloads();
         global.interpretValue();
     }
     public static void interpret(File sourceFile) {

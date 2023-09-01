@@ -27,7 +27,9 @@ public class CallNode extends OperatorNode {
         return function.call(getSecond().interpretValue());
     }
 
-    public void matchOverloads() {
+    @Override
+    public void matchTypes() {
+        super.matchTypes();
         Type argType = TupleType.asTuple(getSecond().getType());    //TODO fix the initial setting of signatures such that single args are not tuples
 //        if(argType == null) argType = AnyType.ANY;
         Type returnType = getType();
@@ -36,6 +38,7 @@ public class CallNode extends OperatorNode {
         function = getFirst().getVariableKey().matchingOverload(new Signature(returnType, argType));
         if(function == null)
             throwError("No matching overload for " + getFirst().getName() + "(" + argType + "):" + returnType);
+        setType(function.getReturnType());
     }
 
     public CompileValue compileValue() {

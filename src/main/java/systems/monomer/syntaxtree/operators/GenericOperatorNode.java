@@ -32,7 +32,9 @@ public class GenericOperatorNode extends OperatorNode {
 
     public void matchTypes() {
         super.matchTypes();
-        if(type == null) return;
+        if(type == null) {
+            throwError("Unimplemented operator " + getName());
+        }
 
         Type type = this.type.apply(this);
         if(type != null) setType(type);

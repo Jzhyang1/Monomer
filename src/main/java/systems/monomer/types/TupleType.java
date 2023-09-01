@@ -67,4 +67,9 @@ public class TupleType extends AnyType {
     public int hashCode() {
         return types.hashCode()*31 + this.getClass().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().toString() + types.toString();
+    }
 }

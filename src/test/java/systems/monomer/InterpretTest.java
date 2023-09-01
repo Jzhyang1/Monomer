@@ -106,6 +106,8 @@ public class InterpretTest {
         Node global = new ModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
+        global.matchTypes();
+//        global.matchOverloads();
 
 //        System.out.println(node);
         assertEquals("print multiword variable", "((),1991)", node.interpretValue().valueString());
@@ -123,6 +125,8 @@ public class InterpretTest {
         Node global = new ModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
+        global.matchTypes();
+//        global.matchOverloads();
 
         System.out.println(node);
         InterpretValue value = node.interpretValue();

@@ -102,12 +102,6 @@ public abstract class Node extends ErrorBlock {
         }
     }
 
-    public void matchOverloads() {
-        for (Node child : children) {
-            child.matchOverloads();
-        }
-    }
-
     public InterpretVariable interpretVariable() {
         throwError("Attempting to access " + name + " as a variable");
         return null;

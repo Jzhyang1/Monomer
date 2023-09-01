@@ -46,11 +46,11 @@ public final class Bitwise {
             else if(first instanceof InterpretNumber<? extends Number> firstNum)
                 return new InterpretBool(firstNum.getValue().doubleValue() != 0.0);
             else if(first instanceof InterpretString firstString)
-                return new InterpretBool(firstString.getValue().length() != 0);
+                return new InterpretBool(!firstString.getValue().isEmpty());
             else if(first instanceof InterpretChar firstChar)
                 return new InterpretBool(firstChar.getValue() != '\0');
             else if(first instanceof InterpretCollection firstCollection)
-                return new InterpretBool(firstCollection.getValues().size() != 0);
+                return new InterpretBool(!firstCollection.getValues().isEmpty());
             else
                 throw new Error("Expected a boolean-y value, got " + first);
         };

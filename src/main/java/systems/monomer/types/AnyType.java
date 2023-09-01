@@ -36,4 +36,9 @@ public class AnyType implements Type, Cloneable {
     public int hashCode() {
         return this.getClass().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().toString();
+    }
 }

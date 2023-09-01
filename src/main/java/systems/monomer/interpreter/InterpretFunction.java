@@ -6,6 +6,7 @@ import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.syntaxtree.operators.AssignNode;
 import systems.monomer.types.Signature;
+import systems.monomer.variables.VariableKey;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class InterpretFunction extends Signature implements InterpretValue {
     }
 
 
-    private Stack<Map<String, InterpretValue>> recursiveSlices = new Stack<>();
+    private Stack<Map<String, VariableKey>> recursiveSlices = new Stack<>();
     @Override
     //TODO handle named args
     public InterpretValue call(InterpretValue args) {

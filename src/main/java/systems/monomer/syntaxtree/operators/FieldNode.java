@@ -66,6 +66,11 @@ public final class FieldNode extends OperatorNode {
         }
     }
 
+    @Override
+    public void matchTypes() {
+        setType(key.key.getType());
+    }
+
     public InterpretVariable interpretVariable() {
         return key.getVariableKey();
     }

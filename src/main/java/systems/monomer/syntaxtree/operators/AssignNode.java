@@ -3,17 +3,22 @@ package systems.monomer.syntaxtree.operators;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
+import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.types.AnyType;
+import systems.monomer.types.ObjectType;
+import systems.monomer.types.Signature;
 import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
 public class AssignNode extends OperatorNode {
-    private boolean isFunction = false; //TODO possibly unnecessary
+    private static record FunctionInitInfo(VariableKey function, Node args, Node body, ModuleNode parent) {};
+    private FunctionInitInfo functionInit = null;
 
     public AssignNode() {
         super("=");
@@ -42,6 +47,8 @@ public class AssignNode extends OperatorNode {
     public static InterpretValue assign(InterpretValue var, InterpretValue val) {
         if(var instanceof InterpretVariable variable) {
             variable.setValue(val);
+            if(val instanceof ObjectType valObj)
+                variable.getFields().putAll(valObj.getFields());
             return variable;
         }
         else if (var instanceof InterpretTuple tuple) {
@@ -56,20 +63,19 @@ public class AssignNode extends OperatorNode {
     }
 
     public void matchTypes() {
-        if(isFunction) {
-            Node first = getFirst();
-            Node second = getSecond();
-            CallNode callNode = (CallNode)first;
-            TupleNode param = TupleNode.asTuple(callNode.getSecond());
-            //TODO
-//            functionKey.putOverload(new Signature(second.getType(), param.getType()), new InterpretFunction(param, second));
+        if(functionInit != null) {
+            //TODO overloading
+//            functionInit.function.putOverload(functionInit.args, functionInit.body, functionInit.parent);
+            functionInit.function.putOverload(new Signature(AnyType.ANY, AnyType.ANY), new InterpretFunction(TupleNode.asTuple(functionInit.args), functionInit.body, functionInit.parent));
+            functionInit.parent.matchTypes();
         }
-        //TODO chained assignment
-        //TODO function
-        setType(matchTypes(getFirst(), getSecond()));
+        else {
+            super.matchTypes();
+            //TODO chained assignment
+            setType(matchTypes(getFirst(), getSecond()));
 
-        //TODO match param (first.second) to some open callable
-
+            //TODO match param (first.second) to some open callable
+        }
     }
 
     @Override
@@ -77,7 +83,8 @@ public class AssignNode extends OperatorNode {
         Node first = getFirst(), second = getSecond();
         if(first instanceof CallNode callNode) {
             Node identifier = callNode.getFirst(), args = callNode.getSecond();
-            isFunction = true;
+//            isFunction = true;
+
 
             identifier.matchVariables();
             VariableKey identifierKey = identifier.getVariableKey();
@@ -86,7 +93,7 @@ public class AssignNode extends OperatorNode {
             ModuleNode wrapper = new ModuleNode("function");
             wrapper.setParent(this);
             wrapper.with(args).with(second).matchVariables();
-            identifierKey.putOverload(args, second, wrapper);
+            functionInit = new FunctionInitInfo(identifierKey, args, second, wrapper);
         }
         else {
             super.matchVariables();
@@ -98,7 +105,7 @@ public class AssignNode extends OperatorNode {
         return getFirst().interpretVariable();  //TODO does this look right?
     }
     public InterpretValue interpretValue() {
-        if(isFunction) return InterpretTuple.EMPTY;
+        if(functionInit != null) return InterpretTuple.EMPTY;
 
         InterpretValue val = getSecond().interpretValue();
         getFirst().interpretVariable().setValue(val);
