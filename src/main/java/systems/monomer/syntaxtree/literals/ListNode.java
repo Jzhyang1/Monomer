@@ -5,6 +5,7 @@ import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretList;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.types.ListType;
 
 import java.util.Collection;
 
@@ -17,6 +18,11 @@ public class ListNode extends LiteralNode {
     public ListNode(Collection<? extends Node> list) {
         super("list");
         getChildren().addAll(list);
+    }
+
+    public void matchTypes() {
+        super.matchTypes();
+        setType(ListType.LIST);
     }
 
     public InterpretValue interpretValue() {

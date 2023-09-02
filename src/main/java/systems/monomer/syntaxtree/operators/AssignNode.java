@@ -71,8 +71,8 @@ public class AssignNode extends OperatorNode {
             value.matchTypes();
             Type type = value.getType();
             for(int i = children.size() - 2; i >= 0; --i) {
-//                children.get(i).matchTypes();
                 children.get(i).setType(type);
+                children.get(i).matchTypes();
             }
             //TODO chained assignment
             setType(matchTypes(getFirst(), getSecond()));

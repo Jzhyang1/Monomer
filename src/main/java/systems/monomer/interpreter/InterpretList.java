@@ -23,7 +23,7 @@ public class InterpretList extends InterpretCollection {
         this(list.stream().map(Node::interpretValue).toList());
     }
 
-    public Collection<InterpretValue> getValues() {
+    public List<InterpretValue> getValues() {
         return values;
     }
     @Override

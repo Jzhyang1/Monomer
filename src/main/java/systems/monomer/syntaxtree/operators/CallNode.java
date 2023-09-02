@@ -41,6 +41,7 @@ public class CallNode extends OperatorNode {
         Type actualReturnType = function.getReturnType();
         //TODO find out why it returns null
         //TODO make this not change values within the function
+        //TODO make this work with recursion
         if(actualReturnType == null || actualReturnType.equals(AnyType.ANY)) actualReturnType = function.testReturnType(argType);
         setType(actualReturnType);
     }

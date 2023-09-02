@@ -38,9 +38,29 @@ public class Token extends ErrorBlock {
                 return partialToNode(fieldNode, iter);
             }
             case GROUP -> { //TODO move this as well
-                Node callNode = new CallNode().with(cur).with(nextOp.toNode());
-                callNode.setContext(cur.getStart(), nextOp.getStop(), cur.getSource());
-                return partialToNode(callNode, iter);
+                Node opNode = switch (nextOp.value) {
+                    case "()" -> new CallNode().with(cur).with(nextOp.toNode());
+                    case "[]" -> new IndexNode().with(cur).with(nextOp.getFirst().toNode());
+                    case "{}" -> {
+                        Token peekToken = iter.next();
+                        if(peekToken.usage == Usage.GROUP && "()".equals(peekToken.value)) {
+                            yield new CallNode()
+                                    .with(cur)
+                                    .with(peekToken.toNode())
+                                    .with(nextOp.toNode());
+                        }
+                        else {
+                            iter.previous();
+                            yield new FieldNode().with(cur).with(nextOp.toNode());
+                        }
+                    }
+                    default -> {
+                        nextOp.throwError("Expected (), {}, or []");
+                        yield null;
+                    }
+                };
+                opNode.setContext(cur.getStart(), nextOp.getStop(), cur.getSource());
+                return partialToNode(opNode, iter);
             }
             case OPERATOR -> {
                 iter.previous();

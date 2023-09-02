@@ -44,7 +44,7 @@ public abstract class Node extends ErrorBlock {
     public abstract Usage getUsage();
 
     public VariableKey getVariable(String varName) {
-        return parent.getVariable(name);
+        return parent.getVariable(varName);
     }
 
     public void putVariable(String varName, VariableKey key) {

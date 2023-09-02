@@ -10,6 +10,8 @@ import systems.monomer.tokenizer.SourceFile;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
 
+import java.io.PrintStream;
+
 import static org.junit.Assert.*;
 
 public class InterpretTest {
@@ -160,8 +162,16 @@ public class InterpretTest {
 
     @Test
     public void interpretTest13() {
-        Source source = new SourceString("x = string: io read()\n" +
+        Source source = new SourceString("x = int: 123\n" +
                 "io write(x)");
+        Interpret.interpret(source);
+    }
+
+    @Test
+    public void interpretTest14() {
+        Source source = new SourceString("x = [1,2,3]\n" +
+                "@(x)\n" +
+                "@\"^^^^^^\"");
         Interpret.interpret(source);
     }
 }

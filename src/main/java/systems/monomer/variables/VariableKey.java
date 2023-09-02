@@ -119,7 +119,7 @@ public class VariableKey extends InterpretVariable {
         }
     }
 
-    public @Nullable InterpretValue getValue() {
+    public InterpretValue getValue() {
         return value == null ? this : value;
     }
 
