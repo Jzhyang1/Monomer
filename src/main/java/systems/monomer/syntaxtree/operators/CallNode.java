@@ -1,5 +1,6 @@
 package systems.monomer.syntaxtree.operators;
 
+import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretFunction;
@@ -12,7 +13,7 @@ import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
 public class CallNode extends OperatorNode {
-    private InterpretFunction function;
+    private @Nullable InterpretFunction function;
 
     public CallNode() {
         super("call");
@@ -29,6 +30,9 @@ public class CallNode extends OperatorNode {
 
     @Override
     public void matchTypes() {
+        //recursion guard
+        if(function != null) return;
+
         super.matchTypes();
         Type argType = TupleType.asTuple(getSecond().getType());    //TODO fix the initial setting of signatures such that single args are not tuples
 //        if(argType == null) argType = AnyType.ANY;
@@ -36,14 +40,13 @@ public class CallNode extends OperatorNode {
         if(returnType == null) returnType = AnyType.ANY;
 
         function = getFirst().getVariableKey().matchingOverload(new Signature(returnType, argType));
-        if(function == null)
-            throwError("No matching overload for " + getFirst().getName() + "(" + argType + "):" + returnType);
         Type actualReturnType = function.getReturnType();
         //TODO find out why it returns null
         //TODO make this not change values within the function
-        //TODO make this work with recursion
-        if(actualReturnType == null || actualReturnType.equals(AnyType.ANY)) actualReturnType = function.testReturnType(argType);
-        setType(actualReturnType);
+        if(actualReturnType == null || actualReturnType.equals(AnyType.ANY))
+            setType(function.testReturnType(argType));
+        else
+            setType(returnType);
     }
 
     public CompileValue compileValue() {

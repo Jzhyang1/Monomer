@@ -5,6 +5,7 @@ import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.syntaxtree.operators.AssignNode;
+import systems.monomer.types.AnyType;
 import systems.monomer.types.Signature;
 import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
@@ -49,13 +50,17 @@ public class InterpretFunction extends Signature implements InterpretValue {
         return ret;
     }
 
+    private boolean isTesting = false;
     public Type testReturnType(Type argType) {
+        if(isTesting) return AnyType.ANY;
+        else isTesting = true;
+
         TupleType argTypes = TupleType.asTuple(argType);
         IntStream.range(0, args.size()).forEach((i)->args.get(i).getVariableKey().setType(argTypes.getType(i)));
-//        args.getChildren().forEach((e)->e.getVariableKey().setType(argType));
-//        args.setType(TupleType.asTuple(argType));
         args.matchTypes();
         body.matchTypes();
+
+        isTesting = false;
         return body.getType();
     }
 }

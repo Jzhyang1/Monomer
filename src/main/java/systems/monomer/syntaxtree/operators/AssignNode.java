@@ -28,7 +28,7 @@ public class AssignNode extends OperatorNode {
         //TODO handle multiple assignment
         potentialval.matchTypes();
         potentialvar.matchTypes();
-        if(potentialvar.getType() == null) {
+        if(potentialvar.getType() == null || potentialvar.getType().equals(AnyType.ANY)) {  //TODO remove the AnyType.ANY condition
             potentialvar.setType(potentialval.getType());
         } else if(potentialval.getType() == null) {
             potentialval.setType(potentialvar.getType());
@@ -58,12 +58,28 @@ public class AssignNode extends OperatorNode {
 
     public void matchTypes() {
         if(functionInit != null) {
-            //TODO overloading
-//            functionInit.function.putOverload(functionInit.args, functionInit.body, functionInit.parent);
-            functionInit.function.putOverload(new Signature(AnyType.ANY, AnyType.ANY), new InterpretFunction(TupleNode.asTuple(functionInit.args), functionInit.body, functionInit.parent));
-            functionInit.parent.matchTypes();
-            setType(functionInit.body.getType());
-            getFirst().matchTypes();
+            //TODO rid of TupleNode.asTuple
+            InterpretFunction function = new InterpretFunction(TupleNode.asTuple(functionInit.args), functionInit.body, functionInit.parent);
+
+            functionInit.args.matchTypes();
+            Type argsType = functionInit.args.getType();
+
+            Signature tempSignature = new Signature(AnyType.ANY, argsType);
+            functionInit.function.putOverload(tempSignature, function);
+
+            functionInit.body.matchTypes(); //TODO recursion breaks here
+            Type bodyType = functionInit.body.getType();
+
+            Signature signature = new Signature(bodyType, argsType);
+            functionInit.function.putOverload(signature, function);
+
+            setType(signature);
+
+//            List<Node> children = getChildren();
+//            for(int i = children.size() - 2; i >= 0; --i) {
+//                children.get(i).setType(signature);
+//                children.get(i).matchTypes();
+//            }
         }
         else {
             List<Node> children = getChildren();

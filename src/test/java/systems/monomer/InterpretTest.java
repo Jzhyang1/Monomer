@@ -169,9 +169,8 @@ public class InterpretTest {
 
     @Test
     public void interpretTest14() {
-        Source source = new SourceString("x = [1,2,3]\n" +
-                "@(x)\n" +
-                "@\"^^^^^^\"");
+        Source source = new SourceString("f(int:a,int:b) = a+b\n" +
+                "io write(f(1,2))");
         Interpret.interpret(source);
     }
 }

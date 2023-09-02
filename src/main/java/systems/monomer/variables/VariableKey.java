@@ -68,8 +68,12 @@ public class VariableKey extends InterpretVariable {
         overloads.put(signature, function);
 
         //These handle unknown return types and unknown argument types
-        overloads.put(new Signature(AnyType.ANY, signature.getArgs()), function);
-        overloads.put(new Signature(signature.getReturnType(), AnyType.ANY), function);
+        if(signature.getReturnType() != AnyType.ANY)
+            overloads.put(new Signature(AnyType.ANY, signature.getArgs()), function);
+        if(signature.getArgs() != AnyType.ANY)
+            overloads.put(new Signature(signature.getReturnType(), AnyType.ANY), function);
+//        if(signature.getReturnType() != AnyType.ANY && signature.getArgs() != AnyType.ANY)
+//            overloads.put(new Signature(AnyType.ANY, AnyType.ANY), function);
     }
 
     public void putOverload(Node args, Node body, ModuleNode wrapper) {
@@ -90,7 +94,6 @@ public class VariableKey extends InterpretVariable {
         ModuleNode wrapper = new ModuleNode("function");
         wrapper.with(argsTuple).with(body).matchVariables();
         wrapper.matchTypes();
-//        wrapper.matchOverloads();
 
         putOverload(argsTuple, body, wrapper);
     }
@@ -112,10 +115,22 @@ public class VariableKey extends InterpretVariable {
         //TODO fix this (currently doesn't handle type-matching)
         if(overloads.containsKey(signature)) {
             return overloads.get(signature);
-        } else if(overloads.size() == 1) {
-            return overloads.values().iterator().next();
-        } else {
-            throw new Error("No matching signature found for " + signature);  //TODO throwError
+        } else{
+            boolean needsRet = signature.getReturnType() != AnyType.ANY;
+            boolean needsArg = signature.getArgs() != AnyType.ANY;
+            Signature tempRetSignature = new Signature(AnyType.ANY, signature.getArgs());
+            Signature tempArgSignature = new Signature(signature.getReturnType(), AnyType.ANY);
+
+            if(needsRet && needsArg &&
+                    overloads.containsKey(tempRetSignature) && overloads.containsKey(tempArgSignature)) {
+                throw new Error("Ambiguous overload for " + signature);  //TODO throwError
+            } else if(needsRet && overloads.containsKey(tempRetSignature)) {
+                return overloads.get(tempRetSignature);
+            } else if(needsArg && overloads.containsKey(tempArgSignature)) {
+                return overloads.get(tempArgSignature);
+            } else {
+                throw new Error("No matching signature found for " + signature);  //TODO throwError
+            }
         }
     }
 

@@ -55,7 +55,7 @@ public final class Arithmetic {
                 return secondNum;
             }
             else {
-                self.throwError("Unsupported operation \"" + self.getName() + "\" with non-numeric values");
+                self.throwError("Unsupported operation \"" + self.getName() + "\" with non-numeric values: " + first.getType() + " and " + second.getType());
                 return null;
             }
         }
