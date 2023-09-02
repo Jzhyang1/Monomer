@@ -12,17 +12,18 @@ import static systems.monomer.Constants.*;
 
 //TODO needs optimization, especially for matching operators
 public abstract class Source {
-    public static class Line {
-        public static final Map<Character, Integer> SPACE_CHARS = new HashMap<>() {{
+    protected static class Line {
+        static final Map<Character, Integer> SPACE_CHARS = new HashMap<>() {{
 //            put('\n', 0);
             put(' ', 1);
             put('\r', 1);
             put('\t', Constants.TAB_SIZE);
         }};
 
-        private String line;
+        private final String line;
         private int position;
-        private int x = 0, y;
+        private int x = 0;
+        private final int y;
 
         public Line(String line, int y, int position) {
             this.line = line + "\n";
@@ -60,11 +61,9 @@ public abstract class Source {
          * @return the number of starting spaces
          */
         public int startingSpaces() {
-            int startingSpaces = 0;
-            for (int i = 0; i < line.length() && SPACE_CHARS.containsKey(line.charAt(i)); ++i) {
-                startingSpaces += SPACE_CHARS.get(line.charAt(i));
-            }
-            return startingSpaces;
+            return IntStream.iterate(0, i -> i < line.length() && SPACE_CHARS.containsKey(line.charAt(i)), i -> i + 1)
+                    .map(i -> SPACE_CHARS.get(line.charAt(i)))
+                    .sum();
         }
 
         /**
@@ -96,10 +95,7 @@ public abstract class Source {
 
         public boolean isNext(String next) {
             if(next.length() + x > line.length()) return false;
-            for (int i = 0; i < next.length(); ++i) {
-                if (line.charAt(x + i) != next.charAt(i)) return false;
-            }
-            return true;
+            return IntStream.range(0, next.length()).noneMatch(i -> line.charAt(x + i) != next.charAt(i));
         }
 
         public boolean isNextWithSpace(String next, Collection<Character> alternatives) {
@@ -110,13 +106,10 @@ public abstract class Source {
         }
 
         public String matchNextWithSpace(Collection<String> next, Collection<Character> alternatives) {
-            String bestOption = null;
-            for (String option : next) {
-                if (isNextWithSpace(option, alternatives)) {
-                    if (bestOption == null || bestOption.length() < option.length())
-                        bestOption = option;
-                }
-            }
+            String bestOption = next.stream()
+                    .filter(option -> isNextWithSpace(option, alternatives))
+                    .max(Comparator.comparingInt(String::length))
+                    .orElse(null);
 
             if (bestOption != null) {
                 x += bestOption.length();   //1 for space
@@ -500,16 +493,16 @@ public abstract class Source {
         return ret;
     }
 
-    public void nextLine() {
+    private void nextLine() {
         line = getLine();
     }
 
-    public void ungetLine(Line sourceLine) {
+    private void ungetLine(Line sourceLine) {
         buffer.push(sourceLine);
         --y;
     }
 
-    public void ungetLine() {
+    private void ungetLine() {
         ungetLine(line);
     }
 

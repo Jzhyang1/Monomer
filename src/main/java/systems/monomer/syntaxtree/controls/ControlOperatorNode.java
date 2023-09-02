@@ -32,12 +32,12 @@ public abstract class ControlOperatorNode extends OperatorNode {
         return Usage.LABEL;
     }
 
-    public void putVariable(String name, VariableKey key) {
-        variables.put(name, key);
+    public void putVariable(String varName, VariableKey key) {
+        variables.put(varName, key);
     }
-    public VariableKey getVariable(String name) {
-        if(!variables.containsKey(name)) return getParent().getVariable(name);
-        return variables.get(name);
+    public VariableKey getVariable(String varName) {
+        if(!variables.containsKey(varName)) return getParent().getVariable(varName);
+        return variables.get(varName);
     }
 
     public void matchTypes() {

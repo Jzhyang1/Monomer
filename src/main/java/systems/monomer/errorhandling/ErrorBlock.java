@@ -66,7 +66,7 @@ public class ErrorBlock {
                     .append("\n");
         }
 
-//        System.out.println(errorMessage.toString());
+        //noinspection ProhibitedExceptionThrown
         throw new RuntimeException(errorMessage.toString());
     }
 }

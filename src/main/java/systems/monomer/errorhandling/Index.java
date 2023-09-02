@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @Getter
 public class Index {
-    private int x, y;
-    private int position;
+    private final int x, y;
+    private final int position;
 
     public Index(int x, int y, int position) {
         this.x = x;

@@ -18,10 +18,10 @@ public class StructureNode extends LiteralNode {
         children.stream().forEach((child) -> add(child));
     }
 
-    public void putVariable(String name, VariableKey key) {
-        variables.put(name, key);
+    public void putVariable(String varName, VariableKey key) {
+        variables.put(varName, key);
     }
-    public VariableKey getVariable(String name) {
+    public VariableKey getVariable(String varName) {
         throw new Error("TODO unimplemented");
     }
 

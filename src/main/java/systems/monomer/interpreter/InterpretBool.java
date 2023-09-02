@@ -3,7 +3,7 @@ package systems.monomer.interpreter;
 import systems.monomer.types.BoolType;
 
 public class InterpretBool extends BoolType implements InterpretValue {
-    private boolean value;
+    private final boolean value;
 
     public InterpretBool(boolean value) {
         this.value = value;

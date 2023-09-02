@@ -12,7 +12,7 @@ public class SourceTest {
     @Test
     public void testStringSourceGetLine() {
         SourceString source = new SourceString("y = x + 500;");
-        Source.Line line = source.getLine();
+        Object line = source.getLine();
         assertEquals("test short string source get line", line.toString(), "(0)y = x + 500;\n");
     }
 
@@ -109,7 +109,7 @@ public class SourceTest {
                         "\t]\n" +
                         ",\n" +
                         "\tOPERATOR ;,\n" +
-                        "\tIDENTIFIER else,\n" +
+                        "\tOPERATOR else,\n" +
                         "\tOPERATOR :,\n" +
                         "\tGROUP block[\n" +
                         "\tIDENTIFIER line,\n" +

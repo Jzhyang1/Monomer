@@ -24,11 +24,11 @@ public abstract class OperatorNode extends Node {
 
     //TODO probably make a ChainedOperatorNode and move this there
     private List<String> names = null;
-    public void addName(String name) {
+    public void addName(String newName) {
         if(names == null) {
-            super.addName(name);
+            super.addName(newName);
             names = new ArrayList<>();
         }
-        names.add(name);
+        names.add(newName);
     }
 }

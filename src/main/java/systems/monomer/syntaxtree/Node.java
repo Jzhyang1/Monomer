@@ -27,7 +27,7 @@ public abstract class Node extends ErrorBlock {
     @Setter
     private Node parent = null;
     @Getter
-    private List<Node> children = new ArrayList<>();
+    private final List<Node> children = new ArrayList<>();
     @Getter
     @Setter
     private Type type = null;
@@ -37,18 +37,18 @@ public abstract class Node extends ErrorBlock {
         addName(name);
     }
 
-    public void addName(String name) {
-        this.name = name;
+    public void addName(String newName) {
+        this.name = newName;
     }
 
     public abstract Usage getUsage();
 
-    public VariableKey getVariable(String name) {
+    public VariableKey getVariable(String varName) {
         return parent.getVariable(name);
     }
 
-    public void putVariable(String name, VariableKey key) {
-        parent.putVariable(name, key);
+    public void putVariable(String varName, VariableKey key) {
+        parent.putVariable(varName, key);
     }
 
     /**
@@ -121,7 +121,7 @@ public abstract class Node extends ErrorBlock {
     protected String toString(int tabs) {
         StringBuilder ret = new StringBuilder();
         String tabString = "\t".repeat(tabs);
-        ret.append(tabString).append(getUsage()).append(' ').append(getName());
+        ret.append(tabString).append(getUsage()).append(' ').append(name);
         if (!children.isEmpty()) {
             ret.append("[\n");
             for (Node child : children) {

@@ -46,6 +46,7 @@ public class VariableNode extends Node {
 //            throwError("Type mismatch: " + getType() + " is not matchable to " + key.getType());
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     public VariableKey getVariableKey() {
         return key;
     }

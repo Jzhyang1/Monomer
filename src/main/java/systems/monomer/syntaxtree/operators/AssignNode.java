@@ -1,19 +1,11 @@
 package systems.monomer.syntaxtree.operators;
 
-import systems.monomer.compiler.CompileMemory;
-import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretFunction;
-import systems.monomer.interpreter.InterpretTuple;
+import systems.monomer.compiler.*;
+import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.TupleNode;
-import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
-import systems.monomer.types.AnyType;
-import systems.monomer.types.ObjectType;
-import systems.monomer.types.Signature;
-import systems.monomer.types.Type;
+import systems.monomer.types.*;
 import systems.monomer.variables.VariableKey;
 
 import java.util.List;
@@ -46,14 +38,14 @@ public class AssignNode extends OperatorNode {
         return potentialvar.getType();
     }
 
-    public static InterpretValue assign(InterpretValue var, InterpretValue val) {
-        if(var instanceof InterpretVariable variable) {
+    public static InterpretValue assign(InterpretValue dest, InterpretValue val) {
+        if(dest instanceof InterpretVariable variable) {
             variable.setValue(val);
             if(val instanceof ObjectType valObj)
                 variable.getFields().putAll(valObj.getFields());
             return variable;
         }
-        else if (var instanceof InterpretTuple tuple) {
+        else if (dest instanceof InterpretTuple tuple) {
             if(val instanceof InterpretTuple valTuple) {
                 for(int i = 0; i < tuple.size(); i++) {
                     assign(tuple.get(i), valTuple.get(i));
@@ -61,7 +53,7 @@ public class AssignNode extends OperatorNode {
             }
             return tuple;
         }
-        throw new Error("Invalid assignment of " + val + " to " + var );
+        throw new Error("Invalid assignment of " + val + " to " + dest );
     }
 
     public void matchTypes() {
@@ -117,11 +109,12 @@ public class AssignNode extends OperatorNode {
         return getFirst().interpretVariable();  //TODO does this look right?
     }
     public InterpretValue interpretValue() {
-        if(functionInit != null) return InterpretTuple.EMPTY;
-
-        InterpretValue val = getSecond().interpretValue();
-        getFirst().interpretVariable().setValue(val);
-        return val;
+        if(functionInit == null) {
+            InterpretValue val = getSecond().interpretValue();
+            getFirst().interpretVariable().setValue(val);
+            return val;
+        }
+        return InterpretTuple.EMPTY;
     }
 
     public CompileMemory compileMemory() {

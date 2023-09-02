@@ -21,13 +21,13 @@ public class ModuleNode extends Node {
 
     //variables map and overloaded getVariable to access the variables
     private Map<String, VariableKey> variables = new HashMap<>();
-    public void putVariable(String name, VariableKey key) {
-        variables.put(name, key);
+    public void putVariable(String varName, VariableKey key) {
+        variables.put(varName, key);
     }
-    public VariableKey getVariable(String name) {
-        VariableKey ret = variables.get(name);
+    public VariableKey getVariable(String varName) {
+        VariableKey ret = variables.get(varName);
         if(ret != null) return ret;
-        return getParent() == null ? null : getParent().getVariable(name);
+        return getParent() == null ? null : getParent().getVariable(varName);
     }
     public Map<String, VariableKey> getVariableValuesMap() {
         return variables.entrySet()

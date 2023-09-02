@@ -1,31 +1,20 @@
 package systems.monomer.types;
 
-import systems.monomer.interpreter.InterpretTuple;
+import lombok.Getter;
 
-import java.util.Objects;
-
+@Getter
 public class Signature extends AnyType {
-    private Type returnType;
-    private Type args;
+    private final Type returnType;
+    private final Type args;
 
     public Signature(Type returnType, Type args) {
         this.returnType = returnType;
         this.args = args;
     }
 
-    public Type getReturnType() {
-        return returnType;
-    }
-
-    public Type getArgs() {
-        return args;
-    }
-
+    @Override
     public boolean equals(Object other) {
-        if(other instanceof Signature sig) {
-            return returnType.equals(sig.returnType) && args.equals(sig.args);
-        }
-        return false;
+        return other instanceof Signature sig && returnType.equals(sig.returnType) && args.equals(sig.args);
     }
 
     @Override
@@ -34,6 +23,6 @@ public class Signature extends AnyType {
     }
 
     public String toString() {
-        return args.toString() + " -> " + returnType.toString();
+        return args.valueString() + " -> " + returnType.valueString();
     }
 }
