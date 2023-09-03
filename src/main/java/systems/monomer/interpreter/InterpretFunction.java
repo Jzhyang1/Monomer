@@ -11,6 +11,7 @@ import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
+import java.util.ArrayDeque;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Stack;
@@ -23,14 +24,25 @@ public class InterpretFunction extends Signature implements InterpretValue {
 
     //TODO handle named args
     public InterpretFunction(TupleNode args, Node body, ModuleNode parent) {
-        super(args.getType(), body.getType());
+        super(null, null);
         this.args = args;
         this.body = body;
         this.parent = parent;
     }
 
+    @Override
+    public Type getReturnType() {
+        Type t = body.getType();
+        return t == null ? AnyType.ANY : t;
+    }
 
-    private Stack<Map<String, VariableKey>> recursiveSlices = new Stack<>();
+    @Override
+    public Type getArgs() {
+        Type t = args.getType();
+        return t == null ? AnyType.ANY : t;
+    }
+
+    private final ArrayDeque<Map<String, VariableKey>> recursiveSlices = new ArrayDeque<>();
     @Override
     //TODO handle named args
     public InterpretValue call(InterpretValue args) {
@@ -41,7 +53,7 @@ public class InterpretFunction extends Signature implements InterpretValue {
         recursiveSlices.push(parent.getVariableValuesMap());
 
         InterpretTuple argsTuple = InterpretTuple.toTuple(args);
-        InterpretTuple paramTuple = new InterpretTuple(this.args.getChildren().stream().map(Node::getVariableKey).toList());
+        InterpretTuple paramTuple = new InterpretTuple(this.args.getChildren().stream().map(Node::interpretVariable).toList());
 
         AssignNode.assign(paramTuple, argsTuple);
 
@@ -62,5 +74,21 @@ public class InterpretFunction extends Signature implements InterpretValue {
 
         isTesting = false;
         return body.getType();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof InterpretFunction function &&
+                getReturnType().equals(function.getReturnType()) &&
+                getArgs().equals(function.getArgs());
+    }
+
+    @Override
+    public int hashCode() {
+        return getReturnType().hashCode() + getArgs().hashCode() * 31 + this.getClass().hashCode() * 31 * 31;
+    }
+
+    public String toString() {
+        return getArgs().valueString() + " -> " + getReturnType().valueString();
     }
 }

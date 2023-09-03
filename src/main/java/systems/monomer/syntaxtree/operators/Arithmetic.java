@@ -9,8 +9,10 @@ import systems.monomer.types.Type;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public final class Arithmetic {
-    public static Function<GenericOperatorNode, InterpretValue> numericalChecked(BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, InterpretValue> callback) {
+enum Arithmetic {
+    ;
+
+    static Function<GenericOperatorNode, InterpretValue> numericalChecked(BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, InterpretValue> callback) {
         return (self) -> {
             InterpretValue first = self.getFirst().interpretValue();
             InterpretValue second = self.getSecond().interpretValue();
@@ -22,7 +24,7 @@ public final class Arithmetic {
         };
     }
 
-    public static BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, InterpretValue> differentiatedIntFloat(BiFunction<Integer, Integer, Integer> intCallback, BiFunction<Double, Double, Double> floatCallback) {
+    static BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, InterpretValue> differentiatedIntFloat(BiFunction<Integer, Integer, Integer> intCallback, BiFunction<Double, Double, Double> floatCallback) {
         return (first, second) -> {
             if (first.getValue() instanceof Integer && second.getValue() instanceof Integer) {
                 return new InterpretNumber<>(intCallback.apply(first.getValue().intValue(), second.getValue().intValue()));
@@ -32,11 +34,11 @@ public final class Arithmetic {
         };
     }
 
-    public static BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, InterpretValue> alwaysFloat(BiFunction<Double, Double, Double> floatCallback) {
+    static BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, InterpretValue> alwaysFloat(BiFunction<Double, Double, Double> floatCallback) {
         return (first, second) -> new InterpretNumber<>(floatCallback.apply(first.getValue().doubleValue(), second.getValue().doubleValue()));
     }
 
-    public static Type typeFor(GenericOperatorNode self){
+    static Type typeFor(GenericOperatorNode self){
         if(self.getType() != null) return self.getType();
         else {
             Node first = self.getFirst();

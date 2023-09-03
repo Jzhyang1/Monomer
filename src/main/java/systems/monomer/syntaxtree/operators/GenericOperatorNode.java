@@ -8,46 +8,45 @@ import systems.monomer.types.Type;
 import java.util.function.Function;
 
 public class GenericOperatorNode extends OperatorNode {
-    private Function<GenericOperatorNode, InterpretValue> interpret;
-    private Function<GenericOperatorNode, CompileValue> compile;
-    private Function<GenericOperatorNode, Type> type;
-    private CompileSize compileSize;
+    private Function<GenericOperatorNode, InterpretValue> interpretGenerator;
+    private Function<GenericOperatorNode, CompileValue> compileGenerator;
+    private Function<GenericOperatorNode, Type> typeGenerator;
 
-    public GenericOperatorNode(String name){
+    public GenericOperatorNode(String name, Function<GenericOperatorNode, InterpretValue> interpretGenerator, Function<GenericOperatorNode, CompileValue> compileGenerator, Function<GenericOperatorNode, Type> typeGenerator) {
         super(name);
+        this.interpretGenerator = interpretGenerator;
+        this.compileGenerator = compileGenerator;
+        this.typeGenerator = typeGenerator;
     }
 
-    public void setCompile(Function<GenericOperatorNode, CompileValue> compile) {
-        this.compile = compile;
+    public void setCompileGenerator(Function<GenericOperatorNode, CompileValue> compileGenerator) {
+        this.compileGenerator = compileGenerator;
     }
-    public void setCompileSize(CompileSize compileSize) {
-        this.compileSize = compileSize;
+    public void setInterpretGenerator(Function<GenericOperatorNode, InterpretValue> interpretGenerator) {
+        this.interpretGenerator = interpretGenerator;
     }
-    public void setInterpret(Function<GenericOperatorNode, InterpretValue> interpret) {
-        this.interpret = interpret;
-    }
-    public void setType(Function<GenericOperatorNode, Type> type) {
-        this.type = type;
+    public void setTypeGenerator(Function<GenericOperatorNode, Type> typeGenerator) {
+        this.typeGenerator = typeGenerator;
     }
 
     public void matchTypes() {
         super.matchTypes();
-        if(type == null) {
+        if(typeGenerator == null) {
             throwError("Unimplemented operator " + getName());
         }
 
-        Type type = this.type.apply(this);
+        Type type = this.typeGenerator.apply(this);
         if(type != null) setType(type);
     }
 
     public CompileSize compileSize() {
-        return compileSize;
+        return getType().compileSize();
     }
     public CompileValue compileValue() {
-        return compile.apply(this);
+        return compileGenerator.apply(this);
     }
 
     public InterpretValue interpretValue() {
-        return interpret.apply(this);
+        return interpretGenerator.apply(this);
     }
 }

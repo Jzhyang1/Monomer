@@ -3,6 +3,7 @@ package systems.monomer.syntaxtree;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import systems.monomer.Constants;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
@@ -120,7 +121,7 @@ public abstract class Node extends ErrorBlock {
 
     protected String toString(int tabs) {
         StringBuilder ret = new StringBuilder();
-        String tabString = "\t".repeat(tabs);
+        String tabString = Constants.TAB.repeat(tabs);
         ret.append(tabString).append(getUsage()).append(' ').append(name);
         if (!children.isEmpty()) {
             ret.append("[\n");

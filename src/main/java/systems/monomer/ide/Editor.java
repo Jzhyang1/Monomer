@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public final class Editor extends JFrame {
     public static final String TITLE = "Monomer Idle";
     public static String FONT;
-    public static final String INDENT = "    ";
+    public static final String INDENT = Constants.TAB;
     static Editor EDITOR_INSTANCE;
 
     static {
@@ -239,7 +239,7 @@ public final class Editor extends JFrame {
 
             contents.addCaretListener((event) -> updateLocationLabelText());
             updateLocationLabelText();
-            contents.getDocument().putProperty(PlainDocument.tabSizeAttribute, 4);
+            contents.getDocument().putProperty(PlainDocument.tabSizeAttribute, Constants.TAB_SIZE);
             this.add(location, BorderLayout.SOUTH);
             Box box = new Box(BoxLayout.PAGE_AXIS);
             JScrollPane consoleScrollPane = new JScrollPane(console);

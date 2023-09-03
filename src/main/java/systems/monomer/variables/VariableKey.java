@@ -68,9 +68,9 @@ public class VariableKey extends InterpretVariable {
         overloads.put(signature, function);
 
         //These handle unknown return types and unknown argument types
-        if(signature.getReturnType() != AnyType.ANY)
+        if(!signature.getReturnType().equals(AnyType.ANY))
             overloads.put(new Signature(AnyType.ANY, signature.getArgs()), function);
-        if(signature.getArgs() != AnyType.ANY)
+        if(!signature.getArgs().equals(AnyType.ANY))
             overloads.put(new Signature(signature.getReturnType(), AnyType.ANY), function);
 //        if(signature.getReturnType() != AnyType.ANY && signature.getArgs() != AnyType.ANY)
 //            overloads.put(new Signature(AnyType.ANY, AnyType.ANY), function);
@@ -116,8 +116,8 @@ public class VariableKey extends InterpretVariable {
         if(overloads.containsKey(signature)) {
             return overloads.get(signature);
         } else{
-            boolean needsRet = signature.getReturnType() != AnyType.ANY;
-            boolean needsArg = signature.getArgs() != AnyType.ANY;
+            boolean needsRet = !signature.getReturnType().equals(AnyType.ANY);
+            boolean needsArg = !signature.getArgs().equals(AnyType.ANY);
             Signature tempRetSignature = new Signature(AnyType.ANY, signature.getArgs());
             Signature tempArgSignature = new Signature(signature.getReturnType(), AnyType.ANY);
 

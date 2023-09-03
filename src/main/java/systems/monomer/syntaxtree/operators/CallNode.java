@@ -43,8 +43,10 @@ public class CallNode extends OperatorNode {
         Type actualReturnType = function.getReturnType();
         //TODO find out why it returns null
         //TODO make this not change values within the function
-        if(actualReturnType == null || actualReturnType.equals(AnyType.ANY))
+        if(actualReturnType.equals(AnyType.ANY))
             setType(function.testReturnType(argType));
+        else if(returnType.equals(AnyType.ANY))
+            setType(actualReturnType);
         else
             setType(returnType);
     }

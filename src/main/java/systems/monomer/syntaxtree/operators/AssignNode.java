@@ -64,22 +64,21 @@ public class AssignNode extends OperatorNode {
             functionInit.args.matchTypes();
             Type argsType = functionInit.args.getType();
 
+            //used for recursion
             Signature tempSignature = new Signature(AnyType.ANY, argsType);
-            functionInit.function.putOverload(tempSignature, function);
+            boolean needTempSignature = functionInit.function.getOverload(tempSignature) == null;
+            if(needTempSignature)
+                functionInit.function.putOverload(tempSignature, function);
 
-            functionInit.body.matchTypes(); //TODO recursion breaks here
+            functionInit.body.matchTypes();
             Type bodyType = functionInit.body.getType();
 
+            if(needTempSignature)
+                functionInit.function.getOverloads().remove(tempSignature, function);
             Signature signature = new Signature(bodyType, argsType);
             functionInit.function.putOverload(signature, function);
 
             setType(signature);
-
-//            List<Node> children = getChildren();
-//            for(int i = children.size() - 2; i >= 0; --i) {
-//                children.get(i).setType(signature);
-//                children.get(i).matchTypes();
-//            }
         }
         else {
             List<Node> children = getChildren();
@@ -110,8 +109,8 @@ public class AssignNode extends OperatorNode {
             assert identifierKey != null;
 
             ModuleNode wrapper = new ModuleNode("function");
-            wrapper.with(args).matchVariables();
             wrapper.setParent(this);
+            wrapper.with(args);//.matchVariables();    //TODO this solves a problem with not being able to reference types in args, but makes it so that the args can not have names that are the same as elsewhere
             wrapper.with(second).matchVariables();
             functionInit = new FunctionInitInfo(identifierKey, args, second, wrapper);
         }

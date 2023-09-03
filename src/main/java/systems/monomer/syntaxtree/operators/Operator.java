@@ -7,6 +7,7 @@ import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.types.AnyType;
 import systems.monomer.types.BoolType;
 import systems.monomer.types.Type;
 import systems.monomer.util.Pair;
@@ -47,29 +48,20 @@ public final class Operator {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, constructor));
     }
     private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
-        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol) {{
-            setCompile(compile);
-            setInterpret(interpret);
-        }}));
+        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, (self)-> AnyType.ANY)));
     }
     private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret, Function<GenericOperatorNode, Type> type) {
-        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol) {{
-            setCompile(compile);
-            setInterpret(interpret);
-            setType(type);
-        }}));
+        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, type)));
     }
     private static void putData(String symbol, int leftPrec, int rightPrec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
-        operators.put(symbol, new Operator(fillInfo(info, symbol), leftPrec, rightPrec, () -> new GenericOperatorNode(symbol) {{
-            setCompile(compile);
-            setInterpret(interpret);
-        }}));
+        operators.put(symbol, new Operator(fillInfo(info, symbol), leftPrec, rightPrec, () -> new GenericOperatorNode(symbol, interpret, compile, (self)-> AnyType.ANY)));
     }
     private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, BiFunction<InterpretValue, InterpretValue, InterpretValue> interpret) {
-        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol) {{
-            setCompile(compile);
-            setInterpret((self) -> interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()));
-        }}));
+        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol,
+                (self) -> interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()),
+                compile,
+                (self)-> AnyType.ANY
+        )));
     }
 
     /**
