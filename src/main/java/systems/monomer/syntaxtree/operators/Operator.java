@@ -87,7 +87,7 @@ public final class Operator {
         putData("%", 1055, BINARY, (self) -> {
             //TODO
             return null;
-        }, numericalChecked(differentiatedIntFloat((a, b)->a%b, (a, b)->a%b)), Arithmetic::typeFor);
+        }, numericalChecked(differentiatedIntFloat((a, b)->b==0?0:a%b, (a, b)->b==0?0:a%b)), Arithmetic::typeFor);
         putData("||", 1065, BINARY, (self) -> {
             //TODO
             return null;
