@@ -24,7 +24,7 @@ public abstract class ControlOperatorNode extends OperatorNode {
 
     private Map<String, VariableKey> variables = new HashMap<>();
 
-    public ControlOperatorNode(String name){
+    protected ControlOperatorNode(String name){
         super(name);
     }
 
@@ -36,8 +36,7 @@ public abstract class ControlOperatorNode extends OperatorNode {
         variables.put(varName, key);
     }
     public VariableKey getVariable(String varName) {
-        if(!variables.containsKey(varName)) return getParent().getVariable(varName);
-        return variables.get(varName);
+        return variables.containsKey(varName) ? variables.get(varName) : getParent().getVariable(varName);
     }
 
     public void matchTypes() {
