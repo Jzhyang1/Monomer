@@ -9,6 +9,7 @@ import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.BoolType;
+import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
 import systems.monomer.util.Pair;
 
@@ -48,16 +49,16 @@ public final class Operator {
     private static void putData(String symbol, int prec, int info, Supplier<Node> constructor) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, constructor));
     }
-    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
+    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, ? extends InterpretResult> interpret) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, (self)-> AnyType.ANY)));
     }
-    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret, Function<GenericOperatorNode, Type> type) {
+    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, ? extends InterpretResult> interpret, Function<GenericOperatorNode, Type> type) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, type)));
     }
-    private static void putData(String symbol, int leftPrec, int rightPrec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
+    private static void putData(String symbol, int leftPrec, int rightPrec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretResult> interpret) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), leftPrec, rightPrec, () -> new GenericOperatorNode(symbol, interpret, compile, (self)-> AnyType.ANY)));
     }
-    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, BiFunction<InterpretValue, InterpretValue, InterpretValue> interpret) {
+    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, BiFunction<InterpretResult, InterpretResult, InterpretResult> interpret) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol,
                 (self) -> interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()),
                 compile,
@@ -192,8 +193,24 @@ public final class Operator {
         putData("else", -20, SECONDARY_CONTROL, ElseNode::new);
         putData("any", -20, SECONDARY_CONTROL, AnyNode::new);
         putData("all", -20, SECONDARY_CONTROL, AllNode::new);
-//        putData("break", -20, (self)->null, (self)->null);
-//        putData("continue", -20, (self)->null, (self)->null);
+        putData("break", -10, PREFIX | SUFFIX,
+                (self)->null,
+                (self)->new InterpretBreaking("break",
+                        self.size() == 0 ?
+                                InterpretTuple.EMPTY :
+                                self.getFirst().interpretValue().asValue()));
+        putData("continue", -10, PREFIX | SUFFIX,
+                (self)->null,
+                (self)->new InterpretBreaking("continue",
+                        self.size() == 0 ?
+                                InterpretTuple.EMPTY :
+                                self.getFirst().interpretValue().asValue()));
+        putData("return", -10, PREFIX | SUFFIX,
+                (self)->null,
+                (self)->new InterpretBreaking("return",
+                        self.size() == 0 ?
+                                InterpretTuple.EMPTY :
+                                self.getFirst().interpretValue().asValue()));
     }
 
     static {
@@ -214,10 +231,11 @@ public final class Operator {
             //TODO
             return null;
         }, (self) -> {
-            InterpretValue first = self.getFirst().interpretValue();
+            InterpretValue first = self.getFirst().interpretValue().asValue();
             try {
                 Constants.getOut().write(first.valueString().getBytes());
                 Constants.getOut().write('\n');
+                Constants.getOut().flush();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -227,7 +245,7 @@ public final class Operator {
             //TODO
             return null;
         }, (self) -> {
-            InterpretValue first = self.getFirst().interpretValue();
+            InterpretValue first = self.getFirst().interpretValue().asValue();
             self.getSecond().interpretValue();
             return first;
         }, (self) -> self.getFirst().getType());

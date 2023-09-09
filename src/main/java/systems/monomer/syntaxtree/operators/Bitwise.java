@@ -8,8 +8,13 @@ import java.util.function.Function;
 public final class Bitwise {
     public static Function<GenericOperatorNode, InterpretValue> differentiatedIntBool(BiFunction<Integer, Integer, Integer> intCallback, BiFunction<Boolean, Boolean, Boolean> boolCallback) {
         return (self) -> {
-            InterpretValue first = self.getFirst().interpretValue();
-            InterpretValue second = self.getSecond().interpretValue();
+            InterpretResult firstr = self.getFirst().interpretValue();
+            if(!firstr.isValue()) throw new RuntimeException("First value is not a value");
+            InterpretResult secondr = self.getSecond().interpretValue();
+            if(!secondr.isValue()) throw new RuntimeException("Second value is not a value");
+
+            InterpretValue first = firstr.asValue(), second = secondr.asValue();
+
             if (first instanceof InterpretNumber<? extends Number> firstNum && second instanceof InterpretNumber<? extends Number> secondNum) {
                 if(firstNum.getValue() instanceof Integer && secondNum.getValue() instanceof Integer)
                     return new InterpretNumber<>(intCallback.apply(firstNum.getValue().intValue(), secondNum.getValue().intValue()));
@@ -21,9 +26,12 @@ public final class Bitwise {
         };
     }
 
-    public static Function<GenericOperatorNode, InterpretValue> oneBool(Function<Boolean, Boolean> callback) {
+    public static Function<GenericOperatorNode, ? extends InterpretResult> oneBool(Function<Boolean, Boolean> callback) {
         return (self) -> {
-            InterpretValue first = self.getFirst().interpretValue();
+            InterpretResult firstr = self.getFirst().interpretValue();
+            if(!firstr.isValue()) throw new RuntimeException("First value is not a value");
+            InterpretValue first = firstr.asValue();
+
             if(first instanceof InterpretBool firstBool){
                 return new InterpretBool(callback.apply(firstBool.getValue()));
             }
@@ -31,16 +39,22 @@ public final class Bitwise {
             return null;
         };
     }
-    public static Function<GenericOperatorNode, InterpretValue> oneAny(Function<InterpretValue, Boolean> callback) {
+    public static Function<GenericOperatorNode, ? extends InterpretResult> oneAny(Function<InterpretValue, Boolean> callback) {
         return (self) -> {
-            InterpretValue first = self.getFirst().interpretValue();
+            InterpretResult firstr = self.getFirst().interpretValue();
+            if(!firstr.isValue()) throw new RuntimeException("First value is not a value");
+            InterpretValue first = firstr.asValue();
+
             return new InterpretBool(callback.apply(first));
         };
     }
 
-    public static Function<GenericOperatorNode, InterpretValue> isTruthy() {
+    public static Function<GenericOperatorNode, ? extends InterpretResult> isTruthy() {
         return (self) -> {
-            InterpretValue first = self.getFirst().interpretValue();
+            InterpretResult firstr = self.getFirst().interpretValue();
+            if(!firstr.isValue()) throw new RuntimeException("First value is not a value");
+            InterpretValue first = firstr.asValue();
+
             if(first instanceof InterpretBool firstBool)
                 return firstBool;
             else if(first instanceof InterpretNumber<? extends Number> firstNum)

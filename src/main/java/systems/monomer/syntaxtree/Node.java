@@ -8,6 +8,7 @@ import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.errorhandling.Context;
+import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.errorhandling.ErrorBlock;
@@ -108,7 +109,7 @@ public abstract class Node extends ErrorBlock {
         return null;
     }
 
-    public abstract InterpretValue interpretValue();
+    public abstract InterpretResult interpretValue();
 
     public CompileMemory compileMemory() {
         throwError("Attempting to access " + name + " as a variable");

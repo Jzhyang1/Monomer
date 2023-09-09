@@ -123,10 +123,11 @@ public class AssignNode extends OperatorNode {
         //needed for functions to work
         return getFirst().interpretVariable();  //TODO does this look right?
     }
-    public InterpretValue interpretValue() {
+    public InterpretResult interpretValue() {
         if(functionInit == null) {
-            InterpretValue val = getSecond().interpretValue();
-            getFirst().interpretVariable().setValue(val);
+            InterpretResult val = getSecond().interpretValue();
+            if(val.isValue())
+                getFirst().interpretVariable().setValue(val.asValue());
             return val;
         }
         return InterpretTuple.EMPTY;

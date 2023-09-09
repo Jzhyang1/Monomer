@@ -1,5 +1,6 @@
 package systems.monomer.syntaxtree.controls;
 
+import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 
 public class AllNode extends ControlOperatorNode {

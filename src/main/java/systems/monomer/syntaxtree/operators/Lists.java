@@ -1,6 +1,7 @@
 package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.interpreter.InterpretCollection;
+import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretString;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
@@ -12,11 +13,15 @@ import java.util.List;
 import java.util.function.Function;
 
 public final class Lists {
-    public static Function<GenericOperatorNode, InterpretValue> listChecked(Function<List<? extends InterpretCollection>, InterpretValue> callback) {
+    public static Function<GenericOperatorNode, InterpretResult> listChecked(Function<List<? extends InterpretCollection>, InterpretValue> callback) {
         return (self) -> {
             List<InterpretCollection> values = new ArrayList<>();
             for (Node node : self.getChildren()) {
-                InterpretValue value = node.interpretValue();
+                InterpretResult result = node.interpretValue();
+                if(!result.isValue()) throw new RuntimeException("returning from an operation");
+
+                InterpretValue value = result.asValue();
+
                 if (value instanceof InterpretCollection collection) {
                     values.add(collection);
                 } else {
@@ -27,14 +32,17 @@ public final class Lists {
             return callback.apply(values);
         };
     }
-    public static Function<GenericOperatorNode, InterpretValue> listStringChecked(Function<List<? extends InterpretCollection>, InterpretValue> callbackCollection, Function<List<? extends InterpretString>, InterpretValue> callbackString) {
+    public static Function<GenericOperatorNode, InterpretResult> listStringChecked(Function<List<? extends InterpretCollection>, InterpretValue> callbackCollection, Function<List<? extends InterpretString>, InterpretValue> callbackString) {
         return (self) -> {
             List<Node> children = self.getChildren();
             Type type = children.get(0).getType();
             if(type.equals(StringType.STRING)) {
                 List<InterpretString> values = new ArrayList<>();
                 for (Node node : children) {
-                    InterpretValue value = node.interpretValue();
+                    InterpretResult result = node.interpretValue();
+                    if(!result.isValue()) throw new RuntimeException("returning from an operation");
+
+                    InterpretValue value = result.asValue();
                     if (value instanceof InterpretString string) {
                         values.add(string);
                     } else {
@@ -47,7 +55,10 @@ public final class Lists {
             else {
                 List<InterpretCollection> values = new ArrayList<>();
                 for (Node node : children) {
-                    InterpretValue value = node.interpretValue();
+                    InterpretResult result = node.interpretValue();
+                    if(!result.isValue()) throw new RuntimeException("returning from an operation");
+
+                    InterpretValue value = result.asValue();
                     if (value instanceof InterpretCollection collection) {
                         values.add(collection);
                     } else {

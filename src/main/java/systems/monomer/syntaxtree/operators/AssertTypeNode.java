@@ -3,6 +3,7 @@ package systems.monomer.syntaxtree.operators;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
+import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.variables.VariableKey;
@@ -20,7 +21,7 @@ public class AssertTypeNode extends OperatorNode {
         getSecond().matchTypes();
     }
 
-    public InterpretValue interpretValue() {
+    public InterpretResult interpretValue() {
         //TODO check that the type is a subtype of the type
         return getSecond().interpretValue();
     }

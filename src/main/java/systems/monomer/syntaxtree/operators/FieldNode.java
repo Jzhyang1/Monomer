@@ -4,6 +4,7 @@ import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.errorhandling.UnimplementedError;
+import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.syntaxtree.Node;
@@ -21,9 +22,14 @@ public final class FieldNode extends OperatorNode {
         }
 
         public InterpretValue interpretValue() {
-            return key == null ?
-                    FieldNode.this.getFirst().interpretValue().get(name) :
-                    key.getValue();
+            if(key == null) {
+                InterpretResult first = FieldNode.this.getFirst().interpretValue();
+                if(!first.isValue()) {
+                    FieldNode.this.throwError("Attempting to access " + name + " as a variable");
+                }
+                return first.asValue().get(name);
+            }
+            else return key.getValue();
         }
 
         public VariableKey getVariableKey() {

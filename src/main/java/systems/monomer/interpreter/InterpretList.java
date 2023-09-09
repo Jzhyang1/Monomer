@@ -19,9 +19,6 @@ public class InterpretList extends InterpretCollection {
         super(list.get(0));
         values = list;
     }
-    public InterpretList(Collection<? extends Node> list) {
-        this(list.stream().map(Node::interpretValue).toList());
-    }
 
     public List<InterpretValue> getValues() {
         return values;
