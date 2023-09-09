@@ -164,14 +164,19 @@ public final class Operator {
      * List operators inhabit the precedence range 400-500 with 1 exception
      */
     private static void initList() {
-        putData(".", 430, BINARY | CHAINED, (self)->null, listChecked(
+        putData(".", 430, BINARY | CHAINED, (self)->null, listStringChecked(
                 (lists)->
                         //TODO not just lists
-                        new InterpretList(lists.stream().flatMap((list)->list.getValues().stream()).collect(Collectors.toList()))
-                ));
+                        new InterpretList(lists.stream().flatMap((list)->list.getValues().stream()).collect(Collectors.toList())),
+                (strs)-> new InterpretString(strs.stream().map((str)->str.getValue()).collect(Collectors.joining()))),
+                (self)->self.getFirst().getType()); //TODO fix
         putData("...", 440, BINARY, (self)->null, isTruthy());
         putData("in", 820, BINARY, (self)->null, (self)->new InterpretBool(((InterpretCollection)self.getSecond().interpretValue()).getValues().contains(self.getFirst().interpretValue()))); //TODO fix and clean
-        putData("#", 1800, PREFIX, (self)->null, listChecked((list)->new InterpretNumber<>(list.get(0).getValues().size())));
+        putData("#", 1800, PREFIX, (self)->null, listStringChecked(
+                (list)->new InterpretNumber<>(list.get(0).getValues().size()),
+                (strs)->new InterpretNumber<>(strs.get(0).getValue().length())),
+                (self)->self.getFirst().getType() //TODO fix
+        );
     }
 
     /**
