@@ -3,12 +3,17 @@ package systems.monomer.syntaxtree.operators;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
+import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.syntaxtree.Node;
+import systems.monomer.types.Signature;
+import systems.monomer.types.TupleType;
 import systems.monomer.variables.VariableKey;
 
 public class AssertTypeNode extends OperatorNode {
+    private InterpretFunction convertBy = null;
 
     public AssertTypeNode() {
         super(":");
@@ -17,8 +22,22 @@ public class AssertTypeNode extends OperatorNode {
     public void matchTypes() {
         getFirst().matchTypes();
         setType(getFirst().getType());
-        getSecond().setType(getType());
-        getSecond().matchTypes();
+        Node second = getSecond();
+        if(second instanceof CallNode) {
+            //TODO when else is requiresConvert not necessary other than in call?
+            getSecond().setType(getType());
+            getSecond().matchTypes();
+        }
+        else {
+            second.matchTypes();
+            VariableKey convertFunc = getVariable("convert");
+            if(convertFunc != null) {
+                convertBy = convertFunc.getOverload(new Signature(getType(), TupleType.asTuple(second.getType())));
+            }
+            if(convertFunc == null || convertBy == null) {
+                throwError("Cannot convert from " + second.getType() + " to " + getType());
+            }
+        }
     }
 
     public InterpretResult interpretValue() {

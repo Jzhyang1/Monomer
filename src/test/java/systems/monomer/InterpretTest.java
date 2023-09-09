@@ -182,4 +182,11 @@ public class InterpretTest {
                 "    @i");
         Interpret.interpret(source);
     }
+
+    @Test
+    public void interpretTest16() {
+        Source source = new SourceString("f = io: uri: \"/Users/main/Downloads/problems.nb.html\"\n" +
+                "@(string: f read())");
+        Interpret.interpret(source);
+    }
 }

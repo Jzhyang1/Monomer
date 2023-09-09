@@ -2,19 +2,19 @@ package systems.monomer.interpreter;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.LiteralNode;
-import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
 import systems.monomer.variables.VariableKey;
 
 import java.io.*;
 import java.util.List;
 
-public class InterpretFile extends VariableKey {
-    private Reader reader;
-    private Writer writer;
+//TODO not VariableKey
+//TODO fix this code
+public class InterpretIO extends VariableKey {
+    private final Reader reader;
+    private final Writer writer;
 
     private static InputStream safeReader(File source) {
         try {
@@ -30,10 +30,11 @@ public class InterpretFile extends VariableKey {
             throw new RuntimeException(e);
         }
     }
-    public InterpretFile(File source) {
+
+    public InterpretIO(File source) {
         this(safeReader(source), safeWriter(source));
     }
-    public InterpretFile(InputStream inputStream, OutputStream outputStream) {
+    public InterpretIO(InputStream inputStream, OutputStream outputStream) {
         reader = new BufferedReader(new InputStreamReader(inputStream));
         writer = new BufferedWriter(new OutputStreamWriter(outputStream));
 
@@ -52,6 +53,21 @@ public class InterpretFile extends VariableKey {
         }});
     }
 
+    @Override
+    public Type getType() {
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof InterpretIO otherIO &&
+                otherIO.reader == reader &&
+                otherIO.writer == writer;
+    }
+
+    public String toString() {
+        return "io";
+    }
 
     public static class CharReader extends LiteralNode {
         private Reader reader;
