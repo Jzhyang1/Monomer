@@ -84,7 +84,7 @@ function ProcessedCode({ code, blocked, symbol, isDarkMode, colored = true }) {
       symbol ?? (
         <span
           className={
-            "inline-block w-[30px] font-serif border-r-[1px] mr-[15px] " +
+            "inline-block select-none w-[30px] font-serif border-r-[1px] mr-[15px] " +
             (isDarkMode
               ? "border-white text-gray-200"
               : "border-black text-gray-700")
