@@ -14,4 +14,9 @@ public class Context {
         this.stop = stop;
         this.source = source;
     }
+
+    @Override
+    public String toString() {
+        return start.toString() + " to " + stop.toString() + " in " + source.getTitle();
+    }
 }

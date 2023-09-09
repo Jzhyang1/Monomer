@@ -155,8 +155,8 @@ public class InterpretTest {
 
     @Test
     public void interpretTest12() {
-        Source source = new SourceString("a(x) = x\n" +
-                "io write(a(2))");
+        Source source = new SourceString("a(x) = x*/1.5\n" +
+                "@a(4.1)");
         Interpret.interpret(source);
     }
 

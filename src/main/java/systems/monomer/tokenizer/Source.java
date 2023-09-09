@@ -113,6 +113,7 @@ public abstract class Source {
 
             if (bestOption != null) {
                 x += bestOption.length();   //1 for space
+                position += bestOption.length();
             }
             return bestOption;
         }

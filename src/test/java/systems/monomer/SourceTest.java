@@ -33,6 +33,14 @@ public class SourceTest {
     }
 
     @Test
+    public void testShortStringSourceContexts() {
+        SourceString source = new SourceString("1 in [1,2,3]");
+        Token token = source.parse();
+        assertEquals("test parse short string source 2", "(0,0)@0 to (12,0)@12 in String source",
+                token.getContext().toString());
+    }
+
+    @Test
     public void testLongStringSourceParse() {
         SourceString source = new SourceString(
                 "y = x + 500\n" +
