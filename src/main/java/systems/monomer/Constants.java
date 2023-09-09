@@ -1,10 +1,11 @@
 package systems.monomer;
 
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NonNls;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 @UtilityClass
 public class Constants {
@@ -21,8 +22,13 @@ public class Constants {
                 ('\u0400' <= c && c <= '\u04ff');  //cryllic characters
     }
 
-    public static ConsoleWriter out;
-    public static ConsoleWriter err;
+    @Getter
+    public static OutputStream out = System.out;
+    @Getter
+    public static OutputStream err = System.err;
+    @Getter
+    public static InputStream listener = System.in;
+
 
     public interface ConsoleWriter {
         public void write(String s);
@@ -32,9 +38,8 @@ public class Constants {
         }
     }
 
-    public static List<ConsoleListener> listeners = new ArrayList<>();
-
     public interface ConsoleListener {
+        //TODO
         public void onInput(String input);
     }
 }

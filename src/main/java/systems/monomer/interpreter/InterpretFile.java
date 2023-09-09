@@ -16,24 +16,27 @@ public class InterpretFile extends VariableKey {
     private Reader reader;
     private Writer writer;
 
-    private static Reader safeReader(File source) {
+    private static InputStream safeReader(File source) {
         try {
-            return new BufferedReader(new FileReader(source));
+            return new FileInputStream(source);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
-    private static Writer safeWriter(File source) {
+    private static OutputStream safeWriter(File source) {
         try {
-            return new BufferedWriter(new FileWriter(source));
+            return new FileOutputStream(source);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
     public InterpretFile(File source) {
-        this(new BufferedReader(safeReader(source)), new BufferedWriter(safeWriter(source)));
+        this(safeReader(source), safeWriter(source));
     }
-    public InterpretFile(Reader reader, Writer writer){
+    public InterpretFile(InputStream inputStream, OutputStream outputStream) {
+        reader = new BufferedReader(new InputStreamReader(inputStream));
+        writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+
         setField("read", new VariableKey(){{
             putOverload(List.of(), (args)->new CharReader(reader));
             putOverload(List.of(), (args)->new StringReader(reader));

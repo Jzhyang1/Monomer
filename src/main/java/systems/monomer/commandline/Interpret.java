@@ -1,5 +1,6 @@
 package systems.monomer.commandline;
 
+import systems.monomer.Constants;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
@@ -17,53 +18,50 @@ import java.util.List;
 
 public class Interpret {
     public static void interpret(Source source) {
-        try {
-            Token body = source.parse();
+        Token body = source.parse();
 //        System.out.println(body);
-            Node node = body.toNode();
+        Node node = body.toNode();
 //        System.out.println(node);
-            Node global = new ModuleNode(source.getTitle());
-            //global constants here
-            global.putVariable("true", new VariableKey() {{
-                setValue(new InterpretBool(true));
-                setType(InterpretBool.BOOL);
-            }});
-            global.putVariable("false", new VariableKey() {{
-                setValue(new InterpretBool(false));
-                setType(InterpretBool.BOOL);
-            }});
-            global.putVariable("bool", new VariableKey() {{
-                setValue(new InterpretBool(false));
-                setType(InterpretBool.BOOL);
-            }});
-            global.putVariable("int", new VariableKey() {{
-                setValue(new InterpretNumber<>(0));
-                setType(InterpretNumber.INTEGER);
-            }});
-            global.putVariable("float", new VariableKey() {{
-                setValue(new InterpretNumber<>(0.0));
-                setType(InterpretNumber.FLOAT);
-            }});
-            global.putVariable("char", new VariableKey() {{
-                setValue(new InterpretChar('\0'));
-                setType(CharType.CHAR);
-            }});
-            global.putVariable("string", new VariableKey() {{
-                setValue(new InterpretString(""));
-                setType(StringType.STRING);
-            }});
-            global.putVariable("io", new InterpretFile(new InputStreamReader(System.in), new OutputStreamWriter(System.out)));
+        Node global = new ModuleNode(source.getTitle());
+        //global constants here
+        global.putVariable("true", new VariableKey() {{
+            setValue(new InterpretBool(true));
+            setType(InterpretBool.BOOL);
+        }});
+        global.putVariable("false", new VariableKey() {{
+            setValue(new InterpretBool(false));
+            setType(InterpretBool.BOOL);
+        }});
+        global.putVariable("bool", new VariableKey() {{
+            setValue(new InterpretBool(false));
+            setType(InterpretBool.BOOL);
+        }});
+        global.putVariable("int", new VariableKey() {{
+            setValue(new InterpretNumber<>(0));
+            setType(InterpretNumber.INTEGER);
+        }});
+        global.putVariable("float", new VariableKey() {{
+            setValue(new InterpretNumber<>(0.0));
+            setType(InterpretNumber.FLOAT);
+        }});
+        global.putVariable("char", new VariableKey() {{
+            setValue(new InterpretChar('\0'));
+            setType(CharType.CHAR);
+        }});
+        global.putVariable("string", new VariableKey() {{
+            setValue(new InterpretString(""));
+            setType(StringType.STRING);
+        }});
+        global.putVariable("io", new InterpretFile(
+                Constants.getListener(),
+                Constants.getOut()));
 
-            global.add(node);
+        global.add(node);
 
-            global.matchVariables();
-            //TODO
-            global.matchTypes();
-            global.interpretValue();
-        } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
-//            e.printStackTrace();
-        }
+        global.matchVariables();
+        //TODO
+        global.matchTypes();
+        global.interpretValue();
     }
     public static void interpret(File sourceFile) {
         Source source = new SourceFile(sourceFile);
