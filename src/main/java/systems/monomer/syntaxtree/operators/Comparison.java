@@ -8,7 +8,12 @@ import java.util.function.Function;
 public final class Comparison {
     public static Function<GenericOperatorNode, InterpretValue> differentiatedIntFloatCharString(BiFunction<Integer, Integer, Boolean> intCallback, BiFunction<Double, Double, Boolean> floatCallback, BiFunction<Character, Character, Boolean> charCallback, BiFunction<String, String, Boolean> stringCallback) {
         return (self) -> {
-            InterpretValue first = self.getFirst().interpretValue(), second = self.getSecond().interpretValue();
+            InterpretResult firstr = self.getFirst().interpretValue();
+            if(!firstr.isValue()) throw new RuntimeException("First value is not a value");
+            InterpretResult secondr = self.getSecond().interpretValue();
+            if(!secondr.isValue()) throw new RuntimeException("Second value is not a value");
+
+            InterpretValue first = firstr.asValue(), second = secondr.asValue();
 
             if(first instanceof InterpretNumber<?> firstNum && second instanceof InterpretNumber<?> secondNum) {
                 if (firstNum.getValue() instanceof Integer && secondNum.getValue() instanceof Integer) {

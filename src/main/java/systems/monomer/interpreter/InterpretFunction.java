@@ -57,7 +57,8 @@ public class InterpretFunction extends Signature implements InterpretValue {
 
         AssignNode.assign(paramTuple, argsTuple);
 
-        InterpretValue ret = body.interpretValue();
+        //TODO unchecked asValue
+        InterpretValue ret = body.interpretValue().asValue();
         parent.setVariableValues(recursiveSlices.pop());
         return ret;
     }

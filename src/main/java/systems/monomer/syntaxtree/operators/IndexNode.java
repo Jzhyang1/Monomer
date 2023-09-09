@@ -2,10 +2,7 @@ package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretCollection;
-import systems.monomer.interpreter.InterpretList;
-import systems.monomer.interpreter.InterpretNumber;
-import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.interpreter.*;
 import systems.monomer.types.CollectionType;
 import systems.monomer.types.ListType;
 import systems.monomer.types.NumberType;
@@ -27,8 +24,12 @@ public class IndexNode extends OperatorNode {
 
     @Override
     public InterpretValue interpretValue() {
-        InterpretValue value = getFirst().interpretValue();
-        InterpretValue index = getSecond().interpretValue();
+        InterpretResult firstr = getFirst().interpretValue();
+        if(!firstr.isValue()) throw new RuntimeException("First value is not a value");
+        InterpretResult secondr = getSecond().interpretValue();
+        if(!secondr.isValue()) throw new RuntimeException("Second value is not a value");
+
+        InterpretValue value = firstr.asValue(), index = secondr.asValue();
 
         if (value instanceof InterpretList collection &&
                 index instanceof InterpretNumber<?> number) {

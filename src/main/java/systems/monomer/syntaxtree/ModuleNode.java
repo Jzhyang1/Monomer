@@ -2,11 +2,15 @@ package systems.monomer.syntaxtree;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
+import systems.monomer.interpreter.InterpretList;
+import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.variables.VariableKey;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -47,8 +51,14 @@ public class ModuleNode extends Node {
         }
     }
 
-    public InterpretValue interpretValue() {
-        return InterpretTuple.toTuple(getChildren());   //TODO replace Tuple with Module
+    public InterpretResult interpretValue() {
+        List<InterpretValue> ret = new ArrayList<>();
+        for(Node child : getChildren()) {
+            InterpretResult result = child.interpretValue();
+            if (!result.isValue()) return result;
+            ret.add(result.asValue());
+        }
+        return new InterpretTuple(ret); //TODO use a different type than tuple
     }
 
     public CompileValue compileValue() {

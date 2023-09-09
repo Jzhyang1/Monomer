@@ -622,8 +622,8 @@ public final class Editor extends JFrame {
                             Interpret.interpret(contents);
                         } catch (RuntimeException e) {try {
                             Constants.err.write(e.getMessage().getBytes());
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }}
                     }).start();
                 }),

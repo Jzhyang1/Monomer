@@ -24,7 +24,10 @@ public class StringBuilderNode extends LiteralNode {
     }
 
     public InterpretValue interpretValue() {
-        return new InterpretString(getChildren().stream().map(x -> x.interpretValue().valueString()).collect(Collectors.joining()));
+        return new InterpretString(
+                getChildren().stream()
+                        .map(x -> x.interpretValue().asValue().valueString())
+                        .collect(Collectors.joining()));
     }
 
     public CompileValue compileValue() {

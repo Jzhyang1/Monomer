@@ -25,7 +25,7 @@ public class CallNode extends OperatorNode {
 
     public InterpretValue interpretValue() {
 //        return getFirst().interpretValue().call(getSecond().interpretValue());
-        return function.call(getSecond().interpretValue());
+        return function.call(getSecond().interpretValue().asValue());
     }
 
     @Override

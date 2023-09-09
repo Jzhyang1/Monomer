@@ -2,6 +2,8 @@ package systems.monomer.syntaxtree.controls;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
+import systems.monomer.interpreter.InterpretBreaking;
+import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
@@ -33,10 +35,11 @@ public final class ControlGroupNode extends OperatorNode {
         setType(closestType);
     }
 
-    public InterpretValue interpretValue() {
+    public InterpretResult interpretValue() {
         ControlOperatorNode.InterpretControlResult result = getFirst().interpretControl(false, false, null);
         for (int i = 1; i < size(); i++) {
-            result = get(i).interpretControl(result.isSuccess, !result.isSuccess, result.value);
+            if(!result.value.isValue()) break;
+            result = get(i).interpretControl(result.isSuccess, !result.isSuccess, result.value.asValue());
         }
         return result.value != null ? result.value : InterpretTuple.EMPTY;
     }

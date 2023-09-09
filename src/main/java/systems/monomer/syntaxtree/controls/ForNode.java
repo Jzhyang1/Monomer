@@ -1,7 +1,5 @@
 package systems.monomer.syntaxtree.controls;
-import systems.monomer.interpreter.InterpretCollection;
-import systems.monomer.interpreter.InterpretSequence;
-import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.types.AnyType;
@@ -48,7 +46,9 @@ public class ForNode extends ControlOperatorNode {
         OperatorNode firstNode = (OperatorNode) getFirst();
         Node collection = firstNode.getSecond();
 
-        InterpretValue maybeIterable = collection.interpretValue();
+        //TODO unchecked asValue
+        InterpretValue maybeIterable = collection.interpretValue().asValue();
+
         if(maybeIterable instanceof InterpretCollection iterable) {
             Iterator<InterpretValue> iter = iterable.getValues().iterator();
             InterpretSequence ret = new InterpretSequence(AnyType.ANY); //TODO find the actual type
@@ -58,9 +58,17 @@ public class ForNode extends ControlOperatorNode {
                 iteratorKey.setValue(val);
 
                 //TODO set iterator variable within the Monomer loop
-                InterpretValue result = getSecond().interpretValue();
-                //TODO handle break
-                ret.add(result);
+                InterpretResult result = getSecond().interpretValue();
+
+                if(result.isValue()) {
+                    ret.add(result.asValue());
+                }
+                else if(result instanceof InterpretBreaking breaking) {
+                    if("continue".equals(breaking.getName())) continue;
+                    else if("break".equals(breaking.getName()))
+                        return new InterpretControlResult(false, result.asValue());
+                    return new InterpretControlResult(false, result);
+                }
             }
             return new InterpretControlResult(true, ret);
         } else {

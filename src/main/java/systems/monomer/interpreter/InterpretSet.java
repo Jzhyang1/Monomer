@@ -16,14 +16,6 @@ public class InterpretSet extends InterpretCollection {
         getValues().addAll(list);
     }
 
-    public InterpretSet(Collection<? extends Node> list) {
-        this(list.stream().map(Node::interpretValue).toList());
-    }
-
-    public void add(Node node) {
-        getValues().add(node.interpretValue());
-    }
-
     public Collection<InterpretValue> getValues() {
         return set;
     }

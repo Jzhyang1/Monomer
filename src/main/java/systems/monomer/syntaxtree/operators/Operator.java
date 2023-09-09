@@ -48,16 +48,16 @@ public final class Operator {
     private static void putData(String symbol, int prec, int info, Supplier<Node> constructor) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, constructor));
     }
-    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
+    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, ? extends InterpretResult> interpret) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, (self)-> AnyType.ANY)));
     }
-    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret, Function<GenericOperatorNode, Type> type) {
+    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, ? extends InterpretResult> interpret, Function<GenericOperatorNode, Type> type) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, type)));
     }
-    private static void putData(String symbol, int leftPrec, int rightPrec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretValue> interpret) {
+    private static void putData(String symbol, int leftPrec, int rightPrec, int info, Function<GenericOperatorNode, CompileValue> compile, Function<GenericOperatorNode, InterpretResult> interpret) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), leftPrec, rightPrec, () -> new GenericOperatorNode(symbol, interpret, compile, (self)-> AnyType.ANY)));
     }
-    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, BiFunction<InterpretValue, InterpretValue, InterpretValue> interpret) {
+    private static void putData(String symbol, int prec, int info, Function<GenericOperatorNode, CompileValue> compile, BiFunction<InterpretResult, InterpretResult, InterpretResult> interpret) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol,
                 (self) -> interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()),
                 compile,
@@ -214,10 +214,11 @@ public final class Operator {
             //TODO
             return null;
         }, (self) -> {
-            InterpretValue first = self.getFirst().interpretValue();
+            InterpretValue first = self.getFirst().interpretValue().asValue();
             try {
                 Constants.getOut().write(first.valueString().getBytes());
                 Constants.getOut().write('\n');
+                Constants.getOut().flush();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -227,7 +228,7 @@ public final class Operator {
             //TODO
             return null;
         }, (self) -> {
-            InterpretValue first = self.getFirst().interpretValue();
+            InterpretValue first = self.getFirst().interpretValue().asValue();
             self.getSecond().interpretValue();
             return first;
         }, (self) -> self.getFirst().getType());
