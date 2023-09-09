@@ -1,6 +1,5 @@
 package systems.monomer.ide;
 
-import lombok.SneakyThrows;
 import systems.monomer.Constants;
 import systems.monomer.commandline.Interpret;
 import systems.monomer.tokenizer.SourceString;
@@ -16,10 +15,7 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Timer;
@@ -57,7 +53,6 @@ public final class Editor extends JFrame {
         private int existingLineCount = 1;
         private final JLabel location = new JLabel();
 
-        final Piping piping;
 
         public Tab(TabSource source) {
             this.source = source;
@@ -187,45 +182,55 @@ public final class Editor extends JFrame {
 
             this.contents.getDocument().addUndoableEditListener((event) -> undoManager.addEdit(event.getEdit()));
 
-            Constants.out = new Constants.ConsoleWriter() {
-                @Override
-                public void write(String s) {
-                    SwingUtilities.invokeLater(() -> {
-                        try {
-                            Document document = console.getDocument();
-                            document.insertString(document.getLength(), s, null);
-                        } catch (BadLocationException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                }
-            };
+            Constants.out = new OutputStream() {
+                private final StringBuilder stringBuilder = new StringBuilder();
 
-            Constants.err = (s) -> {
-                int offset = console.getDocument().getLength();
-                Constants.out.write(s);
-                // color
-                SwingUtilities.invokeLater(() -> {
-                    console.getStyledDocument().setCharacterAttributes(
-                            offset,
-                            s.length(),
-                            COLOR_ATTRIBUTE_SET_HASH_MAP.get(Colors.RED.getColor()),
-                            true
-                    );
-                });
-            };
-
-            OutputStream display = new OutputStream() {
                 @Override
                 public void write(int b) {
-                    Constants.out.write(String.valueOf((char) b));
+                    stringBuilder.append((char) b);
+                    if(b == '\n') {
+                        String s = stringBuilder.toString();
+                        stringBuilder.setLength(0);
+                        SwingUtilities.invokeLater(() -> {
+                            try {
+                                Document document = console.getDocument();
+                                document.insertString(document.getLength(), s, null);
+                            } catch (BadLocationException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                    }
                 }
             };
 
-            PrintStream printStream = new PrintStream(display, true);
+            Constants.err = new OutputStream() {
+                private final StringBuilder stringBuilder = new StringBuilder();
 
+                @Override
+                public void write(int b) {
+                    stringBuilder.append((char) b);
+                    if(b == '\n') {
+                        String s = stringBuilder.toString();
+                        stringBuilder.setLength(0);
+                        SwingUtilities.invokeLater(() -> {
+                            try {
+                                Document document = console.getDocument();
+                                document.insertString(document.getLength(), s,
+                                        COLOR_ATTRIBUTE_SET_HASH_MAP.get(Colors.RED.getColor()));
+
+                            } catch (BadLocationException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                    }
+                }
+            };
+
+            PipedOutputStream printStream;
             try {
-                piping = new Piping(printStream);
+                PipedInputStream inputStream = new PipedInputStream();
+                Constants.listener = inputStream;
+                printStream = new PipedOutputStream(inputStream);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -237,18 +242,18 @@ public final class Editor extends JFrame {
                     int start = console.getDocument().getLength();
                     byte[] bytes = (text + "\n").getBytes(StandardCharsets.UTF_8);
 
-                    Constants.listeners.forEach(listener -> listener.onInput(text));
-
-                    display.write(bytes);
-                    // color the last bytes.length bytes green
+                    printStream.write(bytes);
+                    printStream.flush();
 
                     SwingUtilities.invokeLater(() -> {
-                        console.getStyledDocument().setCharacterAttributes(
-                                start,
-                                bytes.length,
-                                COLOR_ATTRIBUTE_SET_HASH_MAP.get(Colors.GREEN.getColor()),
-                                true
-                        );
+                        try {
+                            console.getDocument().insertString(
+                                    start,
+                                    text+"\n",
+                                    COLOR_ATTRIBUTE_SET_HASH_MAP.get(Colors.GREEN.getColor()));
+                        } catch (BadLocationException e) {
+                            throw new RuntimeException(e);
+                        }
                     });
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -653,9 +658,14 @@ public final class Editor extends JFrame {
                 new Action("Run File", () -> {
                     Tab tab = getSelectedTab();
                     String contents = tab.sanitizedText();
-                    tab.piping.registerSystem();
                     new Thread(() -> {
-                        Interpret.interpret(contents);
+                        try {
+                            Interpret.interpret(contents);
+                        } catch (RuntimeException e) {try {
+                            Constants.err.write(e.getMessage().getBytes());
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }}
                     }).start();
                 }),
                 new Action("Find Action", this::showActionListWindow),

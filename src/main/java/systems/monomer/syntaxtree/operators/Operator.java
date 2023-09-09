@@ -12,6 +12,7 @@ import systems.monomer.types.BoolType;
 import systems.monomer.types.Type;
 import systems.monomer.util.Pair;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -214,7 +215,12 @@ public final class Operator {
             return null;
         }, (self) -> {
             InterpretValue first = self.getFirst().interpretValue();
-            System.out.println(first.valueString());
+            try {
+                Constants.getOut().write(first.valueString().getBytes());
+                Constants.getOut().write('\n');
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return first;
         }, (self) -> self.getFirst().getType());
         putData("with", -5, PREFIX, (self) -> {
