@@ -182,54 +182,13 @@ public final class Editor extends JFrame {
 
             this.contents.getDocument().addUndoableEditListener((event) -> undoManager.addEdit(event.getEdit()));
 
-            Constants.out = new OutputStream() {
-                private final StringBuilder stringBuilder = new StringBuilder();
-
-                @Override
-                public void write(int b) {
-                    stringBuilder.append((char) b);
-                    if(b == '\n') {
-                        String s = stringBuilder.toString();
-                        stringBuilder.setLength(0);
-                        SwingUtilities.invokeLater(() -> {
-                            try {
-                                Document document = console.getDocument();
-                                document.insertString(document.getLength(), s, null);
-                            } catch (BadLocationException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
-                    }
-                }
-            };
-
-            Constants.err = new OutputStream() {
-                private final StringBuilder stringBuilder = new StringBuilder();
-
-                @Override
-                public void write(int b) {
-                    stringBuilder.append((char) b);
-                    if(b == '\n') {
-                        String s = stringBuilder.toString();
-                        stringBuilder.setLength(0);
-                        SwingUtilities.invokeLater(() -> {
-                            try {
-                                Document document = console.getDocument();
-                                document.insertString(document.getLength(), s,
-                                        COLOR_ATTRIBUTE_SET_HASH_MAP.get(Colors.RED.getColor()));
-
-                            } catch (BadLocationException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
-                    }
-                }
-            };
+            Constants.setOut(new EditorOutputStream(console, null));
+            Constants.setErr(new EditorOutputStream(console, COLOR_ATTRIBUTE_SET_HASH_MAP.get(Colors.RED.getColor())));
 
             PipedOutputStream printStream;
             try {
                 PipedInputStream inputStream = new PipedInputStream();
-                Constants.listener = inputStream;
+                Constants.setListener(inputStream);
                 printStream = new PipedOutputStream(inputStream);
             } catch (IOException e) {
                 throw new RuntimeException(e);

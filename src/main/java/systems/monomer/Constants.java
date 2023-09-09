@@ -1,6 +1,7 @@
 package systems.monomer;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NonNls;
 
@@ -22,24 +23,10 @@ public class Constants {
                 ('\u0400' <= c && c <= '\u04ff');  //cryllic characters
     }
 
-    @Getter
-    public static OutputStream out = System.out;
-    @Getter
-    public static OutputStream err = System.err;
-    @Getter
-    public static InputStream listener = System.in;
-
-
-    public interface ConsoleWriter {
-        public void write(String s);
-
-        default void writeln(@NonNls String s) {
-            write(s + "\n");
-        }
-    }
-
-    public interface ConsoleListener {
-        //TODO
-        public void onInput(String input);
-    }
+    @Getter @Setter
+    public OutputStream out = System.out;
+    @Getter @Setter
+    public OutputStream err = System.err;
+    @Getter @Setter
+    public InputStream listener = System.in;
 }
