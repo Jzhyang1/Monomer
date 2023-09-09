@@ -10,6 +10,7 @@ import java.io.File;
 
 @Command(name = "mono", mixinStandardHelpOptions = true, version = "1.0.0", description = "The Monomer programming language (more info at https://monomer.dev)")
 public class CommandLineInterface implements Runnable {
+    public static final String SHELL = "shell";
     @Option(names = {"-v", "--version"}, versionHelp = true, description = "Print version information")
     private boolean versionRequested;
 
@@ -30,7 +31,7 @@ public class CommandLineInterface implements Runnable {
         }
     }
 
-    @Command(name = "shell", aliases = {"sh"}, description = "Start Monomer shell")
+    @Command(name = SHELL, aliases = {"sh"}, description = "Start Monomer shell")
     void shell() {
         // Implement the shell logic here
         System.out.println("Starting the shell...");

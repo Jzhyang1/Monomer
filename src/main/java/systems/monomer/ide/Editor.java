@@ -186,17 +186,39 @@ public final class Editor extends JFrame {
             });
 
             this.contents.getDocument().addUndoableEditListener((event) -> undoManager.addEdit(event.getEdit()));
-            OutputStream display = new OutputStream() {
+
+            Constants.out = new Constants.ConsoleWriter() {
                 @Override
-                public void write(int b) {
+                public void write(String s) {
                     SwingUtilities.invokeLater(() -> {
                         try {
                             Document document = console.getDocument();
-                            document.insertString(document.getLength(), String.valueOf((char) b), null);
+                            document.insertString(document.getLength(), s, null);
                         } catch (BadLocationException e) {
                             throw new RuntimeException(e);
                         }
                     });
+                }
+            };
+
+            Constants.err = (s) -> {
+                int offset = console.getDocument().getLength();
+                Constants.out.write(s);
+                // color
+                SwingUtilities.invokeLater(() -> {
+                    console.getStyledDocument().setCharacterAttributes(
+                            offset,
+                            s.length(),
+                            COLOR_ATTRIBUTE_SET_HASH_MAP.get(Colors.RED.getColor()),
+                            true
+                    );
+                });
+            };
+
+            OutputStream display = new OutputStream() {
+                @Override
+                public void write(int b) {
+                    Constants.out.write(String.valueOf((char) b));
                 }
             };
 
@@ -208,14 +230,15 @@ public final class Editor extends JFrame {
                 throw new RuntimeException(e);
             }
 
-
             consoleInput.addActionListener((event) -> {
                 String text = consoleInput.getText();
                 consoleInput.setText("");
                 try {
                     int start = console.getDocument().getLength();
                     byte[] bytes = (text + "\n").getBytes(StandardCharsets.UTF_8);
-                    piping.getConsoleOutputStream().write(bytes);
+
+                    Constants.listeners.forEach(listener -> listener.onInput(text));
+
                     display.write(bytes);
                     // color the last bytes.length bytes green
 
@@ -987,3 +1010,13 @@ public final class Editor extends JFrame {
         repaint();
     }
 }
+
+
+
+
+
+
+
+
+
+

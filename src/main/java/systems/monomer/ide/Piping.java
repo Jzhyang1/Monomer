@@ -23,5 +23,6 @@ public class Piping {
     public void registerSystem() {
         System.setIn(consoleInput);
         System.setOut(new PrintStream(displayOutputStream, true));
+        System.setErr(System.out);
     }
 }

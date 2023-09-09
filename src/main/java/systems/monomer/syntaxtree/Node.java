@@ -26,7 +26,7 @@ public abstract class Node extends ErrorBlock {
 
     private String name;
     @Setter
-    private Node parent = null;
+    private Node parent;
     @Getter
     private final List<Node> children = new ArrayList<>();
     @Getter
