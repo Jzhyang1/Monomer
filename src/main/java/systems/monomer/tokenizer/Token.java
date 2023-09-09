@@ -151,7 +151,10 @@ public class Token extends ErrorBlock {
         if (!iter.hasNext()) {
             //check suffix
             if (Operator.isSuffix(op.value)) {
-                return op.toNode().with(cur);
+                if(cur != null)
+                    return op.toNode().with(cur);
+                else if(Operator.isPrefix(op.value))
+                    return op.toNode();
             } else op.throwError("Expected value after operator");
         }
 

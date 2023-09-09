@@ -12,6 +12,10 @@ public class InterpretBreaking implements InterpretResult {
         this.value = value;
     }
 
+    public boolean isValue() {
+        return false;
+    }
+
     @Override
     public InterpretValue asValue() {
         return value;

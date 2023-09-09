@@ -176,10 +176,10 @@ public class InterpretTest {
 
     @Test
     public void interpretTest15() {
-        Source source = new SourceString("y = [1,2,3]\n" +
-                "@y\n" +
-                "for x in y:\n" +
-                "    @x\n");
+        Source source = new SourceString("for i in [1,2,3]:\n" +
+                "    if i == 2:\n" +
+                "        break\n" +
+                "    @i");
         Interpret.interpret(source);
     }
 }

@@ -9,6 +9,7 @@ import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.BoolType;
+import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
 import systems.monomer.util.Pair;
 
@@ -192,8 +193,24 @@ public final class Operator {
         putData("else", -20, SECONDARY_CONTROL, ElseNode::new);
         putData("any", -20, SECONDARY_CONTROL, AnyNode::new);
         putData("all", -20, SECONDARY_CONTROL, AllNode::new);
-//        putData("break", -20, (self)->null, (self)->null);
-//        putData("continue", -20, (self)->null, (self)->null);
+        putData("break", -10, PREFIX | SUFFIX,
+                (self)->null,
+                (self)->new InterpretBreaking("break",
+                        self.size() == 0 ?
+                                InterpretTuple.EMPTY :
+                                self.getFirst().interpretValue().asValue()));
+        putData("continue", -10, PREFIX | SUFFIX,
+                (self)->null,
+                (self)->new InterpretBreaking("continue",
+                        self.size() == 0 ?
+                                InterpretTuple.EMPTY :
+                                self.getFirst().interpretValue().asValue()));
+        putData("return", -10, PREFIX | SUFFIX,
+                (self)->null,
+                (self)->new InterpretBreaking("return",
+                        self.size() == 0 ?
+                                InterpretTuple.EMPTY :
+                                self.getFirst().interpretValue().asValue()));
     }
 
     static {

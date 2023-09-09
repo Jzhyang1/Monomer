@@ -101,7 +101,9 @@ public abstract class Source {
         public boolean isNextWithSpace(String next, Collection<Character> alternatives) {
             int end = x + next.length();
             if(end >= line.length()) return false;
-            if(!SPACE_CHARS.containsKey(line.charAt(end)) && !alternatives.contains(line.charAt(end))) return false;
+            if(!SPACE_CHARS.containsKey(line.charAt(end)) &&
+                    line.charAt(end) != '\n' &&
+                    !alternatives.contains(line.charAt(end))) return false;
             return IntStream.range(0, next.length()).noneMatch(i -> line.charAt(x + i) != next.charAt(i));
         }
 
