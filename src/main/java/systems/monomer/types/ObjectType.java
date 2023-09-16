@@ -14,8 +14,9 @@ public class ObjectType extends AnyType {
     public boolean typeContains(Type type) {
         if(type instanceof ObjectType typeOther) {
             for(Map.Entry<String, Type> entry : typeOther.fields.entrySet()) {
+                Type assignedValue = entry.getValue();
                 Type value = fields.get(entry.getKey());
-                if(value == null || !value.typeContains(entry.getValue()))
+                if(value == null || !value.getType().typeContains(entry.getValue().getType()))
                     return false;
             }
             return true;

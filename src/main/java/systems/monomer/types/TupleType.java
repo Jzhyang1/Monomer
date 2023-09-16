@@ -8,6 +8,8 @@ import java.util.stream.IntStream;
 
 @Getter
 public class TupleType extends AnyType {
+    public static final Type EMPTY = new TupleType(List.of());
+
     public static TupleType asTuple(Type type) {
         if(type instanceof TupleType tuple) return tuple;
         return new TupleType(List.of(type));

@@ -8,8 +8,10 @@ import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.types.OverloadedFunction;
 import systems.monomer.types.Signature;
 import systems.monomer.types.TupleType;
+import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
 
 public class AssertTypeNode extends OperatorNode {
@@ -32,7 +34,8 @@ public class AssertTypeNode extends OperatorNode {
             second.matchTypes();
             VariableKey convertFunc = getVariable("convert");
             if(convertFunc != null) {
-                convertBy = convertFunc.getOverload(new Signature(getType(), TupleType.asTuple(second.getType())));
+                OverloadedFunction overloads = (OverloadedFunction) convertFunc.getType();
+                convertBy = overloads.getOverload(new Signature(getType(), TupleType.asTuple(second.getType())));
             }
             if(convertFunc == null || convertBy == null) {
                 throwError("Cannot convert from " + second.getType() + " to " + getType());
@@ -42,7 +45,7 @@ public class AssertTypeNode extends OperatorNode {
 
     public InterpretResult interpretValue() {
         //TODO check that the type is a subtype of the type
-        return getSecond().interpretValue();
+        return convertBy == null ? getSecond().interpretValue() : convertBy.call(getSecond().interpretValue().asValue());
     }
 
     @Override
@@ -51,7 +54,7 @@ public class AssertTypeNode extends OperatorNode {
     }
 
     @Override
-    public @Nullable VariableKey getVariableKey() {
+    public @Nullable Key getVariableKey() {
         return getSecond().getVariableKey();
     }
 

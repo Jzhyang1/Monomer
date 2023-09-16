@@ -1,11 +1,6 @@
 package systems.monomer.types;
 
-import lombok.Getter;
 import systems.monomer.compiler.CompileSize;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public interface Type extends Cloneable {
     Type clone();
@@ -70,5 +65,12 @@ public interface Type extends Cloneable {
      */
     default CompileSize compileSize() {
         throw new Error("TODO unimplemented");  //TODO make this not default
+    }
+
+    /**
+     * @return the type as a Type
+     */
+    default Type getType() {
+        return this;
     }
 }

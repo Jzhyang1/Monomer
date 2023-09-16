@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 public class InterpretFunction extends Signature implements InterpretValue {
     private TupleNode args;
     private Node body;
-    private ModuleNode parent;
+    private final ModuleNode parent;
 
     //TODO handle named args
     public InterpretFunction(TupleNode args, Node body, ModuleNode parent) {
@@ -53,9 +53,9 @@ public class InterpretFunction extends Signature implements InterpretValue {
         recursiveSlices.push(parent.getVariableValuesMap());
 
         InterpretTuple argsTuple = InterpretTuple.toTuple(args);
-        InterpretTuple paramTuple = new InterpretTuple(this.args.getChildren().stream().map(Node::interpretVariable).toList());
+        //InterpretTuple paramTuple = new InterpretTuple(this.args.getChildren().stream().map(Node::interpretVariable).toList());
 
-        AssignNode.assign(paramTuple, argsTuple);
+        AssignNode.assign(this.args, argsTuple);
 
         //TODO unchecked asValue
         InterpretValue ret = body.interpretValue().asValue();
@@ -89,6 +89,12 @@ public class InterpretFunction extends Signature implements InterpretValue {
         return getReturnType().hashCode() + getArgs().hashCode() * 31 + this.getClass().hashCode() * 31 * 31;
     }
 
+    @Override
+    public InterpretFunction clone() {
+        throw new Error("TODO unimplemented");
+    }
+
+    @Override
     public String toString() {
         return getArgs().valueString() + " -> " + getReturnType().valueString();
     }

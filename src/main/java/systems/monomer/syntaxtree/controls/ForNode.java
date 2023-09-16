@@ -5,12 +5,13 @@ import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.CollectionType;
 import systems.monomer.types.Type;
+import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
 
 import java.util.Iterator;
 
 public class ForNode extends ControlOperatorNode {
-    private VariableKey iteratorKey;
+    private Key iteratorKey;
 
     public ForNode() {
         super("for");

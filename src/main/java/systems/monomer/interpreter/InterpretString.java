@@ -13,4 +13,9 @@ public class InterpretString extends StringType implements InterpretValue {
     public String valueString() {
         return value;
     }
+
+    @Override
+    public InterpretString clone() {
+        return (InterpretString) super.clone();
+    }
 }

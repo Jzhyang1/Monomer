@@ -4,14 +4,19 @@ import systems.monomer.compiler.*;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
+import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
 
 import java.util.List;
+import java.util.stream.IntStream;
+
+import static systems.monomer.types.AnyType.ANY;
 
 public class AssignNode extends OperatorNode {
-    private static record FunctionInitInfo(VariableKey function, Node args, Node body, ModuleNode parent) {};
+    private static record FunctionInitInfo(Key function, Node args, Node body, ModuleNode parent) {};
     private FunctionInitInfo functionInit = null;
 
     public AssignNode() {
@@ -28,36 +33,44 @@ public class AssignNode extends OperatorNode {
         //TODO handle multiple assignment
         potentialval.matchTypes();
         potentialvar.matchTypes();
-        if(potentialvar.getType() == null || potentialvar.getType().equals(AnyType.ANY)) {  //TODO remove the AnyType.ANY condition
-            potentialvar.setType(potentialval.getType());
-        } else if(potentialval.getType() == null) {
-            potentialval.setType(potentialvar.getType());
-        } else if(!potentialvar.getType().equals(potentialval.getType())) {
-            potentialval.throwError("Type mismatch: " + potentialvar.getType() + " and " + potentialval.getType());
+
+        Type valType = potentialval.getType();
+        Type varType = potentialvar.getType();
+
+        Type type = valType;
+        if(varType == ANY) {
+            potentialvar.setType(valType);
         }
-        return potentialvar.getType();
+        else if(!valType.typeContains(varType)) {
+            potentialval.throwError("Type mismatch: " + potentialvar.getType() + " and " + potentialval.getType());
+            return null;
+        }
+
+        return type;
     }
 
-    public static InterpretValue assign(InterpretValue dest, InterpretValue val) {
-        if(dest instanceof InterpretVariable variable) {
-            variable.setValue(val);
-            if(val instanceof ObjectType valObj)
-                variable.getFields().putAll(valObj.getFields());
-            return variable;
+    public static InterpretValue assign(Node dest, InterpretValue val) {
+        if(dest instanceof TupleNode tupleDest && val instanceof InterpretTuple tupleVal) {
+            InterpretTuple ret = new InterpretTuple(
+                    IntStream.range(0, tupleDest.size())
+                            .mapToObj(i -> assign(tupleDest.get(i), tupleVal.get(i)))
+                            .toList()
+            );
+            return ret;
         }
-        else if (dest instanceof InterpretTuple tuple) {
-            if(val instanceof InterpretTuple valTuple) {
-                for(int i = 0; i < tuple.size(); i++) {
-                    assign(tuple.get(i), valTuple.get(i));
-                }
-            }
-            return tuple;
+        else if(dest instanceof VariableNode variable) {
+            variable.interpretVariable().setValue(val);
+            return val;
         }
-        throw new Error("Invalid assignment of " + val + " to " + dest );
+        else {
+            dest.throwError("Invalid assignment of " + val + " to " + dest.getType());
+            return null;
+        }
     }
 
     public void matchTypes() {
         if(functionInit != null) {
+            OverloadedFunction overloads = (OverloadedFunction) functionInit.function.getType();
             //TODO rid of TupleNode.asTuple
             InterpretFunction function = new InterpretFunction(TupleNode.asTuple(functionInit.args), functionInit.body, functionInit.parent);
 
@@ -65,32 +78,50 @@ public class AssignNode extends OperatorNode {
             Type argsType = functionInit.args.getType();
 
             //used for recursion
-            Signature tempSignature = new Signature(AnyType.ANY, argsType);
-            boolean needTempSignature = functionInit.function.getOverload(tempSignature) == null;
+            Signature tempSignature = new Signature(ANY, argsType);
+
+            boolean needTempSignature = overloads.getOverload(tempSignature) == null;
             if(needTempSignature)
-                functionInit.function.putOverload(tempSignature, function);
+                overloads.putOverload(tempSignature, function);
 
             functionInit.body.matchTypes();
             Type bodyType = functionInit.body.getType();
 
             if(needTempSignature)
-                functionInit.function.getOverloads().remove(tempSignature, function);
+                overloads.getOverloads().remove(tempSignature, function);
             Signature signature = new Signature(bodyType, argsType);
-            functionInit.function.putOverload(signature, function);
+            overloads.putOverload(signature, function);
 
             setType(signature);
         }
         else {
             List<Node> children = getChildren();
-            Node value = children.get(children.size() - 1);
-            value.matchTypes();
-            Type type = value.getType();
+            Node value = children.get(children.size() - 1); value.matchTypes();
+            Type valType = value.getType();
+
             for(int i = children.size() - 2; i >= 0; --i) {
-                children.get(i).setType(type);
-                children.get(i).matchTypes();
+                Node variable = children.get(i);
+
+                variable.setType(valType);
+                variable.matchTypes();
+
+                Type varType = variable.getType();
+
+//                if(varType == ANY) {
+//                    variable.setType(valType);
+//
+//                    VariableKey varKey = variable.getVariableKey();
+//                    VariableKey valKey = value.getVariableKey();
+//                    if(varKey != null && valKey != null) {
+//                        varKey.setOverloads(valKey.getOverloads());
+//                    }
+//                }
+//                else if(!valType.typeContains(varType)) {
+//                    value.throwError("Type mismatch: " + variable.getType() + " and " + value.getType());
+//                }
             }
             //TODO chained assignment
-            setType(matchTypes(getFirst(), getSecond()));
+//            setType(matchTypes(getFirst(), getSecond()));
 
             //TODO match param (first.second) to some open callable
         }
@@ -105,7 +136,7 @@ public class AssignNode extends OperatorNode {
 
 
             identifier.matchVariables();
-            VariableKey identifierKey = identifier.getVariableKey();
+            Key identifierKey = identifier.getVariableKey();
             assert identifierKey != null;
 
             ModuleNode wrapper = new ModuleNode("function");
@@ -121,14 +152,17 @@ public class AssignNode extends OperatorNode {
 
     public InterpretVariable interpretVariable() {
         //needed for functions to work
-        return getFirst().interpretVariable();  //TODO does this look right?
+        return getFirst().interpretVariable();
     }
+
     public InterpretResult interpretValue() {
         if(functionInit == null) {
-            InterpretResult val = getSecond().interpretValue();
-            if(val.isValue())
-                getFirst().interpretVariable().setValue(val.asValue());
-            return val;
+            InterpretResult ret = getSecond().interpretValue();
+            if(ret.isValue()) {
+                for(int i = getFirst().size() - 2; i >= 0; --i)
+                    assign(getFirst().get(i), (InterpretValue) ret);
+            }
+            return ret;
         }
         return InterpretTuple.EMPTY;
     }

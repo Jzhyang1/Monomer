@@ -1,6 +1,10 @@
 package systems.monomer.commandline;
 
 import systems.monomer.Constants;
+import systems.monomer.commandline.EnvironmentDefaults.ConvertDefaults;
+import systems.monomer.commandline.EnvironmentDefaults.FileDefaults;
+import systems.monomer.commandline.EnvironmentDefaults.TypeDefaults;
+import systems.monomer.commandline.EnvironmentDefaults.ValueDefaults;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.*;
@@ -11,15 +15,14 @@ import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.SourceFile;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
-import systems.monomer.types.CharType;
-import systems.monomer.types.NumberType;
-import systems.monomer.types.StringType;
-import systems.monomer.types.Type;
+import systems.monomer.types.*;
 import systems.monomer.variables.VariableKey;
 
 import java.io.*;
-import java.net.URI;
 import java.util.List;
+
+import static systems.monomer.interpreter.InterpretIO.STDIO;
+import static systems.monomer.interpreter.InterpretURI.URI;
 
 
 public class Interpret {
@@ -29,93 +32,12 @@ public class Interpret {
         Node node = body.toNode();
 //        System.out.println(node);
         Node global = new ModuleNode(source.getTitle());
+
         //global constants here
-        global.putVariable("true", new VariableKey() {{
-            setValue(new InterpretBool(true));
-            setType(InterpretBool.BOOL);
-        }});
-        global.putVariable("false", new VariableKey() {{
-            setValue(new InterpretBool(false));
-            setType(InterpretBool.BOOL);
-        }});
-        global.putVariable("bool", new VariableKey() {{
-            setValue(new InterpretBool(false));
-            setType(InterpretBool.BOOL);
-        }});
-        global.putVariable("int", new VariableKey() {{
-            setValue(new InterpretNumber<>(0));
-            setType(InterpretNumber.INTEGER);
-        }});
-        global.putVariable("float", new VariableKey() {{
-            setValue(new InterpretNumber<>(0.0));
-            setType(InterpretNumber.FLOAT);
-        }});
-        global.putVariable("char", new VariableKey() {{
-            setValue(new InterpretChar('\0'));
-            setType(CharType.CHAR);
-        }});
-        global.putVariable("string", new VariableKey() {{
-            setValue(new InterpretString(""));
-            setType(StringType.STRING);
-        }});
-
-
-        InterpretIO io = new InterpretIO(
-                Constants.getListener(),
-                Constants.getOut());
-        global.putVariable("io", io);
-
-        InterpretURI uri = new InterpretURI();
-        global.putVariable("uri", uri);
-
-
-        global.putVariable("convert", new VariableKey() {{
-            //TODO fix types
-            putOverload(List.of(StringType.STRING), (args) -> new LiteralNode() {
-                @Override
-                public Type getType() {
-                    return uri;
-                }
-
-                @Override
-                public InterpretResult interpretValue() {
-                    return new InterpretURI(
-                        ((InterpretString) args.get(0).interpretValue()).getValue());
-                }
-
-                @Override
-                public CompileValue compileValue() {
-                    return null;
-                }
-
-                @Override
-                public CompileSize compileSize() {
-                    return null;
-                }
-            });
-            putOverload(List.of(uri), (args) -> new LiteralNode() {
-                @Override
-                public Type getType() {
-                    return io;
-                }
-
-                @Override
-                public InterpretResult interpretValue() {
-                    InterpretURI uri = (InterpretURI) args.get(0).interpretValue();
-                    return new InterpretIO(new File(uri.getUri()));
-                }
-
-                @Override
-                public CompileValue compileValue() {
-                    return null;
-                }
-
-                @Override
-                public CompileSize compileSize() {
-                    return null;
-                }
-            });
-        }});
+        TypeDefaults.initGlobal(global);
+        ValueDefaults.initGlobal(global);
+        FileDefaults.initGlobal(global);
+        ConvertDefaults.initGlobal(global);
 
         global.add(node);
 

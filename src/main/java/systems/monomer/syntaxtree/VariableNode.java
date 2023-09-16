@@ -9,6 +9,8 @@ import systems.monomer.types.AnyType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
+import static systems.monomer.types.AnyType.ANY;
+
 public class VariableNode extends Node {
     private VariableKey key;
 
@@ -21,29 +23,33 @@ public class VariableNode extends Node {
 
     public void matchVariables() {
         VariableKey existing = getVariable(getName());
-        if(existing == null) {
-            existing = new VariableKey();
-            putVariable(getName(), existing);
-        }
-        key = existing;
-        if(getType() == null ^ key.getType() == null) {
-            if(getType() == null)
-                setType(key.getType());
-            else
-                key.setType(getType());
-        }
-        else if(getType() != null && !key.getType().typeContains(getType())) {
-            throwError("Type mismatch: " + getType() + " != " + key.getType());
-        }
+        if(key == null && existing == null)
+            putVariable(getName(), key = new VariableKey());
+        else if(existing == null)
+            putVariable(getName(), key);
+        else
+            key = existing;
     }
 
     public void matchTypes() {
-        if(getType() == null || getType().equals(AnyType.ANY))  //TODO remove the AnyType.ANY condition and uncomment code below
+        if(getType() == ANY)  //TODO uncomment code below
             setType(key.getType());
-        else // if(key.getType().equals(AnyType.ANY))
+        else // if(key.getType() == ANY)
             key.setType(getType());
 //        else if(!key.getType().typeContains(getType()))
 //            throwError("Type mismatch: " + getType() + " is not matchable to " + key.getType());
+    }
+
+    @Override
+    public Type getType() {
+        return key == null ? ANY : key.getType();
+    }
+
+    @Override
+    public void setType(Type type) {
+        if(key == null) key = new VariableKey();
+
+        key.setType(type);
     }
 
     @SuppressWarnings("SuspiciousGetterSetter")

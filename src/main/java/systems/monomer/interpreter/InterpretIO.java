@@ -1,5 +1,6 @@
 package systems.monomer.interpreter;
 
+import systems.monomer.Constants;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.syntaxtree.VariableNode;
@@ -12,7 +13,9 @@ import java.util.List;
 
 //TODO not VariableKey
 //TODO fix this code
-public class InterpretIO extends VariableKey {
+public class InterpretIO extends ObjectType implements InterpretValue {
+    public static final InterpretIO STDIO = new InterpretIO(Constants.getListener(), Constants.getOut());
+
     private final Reader reader;
     private final Writer writer;
 
@@ -39,23 +42,22 @@ public class InterpretIO extends VariableKey {
         writer = new BufferedWriter(new OutputStreamWriter(outputStream));
 
         setField("read", new VariableKey(){{
-            putOverload(List.of(), (args)->new CharReader(reader));
-            putOverload(List.of(), (args)->new StringReader(reader));
-            putOverload(List.of(), (args)->new IntReader(reader));
+            setType(new OverloadedFunction(){{
+                putOverload(List.of(), (args)->new CharReader(reader));
+                putOverload(List.of(), (args)->new StringReader(reader));
+                putOverload(List.of(), (args)->new IntReader(reader));
 
-            putOverload(List.of(NumberType.INTEGER), (args) -> new MultiCharReader(reader, args.get(0)));
+                putOverload(List.of(NumberType.INTEGER), (args) -> new MultiCharReader(reader, args.get(0)));
+            }});
         }});
 
         setField("write", new VariableKey(){{
-            putOverload(List.of(NumberType.INTEGER), (args) -> new IntWriter(writer, args.get(0)));
-            putOverload(List.of(CharType.CHAR), (args) -> new CharWriter(writer, args.get(0)));
-            putOverload(List.of(StringType.STRING), (args) -> new StringWriter(writer, args.get(0)));
+            setType(new OverloadedFunction(){{
+                putOverload(List.of(CharType.CHAR), (args) -> new CharWriter(writer, args.get(0)));
+                putOverload(List.of(StringType.STRING), (args) -> new StringWriter(writer, args.get(0)));
+                putOverload(List.of(NumberType.INTEGER), (args) -> new IntWriter(writer, args.get(0)));
+            }});
         }});
-    }
-
-    @Override
-    public Type getType() {
-        return this;
     }
 
     @Override
@@ -63,6 +65,11 @@ public class InterpretIO extends VariableKey {
         return other instanceof InterpretIO otherIO &&
                 otherIO.reader == reader &&
                 otherIO.writer == writer;
+    }
+
+    @Override
+    public InterpretIO clone() {
+        return (InterpretIO) super.clone(); //TODO clone reader and writer
     }
 
     public String toString() {
