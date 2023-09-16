@@ -8,6 +8,8 @@ public class AnyType implements Type, Cloneable {
     public static final AnyType ANY = new AnyType();
     private boolean mutable = false;
 
+    protected AnyType() {}
+
     @Override
     public Type clone() {
         try {
