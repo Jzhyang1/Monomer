@@ -1,18 +1,19 @@
 package systems.monomer.syntaxtree;
 
+import lombok.Getter;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
-import systems.monomer.types.AnyType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
 import static systems.monomer.types.AnyType.ANY;
 
+@Getter
 public class VariableNode extends Node {
-    private VariableKey key;
+    private VariableKey variableKey;
 
     public VariableNode(String name) {
         super(name);
@@ -23,45 +24,40 @@ public class VariableNode extends Node {
 
     public void matchVariables() {
         VariableKey existing = getVariable(getName());
-        if(key == null && existing == null)
-            putVariable(getName(), key = new VariableKey());
+        if(variableKey == null && existing == null)
+            putVariable(getName(), variableKey = new VariableKey());
         else if(existing == null)
-            putVariable(getName(), key);
+            putVariable(getName(), variableKey);
         else
-            key = existing;
+            variableKey = existing;
     }
 
     public void matchTypes() {
         if(getType() == ANY)  //TODO uncomment code below
-            setType(key.getType());
+            setType(variableKey.getType());
         else // if(key.getType() == ANY)
-            key.setType(getType());
+            variableKey.setType(getType());
 //        else if(!key.getType().typeContains(getType()))
 //            throwError("Type mismatch: " + getType() + " is not matchable to " + key.getType());
     }
 
     @Override
     public Type getType() {
-        return key == null ? ANY : key.getType();
+        return variableKey == null ? ANY : variableKey.getType();
     }
 
     @Override
     public void setType(Type type) {
-        if(key == null) key = new VariableKey();
+        if(variableKey == null) variableKey = new VariableKey();
 
-        key.setType(type);
-    }
-
-    @SuppressWarnings("SuspiciousGetterSetter")
-    public VariableKey getVariableKey() {
-        return key;
+        variableKey.setType(type);
     }
 
     public InterpretVariable interpretVariable() {
-        return key;
+        return variableKey;
     }
     public InterpretValue interpretValue() {
-        return key.getValue();
+        return variableKey.getValue();
     }
 
     public CompileMemory compileMemory() {

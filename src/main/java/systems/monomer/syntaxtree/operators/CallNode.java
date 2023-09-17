@@ -18,8 +18,8 @@ public class CallNode extends OperatorNode {
         super("call");
     }
 
-    public Type getSignature() {
-        return new Signature(getType(), getSecond().getType());
+    public Signature getSignature() {
+        return new Signature(getType(), TupleType.asTuple(getSecond().getType()));
     }
 
     public InterpretValue interpretValue() {
@@ -28,8 +28,13 @@ public class CallNode extends OperatorNode {
         if(function == null)
             return getFirst().interpretValue().asValue()
                     .call(getSecond().interpretValue().asValue());
-        else
-            return getFirst().interpretValue().asValue().call(getSecond().interpretValue().asValue());
+        else {
+            //if(cache still matches) return function.call(getSecond().interpretValue().asValue()); //TODO
+            //else
+            return ((OverloadedFunction) getFirst().getType())
+                    .matchingOverload(getSignature())
+                    .call(getSecond().interpretValue().asValue());
+        }
     }
 
     @Override

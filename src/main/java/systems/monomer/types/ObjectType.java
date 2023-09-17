@@ -1,6 +1,9 @@
 package systems.monomer.types;
 
 import lombok.Getter;
+import systems.monomer.interpreter.InterpretObject;
+import systems.monomer.interpreter.InterpretTuple;
+import systems.monomer.interpreter.InterpretValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,5 +68,13 @@ public class ObjectType extends AnyType {
     @Override
     public String valueString() {
         return "{" + fields.entrySet().stream().map((entry)->entry.getKey()+"="+entry.getValue().valueString()).collect(Collectors.joining(",")) + "}";
+    }
+
+    @Override
+    public InterpretValue defaultValue() {
+        //InterpretObject with all fields set to their default values
+        InterpretObject ret = new InterpretObject();
+        fields.forEach((key, value) -> ret.set(key, value.defaultValue()));
+        return ret;
     }
 }

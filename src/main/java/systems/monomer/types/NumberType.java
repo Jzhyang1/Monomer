@@ -2,6 +2,9 @@ package systems.monomer.types;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NonNls;
+import systems.monomer.interpreter.InterpretNumber;
+import systems.monomer.interpreter.InterpretTuple;
+import systems.monomer.interpreter.InterpretValue;
 
 @Getter
 public class NumberType<T extends Number> extends AnyType {
@@ -37,5 +40,10 @@ public class NumberType<T extends Number> extends AnyType {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof NumberType<?> num && num.typeName.equals(typeName);
+    }
+
+    @Override
+    public InterpretValue defaultValue() {
+        return new InterpretNumber<T>(value);
     }
 }

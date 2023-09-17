@@ -1,5 +1,8 @@
 package systems.monomer.types;
 
+import systems.monomer.interpreter.InterpretSequence;
+import systems.monomer.interpreter.InterpretValue;
+
 public class SequenceType extends CollectionType {
     public static final SequenceType SEQUENCE = new SequenceType(new AnyType());
 
@@ -25,5 +28,10 @@ public class SequenceType extends CollectionType {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof SequenceType sequence && getElementType().equals(sequence.getElementType());
+    }
+
+    @Override
+    public InterpretValue defaultValue() {
+        return new InterpretSequence(getElementType());
     }
 }

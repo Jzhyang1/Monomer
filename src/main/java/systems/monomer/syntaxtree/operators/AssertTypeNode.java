@@ -14,6 +14,8 @@ import systems.monomer.types.TupleType;
 import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
 
+import static systems.monomer.types.AnyType.ANY;
+
 public class AssertTypeNode extends OperatorNode {
     private InterpretFunction convertBy = null;
 
@@ -27,11 +29,18 @@ public class AssertTypeNode extends OperatorNode {
         Node second = getSecond();
         if(second instanceof CallNode) {
             //TODO when else is requiresConvert not necessary other than in call?
-            getSecond().setType(getType());
-            getSecond().matchTypes();
+            second.setType(getType());
+            second.matchTypes();
         }
         else {
             second.matchTypes();
+            if(getType().equals(second.getType())) return;  //TODO also include subtypes/masking
+            else if(second.getType() == ANY) {
+                second.setType(getType());
+                second.matchTypes();
+                return;
+            }
+
             VariableKey convertFunc = getVariable("convert");
             if(convertFunc != null) {
                 OverloadedFunction overloads = (OverloadedFunction) convertFunc.getType();

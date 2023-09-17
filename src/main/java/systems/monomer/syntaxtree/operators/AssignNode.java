@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 import static systems.monomer.types.AnyType.ANY;
 
 public class AssignNode extends OperatorNode {
-    private static record FunctionInitInfo(Key function, Node args, Node body, ModuleNode parent) {};
+    private static record FunctionInitInfo(Node identifier, Key function, Node args, Node body, ModuleNode parent) {};
     private FunctionInitInfo functionInit = null;
 
     public AssignNode() {
@@ -58,19 +58,24 @@ public class AssignNode extends OperatorNode {
             );
             return ret;
         }
-        else if(dest instanceof VariableNode variable) {
-            variable.interpretVariable().setValue(val);
-            return val;
-        }
         else {
-            dest.throwError("Invalid assignment of " + val + " to " + dest.getType());
-            return null;
+            dest.interpretVariable().setValue(val);
+            dest.getVariableKey().setType(val.getType());   //TODO this is a hack to get overloads to transfer over functions because they are stored as a type
+            return val;
         }
     }
 
     public void matchTypes() {
         if(functionInit != null) {
-            OverloadedFunction overloads = (OverloadedFunction) functionInit.function.getType();
+            functionInit.identifier.matchTypes();
+
+            Type potentialOverloads = functionInit.function.getType();
+            OverloadedFunction overloads;
+            if(potentialOverloads == ANY)
+                functionInit.function.setType(overloads = new OverloadedFunction());
+            else
+                overloads = (OverloadedFunction) potentialOverloads;
+
             //TODO rid of TupleNode.asTuple
             InterpretFunction function = new InterpretFunction(TupleNode.asTuple(functionInit.args), functionInit.body, functionInit.parent);
 
@@ -102,6 +107,7 @@ public class AssignNode extends OperatorNode {
             for(int i = children.size() - 2; i >= 0; --i) {
                 Node variable = children.get(i);
 
+                //TODO check variable type
                 variable.setType(valType);
                 variable.matchTypes();
 
@@ -120,8 +126,6 @@ public class AssignNode extends OperatorNode {
 //                    value.throwError("Type mismatch: " + variable.getType() + " and " + value.getType());
 //                }
             }
-            //TODO chained assignment
-//            setType(matchTypes(getFirst(), getSecond()));
 
             //TODO match param (first.second) to some open callable
         }
@@ -143,7 +147,7 @@ public class AssignNode extends OperatorNode {
             wrapper.setParent(this);
             wrapper.with(args);//.matchVariables();    //TODO this solves a problem with not being able to reference types in args, but makes it so that the args can not have names that are the same as elsewhere
             wrapper.with(second).matchVariables();
-            functionInit = new FunctionInitInfo(identifierKey, args, second, wrapper);
+            functionInit = new FunctionInitInfo(identifier, identifierKey, args, second, wrapper);
         }
         else {
             super.matchVariables();
@@ -159,8 +163,8 @@ public class AssignNode extends OperatorNode {
         if(functionInit == null) {
             InterpretResult ret = getSecond().interpretValue();
             if(ret.isValue()) {
-                for(int i = getFirst().size() - 2; i >= 0; --i)
-                    assign(getFirst().get(i), (InterpretValue) ret);
+                for(int i = size() - 2; i >= 0; --i)
+                    assign(get(i), (InterpretValue) ret);
             }
             return ret;
         }

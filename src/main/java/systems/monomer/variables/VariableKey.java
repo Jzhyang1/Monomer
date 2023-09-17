@@ -2,26 +2,10 @@ package systems.monomer.variables;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.SneakyThrows;
-import org.jetbrains.annotations.Nullable;
-import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
-import systems.monomer.syntaxtree.ModuleNode;
-import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.VariableNode;
-import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.AnyType;
-import systems.monomer.types.ObjectType;
-import systems.monomer.types.Signature;
 import systems.monomer.types.Type;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Getter @Setter
 public class VariableKey extends Key {
@@ -31,8 +15,19 @@ public class VariableKey extends Key {
     public VariableKey(){}
 
     public InterpretValue getValue() {
-//        assert value != null;   //TODO
+        if(value == null)
+            value = type.defaultValue();
         return value;
+    }
+
+    @Override
+    public void setField(String field, Type type) {
+        this.type.setField(field, type);
+        value.setField(field, type.defaultValue());
+    }
+    @Override
+    public Type getField(String field) {
+        return type.getField(field);
     }
 
     public String valueString() {

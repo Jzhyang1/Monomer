@@ -35,6 +35,11 @@ public abstract class InterpretVariable implements Type, Cloneable {
     }
 
     @Override
+    public InterpretValue defaultValue() {
+        return getValue();
+    }
+
+    @Override
     public InterpretVariable clone() {
         try {
             InterpretVariable clone = (InterpretVariable) super.clone();

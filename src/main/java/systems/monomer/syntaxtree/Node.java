@@ -13,6 +13,7 @@ import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.types.AnyType;
 import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.Key;
@@ -35,7 +36,7 @@ public abstract class Node extends ErrorBlock {
     private final List<Node> children = new ArrayList<>();
     @Getter
     @Setter
-    private Type type = TupleType.EMPTY;
+    private Type type = AnyType.ANY;
 
 
     public Node(String name) {

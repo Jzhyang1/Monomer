@@ -86,6 +86,8 @@ public class OverloadedFunction extends AnyType {
                 return overloads.get(tempRetSignature);
             } else if(needsArg && overloads.containsKey(tempArgSignature)) {
                 return overloads.get(tempArgSignature);
+            } else if(overloads.containsKey(Signature.ANYSIGNATURE)) {
+                return overloads.get(Signature.ANYSIGNATURE);
             } else {
                 throw new Error("No matching signature found for " + signature);  //TODO throwError
             }

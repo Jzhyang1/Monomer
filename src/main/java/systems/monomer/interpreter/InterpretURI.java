@@ -40,4 +40,9 @@ public class InterpretURI extends ObjectType implements InterpretValue {
     public InterpretURI clone() {
         return (InterpretURI) super.clone();
     }
+
+    @Override
+    public InterpretValue defaultValue() {
+        return this;
+    }
 }

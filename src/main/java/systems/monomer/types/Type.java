@@ -1,6 +1,7 @@
 package systems.monomer.types;
 
 import systems.monomer.compiler.CompileSize;
+import systems.monomer.interpreter.InterpretValue;
 
 public interface Type extends Cloneable {
     Type clone();
@@ -73,4 +74,9 @@ public interface Type extends Cloneable {
     default Type getType() {
         return this;
     }
+
+    /**
+     * @return the default value of the type
+     */
+    InterpretValue defaultValue();
 }

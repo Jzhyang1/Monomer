@@ -1,6 +1,9 @@
 package systems.monomer.types;
 
 import lombok.Getter;
+import systems.monomer.interpreter.InterpretMap;
+import systems.monomer.interpreter.InterpretTuple;
+import systems.monomer.interpreter.InterpretValue;
 
 @Getter
 public class MapType extends CollectionType {
@@ -30,4 +33,9 @@ public class MapType extends CollectionType {
     public boolean equals(Object obj) {
         return obj instanceof MapType mapType && super.equals(mapType) && valueType.equals(mapType.valueType);
     }
+
+//    @Override //TODO
+//    public InterpretValue defaultValue() {
+//        return InterpretMap.EMPTY;
+//    }
 }

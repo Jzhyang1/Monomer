@@ -2,9 +2,12 @@ package systems.monomer.variables;
 
 import lombok.Getter;
 import lombok.Setter;
+import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.ObjectType;
 import systems.monomer.types.Type;
+
+import static systems.monomer.types.AnyType.ANY;
 
 @Getter @Setter
 public class FieldKey extends Key {
@@ -27,8 +30,9 @@ public class FieldKey extends Key {
     public void setValue(InterpretValue value) {
         if(parent.getValue() instanceof ObjectType objectType)
             objectType.setField(name, value);
-        else
+        else {
             throw new Error("TODO unimplemented");
+        }
     }
 
     @Override
@@ -37,7 +41,15 @@ public class FieldKey extends Key {
     }
     @Override
     public void setType(Type type) {
-        parent.setField(name, type);
+        if(parent.getType() instanceof ObjectType objectType)
+            objectType.setField(name, type);
+        else if(parent.getType() == ANY) {
+            ObjectType object = new ObjectType();
+            object.setField(name, type);
+            parent.setType(object);
+        }
+        else
+            throw new Error("TODO unimplemented");
     }
 
     @Override

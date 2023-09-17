@@ -1,6 +1,9 @@
 package systems.monomer.types;
 
 import lombok.Getter;
+import systems.monomer.interpreter.InterpretCollection;
+import systems.monomer.interpreter.InterpretTuple;
+import systems.monomer.interpreter.InterpretValue;
 
 @Getter
 public class CollectionType extends ObjectType {
@@ -35,4 +38,9 @@ public class CollectionType extends ObjectType {
     public int hashCode() {
         return elementType.hashCode()*31 + this.getClass().hashCode();
     }
+
+//    @Override //TODO
+//    public InterpretValue defaultValue() {
+//        return InterpretTuple.EMPTY;
+//    }
 }

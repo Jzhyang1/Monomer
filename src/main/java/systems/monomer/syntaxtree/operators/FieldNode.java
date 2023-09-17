@@ -11,6 +11,8 @@ import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.VariableNode;
+import systems.monomer.types.ObjectType;
+import systems.monomer.types.Type;
 import systems.monomer.variables.FieldKey;
 import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
@@ -18,31 +20,6 @@ import systems.monomer.variables.VariableKey;
 import static systems.monomer.types.AnyType.ANY;
 
 public final class FieldNode extends OperatorNode {
-//    private class FieldKey {
-//        private final VariableKey key;
-//        private final String name;
-//
-//        public FieldKey(String name , VariableKey key) {
-//            this.name = name;
-//            this.key = key;
-//        }
-//
-//        public InterpretValue interpretValue() {
-//            if(key == null) {
-//                InterpretResult first = FieldNode.this.getFirst().interpretValue();
-//                if(!first.isValue()) {
-//                    FieldNode.this.throwError("Attempting to access " + name + " as a variable");
-//                }
-//                return first.asValue().get(name);
-//            }
-//            else return key.getValue();
-//        }
-//
-//        public VariableKey getVariableKey() {
-//            if (key == null) throwError("Attempting to access " + name + " as a variable");
-//            return key;
-//        }
-//    }
     @Getter
     private @Nullable FieldKey variableKey;
     private String fieldName = null;
@@ -63,22 +40,35 @@ public final class FieldNode extends OperatorNode {
         Key parentKey = getFirst().getVariableKey();
         if(parentKey == null)
             variableKey = null;
-        else if (parentKey.hasField(fieldName))
+        else
             variableKey = new FieldKey(fieldName, parentKey);
-        else {
-            parentKey.put(fieldName, getType());
-            variableKey = new FieldKey(fieldName, parentKey);
-        }
     }
 
     @Override
     public void matchTypes() {
-        if(variableKey != null) {
-            if(getType() != ANY && !variableKey.getType().typeContains(getType()))
-                throwError("Cannot assign " + variableKey.getType() + " to " + getType());
+        //add field to parent
+        Type parentType = getFirst().getType();
+        if(parentType == ANY)
+            getFirst().setType(parentType = new ObjectType());
+        if(!parentType.hasField(fieldName))
+            parentType.setField(fieldName, super.getType());
+        //if either this node's type or it's field's type are not set
+        else if(getType() == ANY)
+            setType(super.getType());
+        else if(super.getType() == ANY)
+            super.setType(getType());
+    }
 
-            setType(variableKey.getType());
-        }
+    @Override
+    public Type getType() {
+        return variableKey == null ? ANY : variableKey.getType();
+    }
+
+    @Override
+    public void setType(Type type) {
+        assert variableKey != null;
+
+        variableKey.setType(type);
     }
 
     public InterpretVariable interpretVariable() {

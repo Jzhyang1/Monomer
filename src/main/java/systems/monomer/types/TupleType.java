@@ -1,6 +1,8 @@
 package systems.monomer.types;
 
 import lombok.Getter;
+import systems.monomer.interpreter.InterpretTuple;
+import systems.monomer.interpreter.InterpretValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,14 @@ public class TupleType extends AnyType {
                 .map(Type::valueString)
                 .reduce((a, b) -> a + "," + b)
                 .orElse("");
+    }
+
+    @Override
+    public InterpretValue defaultValue() {
+        // InterpretTuple with default values
+        return new InterpretTuple(types.stream()
+                .map(Type::defaultValue)
+                .toList());
     }
 
     @Override

@@ -1,5 +1,8 @@
 package systems.monomer.types;
 
+import systems.monomer.interpreter.InterpretChar;
+import systems.monomer.interpreter.InterpretValue;
+
 public class CharType extends AnyType {
     public static final CharType CHAR = new CharType();
 
@@ -21,5 +24,10 @@ public class CharType extends AnyType {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof CharType;
+    }
+
+    @Override
+    public InterpretValue defaultValue() {
+        return new InterpretChar('\0');
     }
 }

@@ -35,6 +35,9 @@ public class InterpretTuple extends TupleType implements InterpretValue {
     }
 
     public InterpretTuple clone() {
+//        InterpretTuple ret = (InterpretTuple) super.clone();
+//        ret.addAll(getValues().stream().map(e->e.clone()).toList());
+//        return ret;
         throw new Error("TODO unimplemented");
     }
 }
