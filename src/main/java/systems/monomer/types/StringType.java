@@ -1,5 +1,8 @@
 package systems.monomer.types;
 
+import systems.monomer.interpreter.InterpretString;
+import systems.monomer.interpreter.InterpretValue;
+
 public class StringType extends ObjectType {
     public static final StringType STRING = new StringType();
 
@@ -21,5 +24,10 @@ public class StringType extends ObjectType {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof StringType;
+    }
+
+    @Override
+    public InterpretValue defaultValue() {
+        return new InterpretString("");
     }
 }

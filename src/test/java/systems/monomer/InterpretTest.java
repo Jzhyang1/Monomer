@@ -78,6 +78,7 @@ public class InterpretTest {
         Node global = new ModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
+        global.matchTypes();
 
         System.out.println(node);
         assertEquals("interpret multiword variables", "(1,1)", node.interpretValue().asValue().valueString());
@@ -94,6 +95,7 @@ public class InterpretTest {
         Node global = new ModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
+        global.matchTypes();
 
         System.out.println(node);
         assertEquals("print multiword variable", "(1,2,3,{x=1,y=2,z=3})", node.interpretValue().asValue().valueString());
@@ -180,6 +182,13 @@ public class InterpretTest {
                 "    if i == 2:\n" +
                 "        break\n" +
                 "    @i");
+        Interpret.interpret(source);
+    }
+
+    @Test
+    public void interpretTest16() {
+        Source source = new SourceString("f = io: uri: \"/Users/main/Downloads/info.txt\"\n" +
+                "@(string: f read())");
         Interpret.interpret(source);
     }
 }

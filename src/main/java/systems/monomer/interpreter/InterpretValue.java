@@ -15,4 +15,6 @@ public interface InterpretValue extends Type, InterpretResult {
     default InterpretValue call(InterpretValue args) {
         throw new Error(this + " is not a function");
     }
+
+    public InterpretValue clone();
 }

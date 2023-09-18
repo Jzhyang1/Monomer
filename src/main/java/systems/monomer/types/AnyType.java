@@ -2,11 +2,16 @@ package systems.monomer.types;
 
 import lombok.Getter;
 import lombok.Setter;
+import systems.monomer.interpreter.InterpretObject;
+import systems.monomer.interpreter.InterpretTuple;
+import systems.monomer.interpreter.InterpretValue;
 
 @Getter @Setter
 public class AnyType implements Type, Cloneable {
     public static final AnyType ANY = new AnyType();
     private boolean mutable = false;
+
+    protected AnyType() {}
 
     @Override
     public Type clone() {
@@ -30,6 +35,11 @@ public class AnyType implements Type, Cloneable {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Type;
+    }
+
+    @Override
+    public InterpretValue defaultValue() {
+        return new InterpretObject();
     }
 
     @Override

@@ -46,8 +46,7 @@ public class ModuleNode extends Node {
     public void setVariableValues(Map<String, VariableKey> values) {
         for(Map.Entry<String, VariableKey> entry : values.entrySet()) {
             VariableKey original = variables.get(entry.getKey());
-            original.setValue(entry.getValue());
-            original.getFields().putAll(entry.getValue().getFields());
+            original.setValue(entry.getValue().getValue());
         }
     }
 

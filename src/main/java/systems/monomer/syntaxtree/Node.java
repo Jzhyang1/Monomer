@@ -12,7 +12,11 @@ import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.errorhandling.ErrorBlock;
+import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.types.AnyType;
+import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
+import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
 
 import java.util.Collection;
@@ -32,7 +36,7 @@ public abstract class Node extends ErrorBlock {
     private final List<Node> children = new ArrayList<>();
     @Getter
     @Setter
-    private Type type = null;
+    private Type type = AnyType.ANY;
 
 
     public Node(String name) {
@@ -57,9 +61,7 @@ public abstract class Node extends ErrorBlock {
      * this returns null if not variable. To be used only in checking stages of compilation
      * @return the variable key
      */
-    public @Nullable VariableKey getVariableKey() {
-//        throwError("Attempting to access " + name + " as a variable");
-        //TODO make sure that nothing accesses variable keys that shouldn't
+    public @Nullable Key getVariableKey() {
         return null;
     }
 

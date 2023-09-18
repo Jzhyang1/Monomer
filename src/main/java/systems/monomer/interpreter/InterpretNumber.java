@@ -16,4 +16,9 @@ public class InterpretNumber<T extends Number> extends NumberType implements Int
     public String valueString(){
         return getValue().toString();
     }
+
+    @Override
+    public InterpretNumber<T> clone() {
+        return (InterpretNumber<T>) super.clone();
+    }
 }

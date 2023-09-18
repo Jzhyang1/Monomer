@@ -10,6 +10,8 @@ import systems.monomer.types.Type;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import static systems.monomer.types.AnyType.ANY;
+
 enum Arithmetic {
     ;
 
@@ -45,7 +47,7 @@ enum Arithmetic {
     }
 
     static Type typeFor(GenericOperatorNode self){
-        if(self.getType() != null) return self.getType();
+        if(self.getType() != ANY) return self.getType();
         else {
             Node first = self.getFirst();
             Node second = self.getSecond();

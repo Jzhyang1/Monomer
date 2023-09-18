@@ -1,5 +1,8 @@
 package systems.monomer.types;
 
+import systems.monomer.interpreter.InterpretBool;
+import systems.monomer.interpreter.InterpretValue;
+
 public class BoolType extends AnyType {
     public static final BoolType BOOL = new BoolType();
 
@@ -21,5 +24,10 @@ public class BoolType extends AnyType {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof BoolType;
+    }
+
+    @Override
+    public InterpretValue defaultValue() {
+        return InterpretBool.FALSE;
     }
 }

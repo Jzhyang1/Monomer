@@ -1,19 +1,28 @@
 package systems.monomer.commandline;
 
 import systems.monomer.Constants;
+import systems.monomer.commandline.EnvironmentDefaults.ConvertDefaults;
+import systems.monomer.commandline.EnvironmentDefaults.FileDefaults;
+import systems.monomer.commandline.EnvironmentDefaults.TypeDefaults;
+import systems.monomer.commandline.EnvironmentDefaults.ValueDefaults;
+import systems.monomer.compiler.CompileSize;
+import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.literals.LiteralNode;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.SourceFile;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
-import systems.monomer.types.CharType;
-import systems.monomer.types.StringType;
+import systems.monomer.types.*;
 import systems.monomer.variables.VariableKey;
 
 import java.io.*;
 import java.util.List;
+
+import static systems.monomer.interpreter.InterpretIO.STDIO;
+import static systems.monomer.interpreter.InterpretURI.URI;
 
 
 public class Interpret {
@@ -23,38 +32,12 @@ public class Interpret {
         Node node = body.toNode();
 //        System.out.println(node);
         Node global = new ModuleNode(source.getTitle());
+
         //global constants here
-        global.putVariable("true", new VariableKey() {{
-            setValue(new InterpretBool(true));
-            setType(InterpretBool.BOOL);
-        }});
-        global.putVariable("false", new VariableKey() {{
-            setValue(new InterpretBool(false));
-            setType(InterpretBool.BOOL);
-        }});
-        global.putVariable("bool", new VariableKey() {{
-            setValue(new InterpretBool(false));
-            setType(InterpretBool.BOOL);
-        }});
-        global.putVariable("int", new VariableKey() {{
-            setValue(new InterpretNumber<>(0));
-            setType(InterpretNumber.INTEGER);
-        }});
-        global.putVariable("float", new VariableKey() {{
-            setValue(new InterpretNumber<>(0.0));
-            setType(InterpretNumber.FLOAT);
-        }});
-        global.putVariable("char", new VariableKey() {{
-            setValue(new InterpretChar('\0'));
-            setType(CharType.CHAR);
-        }});
-        global.putVariable("string", new VariableKey() {{
-            setValue(new InterpretString(""));
-            setType(StringType.STRING);
-        }});
-        global.putVariable("io", new InterpretFile(
-                Constants.getListener(),
-                Constants.getOut()));
+        TypeDefaults.initGlobal(global);
+        ValueDefaults.initGlobal(global);
+        FileDefaults.initGlobal(global);
+        ConvertDefaults.initGlobal(global);
 
         global.add(node);
 

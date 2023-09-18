@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class Signature extends AnyType {
+    public static final Signature ANYSIGNATURE = new Signature(AnyType.ANY, AnyType.ANY);
     private final Type returnType;
     private final Type args;
 
