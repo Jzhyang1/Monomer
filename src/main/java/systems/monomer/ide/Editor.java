@@ -31,7 +31,8 @@ public final class Editor extends JFrame {
 
     static {
         try {
-            Font firaCode = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/java/systems/monomer/ide/FiraCode-Regular.ttf")).deriveFont(12f);
+            InputStream fontStream = Editor.class.getResourceAsStream("/FiraCode-Regular.ttf");
+            Font firaCode = Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont(12f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(firaCode);
             FONT = "Fira Code";
