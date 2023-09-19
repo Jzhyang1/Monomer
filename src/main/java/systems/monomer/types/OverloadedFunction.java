@@ -8,17 +8,17 @@ import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.util.PairList;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Getter
 public class OverloadedFunction extends AnyType {
-    private final Map<Signature, InterpretFunction> overloads = new HashMap<>();    //TODO multikey map with Signature broken into returnType and args
+//    private final Map<Signature, InterpretFunction> overloads = new HashMap<>();    //TODO multikey map with Signature broken into returnType and args
+    private final PairList<Signature, InterpretFunction> overloads = new PairList<>();
 
     /**
      * gets the exact overload matching _signature_
@@ -27,16 +27,17 @@ public class OverloadedFunction extends AnyType {
      */
     public @Nullable InterpretFunction getOverload(Signature signature) {
         //TODO forward references
-        return overloads.get(signature);
+        int index = randomAccessIndex(signature);
+        return index == -1 ? null : overloads.get(index).getSecond();
     }
     public void putOverload(Signature signature, InterpretFunction function) {
-        overloads.put(signature, function);
+        overloads.add(signature, function);
 
         //These handle unknown return types and unknown argument types
-        if(signature.getReturnType() != ANY)
-            overloads.put(new Signature(ANY, signature.getArgs()), function);
-        if(signature.getArgs() != ANY)
-            overloads.put(new Signature(signature.getReturnType(), ANY), function);
+//        if(signature.getReturnType() != ANY)
+//            overloads.add(new Signature(ANY, signature.getArgs()), function);
+//        if(signature.getArgs() != ANY)
+//            overloads.add(new Signature(signature.getReturnType(), ANY), function);
 //        if(signature.getReturnType() != AnyType.ANY && signature.getArgs() != AnyType.ANY)
 //            overloads.put(new Signature(AnyType.ANY, AnyType.ANY), function);
     }
@@ -54,7 +55,7 @@ public class OverloadedFunction extends AnyType {
                 }) //TODO type is wrong
                 .collect(Collectors.toList());
         Node body = bodyCallback.apply(args);
-        TupleNode argsTuple = new TupleNode(args);
+        Node argsTuple = args.size() == 1 ? args.get(0) : new TupleNode(args);
 
         ModuleNode wrapper = new ModuleNode("function");
         wrapper.with(argsTuple).with(body).matchVariables();
@@ -69,28 +70,32 @@ public class OverloadedFunction extends AnyType {
      * @return the matching overload
      */
     public @SneakyThrows InterpretFunction matchingOverload(Signature signature) {
-        //TODO fix this (currently doesn't handle type-matching)
-        if(overloads.containsKey(signature)) {
-            return overloads.get(signature);
+        int index = randomAccessIndex(signature);
+
+        if(index != -1) {
+            return overloads.get(index).getSecond();
+            //TODO optimize by returning a randomAccessIndex or related key instead of the function
+            //  where the function is referenced during type matching
         }
         else {
-            boolean needsRet = signature.getReturnType() != ANY;
-            boolean needsArg = signature.getArgs() != ANY;
-            Signature tempRetSignature = new Signature(ANY, signature.getArgs());
-            Signature tempArgSignature = new Signature(signature.getReturnType(), ANY);
-
-            if(needsRet && needsArg &&
-                    overloads.containsKey(tempRetSignature) && overloads.containsKey(tempArgSignature)) {
-                throw new Error("Ambiguous overload for " + signature);  //TODO throwError
-            } else if(needsRet && overloads.containsKey(tempRetSignature)) {
-                return overloads.get(tempRetSignature);
-            } else if(needsArg && overloads.containsKey(tempArgSignature)) {
-                return overloads.get(tempArgSignature);
-            } else if(overloads.containsKey(Signature.ANYSIGNATURE)) {
-                return overloads.get(Signature.ANYSIGNATURE);
-            } else {
-                throw new Error("No matching signature found for " + signature);  //TODO throwError
-            }
+            throw new Error("No matching signature found for " + signature);  //TODO throwError
         }
+    }
+
+    public int randomAccessIndex(Signature signature) {
+        int index = -1;
+        for(int i = overloads.size() - 1; i >= 0; i--) {
+            if(signature.equals(overloads.get(i).getFirst())){
+                index = i;
+                break;
+            }
+            else if(overloads.get(i).getFirst().typeContains(signature))
+                index = i;
+        }
+        return index;
+    }
+
+    public InterpretFunction getFunction(int randomAccessIndex) {
+        return overloads.get(randomAccessIndex).getSecond();
     }
 }

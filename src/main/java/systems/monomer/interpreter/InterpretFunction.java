@@ -23,9 +23,9 @@ public class InterpretFunction extends Signature implements InterpretValue {
     private final ModuleNode parent;
 
     //TODO handle named args
-    public InterpretFunction(TupleNode args, Node body, ModuleNode parent) {
+    public InterpretFunction(Node args, Node body, ModuleNode parent) {
         super(null, null);
-        this.args = args;
+        this.args = TupleNode.asTuple(args);
         this.body = body;
         this.parent = parent;
     }

@@ -77,7 +77,7 @@ public class AssignNode extends OperatorNode {
                 overloads = (OverloadedFunction) potentialOverloads;
 
             //TODO rid of TupleNode.asTuple
-            InterpretFunction function = new InterpretFunction(TupleNode.asTuple(functionInit.args), functionInit.body, functionInit.parent);
+            InterpretFunction function = new InterpretFunction(functionInit.args, functionInit.body, functionInit.parent);
 
             functionInit.args.matchTypes();
             Type argsType = functionInit.args.getType();
@@ -92,8 +92,8 @@ public class AssignNode extends OperatorNode {
             functionInit.body.matchTypes();
             Type bodyType = functionInit.body.getType();
 
-            if(needTempSignature)
-                overloads.getOverloads().remove(tempSignature, function);
+//            if(needTempSignature)
+//                overloads.getOverloads().remove(tempSignature, function); //TODO remove placeholder signature used for recursion
             Signature signature = new Signature(bodyType, argsType);
             overloads.putOverload(signature, function);
 

@@ -44,7 +44,7 @@ public class AssertTypeNode extends OperatorNode {
             VariableKey convertFunc = getVariable("convert");
             if(convertFunc != null) {
                 OverloadedFunction overloads = (OverloadedFunction) convertFunc.getType();
-                convertBy = overloads.getOverload(new Signature(getType(), TupleType.asTuple(second.getType())));
+                convertBy = overloads.getOverload(new Signature(getType(), second.getType()));
             }
             if(convertFunc == null || convertBy == null) {
                 throwError("Cannot convert from " + second.getType() + " to " + getType());

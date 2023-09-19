@@ -11,8 +11,19 @@ import systems.monomer.variables.VariableKey;
 
 import static systems.monomer.types.AnyType.ANY;
 
+/**
+ * A node representing a function call.
+ *     <ul>
+ *         <li>First child: the function to call</li>
+ *         <li>Second child: the argument to pass to the function</li>
+ *         <li>Third child: optional, the Structure representing named arguments</li>
+ *     </ul>
+ *     <br/>
+ *     The type of the node is the return type of the function.
+ *     the <b>getSignature</b> method returns the signature of the function call.
+ */
 public class CallNode extends OperatorNode {
-    private @Nullable InterpretFunction function;
+    private int functionIndex = -1;
 
     public CallNode() {
         super("call");
@@ -23,16 +34,15 @@ public class CallNode extends OperatorNode {
     }
 
     public InterpretValue interpretValue() {
-        //TODO function is cached from type, but it could have changed by assignment
-        // And are functions defined in OverloadedFunction type instead of a value?
-        if(function == null)
+        //TODO why are functions defined in OverloadedFunction type instead of a value?
+        if(functionIndex == -1)
             return getFirst().interpretValue().asValue()
                     .call(getSecond().interpretValue().asValue());
         else {
             //if(cache still matches) return function.call(getSecond().interpretValue().asValue()); //TODO
             //else
             return ((OverloadedFunction) getFirst().getType())
-                    .matchingOverload(getSignature())
+                    .getFunction(functionIndex)
                     .call(getSecond().interpretValue().asValue());
         }
     }
@@ -40,17 +50,23 @@ public class CallNode extends OperatorNode {
     @Override
     public void matchTypes() {
         //recursion guard
-        if(function != null) return;
+        if(functionIndex != -1) return;
 
         super.matchTypes();
-        Type argType = TupleType.asTuple(getSecond().getType());    //TODO fix the initial setting of signatures such that single args are not tuples
+        Type argType = getSecond().getType();    //TODO fix the initial setting of signatures such that single args are not tuples
 //        if(argType == null) argType = AnyType.ANY;
         Type returnType = getType();
         if(returnType == null) returnType = ANY;
 
         Type funcType = getFirst().getType();
         if(funcType instanceof OverloadedFunction overload) {
-            function = overload.matchingOverload(new Signature(returnType, argType));
+            functionIndex = overload.randomAccessIndex(new Signature(returnType, argType));
+
+            if(functionIndex == -1)
+               throwError("No matching function found for " + argType + " -> " + returnType);
+
+            InterpretFunction function = overload.getFunction(functionIndex);
+
             Type actualReturnType = function.getReturnType();
             //TODO find out why it returns null
             //TODO make this not change values within the function

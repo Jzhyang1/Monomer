@@ -191,4 +191,13 @@ public class InterpretTest {
                 "@(string: f read())");
         Interpret.interpret(source);
     }
+
+    @Test
+    public void interpretTest17() {
+        Source source = new SourceString("f(int:x) = 123\n" +
+                "f(string:x) = \"hi\"\n" +
+                "io write(f(1))\n" +
+                "io write(\"\\n\")");
+        Interpret.interpret(source);
+    }
 }

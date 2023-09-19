@@ -5,17 +5,33 @@ import lombok.Getter;
 @Getter
 public class Signature extends AnyType {
     public static final Signature ANYSIGNATURE = new Signature(AnyType.ANY, AnyType.ANY);
-    private final Type returnType;
-    private final Type args;
+    private final Type returnType, args, namedArgs;
 
     public Signature(Type returnType, Type args) {
         this.returnType = returnType;
         this.args = args;
+        namedArgs = AnyType.ANY;
+    }
+    public Signature(Type returnType, Type args, Type namedArgs) {
+        this.returnType = returnType;
+        this.args = args;
+        this.namedArgs = namedArgs;
     }
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof Signature sig && returnType.equals(sig.returnType) && args.equals(sig.args);
+        return other instanceof Signature sig &&
+                returnType.equals(sig.returnType) &&
+                args.equals(sig.args) &&
+                namedArgs.equals(sig.namedArgs);
+    }
+
+    @Override
+    public boolean typeContains(Type other) {
+        return other instanceof Signature sig &&
+                returnType.typeContains(sig.returnType) &&
+                args.typeContains(sig.args) &&
+                namedArgs.typeContains(sig.namedArgs);
     }
 
     @Override
@@ -24,6 +40,6 @@ public class Signature extends AnyType {
     }
 
     public String toString() {
-        return args.valueString() + " -> " + returnType.valueString();
+        return args + " -> " + returnType;
     }
 }
