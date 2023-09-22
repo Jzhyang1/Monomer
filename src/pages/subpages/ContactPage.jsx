@@ -72,7 +72,12 @@ const contacts = [
     link: "",
     desc: "developer",
     tasks: ["developer for MERL", "syntax tree", "interpreter"],
-    links: [],
+    links: [
+      {
+        title: "GitHub",
+        href: "https://github.com/Ansere",
+      },
+    ],
     important: true,
   },
   {
@@ -82,19 +87,24 @@ const contacts = [
     link: "",
     desc: "developer",
     tasks: ["error handling"],
-    links: [],
+    links: [
+      {
+        title: "GitHub",
+        href: "https://github.com/realfluffybunnyy",
+      },
+    ],
     important: true,
   },
-  {
-    title: "Phoenix Wu",
-    image: "/people/Phoenix.jpg",
-    creds: "Massachusetts Institute of Technology",
-    link: "",
-    desc: "tester",
-    tasks: ["bug finding and documentation"],
-    links: [],
-    important: true,
-  },
+  // {
+  //   title: "Phoenix Wu",
+  //   image: "/people/Phoenix.jpg",
+  //   creds: "Massachusetts Institute of Technology",
+  //   link: "",
+  //   desc: "tester",
+  //   tasks: ["bug finding and documentation"],
+  //   links: [],
+  //   important: true,
+  // },
   {
     title: "Kason Gu",
     image: "https://avatars.githubusercontent.com/u/80986485?s=64&v=4",
@@ -102,29 +112,44 @@ const contacts = [
     link: "",
     desc: "developer",
     tasks: ["Code editor", "Development integration"],
-    links: [],
+    links: [
+      {
+        title: "GitHub",
+        href: "https://github.com/croissant676",
+      },
+    ],
     important: true,
   },
-  {
-    title: "Gordon Jin",
-    image: "/people/Gordon.jpg",
-    creds: "Seven Lakes High School",
-    link: "",
-    desc: "developer",
-    tasks: ["Cross-language transpilation"],
-    links: [],
-    important: true,
-  },
-  {
-    title: "Derek Yu",
-    image: "/icon.jpg",
-    creds: "Seven Lakes High School",
-    link: "",
-    desc: "commentator",
-    tasks: [],
-    links: [],
-    important: true,
-  },
+  // {
+  //   title: "Gordon Jin",
+  //   image: "/people/Gordon.jpg",
+  //   creds: "Seven Lakes High School",
+  //   link: "",
+  //   desc: "developer",
+  //   tasks: ["Cross-language transpilation"],
+  //   links: [],
+  //   important: true,
+  // },
+  // {
+  //   title: "Derek Yu",
+  //   image: "/icon.jpg",
+  //   creds: "Seven Lakes High School",
+  //   link: "",
+  //   desc: "commentator",
+  //   tasks: [],
+  //   links: [],
+  //   important: true,
+  // },
+  // {
+  //   title: "James Guo",
+  //   image: "/people/Phoenix.jpg",
+  //   creds: "Seven Lakes High School",
+  //   link: "",
+  //   desc: "tester",
+  //   tasks: ["bug finding and documentation"],
+  //   links: [],
+  //   important: true,
+  // },
   {
     title: "Aayush Ishware",
     image: "/icon-dark.jpg",
@@ -245,8 +270,8 @@ function ContactBox({ contact }) {
           <div className="text-sm">{creds}</div>
           <div className="uppercase text-xl mb-2">{desc}</div>
           <List className="text-base">
-            {links.map(({ title, link }, i) =>
-              link ? <Link href={link}>{title}</Link> : title
+            {links.map(({ title, href }, i) =>
+              href ? <Link href={href}>{title}</Link> : title
             )}
           </List>
           {tasks && (
@@ -262,8 +287,8 @@ function ContactBox({ contact }) {
       </div>
       <div className="uppercase">{desc}</div>
       <List className="text-sm">
-        {links.map(({ title, link }, i) =>
-          link ? <Link href={link}>{title}</Link> : title
+        {links.map(({ title, href }, i) =>
+          href ? <Link href={href}>{title}</Link> : title
         )}
       </List>
     </Box>

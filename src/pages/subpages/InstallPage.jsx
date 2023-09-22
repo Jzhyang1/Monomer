@@ -82,7 +82,7 @@ function Machine({ name, sources }) {
         {name}
       </div>
       {sources.map(({ href, name }, i) => (
-        <div key={i} className={i !== 0 && "italic"}>
+        <div key={i} className={`gap-1 ${i !== 0 && "italic"}`}>
           <DownloadLink href={href}>{name}</DownloadLink>
         </div>
       ))}
