@@ -62,6 +62,14 @@ const contacts = [
       {
         title: "jzhyang1@gmail.com",
       },
+      {
+        title: "Github: Jzhyang1",
+        href: "https://github.com/Jzhyang1",
+      },
+      {
+        title: "Github: kisdjonathan",
+        href: "https://github.com/kisdjonathan",
+      },
     ],
     important: true,
   },
@@ -74,7 +82,7 @@ const contacts = [
     tasks: ["developer for MERL", "syntax tree", "interpreter"],
     links: [
       {
-        title: "GitHub",
+        title: "GitHub: Ansere",
         href: "https://github.com/Ansere",
       },
     ],
@@ -89,7 +97,7 @@ const contacts = [
     tasks: ["error handling"],
     links: [
       {
-        title: "GitHub",
+        title: "GitHub: realfulffybunnyy",
         href: "https://github.com/realfluffybunnyy",
       },
     ],
@@ -114,7 +122,7 @@ const contacts = [
     tasks: ["Code editor", "Development integration"],
     links: [
       {
-        title: "GitHub",
+        title: "GitHub: croissant676",
         href: "https://github.com/croissant676",
       },
     ],
@@ -140,16 +148,16 @@ const contacts = [
   //   links: [],
   //   important: true,
   // },
-  // {
-  //   title: "James Guo",
-  //   image: "/people/Phoenix.jpg",
-  //   creds: "Seven Lakes High School",
-  //   link: "",
-  //   desc: "tester",
-  //   tasks: ["bug finding and documentation"],
-  //   links: [],
-  //   important: true,
-  // },
+  {
+    title: "James Guo",
+    image: "/people/JamesGuo.jpg",
+    creds: "Seven Lakes High School",
+    link: "",
+    desc: "tester",
+    tasks: ["bug finding and documentation"],
+    links: [],
+    important: true,
+  },
   {
     title: "Aayush Ishware",
     image: "/icon-dark.jpg",
@@ -166,7 +174,7 @@ export default function ContactPage() {
   return (
     <>
       <Title>Sources</Title>
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-[20px] mt-[10px] mb-[30px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-[20px] mt-[10px] mb-[30px]">
         {repos.map((repo, index) => (
           <RepoBox key={index} repo={repo} />
         ))}
