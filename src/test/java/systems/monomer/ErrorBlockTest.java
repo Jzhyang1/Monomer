@@ -42,7 +42,7 @@ public class ErrorBlockTest {
                 "\tline.skipSpaces();\n" +
                 "}"
         );
-        Context context = new Context(new Index(3, 0, 3), new Index(6, 0, 6), source);
+        Context context = new Context(new Index(3, 0, 3), new Index(0, 6, 60), source);
 
         ErrorBlock errorBlock = new ErrorBlock();
         errorBlock.setContext(context);

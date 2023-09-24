@@ -6,11 +6,14 @@ import org.jetbrains.annotations.Nullable;
 import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.StructureNode;
 import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.util.Pair;
 import systems.monomer.util.PairList;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -42,8 +45,8 @@ public class OverloadedFunction extends AnyType {
 //            overloads.put(new Signature(AnyType.ANY, AnyType.ANY), function);
     }
 
-    public void putOverload(Node args, Node body, ModuleNode wrapper) {
-        putOverload(new Signature(body.getType(), args.getType()), new InterpretFunction(TupleNode.asTuple(args), body, wrapper));
+    public void putOverload(Node args, StructureNode namedArgs, Node body, ModuleNode wrapper) {
+        putOverload(new Signature(body.getType(), args.getType()), new InterpretFunction(args, namedArgs, body, wrapper));
     }
 
     public void putOverload(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {
@@ -61,7 +64,35 @@ public class OverloadedFunction extends AnyType {
         wrapper.with(argsTuple).with(body).matchVariables();
         wrapper.matchTypes();
 
-        putOverload(argsTuple, body, wrapper);
+        putOverload(argsTuple, StructureNode.EMPTY, body, wrapper);
+    }
+
+    public void putOverload(List<Type> argTypes,
+                            List<Pair<String, Type>> names,
+                            BiFunction<List<VariableNode>, List<VariableNode>, Node> bodyCallback) {
+        List<VariableNode> args = IntStream.range(0, argTypes.size())
+                .mapToObj(i -> {
+                    VariableNode ret = new VariableNode("arg"+i);
+                    ret.setType(argTypes.get(i));
+                    return ret;
+                })
+                .toList();
+        List<VariableNode> namedArgs = names.stream()
+                .map(pair -> {
+                    VariableNode ret = new VariableNode(pair.getFirst());
+                    ret.setType(pair.getSecond());
+                    return ret;
+                })
+                .toList();
+        Node body = bodyCallback.apply(args, namedArgs);
+        Node argsTuple = args.size() == 1 ? args.get(0) : new TupleNode(args);
+        StructureNode namedArgsStructure = new StructureNode(); namedArgsStructure.addAll(namedArgs);
+
+        ModuleNode wrapper = new ModuleNode("function");
+        wrapper.with(argsTuple).with(body).matchVariables();
+        wrapper.matchTypes();
+
+        putOverload(argsTuple, namedArgsStructure, body, wrapper);
     }
 
     /**
@@ -84,14 +115,20 @@ public class OverloadedFunction extends AnyType {
 
     public int randomAccessIndex(Signature signature) {
         int index = -1;
+//        boolean conflictingMatches = false;
         for(int i = overloads.size() - 1; i >= 0; i--) {
             if(signature.equals(overloads.get(i).getFirst())){
                 index = i;
                 break;
             }
-            else if(overloads.get(i).getFirst().typeContains(signature))
-                index = i;
+            else if(overloads.get(i).getFirst().typeContains(signature)) {
+                if (index == -1) index = i;
+//                else conflictingMatches = true;
+            }
         }
+//        if(conflictingMatches) {  //TODO handle matching conflicts
+//            throw new Error("Conflicting matches found for " + signature);  //TODO throwError
+//        }
         return index;
     }
 

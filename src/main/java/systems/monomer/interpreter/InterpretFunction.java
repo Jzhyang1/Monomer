@@ -3,6 +3,7 @@ package systems.monomer.interpreter;
 import systems.monomer.Constants;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.StructureNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.syntaxtree.operators.AssignNode;
 import systems.monomer.types.AnyType;
@@ -19,13 +20,15 @@ import java.util.stream.IntStream;
 
 public class InterpretFunction extends Signature implements InterpretValue {
     private TupleNode args;
+    private StructureNode namedArgs;
     private Node body;
     private final ModuleNode parent;
 
     //TODO handle named args
-    public InterpretFunction(Node args, Node body, ModuleNode parent) {
+    public InterpretFunction(Node args, StructureNode namedArgs, Node body, ModuleNode parent) {
         super(null, null);
         this.args = TupleNode.asTuple(args);
+        this.namedArgs = namedArgs;
         this.body = body;
         this.parent = parent;
     }

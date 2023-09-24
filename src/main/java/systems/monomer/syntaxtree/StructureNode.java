@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StructureNode extends LiteralNode {
+    public static final StructureNode EMPTY = new StructureNode();
     private Map<String, VariableKey> variables = new HashMap<>();
 
     public StructureNode(){}

@@ -4,6 +4,7 @@ import systems.monomer.compiler.*;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.StructureNode;
 import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
@@ -16,7 +17,7 @@ import java.util.stream.IntStream;
 import static systems.monomer.types.AnyType.ANY;
 
 public class AssignNode extends OperatorNode {
-    private static record FunctionInitInfo(Node identifier, Key function, Node args, Node body, ModuleNode parent) {};
+    private static record FunctionInitInfo(Node identifier, Key function, Node args, StructureNode namedArgs, Node body, ModuleNode parent) {};
     private FunctionInitInfo functionInit = null;
 
     public AssignNode() {
@@ -77,7 +78,7 @@ public class AssignNode extends OperatorNode {
                 overloads = (OverloadedFunction) potentialOverloads;
 
             //TODO rid of TupleNode.asTuple
-            InterpretFunction function = new InterpretFunction(functionInit.args, functionInit.body, functionInit.parent);
+            InterpretFunction function = new InterpretFunction(functionInit.args, functionInit.namedArgs, functionInit.body, functionInit.parent);
 
             functionInit.args.matchTypes();
             Type argsType = functionInit.args.getType();
@@ -136,6 +137,8 @@ public class AssignNode extends OperatorNode {
         Node first = getFirst(), second = getSecond();
         if(first instanceof CallNode callNode) {
             Node identifier = callNode.getFirst(), args = callNode.getSecond();
+            Node namedArgs = callNode.size() == 2 ? StructureNode.EMPTY : callNode.get(2);
+            if(!(namedArgs instanceof StructureNode)) namedArgs.throwError("Expected named args, got " + namedArgs);
 //            isFunction = true;
 
 
@@ -145,9 +148,9 @@ public class AssignNode extends OperatorNode {
 
             ModuleNode wrapper = new ModuleNode("function");
             wrapper.setParent(this);
-            wrapper.with(args);//.matchVariables();    //TODO this solves a problem with not being able to reference types in args, but makes it so that the args can not have names that are the same as elsewhere
+            wrapper.with(args).with(namedArgs);//.matchVariables();    //TODO this solves a problem with not being able to reference types in args, but makes it so that the args can not have names that are the same as elsewhere
             wrapper.with(second).matchVariables();
-            functionInit = new FunctionInitInfo(identifier, identifierKey, args, second, wrapper);
+            functionInit = new FunctionInitInfo(identifier, identifierKey, args, (StructureNode) namedArgs, second, wrapper);
         }
         else {
             super.matchVariables();
