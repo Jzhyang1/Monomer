@@ -68,8 +68,8 @@ public class CallNode extends OperatorNode {
             InterpretFunction function = overload.getFunction(functionIndex);
 
             Type actualReturnType = function.getReturnType();
-            //TODO find out why it returns null
-            //TODO make this not change values within the function
+            //TODO function.testReturnType might modify the function's type by accident
+            //TODO sus that actualReturnType is not checked against returnType
             if(actualReturnType == ANY)
                 setType(function.testReturnType(argType));
             else if(returnType == ANY)
