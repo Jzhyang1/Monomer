@@ -51,6 +51,7 @@ public class AssignNode extends OperatorNode {
     }
 
     public static InterpretValue assign(Node dest, InterpretValue val) {
+        //TODO move assign to the Node class and implement it in the nodes that support it
         if(dest instanceof TupleNode tupleDest && val instanceof InterpretTuple tupleVal) {
             InterpretTuple ret = new InterpretTuple(
                     IntStream.range(0, tupleDest.size())
@@ -58,6 +59,11 @@ public class AssignNode extends OperatorNode {
                             .toList()
             );
             return ret;
+        }
+        else if(dest instanceof StructureNode structDest) {
+            //TODO compare this with Tuple assign
+            structDest.assign(val);
+            return val;
         }
         else {
             dest.interpretVariable().setValue(val);
@@ -139,8 +145,7 @@ public class AssignNode extends OperatorNode {
             Node identifier = callNode.getFirst(), args = callNode.getSecond();
             Node namedArgs = callNode.size() == 2 ? StructureNode.EMPTY : callNode.get(2);
             if(!(namedArgs instanceof StructureNode)) namedArgs.throwError("Expected named args, got " + namedArgs);
-//            isFunction = true;
-
+            StructureNode namedArgsStruct = (StructureNode) namedArgs;
 
             identifier.matchVariables();
             Key identifierKey = identifier.getVariableKey();
@@ -148,6 +153,9 @@ public class AssignNode extends OperatorNode {
 
             ModuleNode wrapper = new ModuleNode("function");
             wrapper.setParent(this);
+            for (String fieldName: namedArgsStruct.getFieldNames()) {
+                wrapper.putVariable(fieldName, namedArgsStruct.getVariable(fieldName));
+            }
             wrapper.with(args).with(namedArgs);//.matchVariables();    //TODO this solves a problem with not being able to reference types in args, but makes it so that the args can not have names that are the same as elsewhere
             wrapper.with(second).matchVariables();
             functionInit = new FunctionInitInfo(identifier, identifierKey, args, (StructureNode) namedArgs, second, wrapper);

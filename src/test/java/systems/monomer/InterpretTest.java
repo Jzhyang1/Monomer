@@ -200,4 +200,10 @@ public class InterpretTest {
                 "io write(\"\\n\")");
         Interpret.interpret(source);
     }
+
+    @Test
+    public void interpretTest18() {
+        Source source = new SourceString("a={x=1;y=3};@a x");
+        Interpret.interpret(source);
+    }
 }

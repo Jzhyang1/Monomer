@@ -89,7 +89,9 @@ public class OverloadedFunction extends AnyType {
         StructureNode namedArgsStructure = new StructureNode(); namedArgsStructure.addAll(namedArgs);
 
         ModuleNode wrapper = new ModuleNode("function");
-        wrapper.with(argsTuple).with(body).matchVariables();
+        for(String fieldName : namedArgsStructure.getFieldNames())
+            wrapper.putVariable(fieldName, namedArgsStructure.getVariable(fieldName));
+        wrapper.with(argsTuple).with(namedArgsStructure).with(body).matchVariables();
         wrapper.matchTypes();
 
         putOverload(argsTuple, namedArgsStructure, body, wrapper);

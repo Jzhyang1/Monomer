@@ -2,10 +2,15 @@ package systems.monomer.syntaxtree;
 
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
+import systems.monomer.interpreter.InterpretObject;
+import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.literals.LiteralNode;
+import systems.monomer.syntaxtree.operators.AssignNode;
+import systems.monomer.types.ObjectType;
 import systems.monomer.variables.VariableKey;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,16 +28,47 @@ public class StructureNode extends LiteralNode {
         variables.put(varName, key);
     }
     public VariableKey getVariable(String varName) {
-        throw new Error("TODO unimplemented");
+        VariableKey ret = variables.get(varName);
+        return ret == null ? getParent().getVariable(varName): ret;
+    }
+    public Collection<String> getFieldNames() {
+        return variables.keySet();
     }
 
     public void matchTypes() {
-        //TODO set type to generated type copy of self
-        throw new Error("TODO unimplemented");
+        //TODO check for type of return if exists
+        ObjectType type = new ObjectType();
+        for(Node child : getChildren()) {
+            type.setField(child.getName(), child.getType());
+        }
+        setType(type);
     }
 
-    public InterpretValue interpretValue() {
-        throw new Error("TODO unimplemented");
+    public InterpretResult interpretValue() {
+        for(Node child : getChildren()) {
+            InterpretResult res = child.interpretValue();
+            if(!res.isValue())
+                return res;
+        }
+
+        InterpretObject ret = new InterpretObject();
+        for(Map.Entry<String, VariableKey> entry : variables.entrySet()) {
+            //TODO copy over function overloads
+            ret.set(entry.getKey(), entry.getValue().getValue());
+        }
+        return ret;
+    }
+
+    public void assign(InterpretValue value) {
+        if(value instanceof InterpretObject obj) {
+            for(Node child : getChildren()) {
+                //TODO move assign to node
+                AssignNode.assign(child, obj.get(child.getName()));
+            }
+        }
+        else {
+            throwError("Cannot assign " + value + " to " + this);
+        }
     }
 
     public CompileValue compileValue() {

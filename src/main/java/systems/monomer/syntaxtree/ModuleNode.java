@@ -34,6 +34,7 @@ public class ModuleNode extends Node {
         return getParent() == null ? null : getParent().getVariable(varName);
     }
     public Map<String, VariableKey> getVariableValuesMap() {
+        //TODO optimize based on whether constant
         return variables.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
