@@ -3,6 +3,8 @@ package systems.monomer.interpreter;
 import systems.monomer.types.ObjectType;
 
 public class InterpretObject extends ObjectType implements InterpretValue {
+    public static final InterpretValue EMPTY = new InterpretObject();
+
     public InterpretObject clone() {
         return (InterpretObject) super.clone();
     }

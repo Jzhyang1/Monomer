@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public class ObjectType extends AnyType {
+    public static final Type EMPTY = new ObjectType();
     private final Map<String, Type> fields = new HashMap<>();
 
     @Override

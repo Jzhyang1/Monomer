@@ -2,6 +2,8 @@ package systems.monomer.types;
 
 import lombok.Getter;
 
+import static systems.monomer.interpreter.InterpretObject.EMPTY;
+
 @Getter
 public class Signature extends AnyType {
     public static final Signature ANYSIGNATURE = new Signature(AnyType.ANY, AnyType.ANY);
@@ -10,7 +12,7 @@ public class Signature extends AnyType {
     public Signature(Type returnType, Type args) {
         this.returnType = returnType;
         this.args = args;
-        namedArgs = AnyType.ANY;
+        namedArgs = ObjectType.EMPTY;
     }
     public Signature(Type returnType, Type args, Type namedArgs) {
         this.returnType = returnType;

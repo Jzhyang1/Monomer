@@ -36,12 +36,12 @@ public class StructureNode extends LiteralNode {
     }
 
     public void matchTypes() {
-        //TODO check for type of return if exists
-        ObjectType type = new ObjectType();
-        for(Node child : getChildren()) {
-            type.setField(child.getName(), child.getType());
+        super.matchTypes();
+        ObjectType ret = new ObjectType();
+        for(Map.Entry<String, VariableKey> entry : variables.entrySet()) {
+            ret.setField(entry.getKey(), entry.getValue().getType());
         }
-        setType(type);
+        setType(ret);
     }
 
     public InterpretResult interpretValue() {

@@ -206,4 +206,18 @@ public class InterpretTest {
         Source source = new SourceString("a={x=1;y=3};@a x");
         Interpret.interpret(source);
     }
+
+    @Test
+    public void interpretTest19() {
+        Source source = new SourceString("f{c=1}() = @c\n" +
+                "f{c=2}()");
+        Interpret.interpret(source);
+    }
+
+    @Test
+    public void interpretTest20() {
+        Source source = new SourceString("f{c=1}() = @c\n" +
+                "f()");
+        Interpret.interpret(source);
+    }
 }

@@ -4,7 +4,10 @@ import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretFunction;
+import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.StructureNode;
 import systems.monomer.types.*;
 import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
@@ -29,22 +32,14 @@ public class CallNode extends OperatorNode {
         super("call");
     }
 
-    public Signature getSignature() {
-        return new Signature(getType(), TupleType.asTuple(getSecond().getType()));
-    }
-
     public InterpretValue interpretValue() {
+        InterpretValue overload = functionIndex == -1 ?
+                getFirst().interpretValue().asValue() :
+                ((OverloadedFunction) getFirst().getType()).getFunction(functionIndex);
+        InterpretValue second = getSecond().interpretValue().asValue();
+        InterpretValue third = size() > 2 ? get(2).interpretValue().asValue() : InterpretObject.EMPTY;
         //TODO why are functions defined in OverloadedFunction type instead of a value?
-        if(functionIndex == -1)
-            return getFirst().interpretValue().asValue()
-                    .call(getSecond().interpretValue().asValue());
-        else {
-            //if(cache still matches) return function.call(getSecond().interpretValue().asValue()); //TODO
-            //else
-            return ((OverloadedFunction) getFirst().getType())
-                    .getFunction(functionIndex)
-                    .call(getSecond().interpretValue().asValue());
-        }
+        return overload.call(second, third);
     }
 
     @Override
@@ -56,11 +51,12 @@ public class CallNode extends OperatorNode {
         Type argType = getSecond().getType();    //TODO fix the initial setting of signatures such that single args are not tuples
 //        if(argType == null) argType = AnyType.ANY;
         Type returnType = getType();
+        Type namedArgType = size() > 2 ? get(2).getType() : new ObjectType();
         if(returnType == null) returnType = ANY;
 
         Type funcType = getFirst().getType();
         if(funcType instanceof OverloadedFunction overload) {
-            functionIndex = overload.randomAccessIndex(new Signature(returnType, argType));
+            functionIndex = overload.randomAccessIndex(new Signature(returnType, argType, namedArgType));
 
             if(functionIndex == -1)
                throwError("No matching function found for " + argType + " -> " + returnType);

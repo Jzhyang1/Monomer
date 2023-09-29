@@ -12,7 +12,7 @@ public interface InterpretValue extends Type, InterpretResult {
         throw new Error("TODO unimplemented");
     }
 
-    default InterpretValue call(InterpretValue args) {
+    default InterpretValue call(InterpretValue args, InterpretValue namedArgs) {
         throw new Error(this + " is not a function");
     }
 

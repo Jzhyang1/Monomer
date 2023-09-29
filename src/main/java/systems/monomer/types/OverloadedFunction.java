@@ -46,7 +46,7 @@ public class OverloadedFunction extends AnyType {
     }
 
     public void putOverload(Node args, StructureNode namedArgs, Node body, ModuleNode wrapper) {
-        putOverload(new Signature(body.getType(), args.getType()), new InterpretFunction(args, namedArgs, body, wrapper));
+        putOverload(new Signature(body.getType(), args.getType(), namedArgs.getType()), new InterpretFunction(args, namedArgs, body, wrapper));
     }
 
     public void putOverload(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {

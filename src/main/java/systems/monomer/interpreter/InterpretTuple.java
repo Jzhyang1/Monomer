@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class InterpretTuple extends TupleType implements InterpretValue {
-    public static InterpretTuple EMPTY = new InterpretTuple(List.of());
+    public static final InterpretTuple EMPTY = new InterpretTuple(List.of());
     public static InterpretTuple toTuple(InterpretValue value) {
         if (value instanceof InterpretTuple) {
             return (InterpretTuple) value;

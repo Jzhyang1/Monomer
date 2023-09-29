@@ -83,14 +83,16 @@ public class AssignNode extends OperatorNode {
             else
                 overloads = (OverloadedFunction) potentialOverloads;
 
-            //TODO rid of TupleNode.asTuple
             InterpretFunction function = new InterpretFunction(functionInit.args, functionInit.namedArgs, functionInit.body, functionInit.parent);
+
+            functionInit.namedArgs.matchTypes();
+            Type namedArgsType = functionInit.namedArgs.getType();
 
             functionInit.args.matchTypes();
             Type argsType = functionInit.args.getType();
 
             //used for recursion
-            Signature tempSignature = new Signature(ANY, argsType);
+            Signature tempSignature = new Signature(ANY, argsType, namedArgsType);
 
             boolean needTempSignature = overloads.getOverload(tempSignature) == null;
             if(needTempSignature)
@@ -101,7 +103,7 @@ public class AssignNode extends OperatorNode {
 
 //            if(needTempSignature)
 //                overloads.getOverloads().remove(tempSignature, function); //TODO remove placeholder signature used for recursion
-            Signature signature = new Signature(bodyType, argsType);
+            Signature signature = new Signature(bodyType, argsType, namedArgsType);
             overloads.putOverload(signature, function);
 
             setType(signature);
@@ -146,6 +148,7 @@ public class AssignNode extends OperatorNode {
             Node namedArgs = callNode.size() == 2 ? StructureNode.EMPTY : callNode.get(2);
             if(!(namedArgs instanceof StructureNode)) namedArgs.throwError("Expected named args, got " + namedArgs);
             StructureNode namedArgsStruct = (StructureNode) namedArgs;
+            namedArgsStruct.matchVariables();
 
             identifier.matchVariables();
             Key identifierKey = identifier.getVariableKey();

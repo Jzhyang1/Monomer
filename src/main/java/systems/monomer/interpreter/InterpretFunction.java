@@ -48,16 +48,24 @@ public class InterpretFunction extends Signature implements InterpretValue {
     private final ArrayDeque<Map<String, VariableKey>> recursiveSlices = new ArrayDeque<>();
     @Override
     //TODO handle named args
-    public InterpretValue call(InterpretValue args) {
+    public InterpretValue call(InterpretValue args, InterpretValue namedArgs) {
+        assert namedArgs instanceof InterpretObject;
+
         if(recursiveSlices.size() > Constants.RECURSIVE_LIMIT) {
             throw new Error("Recursive limit exceeded (" + Constants.RECURSIVE_LIMIT + ")");
         }
         //TODO optimize to not push if args is empty or if tail recursion
         recursiveSlices.push(parent.getVariableValuesMap());
 
+        this.namedArgs.interpretValue();    //TODO optimize to not have to interpret everything
+        InterpretObject namedArgsObj = (InterpretObject)namedArgs;
+        for(Map.Entry<String, Type> entry : namedArgsObj.getFields().entrySet()) {
+            InterpretValue val = (InterpretValue) entry.getValue();
+            this.namedArgs.getVariable(entry.getKey()).setValue(val);
+        }
+
         InterpretTuple argsTuple = InterpretTuple.toTuple(args);
         //InterpretTuple paramTuple = new InterpretTuple(this.args.getChildren().stream().map(Node::interpretVariable).toList());
-
         AssignNode.assign(this.args, argsTuple);
 
         //TODO unchecked asValue

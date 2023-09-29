@@ -3,10 +3,7 @@ package systems.monomer.syntaxtree.operators;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretFunction;
-import systems.monomer.interpreter.InterpretResult;
-import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.OverloadedFunction;
 import systems.monomer.types.Signature;
@@ -54,7 +51,7 @@ public class AssertTypeNode extends OperatorNode {
 
     public InterpretResult interpretValue() {
         //TODO check that the type is a subtype of the type
-        return convertBy == null ? getSecond().interpretValue() : convertBy.call(getSecond().interpretValue().asValue());
+        return convertBy == null ? getSecond().interpretValue() : convertBy.call(getSecond().interpretValue().asValue(), InterpretObject.EMPTY);
     }
 
     @Override
