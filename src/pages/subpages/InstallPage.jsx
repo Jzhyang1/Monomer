@@ -5,6 +5,13 @@ import Title from "../../components/Title";
 
 const releases = [
   {
+    href: "https://drive.google.com/uc?export=download&id=1Bs6wlNtd2Geafg3Vz2TPPR_Akhefwj8W",
+    name: "V 1.0.2 (JAR)",
+    type: "universal",
+    date: "9/29/2023",
+    desc: "Classes and named function arguments",
+  },
+  {
     href: "https://drive.google.com/uc?export=download&id=1Ey3CIQftEq5zLsK7gtlXx1RyMd_Bgc-4",
     name: "V 1.0.1 (JAR)",
     type: "universal",
