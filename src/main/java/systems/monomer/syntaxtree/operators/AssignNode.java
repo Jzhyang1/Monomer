@@ -13,6 +13,7 @@ import systems.monomer.variables.VariableKey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static systems.monomer.types.AnyType.ANY;
@@ -54,16 +55,7 @@ public class AssignNode extends OperatorNode {
     public static InterpretValue assign(Node dest, InterpretValue val) {
         //TODO move assign to the Node class and implement it in the nodes that support it
         if(dest instanceof TupleNode tupleDest && val instanceof InterpretTuple tupleVal) {
-//            InterpretTuple ret = new InterpretTuple(
-//                    IntStream.range(0, tupleDest.size())
-//                            .mapToObj(i -> assign(tupleDest.get(i), tupleVal.get(i)))
-//                            .toList()
-//            );
-            //explicit version of above
-            ArrayList<InterpretValue> retValues = new ArrayList<>();
-            for(int i = 0; i < tupleDest.size(); ++i) {
-                retValues.add(assign(tupleDest.get(i), tupleVal.get(i)));
-            }
+            ArrayList<InterpretValue> retValues = IntStream.range(0, tupleDest.size()).mapToObj(i -> assign(tupleDest.get(i), tupleVal.get(i))).collect(Collectors.toCollection(ArrayList::new));
             return new InterpretTuple(retValues);
         }
         else if(dest instanceof StructureNode structDest) {

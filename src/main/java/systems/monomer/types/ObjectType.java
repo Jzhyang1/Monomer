@@ -14,7 +14,6 @@ public class ObjectType extends AnyType {
     public static final Type EMPTY = new ObjectType();
     private final Map<String, Type> fields = new HashMap<>();
 
-    //TODO does this check if type can be converted to this or this can be converted to type
     @Override
     public boolean typeContains(Type type) {
         if(type instanceof ObjectType typeOther) {
@@ -24,6 +23,7 @@ public class ObjectType extends AnyType {
                 if(value == null || !value.getType().typeContains(entry.getValue().getType()))
                     return false;
             }
+            //Do not use the code below. Contains checks through the other's entrySet to ensure that it actually is "contains"
 //            for(Map.Entry<String, Type> entry : fields.entrySet()) {
 //                Type assignedValue = entry.getValue();
 //                Type value = typeOther.fields.get(entry.getKey());
