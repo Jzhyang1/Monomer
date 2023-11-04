@@ -8,7 +8,7 @@ import picocli.CommandLine.Option;
 
 import java.io.File;
 
-@Command(name = "mono", mixinStandardHelpOptions = true, version = "1.0.0", description = "The Monomer programming language (more info at https://monomer.dev)")
+@Command(name = "mono", mixinStandardHelpOptions = true, version = "1.0.2", description = "The Monomer programming language (more info at https://monomer.dev)")
 public class CommandLineInterface implements Runnable {
     public static final String SHELL = "shell";
     @Option(names = {"-v", "--version"}, versionHelp = true, description = "Print version information")

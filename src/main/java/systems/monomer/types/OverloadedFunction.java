@@ -123,10 +123,14 @@ public class OverloadedFunction extends AnyType {
                 index = i;
                 break;
             }
-            else if(overloads.get(i).getFirst().typeContains(signature)) {
+            else if(signature.typeContains(overloads.get(i).getFirst())) {
                 if (index == -1) index = i;
 //                else conflictingMatches = true;
             }
+//            else if(overloads.get(i).getFirst().typeContains(signature)) {
+//                if (index == -1) index = i;
+////                else conflictingMatches = true;
+//            }
         }
 //        if(conflictingMatches) {  //TODO handle matching conflicts
 //            throw new Error("Conflicting matches found for " + signature);  //TODO throwError

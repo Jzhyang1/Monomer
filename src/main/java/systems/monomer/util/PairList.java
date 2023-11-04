@@ -157,12 +157,12 @@ public class PairList<A,B> implements List<Pair<A,B>> {
     @NotNull
     @Override
     public Object[] toArray() {
-        throw new UnsupportedOperationException("Can not convert PairList to array");
+        return stack.toArray();
     }
     @NotNull
     @Override
     public <T> T[] toArray(@NotNull T[] a) {
-        throw new UnsupportedOperationException("Can not convert PairList to array");
+        return stack.toArray(a);
     }
 
     @Override
@@ -187,5 +187,10 @@ public class PairList<A,B> implements List<Pair<A,B>> {
     @Override
     public void clear() {
         stack.clear();
+    }
+
+    @Override
+    public String toString() {
+        return stack.toString();
     }
 }

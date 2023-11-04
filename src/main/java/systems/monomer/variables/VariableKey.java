@@ -14,10 +14,16 @@ public class VariableKey extends Key {
 
     public VariableKey(){}
 
-    public InterpretValue getValue() {
-        if(value == null)
-            value = type.defaultValue();
-        return value;
+//    public InterpretValue getValue() {
+//        if(value == null)
+//            value = type.defaultValue();
+//        return value;
+//    }
+
+
+    public void setType(Type type) {
+        value = type.defaultValue();
+        this.type = type;
     }
 
     @Override

@@ -2,6 +2,7 @@ package systems.monomer;
 
 import org.junit.Test;
 import systems.monomer.commandline.Interpret;
+import systems.monomer.ide.Editor;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
@@ -10,7 +11,9 @@ import systems.monomer.tokenizer.SourceFile;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
 
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.URL;
 
 import static org.junit.Assert.*;
 
@@ -179,7 +182,7 @@ public class InterpretTest {
     @Test
     public void interpretTest15() {
         Source source = new SourceString("for i in [1,2,3]:\n" +
-                "    if i == 2:\n" +
+                "    if i == 3:\n" +
                 "        break\n" +
                 "    @i");
         Interpret.interpret(source);
@@ -187,7 +190,10 @@ public class InterpretTest {
 
     @Test
     public void interpretTest16() {
-        Source source = new SourceString("f = io: uri: \"/Users/main/Downloads/info.txt\"\n" +
+        URL f = Editor.class.getResource("/generic sample.txt");
+        String fpath = f.getPath().replaceAll("%20", " ");
+
+        Source source = new SourceString("f = io: uri: \""+ fpath + "\"\n" +
                 "@(string: f read())");
         Interpret.interpret(source);
     }

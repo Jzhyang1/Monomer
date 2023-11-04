@@ -40,6 +40,8 @@ public class Interpret {
         ConvertDefaults.initGlobal(global);
 
         global.add(node);
+//        OverloadedFunction conversions = (OverloadedFunction) global.getVariable("convert").getType();
+//        conversions.getOverloads().toString();
 
         global.matchVariables();
         //TODO

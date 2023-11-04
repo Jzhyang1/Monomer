@@ -16,6 +16,11 @@ public class InterpretBool extends BoolType implements InterpretValue {
         return value;
     }
 
+    @Override
+    public InterpretValue defaultValue() {
+        return this;
+    }
+
     public String valueString() {
         return Boolean.toString(value);
     }

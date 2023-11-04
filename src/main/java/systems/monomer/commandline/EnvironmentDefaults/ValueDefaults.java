@@ -14,12 +14,12 @@ import systems.monomer.variables.VariableKey;
 public class ValueDefaults {
     public void initGlobal(Node global) {
         global.putVariable("true", new VariableKey() {{
+            setType(new InterpretBool(true));
             setValue(new InterpretBool(true));
-            setType(InterpretBool.BOOL);
         }});
         global.putVariable("false", new VariableKey() {{
+            setType(new InterpretBool(false));
             setValue(new InterpretBool(false));
-            setType(InterpretBool.BOOL);
         }});
     }
 }

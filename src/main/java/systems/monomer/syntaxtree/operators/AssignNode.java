@@ -11,6 +11,7 @@ import systems.monomer.types.*;
 import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -53,12 +54,17 @@ public class AssignNode extends OperatorNode {
     public static InterpretValue assign(Node dest, InterpretValue val) {
         //TODO move assign to the Node class and implement it in the nodes that support it
         if(dest instanceof TupleNode tupleDest && val instanceof InterpretTuple tupleVal) {
-            InterpretTuple ret = new InterpretTuple(
-                    IntStream.range(0, tupleDest.size())
-                            .mapToObj(i -> assign(tupleDest.get(i), tupleVal.get(i)))
-                            .toList()
-            );
-            return ret;
+//            InterpretTuple ret = new InterpretTuple(
+//                    IntStream.range(0, tupleDest.size())
+//                            .mapToObj(i -> assign(tupleDest.get(i), tupleVal.get(i)))
+//                            .toList()
+//            );
+            //explicit version of above
+            ArrayList<InterpretValue> retValues = new ArrayList<>();
+            for(int i = 0; i < tupleDest.size(); ++i) {
+                retValues.add(assign(tupleDest.get(i), tupleVal.get(i)));
+            }
+            return new InterpretTuple(retValues);
         }
         else if(dest instanceof StructureNode structDest) {
             //TODO compare this with Tuple assign
@@ -66,8 +72,8 @@ public class AssignNode extends OperatorNode {
             return val;
         }
         else {
-            dest.interpretVariable().setValue(val);
             dest.getVariableKey().setType(val.getType());   //TODO this is a hack to get overloads to transfer over functions because they are stored as a type
+            dest.interpretVariable().setValue(val);
             return val;
         }
     }

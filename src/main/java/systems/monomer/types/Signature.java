@@ -32,8 +32,8 @@ public class Signature extends AnyType {
     public boolean typeContains(Type other) {
         return other instanceof Signature sig &&
                 returnType.typeContains(sig.returnType) &&
-                args.typeContains(sig.args) &&
-                namedArgs.typeContains(sig.namedArgs);
+                sig.args.typeContains(args);
+//                && namedArgs.typeContains(sig.namedArgs);
     }
 
     @Override
