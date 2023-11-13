@@ -9,12 +9,9 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.errorhandling.Context;
 import systems.monomer.interpreter.InterpretResult;
-import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.errorhandling.ErrorBlock;
-import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.AnyType;
-import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
@@ -37,6 +34,9 @@ public abstract class Node extends ErrorBlock {
     @Getter
     @Setter
     private Type type = AnyType.ANY;
+
+    @Setter
+    private boolean isThisExpression = true;
 
 
     public Node(String name) {
@@ -103,6 +103,13 @@ public abstract class Node extends ErrorBlock {
     public void matchTypes() {
         for (Node child : children) {
             child.matchTypes();
+        }
+    }
+
+    public void setIsExpression(boolean isExpression) {
+        this.isThisExpression = isExpression;
+        for (Node child : children) {
+            child.setIsExpression(isExpression);
         }
     }
 

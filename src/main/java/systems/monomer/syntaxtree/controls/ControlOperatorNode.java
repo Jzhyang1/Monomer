@@ -1,9 +1,11 @@
 package systems.monomer.syntaxtree.controls;
 
+import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretBool;
 import systems.monomer.interpreter.InterpretResult;
+import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.variables.VariableKey;
@@ -13,13 +15,15 @@ import java.util.Map;
 import java.util.function.Function;
 
 public abstract class ControlOperatorNode extends OperatorNode {
-    public static class InterpretControlResult {
+    public class InterpretControlResult {
         public final boolean isSuccess;
+        public final boolean isBroken;
         public final InterpretResult value;
 
         public InterpretControlResult(boolean isSuccess, InterpretResult value) {
             this.isSuccess = isSuccess;
-            this.value = value;
+            this.isBroken = !value.isValue();
+            this.value = isThisExpression() || isBroken ? value : InterpretTuple.EMPTY;
         }
     }
 

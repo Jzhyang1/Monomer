@@ -18,19 +18,22 @@ public class ForNode extends ControlOperatorNode {
     }
 
     public void matchTypes() {
-        super.matchTypes();
-
         OperatorNode firstNode = (OperatorNode) getFirst();
+        firstNode.matchTypes();
         Node vars = firstNode.getFirst();
         Node collection = firstNode.getSecond();
 
         Type maybeCollectionType = collection.getType();
         if(maybeCollectionType instanceof CollectionType collectionType) {
             vars.setType(collectionType.getElementType());  //TODO handle multiple vars
+            System.out.println(vars.getType());
         } else {
             throwError("For loop requires a collection for the control of repetitions");
         }
-        setType(new InterpretSequence(getType()));
+
+        Node secondNode = getSecond();
+        secondNode.matchTypes();
+        setType(new InterpretSequence(secondNode.getType()));
     }
 
     public void matchVariables() {

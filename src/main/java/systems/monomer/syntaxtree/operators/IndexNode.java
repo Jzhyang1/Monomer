@@ -33,6 +33,9 @@ public class IndexNode extends OperatorNode {
 
         if (value instanceof InterpretList collection &&
                 index instanceof InterpretNumber<?> number) {
+            if(number.getValue().intValue() < 0 || number.getValue().intValue() >= collection.getValues().size())
+                throwError("Index " + number.getValue().intValue() + " out of bounds for list of size " + collection.getValues().size());
+
             return collection.getValues().get(number.getValue().intValue());
         }
         throwError("Cannot index " + value + " with " + index);

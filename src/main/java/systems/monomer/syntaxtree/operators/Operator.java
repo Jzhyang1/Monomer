@@ -241,21 +241,8 @@ public final class Operator {
             }
             return first;
         }, (self) -> self.getFirst().getType());
-        putData("with", -5, PREFIX, (self) -> {
-            //TODO
-            return null;
-        }, (self) -> {
-            InterpretValue first = self.getFirst().interpretValue().asValue();
-            self.getSecond().interpretValue();
-            return first;
-        }, (self) -> self.getFirst().getType());
-        putData("then", -5, PREFIX, (self) -> {
-            //TODO
-            return null;
-        }, (self) -> {
-            self.getFirst().interpretValue();
-            return self.getSecond().interpretValue();
-        }, (self) -> self.getSecond().getType());
+        putData("with", -5, PREFIX, ()->new WithThenNode("with"));
+        putData("then", -5, PREFIX, ()->new WithThenNode("then"));
 
         initComparison();
         initBitwise();

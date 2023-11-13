@@ -10,6 +10,7 @@ import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.Type;
+import systems.monomer.syntaxtree.controls.ControlOperatorNode.InterpretControlResult;
 
 public final class ControlGroupNode extends OperatorNode {
     public ControlGroupNode(){
@@ -36,10 +37,16 @@ public final class ControlGroupNode extends OperatorNode {
     }
 
     public InterpretResult interpretValue() {
-        ControlOperatorNode.InterpretControlResult result = getFirst().interpretControl(false, false, null);
+        boolean previousSuccess = false, previousFailure = false;
+
+        InterpretControlResult result = getFirst().interpretControl(previousSuccess, previousFailure, InterpretTuple.EMPTY);
         for (int i = 1; i < size(); i++) {
-            if(!result.value.isValue()) break;
-            result = get(i).interpretControl(result.isSuccess, !result.isSuccess, result.value.asValue());
+            if(!result.isBroken) break;
+            assert result.value != null;
+
+            previousSuccess = previousSuccess || result.isSuccess;
+            previousFailure = previousFailure || !result.isSuccess;
+            result = get(i).interpretControl(previousSuccess, previousFailure, result.value.asValue());
         }
         return result.value != null ? result.value : InterpretTuple.EMPTY;
     }

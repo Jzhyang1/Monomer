@@ -7,6 +7,7 @@ import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.ListType;
+import systems.monomer.types.Type;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +26,18 @@ public class ListNode extends LiteralNode {
 
     public void matchTypes() {
         super.matchTypes();
-        setType(ListType.LIST);
+        if(getChildren().isEmpty()) {
+            setType(ListType.LIST);
+        }
+        else {
+            Type t = get(0).getType();
+            for(int i = 1; i < size(); ++i) {
+                if(!t.typeContains(get(i).getType())) {
+                    throwError("Types of elements in list do not match");
+                }
+            }
+            setType(new ListType(t));
+        }
     }
 
     public InterpretResult interpretValue() {

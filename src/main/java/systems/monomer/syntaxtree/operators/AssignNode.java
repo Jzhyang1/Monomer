@@ -70,6 +70,14 @@ public class AssignNode extends OperatorNode {
         }
     }
 
+    @Override
+    public void setIsExpression(boolean isExpression) {
+        setThisExpression(isExpression);
+
+        getFirst().setIsExpression(isExpression);
+        //the RHS children are all expressions
+    }
+
     public void matchTypes() {
         if(functionInit != null) {
             functionInit.identifier.matchTypes();

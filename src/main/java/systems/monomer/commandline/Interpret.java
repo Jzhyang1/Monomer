@@ -46,6 +46,7 @@ public class Interpret {
         global.matchVariables();
         //TODO
         global.matchTypes();
+        global.setIsExpression(false);
         global.interpretValue();
     }
     public static void interpret(File sourceFile) {
