@@ -1,5 +1,7 @@
 package systems.monomer.syntaxtree.literals;
 
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretChar;
@@ -24,18 +26,11 @@ public class CharNode extends LiteralNode {
     }
 
     @Override
-    public CompileValue compileValue() {
-        //TODO
-        return null;
+    public Operand compileValue(AssemblyFile file) {
+        return new Operand(Operand.Type.IMMEDIATE, null, 0, value.charValue());
     }
-
     @Override
     public CompileSize compileSize() {
-        //TODO
-        return null;
+        return new CompileSize(1);
     }
-
-
-
-
 }

@@ -1,6 +1,8 @@
 package systems.monomer.types;
 
 import lombok.Getter;
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
 public class ObjectType extends AnyType {
     public static final Type EMPTY = new ObjectType();
     private final Map<String, Type> fields = new HashMap<>();
+    //non-constant-size fields are stored as size_and_pointers to the field
+    private final Map<String, Integer> fieldOffsets = new HashMap<>();
 
     @Override
     public boolean typeContains(Type type) {
@@ -20,16 +24,9 @@ public class ObjectType extends AnyType {
             for(Map.Entry<String, Type> entry : typeOther.fields.entrySet()) {
                 Type assignedValue = entry.getValue();
                 Type value = fields.get(entry.getKey());
-                if(value == null || !value.getType().typeContains(entry.getValue().getType()))
+                if(value == null || !value.getType().typeContains(assignedValue.getType()))
                     return false;
             }
-            //Do not use the code below. Contains checks through the other's entrySet to ensure that it actually is "contains"
-//            for(Map.Entry<String, Type> entry : fields.entrySet()) {
-//                Type assignedValue = entry.getValue();
-//                Type value = typeOther.fields.get(entry.getKey());
-//                if(value == null || !value.getType().typeContains(entry.getValue().getType()))
-//                    return false;
-//            }
             return true;
         }
         return false;
@@ -59,6 +56,29 @@ public class ObjectType extends AnyType {
     @Override
     public Type getField(String field) {
         return fields.get(field);
+    }
+
+    public int getFieldOffset(String name) {
+        //checks for fieldOffset otherwise generates it
+
+        if(fieldOffsets.containsKey(name))
+            return fieldOffsets.get(name);
+
+        if(!fields.containsKey(name))
+            throw new Error("Field " + name + " does not exist in " + this);
+
+        //goes by sorted order of fields by name
+        int offsetCounter = 0;
+        int offsetLocation = -1;
+        for(Map.Entry<String, Type> entry : fields.entrySet()) {
+            if(entry.getKey().equals(name))
+                offsetLocation = offsetCounter;
+
+            CompileSize size = entry.getValue().compileSize();
+            offsetCounter += size.getOccupiedStackSize();
+        }
+
+        return offsetLocation;
     }
 
     @Override

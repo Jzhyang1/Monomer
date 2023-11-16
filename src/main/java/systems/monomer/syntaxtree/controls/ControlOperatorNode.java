@@ -1,6 +1,8 @@
 package systems.monomer.syntaxtree.controls;
 
 import org.jetbrains.annotations.Nullable;
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretBool;
@@ -65,7 +67,8 @@ public abstract class ControlOperatorNode extends OperatorNode {
         return null;
     }
 
-    public CompileValue compileValue() {
+    @Override
+    public Operand compileValue(AssemblyFile file) {
         throw new Error("TODO unimplemented");
     }
 

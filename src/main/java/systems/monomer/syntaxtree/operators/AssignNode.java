@@ -1,6 +1,7 @@
 package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.compiler.*;
+import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
@@ -9,7 +10,7 @@ import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
 import systems.monomer.variables.Key;
-import systems.monomer.variables.VariableKey;
+import static systems.monomer.compiler.Assembly.Instruction.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,12 +191,17 @@ public class AssignNode extends OperatorNode {
         }
         return InterpretTuple.EMPTY;
     }
+    public Operand compileValue(AssemblyFile file) {
+        //TODO switch direction of assignment
 
-    public CompileMemory compileMemory() {
-        throw new Error("TODO unimplemented");
-    }
-    public CompileValue compileValue() {
-        throw new Error("TODO unimplemented");
+        Operand dest = getFirst().compileValue(file);
+        for(int i = 1; i < size(); ++i) {
+            Operand src = get(i).compileValue(file);
+            //TODO non-basic memory types
+            file.add(MOV, dest, src);
+            dest = src;
+        }
+        return dest;
     }
     public CompileSize compileSize() {
         throw new Error("TODO unimplemented");

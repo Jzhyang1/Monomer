@@ -28,9 +28,7 @@ import static systems.monomer.interpreter.InterpretURI.URI;
 public class Interpret {
     public static void interpret(Source source) {
         Token body = source.parse();
-//        System.out.println(body);
         Node node = body.toNode();
-//        System.out.println(node);
         Node global = new ModuleNode(source.getTitle());
 
         //global constants here
@@ -40,11 +38,8 @@ public class Interpret {
         ConvertDefaults.initGlobal(global);
 
         global.add(node);
-//        OverloadedFunction conversions = (OverloadedFunction) global.getVariable("convert").getType();
-//        conversions.getOverloads().toString();
 
         global.matchVariables();
-        //TODO
         global.matchTypes();
         global.setIsExpression(false);
         global.interpretValue();

@@ -2,11 +2,14 @@ package systems.monomer.variables;
 
 import lombok.Getter;
 import lombok.Setter;
+import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.ObjectType;
 import systems.monomer.types.Type;
 
+import static systems.monomer.compiler.Assembly.Operand.Type.IMMEDIATE;
+import static systems.monomer.compiler.Assembly.Operand.Type.MEMORY;
 import static systems.monomer.types.AnyType.ANY;
 
 @Getter @Setter
@@ -61,5 +64,17 @@ public class FieldKey extends Key {
     public FieldKey clone() {
         FieldKey key = (FieldKey) super.clone();  //TODO also clone value, etc
         return key;
+    }
+
+    public Operand getAddress() {
+        Operand parentAddress = parent.getAddress();
+        int childOffset = parent.getType().getFieldOffset(name);
+
+        Operand fieldAddress = new Operand(MEMORY,
+                    parentAddress.register,
+                    parentAddress.offset + childOffset,
+                    0);
+
+        return fieldAddress;
     }
 }

@@ -1,5 +1,6 @@
 package systems.monomer.types;
 
+import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretValue;
 
@@ -79,4 +80,15 @@ public interface Type extends Cloneable {
      * @return the default value of the type
      */
     InterpretValue defaultValue();
+
+    /**
+     * @return true if the type has a fixed size
+     */
+    default boolean isConstant() {
+        return true;
+    }
+
+    default int getFieldOffset(String name) {
+        throw new Error("cannot get field offset of non-object type");
+    }
 }

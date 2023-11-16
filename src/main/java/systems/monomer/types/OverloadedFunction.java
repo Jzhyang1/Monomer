@@ -20,7 +20,6 @@ import java.util.stream.IntStream;
 
 @Getter
 public class OverloadedFunction extends AnyType {
-//    private final Map<Signature, InterpretFunction> overloads = new HashMap<>();    //TODO multikey map with Signature broken into returnType and args
     private final PairList<Signature, InterpretFunction> overloads = new PairList<>();
 
     /**
@@ -107,8 +106,6 @@ public class OverloadedFunction extends AnyType {
 
         if(index != -1) {
             return overloads.get(index).getSecond();
-            //TODO optimize by returning a randomAccessIndex or related key instead of the function
-            //  where the function is referenced during type matching
         }
         else {
             throw new Error("No matching signature found for " + signature);  //TODO throwError

@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.Constants;
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
@@ -86,11 +88,11 @@ public abstract class Node extends ErrorBlock {
         return this;
     }
 
-    public void addAll(Collection<? extends Node> children) {
+    public final void addAll(Collection<? extends Node> children) {
         for (Node child : children)
             add(child);
     }
-    public int size() {
+    public final int size() {
         return children.size();
     }
 
@@ -120,12 +122,7 @@ public abstract class Node extends ErrorBlock {
 
     public abstract InterpretResult interpretValue();
 
-    public CompileMemory compileMemory() {
-        throwError("Attempting to access " + name + " as a variable");
-        return null;
-    }
-
-    public abstract CompileValue compileValue();
+    public abstract Operand compileValue(AssemblyFile file);
 
     public abstract CompileSize compileSize();
 

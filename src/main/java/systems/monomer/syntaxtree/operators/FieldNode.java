@@ -2,9 +2,11 @@ package systems.monomer.syntaxtree.operators;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import systems.monomer.compiler.CompileMemory;
+import systems.monomer.compiler.Assembly.Instruction;
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
+import systems.monomer.compiler.AssemblyLine;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.errorhandling.UnimplementedError;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
@@ -15,8 +17,8 @@ import systems.monomer.types.ObjectType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.FieldKey;
 import systems.monomer.variables.Key;
-import systems.monomer.variables.VariableKey;
 
+import static systems.monomer.compiler.Assembly.Instruction.MOV;
 import static systems.monomer.types.AnyType.ANY;
 
 public final class FieldNode extends OperatorNode {
@@ -86,11 +88,18 @@ public final class FieldNode extends OperatorNode {
             return variableKey.getValue();
     }
 
-    public CompileMemory compileMemory() {
-        throw new UnimplementedError();
-    }
-    public CompileValue compileValue() {
-        throw new UnimplementedError();
+    public Operand compileValue(AssemblyFile file) {
+        if(variableKey == null) {
+            Node first = getFirst();
+            Type firstType = first.getType();
+            Operand firstLoc = first.compileValue(file);
+            return new Operand(Operand.Type.MEMORY,
+                    firstLoc.register,
+                    firstLoc.offset + firstType.getFieldOffset(fieldName),
+                    0);
+        }
+        else
+            return variableKey.getAddress();
     }
     public CompileSize compileSize() {
         throw new UnimplementedError();

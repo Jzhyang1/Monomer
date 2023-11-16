@@ -2,6 +2,7 @@ package systems.monomer.variables;
 
 import lombok.Getter;
 import lombok.Setter;
+import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.Type;
@@ -11,6 +12,9 @@ import systems.monomer.types.Type;
 public class VariableKey extends Key {
     private InterpretValue value;
     private Type type = AnyType.ANY;
+
+    private boolean isConstant = false; //TODO make this true by default
+    private Operand address;
 
     public VariableKey(){}
 
@@ -37,7 +41,6 @@ public class VariableKey extends Key {
     }
 
     public String valueString() {
-//        assert value != null; //TODO
         return value.valueString();
     }
 

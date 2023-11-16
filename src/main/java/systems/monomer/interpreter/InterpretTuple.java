@@ -20,13 +20,9 @@ public class InterpretTuple extends TupleType implements InterpretValue {
     public InterpretTuple(List<? extends InterpretValue> list) {
         addAll(list);
     }
-
-    public List<InterpretValue> getValues() {
-        return (List<InterpretValue>) (List) getTypes();    //TODO fix this
-    }
     
     public InterpretValue get(int index) {
-        return getValues().get(index);
+        return (InterpretValue) (getTypes().get(index));
     }
 
     @Override

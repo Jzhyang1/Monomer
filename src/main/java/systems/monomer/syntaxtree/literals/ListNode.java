@@ -21,7 +21,7 @@ public class ListNode extends LiteralNode {
 
     public ListNode(Collection<? extends Node> list) {
         super("list");
-        getChildren().addAll(list);
+        addAll(list);
     }
 
     public void matchTypes() {
@@ -31,7 +31,7 @@ public class ListNode extends LiteralNode {
         }
         else {
             Type t = get(0).getType();
-            for(int i = 1; i < size(); ++i) {
+            for(int i = size(); i > 0; --i) {
                 if(!t.typeContains(get(i).getType())) {
                     throwError("Types of elements in list do not match");
                 }

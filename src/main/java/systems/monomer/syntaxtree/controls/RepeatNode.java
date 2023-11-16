@@ -17,7 +17,7 @@ public class RepeatNode extends ControlOperatorNode {
         InterpretValue maybeRepetitions = getFirst().interpretValue().asValue();
         if(maybeRepetitions instanceof InterpretNumber<?> repetitions) {
             int numRepetitions = repetitions.getValue().intValue();
-            InterpretSequence ret = new InterpretSequence(AnyType.ANY); //TODO find the actual type
+            InterpretSequence ret = new InterpretSequence(getSecond().getType());
 
             for(int i = 0; i < numRepetitions; i++) {
                 InterpretResult result = getSecond().interpretValue();

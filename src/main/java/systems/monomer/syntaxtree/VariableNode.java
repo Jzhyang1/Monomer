@@ -1,6 +1,8 @@
 package systems.monomer.syntaxtree;
 
 import lombok.Getter;
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileMemory;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
@@ -60,11 +62,8 @@ public class VariableNode extends Node {
         return variableKey.getValue();
     }
 
-    public CompileMemory compileMemory() {
-        throw new Error("TODO unimplemented");
-    }
-    public CompileValue compileValue() {
-        throw new Error("TODO unimplemented");
+    public Operand compileValue(AssemblyFile file) {
+        return variableKey.getAddress();
     }
     public CompileSize compileSize() {
         throw new Error("TODO unimplemented");

@@ -1,5 +1,8 @@
 package systems.monomer.syntaxtree.literals;
 
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.Assembly.Register;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretList;
@@ -11,9 +14,12 @@ import systems.monomer.types.AnyType;
 import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static systems.monomer.compiler.Assembly.Instruction.PUSH;
 
 public class TupleNode extends LiteralNode {
     public static TupleNode EMPTY = new TupleNode(List.of());
@@ -63,8 +69,8 @@ public class TupleNode extends LiteralNode {
         return new InterpretTuple(ret);
     }
 
-    public CompileValue compileValue() {
-        throw new Error("TODO unimplemented");
+    public Operand compileValue(AssemblyFile file) {
+        return null;
     }
 
     public CompileSize compileSize() {

@@ -7,6 +7,8 @@ import systems.monomer.types.CollectionType;
 import systems.monomer.types.ListType;
 import systems.monomer.types.NumberType;
 
+import java.util.List;
+
 public class IndexNode extends OperatorNode {
     public IndexNode() {
         super("index");
@@ -20,26 +22,33 @@ public class IndexNode extends OperatorNode {
         if (!(getSecond().getType() instanceof NumberType<?> num &&
                 num.getValue() instanceof Integer)) //TODO replace Instanceof Integer check with getTypeName check
             throwError("Cannot index with non-integer type " + getSecond().getType());
+
+        setType(((CollectionType) getFirst().getType()).getElementType());
     }
 
     @Override
     public InterpretValue interpretValue() {
-        InterpretResult firstr = getFirst().interpretValue();
-        if(!firstr.isValue()) throw new RuntimeException("First value is not a value");
-        InterpretResult secondr = getSecond().interpretValue();
-        if(!secondr.isValue()) throw new RuntimeException("Second value is not a value");
+        InterpretResult firstResult = getFirst().interpretValue();
+        if(!firstResult.isValue()) throwError("Can not index first value");
+        InterpretResult secondResult = getSecond().interpretValue();
+        if(!secondResult.isValue()) throwError("Second value is not an index");
 
-        InterpretValue value = firstr.asValue(), index = secondr.asValue();
+        InterpretValue value = firstResult.asValue(), index = secondResult.asValue();
 
         if (value instanceof InterpretList collection &&
                 index instanceof InterpretNumber<?> number) {
-            if(number.getValue().intValue() < 0 || number.getValue().intValue() >= collection.getValues().size())
+            List<InterpretValue> valueList = collection.getValues();
+            int intIndex = number.getValue().intValue();
+
+            if(intIndex < 0 || intIndex >= valueList.size())
                 throwError("Index " + number.getValue().intValue() + " out of bounds for list of size " + collection.getValues().size());
 
-            return collection.getValues().get(number.getValue().intValue());
+            return valueList.get(intIndex);
         }
-        throwError("Cannot index " + value + " with " + index);
-        return null;
+        else {
+            throwError("Cannot index " + value + " with " + index);
+            return null;
+        }
     }
 
     @Override

@@ -55,7 +55,7 @@ public class ForNode extends ControlOperatorNode {
 
         if(maybeIterable instanceof InterpretCollection iterable) {
             Iterator<InterpretValue> iter = iterable.getValues().iterator();
-            InterpretSequence ret = new InterpretSequence(AnyType.ANY); //TODO find the actual type
+            InterpretSequence ret = new InterpretSequence(iterable.getElementType());
 
             while(iter.hasNext()) {
                 InterpretValue val = iter.next();

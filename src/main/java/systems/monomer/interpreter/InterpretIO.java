@@ -2,6 +2,8 @@ package systems.monomer.interpreter;
 
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.Constants;
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.compiler.CompileValue;
 import systems.monomer.syntaxtree.VariableNode;
@@ -13,7 +15,6 @@ import java.io.*;
 import java.util.List;
 import java.util.function.Supplier;
 
-//TODO not VariableKey
 //TODO fix this code
 public class InterpretIO extends ObjectType implements InterpretValue {
     public static final InterpretIO STDIO = new InterpretIO(Constants.getListener(), Constants.getOut());
@@ -140,7 +141,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         }
 
         @Override
-        public CompileValue compileValue() {
+        public Operand compileValue(AssemblyFile file) {
             return null;
         }
 
@@ -184,7 +185,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         }
 
         @Override
-        public CompileValue compileValue() {
+        public Operand compileValue(AssemblyFile file) {
             return null;
         }
 
@@ -221,7 +222,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         }
 
         @Override
-        public CompileValue compileValue() {
+        public Operand compileValue(AssemblyFile file) {
             return null;
         }
 
@@ -258,7 +259,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         }
 
         @Override
-        public CompileValue compileValue() {
+        public Operand compileValue(AssemblyFile file) {
             return null;
         }
 
@@ -299,7 +300,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         }
 
         @Override
-        public CompileValue compileValue() {
+        public Operand compileValue(AssemblyFile file) {
             return null;
         }
 
@@ -340,7 +341,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         }
 
         @Override
-        public CompileValue compileValue() {
+        public Operand compileValue(AssemblyFile file) {
             return null;
         }
 
@@ -381,7 +382,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         }
 
         @Override
-        public CompileValue compileValue() {
+        public Operand compileValue(AssemblyFile file) {
             return null;
         }
 
