@@ -3,7 +3,6 @@ package systems.monomer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.NonNls;
 
 import java.io.InputStream;
 import java.io.OutputStream;

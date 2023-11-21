@@ -1,9 +1,9 @@
 package systems.monomer.syntaxtree.operators;
 
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.Type;
 
 public class ConvertNode extends OperatorNode {
 
@@ -21,9 +21,10 @@ public class ConvertNode extends OperatorNode {
         throw new Error("TODO unimplemented");
     }
 
-    public CompileValue compileValue() {
+    public Operand compileValue(AssemblyFile file) {
         throw new Error("TODO unimplemented");
     }
+
     public CompileSize compileSize() {
         throw new Error("TODO unimplemented");
     }

@@ -1,7 +1,8 @@
 package systems.monomer.syntaxtree.operators;
 
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.*;
 import systems.monomer.types.CollectionType;
 import systems.monomer.types.ListType;
@@ -51,9 +52,8 @@ public class IndexNode extends OperatorNode {
         }
     }
 
-    @Override
-    public CompileValue compileValue() {
-        return null;
+    public Operand compileValue(AssemblyFile file) {
+        throw new Error("TODO unimplemented");
     }
 
     @Override

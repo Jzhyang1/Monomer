@@ -1,10 +1,8 @@
 package systems.monomer.types;
 
 import lombok.Getter;
-import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretObject;
-import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 
 import java.util.HashMap;

@@ -46,4 +46,22 @@ public class Operand {
         this.offset = offset;
         this.immediate = immediate;
     }
+
+    public String toString() {
+        switch(type) {
+            case REGISTER:
+                return register.toString();
+            case MEMORY:
+                if(offset == 0)
+                    return "[" + register.toString() + "]";
+                else
+                    return "[" + register.toString() + "+" + offset + "]";
+            case IMMEDIATE:
+                return "" + immediate;
+            case MEMORY_OF_POINTER:
+                return "[" + register.toString() + "+" + offset + "]";
+            default:
+                throw new Error("TODO unimplemented");
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package systems.monomer.ide;
 
 import systems.monomer.Constants;
+import systems.monomer.commandline.Compile;
 import systems.monomer.commandline.Interpret;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
@@ -628,6 +629,21 @@ public final class Editor extends JFrame {
                         }}
                     }).start();
                 }),
+                new Action("Compile File", () -> {
+                    Tab tab = getSelectedTab();
+                    String contents = tab.sanitizedText();
+                    new Thread(() -> {
+                        try {
+                            Compile.compile(contents);
+                        } catch (RuntimeException e) {
+                            e.printStackTrace();
+                            try {
+                            Constants.err.write(e.getMessage().getBytes());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }}
+                    }).start();
+                }),
                 new Action("Find Action", this::showActionListWindow),
                 new Action("Indent", () -> {
                     Tab tab = getSelectedTab();
@@ -914,6 +930,7 @@ public final class Editor extends JFrame {
 
         JMenu run = new JMenu("Run");
         run.add(createMenuItem("Run File", KeyEvent.VK_F10, InputEvent.SHIFT_DOWN_MASK, InputEvent.SHIFT_DOWN_MASK));
+        run.add(createMenuItem("Compile File", KeyEvent.VK_F11, InputEvent.SHIFT_DOWN_MASK, InputEvent.SHIFT_DOWN_MASK));
 //        run.add(createMenuItem("Run Project", KeyEvent.VK_F10, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 
         JMenu help = new JMenu("Help");
@@ -929,7 +946,7 @@ public final class Editor extends JFrame {
             JTextArea textArea = new JTextArea();
             textArea.setEditable(false);
             textArea.setText("""
-                    This is a simple text editor for editing Monomer files, and is bundled with the 
+                    This is a simple text editor for editing Monomer files, and is bundled with the
                     Monomer compiler.
                                        
                     To visit the Monomer website, go to https://monomer.dev
@@ -957,7 +974,7 @@ public final class Editor extends JFrame {
                      - Ctrl+F: Find
                      - Ctrl+R: Replace
                                        
-                    Monomer syntax highlighting is provided. 
+                    Monomer syntax highlighting is provided.
                                        
                     To run a file, click Run -> Run File (or Shift+F10).
                     To run a specific action, you can click Help -> Find Action (or Ctrl+Shift+A).

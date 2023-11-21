@@ -3,12 +3,8 @@ package systems.monomer.interpreter;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.types.ObjectType;
-import systems.monomer.types.Type;
-import systems.monomer.variables.VariableKey;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Objects;
 
 //TODO fix this code

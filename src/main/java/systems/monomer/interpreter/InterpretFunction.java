@@ -13,15 +13,13 @@ import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
 import java.util.ArrayDeque;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Stack;
 import java.util.stream.IntStream;
 
 public class InterpretFunction extends Signature implements InterpretValue {
-    private TupleNode args;
-    private StructureNode namedArgs;
-    private Node body;
+    private final TupleNode args;
+    private final StructureNode namedArgs;
+    private final Node body;
     private final ModuleNode parent;
 
     //TODO handle named args

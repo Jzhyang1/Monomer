@@ -1,10 +1,8 @@
 package systems.monomer.syntaxtree.controls;
 
-import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretBool;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretTuple;
@@ -29,7 +27,7 @@ public abstract class ControlOperatorNode extends OperatorNode {
         }
     }
 
-    private Map<String, VariableKey> variables = new HashMap<>();
+    private final Map<String, VariableKey> variables = new HashMap<>();
 
     protected ControlOperatorNode(String name){
         super(name);

@@ -1,8 +1,5 @@
 package systems.monomer.types;
 
-import systems.monomer.interpreter.InterpretSet;
-import systems.monomer.interpreter.InterpretValue;
-
 public class SetType extends CollectionType {
     public static final SetType SET = new SetType(AnyType.ANY);
 

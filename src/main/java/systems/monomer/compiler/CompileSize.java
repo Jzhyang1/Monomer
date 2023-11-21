@@ -5,7 +5,7 @@ import systems.monomer.compiler.Assembly.Operand;
 
 @Getter
 public class CompileSize {
-    private Operand fixedSize;
+    private final Operand fixedSize;
     //TODO allow calculations to get the size
 
     public CompileSize(int fixedSize) {

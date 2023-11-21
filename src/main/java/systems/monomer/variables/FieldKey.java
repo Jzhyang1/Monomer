@@ -3,12 +3,11 @@ package systems.monomer.variables;
 import lombok.Getter;
 import lombok.Setter;
 import systems.monomer.compiler.Assembly.Operand;
-import systems.monomer.interpreter.InterpretObject;
+import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.ObjectType;
 import systems.monomer.types.Type;
 
-import static systems.monomer.compiler.Assembly.Operand.Type.IMMEDIATE;
 import static systems.monomer.compiler.Assembly.Operand.Type.MEMORY;
 import static systems.monomer.types.AnyType.ANY;
 
@@ -58,6 +57,11 @@ public class FieldKey extends Key {
     @Override
     public Type getField(String field) {
         return getType().getField(field);
+    }
+
+    @Override
+    public CompileSize compileSize() {
+        return getType().compileSize();
     }
 
     @Override

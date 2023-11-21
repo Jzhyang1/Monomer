@@ -2,10 +2,8 @@ package systems.monomer.syntaxtree.operators;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import systems.monomer.compiler.Assembly.Instruction;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
-import systems.monomer.compiler.AssemblyLine;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.errorhandling.UnimplementedError;
 import systems.monomer.interpreter.InterpretResult;
@@ -18,7 +16,6 @@ import systems.monomer.types.Type;
 import systems.monomer.variables.FieldKey;
 import systems.monomer.variables.Key;
 
-import static systems.monomer.compiler.Assembly.Instruction.MOV;
 import static systems.monomer.types.AnyType.ANY;
 
 public final class FieldNode extends OperatorNode {

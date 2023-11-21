@@ -1,7 +1,8 @@
 package systems.monomer.syntaxtree.operators;
 
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.types.Type;
@@ -37,9 +38,8 @@ public class WithThenNode extends OperatorNode {
         super.setIsExpression(isExpression);
     }
 
-    @Override
-    public CompileValue compileValue() {
-        return null;
+    public Operand compileValue(AssemblyFile file) {
+        throw new Error("TODO unimplemented");
     }
 
     @Override

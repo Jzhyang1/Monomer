@@ -1,7 +1,5 @@
 package systems.monomer.interpreter;
 
-import lombok.Getter;
-import lombok.Setter;
 import systems.monomer.types.NumberType;
 
 /**

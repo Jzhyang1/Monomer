@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SourceString extends Source {
-    private String[] value;
+    private final String[] value;
     private int lineNumber = 0;
     private int position = 0;
 

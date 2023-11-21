@@ -1,13 +1,14 @@
 package systems.monomer.syntaxtree.operators;
 
 import org.jetbrains.annotations.Nullable;
+import systems.monomer.commandline.EnvironmentDefaults.ConvertDefaults;
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.OverloadedFunction;
 import systems.monomer.types.Signature;
-import systems.monomer.types.TupleType;
 import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
 
@@ -38,7 +39,7 @@ public class AssertTypeNode extends OperatorNode {
                 return;
             }
 
-            VariableKey convertFunc = getVariable("convert");
+            VariableKey convertFunc = getVariable(ConvertDefaults.NAME);
             if(convertFunc != null) {
                 OverloadedFunction overloads = (OverloadedFunction) convertFunc.getType();
                 convertBy = overloads.getOverload(new Signature(getType(), second.getType()));
@@ -64,9 +65,10 @@ public class AssertTypeNode extends OperatorNode {
         return getSecond().getVariableKey();
     }
 
-    public CompileValue compileValue() {
+    public Operand compileValue(AssemblyFile file) {
         throw new Error("TODO unimplemented");
     }
+
     public CompileSize compileSize() {
         throw new Error("TODO unimplemented");
     }

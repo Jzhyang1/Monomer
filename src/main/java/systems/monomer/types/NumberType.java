@@ -3,7 +3,6 @@ package systems.monomer.types;
 import lombok.Getter;
 import org.jetbrains.annotations.NonNls;
 import systems.monomer.interpreter.InterpretNumber;
-import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 
 @Getter

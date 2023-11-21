@@ -6,7 +6,6 @@ import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.StructureNode;
-import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
 import systems.monomer.variables.Key;
@@ -20,7 +19,8 @@ import java.util.stream.IntStream;
 import static systems.monomer.types.AnyType.ANY;
 
 public class AssignNode extends OperatorNode {
-    private static record FunctionInitInfo(Node identifier, Key function, Node args, StructureNode namedArgs, Node body, ModuleNode parent) {};
+    private static record FunctionInitInfo(Node identifier, Key function, Node args, StructureNode namedArgs, Node body, ModuleNode parent) {}
+
     private FunctionInitInfo functionInit = null;
 
     public AssignNode() {

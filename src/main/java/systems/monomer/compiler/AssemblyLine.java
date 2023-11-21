@@ -12,4 +12,8 @@ public class AssemblyLine {
         this.from = from;
         this.to = to;
     }
+
+    public String toString() {
+        return instruction + "\t" + (from == null ? "" : from) + "\t" + (to == null ? "" : to);
+    }
 }

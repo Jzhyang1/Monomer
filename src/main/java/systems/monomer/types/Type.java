@@ -1,6 +1,5 @@
 package systems.monomer.types;
 
-import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretValue;
 
@@ -65,9 +64,7 @@ public interface Type extends Cloneable {
     /**
      * @return the size of the type in memory
      */
-    default CompileSize compileSize() {
-        throw new Error("TODO unimplemented");  //TODO make this not default
-    }
+    CompileSize compileSize();
 
     /**
      * @return the type as a Type

@@ -1,7 +1,8 @@
 package systems.monomer.syntaxtree.literals;
 
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretString;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
@@ -30,7 +31,7 @@ public class StringBuilderNode extends LiteralNode {
                         .collect(Collectors.joining()));
     }
 
-    public CompileValue compileValue() {
+    public Operand compileValue(AssemblyFile file) {
         throw new Error("TODO unimplemented");
     }
 

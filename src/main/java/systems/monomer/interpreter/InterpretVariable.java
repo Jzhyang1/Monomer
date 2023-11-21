@@ -1,8 +1,6 @@
 package systems.monomer.interpreter;
 
-import systems.monomer.types.ObjectType;
 import systems.monomer.types.Type;
-import systems.monomer.variables.VariableKey;
 
 public abstract class InterpretVariable implements Type, Cloneable {
 

@@ -1,8 +1,9 @@
 package systems.monomer.commandline.EnvironmentDefaults;
 
 import lombok.experimental.UtilityClass;
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.LiteralNode;
@@ -11,7 +12,6 @@ import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
 import java.io.File;
-import java.net.URI;
 import java.util.List;
 import java.util.function.Function;
 
@@ -51,10 +51,8 @@ public class ConvertDefaults {
                 return convertFunc.apply(args.get(0).interpretValue());
             }
 
-            @Override
-            public CompileValue compileValue() {
-                throwError("TODO unimplemented");
-                return null;
+            public Operand compileValue(AssemblyFile file) {
+                throw new Error("TODO unimplemented");
             }
 
             @Override

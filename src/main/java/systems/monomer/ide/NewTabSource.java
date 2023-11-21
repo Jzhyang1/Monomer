@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.io.File;
 
 public class NewTabSource extends DefaultTabSource {
-    private Editor editor;
+    private final Editor editor;
 
     public NewTabSource(Editor editor) {
         this.editor = editor;

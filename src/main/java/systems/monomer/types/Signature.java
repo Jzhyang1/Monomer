@@ -2,8 +2,6 @@ package systems.monomer.types;
 
 import lombok.Getter;
 
-import static systems.monomer.interpreter.InterpretObject.EMPTY;
-
 @Getter
 public class Signature extends AnyType {
     public static final Signature ANYSIGNATURE = new Signature(AnyType.ANY, AnyType.ANY);

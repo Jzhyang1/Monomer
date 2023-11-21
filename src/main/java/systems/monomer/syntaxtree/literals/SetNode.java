@@ -1,8 +1,8 @@
 package systems.monomer.syntaxtree.literals;
 
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretList;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretSet;
 import systems.monomer.interpreter.InterpretValue;
@@ -33,7 +33,7 @@ public class SetNode extends LiteralNode {
         return new InterpretSet(ret);
     }
 
-    public CompileValue compileValue() {
+    public Operand compileValue(AssemblyFile file) {
         throw new Error("TODO unimplemented");
     }
 

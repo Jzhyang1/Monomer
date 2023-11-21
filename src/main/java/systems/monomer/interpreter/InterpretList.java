@@ -1,10 +1,8 @@
 package systems.monomer.interpreter;
 
-import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.Type;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class InterpretList extends InterpretCollection {

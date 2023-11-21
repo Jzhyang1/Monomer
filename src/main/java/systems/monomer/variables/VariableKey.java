@@ -3,6 +3,7 @@ package systems.monomer.variables;
 import lombok.Getter;
 import lombok.Setter;
 import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.Type;
@@ -38,6 +39,11 @@ public class VariableKey extends Key {
     @Override
     public Type getField(String field) {
         return type.getField(field);
+    }
+
+    @Override
+    public CompileSize compileSize() {
+        return type.compileSize();
     }
 
     public String valueString() {

@@ -1,16 +1,12 @@
 package systems.monomer.syntaxtree.operators;
 
-import org.jetbrains.annotations.Nullable;
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.StructureNode;
 import systems.monomer.types.*;
-import systems.monomer.variables.Key;
-import systems.monomer.variables.VariableKey;
 
 import static systems.monomer.types.AnyType.ANY;
 
@@ -79,7 +75,7 @@ public class CallNode extends OperatorNode {
         }
     }
 
-    public CompileValue compileValue() {
+    public Operand compileValue(AssemblyFile file) {
         throw new Error("TODO unimplemented");
     }
 

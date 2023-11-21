@@ -2,8 +2,8 @@ package systems.monomer.types;
 
 import lombok.Getter;
 import lombok.Setter;
+import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretObject;
-import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 
 @Getter @Setter
@@ -35,6 +35,11 @@ public class AnyType implements Type, Cloneable {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Type;
+    }
+
+    @Override
+    public CompileSize compileSize() {
+        throw new Error("attempting to get compile size of indeterminant type");
     }
 
     @Override

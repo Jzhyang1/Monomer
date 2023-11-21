@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public class PairList<A,B> implements List<Pair<A,B>> {
-    private ArrayList<Pair<A,B>> stack = new ArrayList<>();
+    private final ArrayList<Pair<A,B>> stack = new ArrayList<>();
 
 
     public Pair<A,B> get(int i) {

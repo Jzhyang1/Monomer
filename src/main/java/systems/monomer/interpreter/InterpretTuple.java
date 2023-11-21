@@ -1,10 +1,7 @@
 package systems.monomer.interpreter;
 
-import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.TupleType;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class InterpretTuple extends TupleType implements InterpretValue {

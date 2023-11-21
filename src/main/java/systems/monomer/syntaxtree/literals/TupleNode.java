@@ -4,17 +4,13 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.Assembly.Register;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
-import systems.monomer.interpreter.InterpretList;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.AnyType;
 import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -70,7 +66,13 @@ public class TupleNode extends LiteralNode {
     }
 
     public Operand compileValue(AssemblyFile file) {
-        return null;
+        for (Node child : getChildren()) {
+            file.add(PUSH, child.compileValue(file), null);
+        }
+        return new Operand(Operand.Type.MEMORY,
+                Register.ESP,
+                0,
+                0);
     }
 
     public CompileSize compileSize() {

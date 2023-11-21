@@ -1,9 +1,6 @@
 package systems.monomer.types;
 
 import lombok.Getter;
-import systems.monomer.interpreter.InterpretMap;
-import systems.monomer.interpreter.InterpretTuple;
-import systems.monomer.interpreter.InterpretValue;
 
 @Getter
 public class MapType extends CollectionType {

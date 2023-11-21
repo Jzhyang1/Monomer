@@ -5,7 +5,6 @@ import systems.monomer.Constants;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.LiteralNode;
 import systems.monomer.types.*;
@@ -123,7 +122,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     }
 
     public static class CharReader extends LiteralNode {
-        private Supplier<Reader> reader;
+        private final Supplier<Reader> reader;
         public CharReader(Supplier<Reader> reader) {
             this.reader = reader;
         }
@@ -152,8 +151,8 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     }
 
     public static class MultiCharReader extends LiteralNode {
-        private Supplier<Reader> reader;
-        private VariableNode count;
+        private final Supplier<Reader> reader;
+        private final VariableNode count;
 
         public MultiCharReader(Supplier<Reader> reader, VariableNode count) {
             this.reader = reader;
@@ -196,7 +195,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     }
 
     public static class StringReader extends LiteralNode {
-        private Supplier<Reader> reader;
+        private final Supplier<Reader> reader;
 
         public StringReader(Supplier<Reader> reader) {
             this.reader = reader;
@@ -233,7 +232,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     }
 
     public static class IntReader extends LiteralNode {
-        private Supplier<Reader> reader;
+        private final Supplier<Reader> reader;
 
         public IntReader(Supplier<Reader> reader) {
             this.reader = reader;
@@ -270,8 +269,8 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     }
 
     public static class IntWriter extends LiteralNode {
-        private Supplier<Writer> writer;
-        private VariableNode val;
+        private final Supplier<Writer> writer;
+        private final VariableNode val;
 
         public IntWriter(Supplier<Writer> writer, VariableNode val) {
             this.writer = writer;
@@ -311,8 +310,8 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     }
 
     public static class CharWriter extends LiteralNode {
-        private Supplier<Writer> writer;
-        private VariableNode val;
+        private final Supplier<Writer> writer;
+        private final VariableNode val;
 
         public CharWriter(Supplier<Writer> writer, VariableNode val) {
             this.writer = writer;
@@ -352,8 +351,8 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     }
 
     public static class StringWriter extends LiteralNode {
-        private Supplier<Writer> writer;
-        private VariableNode val;
+        private final Supplier<Writer> writer;
+        private final VariableNode val;
 
         public StringWriter(Supplier<Writer> writer, VariableNode val) {
             this.writer = writer;

@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SourceFile extends Source {
-    private BufferedReader reader;
-    private File file;
-    private String fileName;
+    private final BufferedReader reader;
+    private final File file;
+    private final String fileName;
     private int position = 0;
     private int lineNumber = 0;
 

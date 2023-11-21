@@ -3,7 +3,6 @@ package systems.monomer.syntaxtree;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
@@ -26,7 +25,7 @@ public class ModuleNode extends Node {
     }
 
     //variables map and overloaded getVariable to access the variables
-    private Map<String, VariableKey> variables = new HashMap<>();
+    private final Map<String, VariableKey> variables = new HashMap<>();
     public void putVariable(String varName, VariableKey key) {
         variables.put(varName, key);
     }
@@ -63,7 +62,7 @@ public class ModuleNode extends Node {
         return new InterpretTuple(ret); //TODO use a different type than tuple
     }
 
-    public CompileValue compileValue() {
+    public Operand compileValue(AssemblyFile file) {
         //globals
         //deal with constants by replacing the variable with the value if the value is less than 128 bits, otherwise treat as reserved-space values,
         // deal with dynamic variables by reserving spaces for size + pointer,
@@ -91,12 +90,11 @@ public class ModuleNode extends Node {
             }
         }
 
-        AssemblyFile ret = new AssemblyFile();
-        for (Node child : getChildren()) {
-            //TODO optimize by passing ret into compileValue rather than adding child.compileValue().getAssembly() to ret
-            ret.addAll(child.compileValue().getLines());
-        }
-        return ret;
+        for (Node child : getChildren())
+            child.compileValue(file);
+
+        //TODO not sure what this should return
+        return new Operand(Operand.Type.MEMORY, null, 0, 0);
     }
 
     public CompileSize compileSize() {

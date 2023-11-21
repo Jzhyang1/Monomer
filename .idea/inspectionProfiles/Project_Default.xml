@@ -902,6 +902,7 @@
       </option>
     </inspection_tool>
     <inspection_tool class="CssUnknownTarget" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="CssUnknownUnit" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="CssUnresolvedClassInComposesRule" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="CssUnresolvedCustomProperty" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="CssUnusedSymbol" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -2957,6 +2958,7 @@
         <list>
           <option value="ProhibitedExceptionThrown" />
           <option value="SuspiciousGetterSetter" />
+          <option value="StaticCollection" />
         </list>
       </option>
     </inspection_tool>
@@ -3320,7 +3322,9 @@
     <inspection_tool class="UtilSchemaInspection" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="UtilityClass" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignorableAnnotations">
-        <value />
+        <value>
+          <item value="lombok.experimental.UtilityClass" />
+        </value>
       </option>
     </inspection_tool>
     <inspection_tool class="UtilityClassCanBeEnum" enabled="true" level="WARNING" enabled_by_default="true" />

@@ -1,7 +1,6 @@
 package systems.monomer.syntaxtree.controls;
 
 import systems.monomer.interpreter.*;
-import systems.monomer.types.AnyType;
 
 public class RepeatNode extends ControlOperatorNode {
     public RepeatNode() {

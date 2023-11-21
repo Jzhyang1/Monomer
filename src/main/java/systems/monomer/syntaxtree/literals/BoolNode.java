@@ -1,14 +1,14 @@
 package systems.monomer.syntaxtree.literals;
 
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretBool;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.BoolType;
-import systems.monomer.types.NumberType;
 
 public class BoolNode extends LiteralNode {
-    private boolean value;
+    private final boolean value;
 
     public BoolNode(boolean value){
         super("bool");
@@ -24,7 +24,7 @@ public class BoolNode extends LiteralNode {
         return new InterpretBool(value);
     }
 
-    public CompileValue compileValue() {
+    public Operand compileValue(AssemblyFile file) {
         throw new Error("TODO unimplemented");
     }
 

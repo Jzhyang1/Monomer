@@ -1,7 +1,8 @@
 package systems.monomer.syntaxtree;
 
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.compiler.CompileValue;
 import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 public class StructureNode extends LiteralNode {
     public static final StructureNode EMPTY = new StructureNode();
-    private Map<String, VariableKey> variables = new HashMap<>();
+    private final Map<String, VariableKey> variables = new HashMap<>();
 
     public StructureNode(){}
     public StructureNode(List<Node> children) {
@@ -59,6 +60,11 @@ public class StructureNode extends LiteralNode {
         return ret;
     }
 
+    @Override
+    public Operand compileValue(AssemblyFile file) {
+        throw new Error("TODO unimplemented");
+    }
+
     public void assign(InterpretValue value) {
         if(value instanceof InterpretObject obj) {
             for(Node child : getChildren()) {
@@ -69,10 +75,6 @@ public class StructureNode extends LiteralNode {
         else {
             throwError("Cannot assign " + value + " to " + this);
         }
-    }
-
-    public CompileValue compileValue() {
-        throw new Error("TODO unimplemented");
     }
 
     public CompileSize compileSize() {

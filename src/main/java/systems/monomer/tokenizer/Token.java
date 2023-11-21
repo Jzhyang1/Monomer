@@ -12,8 +12,6 @@ import systems.monomer.syntaxtree.operators.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static systems.monomer.syntaxtree.Node.Usage.LITERAL;
-
 @Getter
 public class Token extends ErrorBlock {
     public static enum Usage {
