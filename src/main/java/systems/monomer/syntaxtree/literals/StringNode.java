@@ -11,8 +11,6 @@ import systems.monomer.types.StringType;
 
 import java.nio.ByteBuffer;
 
-import static systems.monomer.compiler.Assembly.Instruction.PUSH;
-
 public class StringNode extends LiteralNode {
     public static final Node EMPTY = new StringNode("");
     private final String value;
@@ -38,11 +36,10 @@ public class StringNode extends LiteralNode {
         //traverses in reverse order because stack grows downwards
         for(int i = value.length(); i >= 0; i -= 8) {
             String sub = value.substring(i, Math.max(i-8, 0));
-            file.add(PUSH, new Operand(Operand.Type.IMMEDIATE,
+            file.push(new Operand(Operand.Type.IMMEDIATE,
                         null,
                         0,
-                        ByteBuffer.wrap(sub.getBytes()).getInt()),
-                    null);
+                        ByteBuffer.wrap(sub.getBytes()).getInt()));
         }
 
         //TODO I think this is right

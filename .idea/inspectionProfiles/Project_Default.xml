@@ -2959,6 +2959,7 @@
           <option value="ProhibitedExceptionThrown" />
           <option value="SuspiciousGetterSetter" />
           <option value="StaticCollection" />
+          <option value="unused" />
         </list>
       </option>
     </inspection_tool>

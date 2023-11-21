@@ -13,7 +13,7 @@ import static systems.monomer.types.AnyType.ANY;
 
 @Getter
 public class VariableNode extends Node {
-    private VariableKey variableKey;
+    private VariableKey variableKey = null;
 
     public VariableNode(String name) {
         super(name);
@@ -61,7 +61,8 @@ public class VariableNode extends Node {
     }
 
     public Operand compileValue(AssemblyFile file) {
-        return variableKey.getAddress();
+//        System.out.println("compiling variable " + getName() + " with address " + variableKey.getAddress(file));
+        return variableKey.getAddress(file);
     }
     public CompileSize compileSize() {
         throw new Error("TODO unimplemented");

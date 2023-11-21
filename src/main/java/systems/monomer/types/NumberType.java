@@ -2,6 +2,7 @@ package systems.monomer.types;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NonNls;
+import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretNumber;
 import systems.monomer.interpreter.InterpretValue;
 
@@ -44,5 +45,9 @@ public class NumberType<T extends Number> extends AnyType {
     @Override
     public InterpretValue defaultValue() {
         return new InterpretNumber<T>(value);
+    }
+
+    public CompileSize compileSize() {
+        return new CompileSize(8);
     }
 }

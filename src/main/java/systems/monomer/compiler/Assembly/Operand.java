@@ -23,7 +23,7 @@ public class Operand {
     /**
      * the number of bytes in a SIZE and a POINTER variable
      */
-    public static final int SIZE_POINTER_SIZE = 8;
+    public static final int SIZE_POINTER_SIZE = SIZE_SIZE + POINTER_SIZE;
 
     public enum Type {
         REGISTER, MEMORY, IMMEDIATE,

@@ -9,6 +9,7 @@ import systems.monomer.syntaxtree.StructureNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
 import systems.monomer.variables.Key;
+
 import static systems.monomer.compiler.Assembly.Instruction.*;
 
 import java.util.ArrayList;
@@ -19,7 +20,9 @@ import java.util.stream.IntStream;
 import static systems.monomer.types.AnyType.ANY;
 
 public class AssignNode extends OperatorNode {
-    private static record FunctionInitInfo(Node identifier, Key function, Node args, StructureNode namedArgs, Node body, ModuleNode parent) {}
+    private static record FunctionInitInfo(Node identifier, Key function, Node args, StructureNode namedArgs, Node body,
+                                           ModuleNode parent) {
+    }
 
     private FunctionInitInfo functionInit = null;
 
@@ -29,6 +32,7 @@ public class AssignNode extends OperatorNode {
 
     /**
      * returns the type of the variable
+     *
      * @param potentialvar the variable
      * @param potentialval the value being assigned to the variable
      * @return the type
@@ -42,10 +46,9 @@ public class AssignNode extends OperatorNode {
         Type varType = potentialvar.getType();
 
         Type type = valType;
-        if(varType == ANY) {
+        if (varType == ANY) {
             potentialvar.setType(valType);
-        }
-        else if(!valType.typeContains(varType)) {
+        } else if (!valType.typeContains(varType)) {
             potentialval.throwError("Type mismatch: " + potentialvar.getType() + " and " + potentialval.getType());
             return null;
         }
@@ -55,16 +58,14 @@ public class AssignNode extends OperatorNode {
 
     public static InterpretValue assign(Node dest, InterpretValue val) {
         //TODO move assign to the Node class and implement it in the nodes that support it
-        if(dest instanceof TupleNode tupleDest && val instanceof InterpretTuple tupleVal) {
+        if (dest instanceof TupleNode tupleDest && val instanceof InterpretTuple tupleVal) {
             ArrayList<InterpretValue> retValues = IntStream.range(0, tupleDest.size()).mapToObj(i -> assign(tupleDest.get(i), tupleVal.get(i))).collect(Collectors.toCollection(ArrayList::new));
             return new InterpretTuple(retValues);
-        }
-        else if(dest instanceof StructureNode structDest) {
+        } else if (dest instanceof StructureNode structDest) {
             //TODO compare this with Tuple assign
             structDest.assign(val);
             return val;
-        }
-        else {
+        } else {
             dest.getVariableKey().setType(val.getType());   //TODO this is a hack to get overloads to transfer over functions because they are stored as a type
             dest.interpretVariable().setValue(val);
             return val;
@@ -80,12 +81,12 @@ public class AssignNode extends OperatorNode {
     }
 
     public void matchTypes() {
-        if(functionInit != null) {
+        if (functionInit != null) {
             functionInit.identifier.matchTypes();
 
             Type potentialOverloads = functionInit.function.getType();
             OverloadedFunction overloads;
-            if(potentialOverloads == ANY)
+            if (potentialOverloads == ANY)
                 functionInit.function.setType(overloads = new OverloadedFunction());
             else
                 overloads = (OverloadedFunction) potentialOverloads;
@@ -102,7 +103,7 @@ public class AssignNode extends OperatorNode {
             Signature tempSignature = new Signature(ANY, argsType, namedArgsType);
 
             boolean needTempSignature = overloads.getOverload(tempSignature) == null;
-            if(needTempSignature)
+            if (needTempSignature)
                 overloads.putOverload(tempSignature, function);
 
             functionInit.body.matchTypes();
@@ -114,13 +115,13 @@ public class AssignNode extends OperatorNode {
             overloads.putOverload(signature, function);
 
             setType(signature);
-        }
-        else {
+        } else {  //normal variable assignment
             List<Node> children = getChildren();
-            Node value = children.get(children.size() - 1); value.matchTypes();
+            Node value = children.get(children.size() - 1);
+            value.matchTypes();
             Type valType = value.getType();
 
-            for(int i = children.size() - 2; i >= 0; --i) {
+            for (int i = children.size() - 2; i >= 0; --i) {
                 Node variable = children.get(i);
 
                 //TODO check variable type
@@ -150,10 +151,10 @@ public class AssignNode extends OperatorNode {
     @Override
     public void matchVariables() {
         Node first = getFirst(), second = getSecond();
-        if(first instanceof CallNode callNode) {
+        if (first instanceof CallNode callNode) {
             Node identifier = callNode.getFirst(), args = callNode.getSecond();
             Node namedArgs = callNode.size() == 2 ? StructureNode.EMPTY : callNode.get(2);
-            if(!(namedArgs instanceof StructureNode)) namedArgs.throwError("Expected named args, got " + namedArgs);
+            if (!(namedArgs instanceof StructureNode)) namedArgs.throwError("Expected named args, got " + namedArgs);
             StructureNode namedArgsStruct = (StructureNode) namedArgs;
             namedArgsStruct.matchVariables();
 
@@ -163,14 +164,13 @@ public class AssignNode extends OperatorNode {
 
             ModuleNode wrapper = new ModuleNode("function");
             wrapper.setParent(this);
-            for (String fieldName: namedArgsStruct.getFieldNames()) {
+            for (String fieldName : namedArgsStruct.getFieldNames()) {
                 wrapper.putVariable(fieldName, namedArgsStruct.getVariable(fieldName));
             }
             wrapper.with(args).with(namedArgs);//.matchVariables();    //TODO this solves a problem with not being able to reference types in args, but makes it so that the args can not have names that are the same as elsewhere
             wrapper.with(second).matchVariables();
             functionInit = new FunctionInitInfo(identifier, identifierKey, args, (StructureNode) namedArgs, second, wrapper);
-        }
-        else {
+        } else {
             super.matchVariables();
         }
     }
@@ -181,28 +181,30 @@ public class AssignNode extends OperatorNode {
     }
 
     public InterpretResult interpretValue() {
-        if(functionInit == null) {
+        if (functionInit == null) {
             InterpretResult ret = getSecond().interpretValue();
-            if(ret.isValue()) {
-                for(int i = size() - 2; i >= 0; --i)
+            if (ret.isValue()) {
+                for (int i = size() - 2; i >= 0; --i)
                     assign(get(i), (InterpretValue) ret);
             }
             return ret;
         }
         return InterpretTuple.EMPTY;
     }
+
     public Operand compileValue(AssemblyFile file) {
         //TODO switch direction of assignment
 
         Operand dest = getFirst().compileValue(file);
-        for(int i = 1; i < size(); ++i) {
+        for (int i = 1; i < size(); ++i) {
             Operand src = get(i).compileValue(file);
             //TODO non-basic memory types
-            file.add(MOV, dest, src);
+            file.add(MOV, src, dest);
             dest = src;
         }
         return dest;
     }
+
     public CompileSize compileSize() {
         throw new Error("TODO unimplemented");
     }

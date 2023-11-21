@@ -1,6 +1,7 @@
 package systems.monomer.variables;
 
 import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.types.ObjectType;
@@ -20,7 +21,7 @@ public abstract class Key extends InterpretVariable {
         type.setField(field, value);
     }
 
-    public abstract Operand getAddress();
+    public abstract Operand getAddress(AssemblyFile file);
 
     @Override
     public boolean equals(Object obj) {

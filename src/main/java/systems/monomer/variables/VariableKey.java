@@ -3,6 +3,9 @@ package systems.monomer.variables;
 import lombok.Getter;
 import lombok.Setter;
 import systems.monomer.compiler.Assembly.Operand;
+import static systems.monomer.compiler.Assembly.Register.*;
+
+import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.AnyType;
@@ -18,13 +21,6 @@ public class VariableKey extends Key {
     private Operand address;
 
     public VariableKey(){}
-
-//    public InterpretValue getValue() {
-//        if(value == null)
-//            value = type.defaultValue();
-//        return value;
-//    }
-
 
     public void setType(Type type) {
         value = type.defaultValue();
@@ -48,6 +44,26 @@ public class VariableKey extends Key {
 
     public String valueString() {
         return value.valueString();
+    }
+
+    // TODO split getAddress into setting address and getting address
+    //  then set all addresses before compiling other parts of the program
+    public Operand getAddress(AssemblyFile file) {
+        if(address != null) return address;
+        if(type.isConstant())
+            address = new Operand(
+                    Operand.Type.MEMORY,
+                    EBP,
+                    file.incrementStackPosition(compileSize().getConstantSize()),
+                    0);
+        else
+            address = new Operand(
+                    Operand.Type.MEMORY_OF_POINTER,
+                    EBP,
+                    file.incrementStackPosition(Operand.SIZE_POINTER_SIZE),
+                    0);
+
+        return address;
     }
 
     @Override
