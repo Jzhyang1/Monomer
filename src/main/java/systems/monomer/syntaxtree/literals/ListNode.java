@@ -32,7 +32,7 @@ public class ListNode extends LiteralNode {
         }
         else {
             Type t = get(0).getType();
-            for(int i = size(); i > 0; --i) {
+            for(int i = size() - 1; i >= 0; --i) {
                 if(!t.typeContains(get(i).getType())) {
                     throwError("Types of elements in list do not match");
                 }
