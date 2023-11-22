@@ -370,11 +370,11 @@ public final class Operator {
     }
 
     public static boolean isPrimaryControl(String symbol) {
-        return (operators.get(symbol).info & PRIMARY_CONTROL) == PRIMARY_CONTROL;
+        return operators.containsKey(symbol) && ((operators.get(symbol).info & PRIMARY_CONTROL) == PRIMARY_CONTROL);
     }
 
     public static boolean isSecondaryControl(String symbol) {
-        return (operators.get(symbol).info & SECONDARY_CONTROL) == SECONDARY_CONTROL;
+        return operators.containsKey(symbol) &&  ((operators.get(symbol).info & SECONDARY_CONTROL) == SECONDARY_CONTROL);
     }
 
     public static boolean isAssign(String symbol) {

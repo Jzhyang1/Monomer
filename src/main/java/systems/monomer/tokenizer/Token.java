@@ -114,8 +114,10 @@ public class Token extends ErrorBlock {
                 body = partialOperatorToNode(control, null, token, iter);
             else {
                 body = partialToNode(token.toNode(), iter);
-                token = iter.next();
-                body = partialOperatorToNode(control, body, token, iter);
+                if(iter.hasNext()) {
+                    token = iter.next();
+                    body = partialOperatorToNode(control, body, token, iter);
+                }
             }
         }
         if(iter.hasNext()) iter.next();    //skip semicolon

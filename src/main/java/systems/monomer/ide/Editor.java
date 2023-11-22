@@ -622,11 +622,15 @@ public final class Editor extends JFrame {
                     new Thread(() -> {
                         try {
                             Interpret.interpret(contents);
+                            Constants.getOut().flush();
                         } catch (RuntimeException e) {try {
+                            e.printStackTrace();
                             Constants.err.write(e.getMessage().getBytes());
                         } catch (Exception ex) {
                             ex.printStackTrace();
-                        }}
+                        }} catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
                     }).start();
                 }),
                 new Action("Compile File", () -> {
