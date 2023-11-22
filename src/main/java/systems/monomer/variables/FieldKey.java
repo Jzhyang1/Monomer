@@ -71,8 +71,8 @@ public class FieldKey extends Key {
         return key;
     }
 
-    public Operand getAddress(AssemblyFile file) {
-        Operand parentAddress = parent.getAddress(file);
+    public Operand getAddress() {
+        Operand parentAddress = parent.getAddress();
         int childOffset = parent.getType().getFieldOffset(name);
 
         Operand fieldAddress = new Operand(MEMORY,

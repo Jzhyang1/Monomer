@@ -79,10 +79,10 @@ class Arithmetic {
     Operand compileNumericalBinary(AssemblyFile file, GenericOperatorNode self, Instruction intInstruction, Instruction floatInstruction) {
         return compileNumericalBinary(file, self, () -> {
             file.add(intInstruction, RBX.toOperand(), RDX.toOperand())
-                    .add(MOV, RBX.toOperand(), RAX.toOperand());
+                    .add(MOV, RDX.toOperand(), RAX.toOperand());
         }, () -> {
             file.add(floatInstruction, RBX.toOperand(), RDX.toOperand())
-                    .add(MOV, RBX.toOperand(), RAX.toOperand());
+                    .add(MOV, RDX.toOperand(), RAX.toOperand());
         });
     }
 

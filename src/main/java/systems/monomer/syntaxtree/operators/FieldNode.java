@@ -96,7 +96,7 @@ public final class FieldNode extends OperatorNode {
                     0);
         }
         else
-            return variableKey.getAddress(file);
+            return variableKey.getAddress();
     }
     public CompileSize compileSize() {
         throw new UnimplementedError();

@@ -21,7 +21,7 @@ public abstract class Key extends InterpretVariable {
         type.setField(field, value);
     }
 
-    public abstract Operand getAddress(AssemblyFile file);
+    public abstract Operand getAddress();
 
     @Override
     public boolean equals(Object obj) {

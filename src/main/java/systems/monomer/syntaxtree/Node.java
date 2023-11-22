@@ -124,6 +124,12 @@ public abstract class Node extends ErrorBlock {
 
     public abstract CompileSize compileSize();
 
+    public void compileVariables(AssemblyFile file) {
+        for (Node child : children) {
+            child.compileVariables(file);
+        }
+    }
+
     protected String toString(int tabs) {
         StringBuilder ret = new StringBuilder();
         String tabString = Constants.TAB.repeat(tabs);

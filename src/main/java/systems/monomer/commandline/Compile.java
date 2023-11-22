@@ -33,6 +33,7 @@ public class Compile {
         global.setIsExpression(false);
 
         AssemblyFile file = new AssemblyFile();
+        node.compileVariables(file);
         node.compileValue(file);    //TODO <--- write result to file
         System.out.println(file);
     }

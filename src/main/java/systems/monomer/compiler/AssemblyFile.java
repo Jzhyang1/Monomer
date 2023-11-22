@@ -34,6 +34,7 @@ public class AssemblyFile {
     }
 
     public AssemblyFile mov(Operand from, Operand to) {
+        if(from == to) return this;
         return add(Instruction.MOV, from, to);
     }
 

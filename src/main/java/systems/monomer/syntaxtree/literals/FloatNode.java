@@ -32,7 +32,7 @@ public class FloatNode extends LiteralNode {
         return new Operand(Operand.Type.IMMEDIATE,
                 null,
                 0,
-                ByteBuffer.allocate(8).putDouble(value).getInt());  //TODO this may produce overflow
+                (int) ByteBuffer.allocate(8).putDouble(value).rewind().getLong());
     }
 
     @Override

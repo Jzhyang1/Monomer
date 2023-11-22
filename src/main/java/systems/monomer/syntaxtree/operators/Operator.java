@@ -88,7 +88,7 @@ public final class Operator {
             if (self.size() == 1)
                 return self.getFirst().compileValue(file);
 
-            return compileNumericalBinary(file, self, IADD, ISUB);
+            return compileNumericalBinary(file, self, IADD, FADD);
         }, numericalChecked(differentiatedIntFloat((a, b) -> a + b, (a, b) -> a + b)), Arithmetic::typeFor); //TODO positive oper
         putData("-", 1050, BINARY, (self, file) -> {
             if (self.size() == 1) {

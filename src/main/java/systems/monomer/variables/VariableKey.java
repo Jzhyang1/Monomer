@@ -46,26 +46,6 @@ public class VariableKey extends Key {
         return value.valueString();
     }
 
-    // TODO split getAddress into setting address and getting address
-    //  then set all addresses before compiling other parts of the program
-    public Operand getAddress(AssemblyFile file) {
-        if(address != null) return address;
-        if(type.isConstant())
-            address = new Operand(
-                    Operand.Type.MEMORY,
-                    EBP,
-                    file.incrementStackPosition(compileSize().getConstantSize()),
-                    0);
-        else
-            address = new Operand(
-                    Operand.Type.MEMORY_OF_POINTER,
-                    EBP,
-                    file.incrementStackPosition(Operand.SIZE_POINTER_SIZE),
-                    0);
-
-        return address;
-    }
-
     @Override
     public VariableKey clone() {
         VariableKey key = (VariableKey) super.clone();  //TODO also clone value, overloads, etc

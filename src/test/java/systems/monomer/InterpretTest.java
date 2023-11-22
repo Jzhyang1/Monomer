@@ -11,13 +11,23 @@ import systems.monomer.tokenizer.SourceFile;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.net.URL;
 
 import static org.junit.Assert.*;
 
 public class InterpretTest {
+    private String wrapTest(String code) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Constants.setOut(out);
+        Source source = new SourceString(code);
+        Interpret.interpret(source);
+        return out.toString();
+    }
+
     @Test
     public void testInterpret1() {
         Source source = new SourceString("1+1");
@@ -142,14 +152,13 @@ public class InterpretTest {
 
     @Test
     public void interpretTest10_1() {
-        Source source = new SourceString("@true");
-        Interpret.interpret(source);
+        assertEquals("debug printing constant true", "true\n", wrapTest("@true"));
     }
 
     @Test
     public void interpretTest11() {
-        Source source = new SourceString("io write(10); io write(\"\n\")");
-        Interpret.interpret(source);
+        assertEquals("simple printing constant 10", "10",
+                wrapTest("io write(10); io write(\"\n\")"));
     }
     @Test
     public void interpretTest11_1() {
@@ -181,11 +190,11 @@ public class InterpretTest {
 
     @Test
     public void interpretTest15() {
-        Source source = new SourceString("for i in [1,2,3]:\n" +
+        String output = wrapTest("for i in [1,2,3]:\n" +
                 "    if i == 3:\n" +
                 "        break\n" +
-                "    @i");
-        Interpret.interpret(source);
+                "    @(i)\n");
+        assertEquals("for loop", "1\n2\n", output);
     }
 
     @Test
