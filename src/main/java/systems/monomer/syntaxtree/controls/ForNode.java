@@ -26,7 +26,7 @@ public class ForNode extends ControlOperatorNode {
             vars.setType(collectionType.getElementType());  //TODO handle multiple vars
             System.out.println(vars.getType());
         } else {
-            throwError("For loop requires a collection for the control of repetitions");
+            firstNode.throwError("For loop requires a collection for the control of repetitions, received " + maybeCollectionType + " instead");
         }
 
         Node secondNode = getSecond();
@@ -52,7 +52,7 @@ public class ForNode extends ControlOperatorNode {
         InterpretValue maybeIterable = collection.interpretValue().asValue();
 
         if(maybeIterable instanceof InterpretCollection iterable) {
-            Iterator<InterpretValue> iter = iterable.getValues().iterator();
+            Iterator<? extends InterpretValue> iter = iterable.iterator();
             InterpretSequence ret = new InterpretSequence(iterable.getElementType());
 
             while(iter.hasNext()) {

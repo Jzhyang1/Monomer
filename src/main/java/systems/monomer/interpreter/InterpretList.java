@@ -7,7 +7,7 @@ import java.util.List;
 
 public class InterpretList extends InterpretCollection {
     public static InterpretList EMPTY = new InterpretList(ANY);
-    private List<InterpretValue> values = new ArrayList<>();
+    private final List<InterpretValue> values = new ArrayList<>();
 
     public InterpretList(Type elementType){
         super(elementType);
@@ -15,12 +15,17 @@ public class InterpretList extends InterpretCollection {
     public InterpretList(List<InterpretValue> list) {
         //todo set the type to the most general type
         super(list.get(0));
-        values = list;
+        values.addAll(list);
     }
 
     public List<InterpretValue> getValues() {
         return values;
     }
+
+    public void add(InterpretValue value) {
+        values.add(value);
+    }
+
     @Override
     public String valueString() {
         return "[" + super.valueString() + "]";

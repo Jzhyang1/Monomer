@@ -11,11 +11,16 @@ public class InterpretSet extends InterpretCollection {
 
     public InterpretSet(List<? extends InterpretValue> list) {
         super(list.get(0));
-        getValues().addAll(list);
+        set.addAll(list);
     }
 
     public Collection<InterpretValue> getValues() {
         return set;
+    }
+
+    @Override
+    public void add(InterpretValue value) {
+        set.add(value);
     }
 
     public InterpretSet clone() {

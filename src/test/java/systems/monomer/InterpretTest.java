@@ -12,22 +12,16 @@ import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PipedOutputStream;
-import java.io.PrintStream;
 import java.net.URL;
 
 import static org.junit.Assert.*;
 
+/**
+ * some tests fail because Constants is using static variables
+ * TODO fix this
+ * for now just rerun failed tests one at a time
+ */
 public class InterpretTest {
-    private String wrapTest(String code) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Constants.setOut(out);
-        Source source = new SourceString(code);
-        Interpret.interpret(source);
-        return out.toString();
-    }
-
     @Test
     public void testInterpret1() {
         Source source = new SourceString("1+1");
@@ -150,9 +144,17 @@ public class InterpretTest {
         assertEquals("recursion", "((),(3,(2,(1,(0,(),0),1),2),3))", value.valueString());
     }
 
+    private String wrapTest(String code) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Constants.setOut(out);
+        Source source = new SourceString(code);
+        Interpret.interpret(source);
+        return out.toString().strip();
+    }
+
     @Test
     public void interpretTest10_1() {
-        assertEquals("debug printing constant true", "true\n", wrapTest("@true"));
+        assertEquals("debug printing constant true", "true", wrapTest("@true"));
     }
 
     @Test
@@ -162,30 +164,34 @@ public class InterpretTest {
     }
     @Test
     public void interpretTest11_1() {
-        Source source = new SourceString("a function(x) = @x\n" +
-                "a function(1991)");
-        Interpret.interpret(source);
+        assertEquals("function printing variable", "1991",
+                wrapTest("a function(x) = @x\n" +
+                        "a function(1991)"));
     }
 
     @Test
     public void interpretTest12() {
-        Source source = new SourceString("a(x) = x*/1.5\n" +
-                "@a(4.1)");
-        Interpret.interpret(source);
+        assertEquals("function returning operation", "2.561",
+                wrapTest("a(x) = x*/1.5\n" +
+                        "@a(4.1)").substring(0, 5));
     }
 
     @Test
     public void interpretTest13() {
-        Source source = new SourceString("x = int: 123\n" +
-                "io write(x)");
-        Interpret.interpret(source);
+        assertEquals("matching function with variable with type", "123",
+                wrapTest("x = int: 123\n" +
+                        "io write(x)\n" +
+                        "io write(\"\\n\")"));
     }
 
     @Test
     public void interpretTest14() {
-        Source source = new SourceString("f(int:a,int:b) = a+b\n" +
-                "io write(f(1,2))");
-        Interpret.interpret(source);
+//        Source source = new SourceString("f(int:a,int:b) = a+b\n" +
+//                "io write(f(1,2))");
+//        Interpret.interpret(source);
+        assertEquals("function with multiple typed arguments", "3",
+                wrapTest("f(int:a,int:b) = a+b\n" +
+                        "io write(f(1,2))"));
     }
 
     @Test
@@ -194,7 +200,7 @@ public class InterpretTest {
                 "    if i == 3:\n" +
                 "        break\n" +
                 "    @(i)\n");
-        assertEquals("for loop", "1\n2\n", output);
+        assertEquals("for loop", "1\n2", output);
     }
 
     @Test
@@ -202,37 +208,58 @@ public class InterpretTest {
         URL f = Editor.class.getResource("/generic sample.txt");
         String fpath = f.getPath().replaceAll("%20", " ");
 
-        Source source = new SourceString("f = io: uri: \""+ fpath + "\"\n" +
-                "@(string: f read())");
-        Interpret.interpret(source);
+        assertEquals("read file", "Goals",
+                wrapTest("f = io: uri: \""+ fpath + "\"\n" +
+                "@(string: f read())"));
     }
 
     @Test
     public void interpretTest17() {
-        Source source = new SourceString("f(int:x) = 123\n" +
-                "f(string:x) = \"hi\"\n" +
-                "io write(f(1))\n" +
-                "io write(\"\\n\")");
-        Interpret.interpret(source);
+//        Source source = new SourceString("f(int:x) = 123\n" +
+//                "f(string:x) = \"hi\"\n" +
+//                "io write(f(1))\n" +
+//                "io write(\"\\n\")");
+//        Interpret.interpret(source);
+        assertEquals("overloaded function", "123",
+                wrapTest("f(int:x) = 123\n" +
+                        "f(string:x) = \"hi\"\n" +
+                        "io write(f(1))\n" +
+                        "io write(\"\\n\")"));
     }
 
     @Test
     public void interpretTest18() {
-        Source source = new SourceString("a={x=1;y=3};@a x");
-        Interpret.interpret(source);
+//        Source source = new SourceString("a={x=1;y=3};@a x");
+//        Interpret.interpret(source);
+        assertEquals("field access", "1",
+                wrapTest("a={x=1;y=3};@a x"));
     }
 
     @Test
     public void interpretTest19() {
-        Source source = new SourceString("f{c=1}() = @c\n" +
-                "f{c=2}()");
-        Interpret.interpret(source);
+//        Source source = new SourceString("f{c=1}() = @c\n" +
+//                "f{c=2}()");
+//        Interpret.interpret(source);
+        assertEquals("named args", "2",
+                wrapTest("f{c=1}() = @c\n" +
+                        "f{c=2}()"));
     }
 
     @Test
     public void interpretTest20() {
-        Source source = new SourceString("f{c=1}() = @c\n" +
-                "f()");
-        Interpret.interpret(source);
+        assertEquals("default named args", "1",
+                wrapTest("f{c=1}() = @c\n" +
+                        "f()"));
+    }
+
+    @Test
+    public void interpretTest21() {
+        assertEquals("long condition chain", "even\ndivisible by 3\ndivisible by 6\ndivisible by 2 or 3\n",
+                wrapTest("n = 102 \n" +
+                        "if n % 2 == 0: io write(\"even\\n\") \n" +
+                        "else n % 3 == 0: io write(\"divisible by 3\\n\") \n" +
+                        "all: io write(\"divisible by 6\\n\") \n" +
+                        "any: io write(\"divisible by 2 or 3\\n\") \n" +
+                        "else: io write(\"not divisible by 2 or 3\")"));
     }
 }

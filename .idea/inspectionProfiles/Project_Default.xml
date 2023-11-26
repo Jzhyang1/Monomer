@@ -2960,6 +2960,8 @@
           <option value="SuspiciousGetterSetter" />
           <option value="StaticCollection" />
           <option value="unused" />
+          <option value="FeatureEnvy" />
+          <option value="OverlyLongMethod" />
         </list>
       </option>
     </inspection_tool>

@@ -628,9 +628,13 @@ public final class Editor extends JFrame {
                             Constants.err.write(e.getMessage().getBytes());
                         } catch (Exception ex) {
                             ex.printStackTrace();
-                        }} catch (IOException ex) {
+                        }} catch (IOException e) {try{
+                                e.printStackTrace();
+                                Constants.err.write("Internal error (this is a bug):".getBytes());
+                                Constants.err.write(e.getMessage().getBytes());
+                        } catch (Exception ex) {
                             ex.printStackTrace();
-                        }
+                        }}
                     }).start();
                 }),
                 new Action("Compile File", () -> {

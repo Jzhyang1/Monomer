@@ -42,7 +42,7 @@ public class IndexNode extends OperatorNode {
             int intIndex = number.getValue().intValue();
 
             if(intIndex < 0 || intIndex >= valueList.size())
-                throwError("Index " + number.getValue().intValue() + " out of bounds for list of size " + collection.getValues().size());
+                throwError("Index " + number.getValue().intValue() + " out of bounds for list of size " + collection.size());
 
             return valueList.get(intIndex);
         }

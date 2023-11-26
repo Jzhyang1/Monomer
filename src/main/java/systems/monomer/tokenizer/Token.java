@@ -120,6 +120,7 @@ public class Token extends ErrorBlock {
                 }
             }
         }
+        if(body instanceof TupleNode && body.size() == 1) body = body.get(0);
         if(iter.hasNext()) iter.next();    //skip semicolon
 
         return controlNode.with(condition).with(body);
@@ -175,7 +176,11 @@ public class Token extends ErrorBlock {
                     break;
                 }
             }
-//                return partialOperatorToNode(prevOp, cur, null, iter);
+
+            Index start = cur.get(0).getStart();
+            Index stop = cur.get(cur.size()-1).getStop();
+            cur.setContext(start, stop, op.getSource());
+
             return partialOperatorToNode(prevOp, cur, new Token(Usage.OPERATOR, ";"), iter);
 
         }

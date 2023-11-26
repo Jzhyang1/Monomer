@@ -68,21 +68,10 @@ public final class Operator {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, type)));
     }
 
-    private static void putData(String symbol, int leftPrec, int rightPrec, int info, BiFunction<GenericOperatorNode, AssemblyFile, Operand> compile, Function<GenericOperatorNode, InterpretResult> interpret) {
-        operators.put(symbol, new Operator(fillInfo(info, symbol), leftPrec, rightPrec, () -> new GenericOperatorNode(symbol, interpret, compile, (self) -> AnyType.ANY)));
-    }
-
-    private static void putData(String symbol, int prec, int info, BiFunction<GenericOperatorNode, AssemblyFile, Operand> compile, BiFunction<InterpretResult, InterpretResult, InterpretResult> interpret) {
-        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol,
-                (self) -> interpret.apply(self.getFirst().interpretValue(), self.getSecond().interpretValue()),
-                compile,
-                (self) -> AnyType.ANY
-        )));
-    }
-
     /**
      * Arithmetic operators inhabit the precedence range 1000-1200
      */
+    @SuppressWarnings({"FeatureEnvy", "OverlyLongMethod"})
     private static void initArithmetic() {
         putData("+", 1050, BINARY, (self, file) -> {
             if (self.size() == 1)
@@ -149,6 +138,7 @@ public final class Operator {
     /**
      * Bitwise operators inhabit the precedence range 700-900
      */
+    @SuppressWarnings({"FeatureEnvy"})
     private static void initBitwise() {
         //TODO replace (self) -> BoolType.BOOL with a named function that also handles non-bool
         putData("!", 860, PREFIX, (self, file) -> {
@@ -185,6 +175,7 @@ public final class Operator {
     /**
      * Comparison operators inhabit the precedence range 500-600
      */
+    @SuppressWarnings({"FeatureEnvy"})
     private static void initComparison() {
         putData("==", 550, BINARY | CHAINED, (self, file) -> {
             Operand first = self.getFirst().compileValue(file);
@@ -228,14 +219,15 @@ public final class Operator {
         putData("?=", 555, BINARY, (self, file) -> {
             //TODO
             return null;
-        }, (first, second) -> {
+        }, (self) -> {
             return null;
-        });
+        }, (self) -> null);
     }
 
     /**
      * List operators inhabit the precedence range 400-500 with 1 exception
      */
+    @SuppressWarnings({"FeatureEnvy"})
     private static void initList() {
         putData(".", 430, BINARY | CHAINED, (self, file) -> null, listStringChecked(
                         (lists) ->
@@ -243,10 +235,14 @@ public final class Operator {
                                 new InterpretList(lists.stream().flatMap((list) -> list.getValues().stream()).collect(Collectors.toList())),
                         (strs) -> new InterpretString(strs.stream().map((str) -> str.getValue()).collect(Collectors.joining()))),
                 (self) -> self.getFirst().getType()); //TODO fix
-        putData("...", 440, BINARY, (self, file) -> null, isTruthy());
-        putData("in", 820, BINARY, (self, file) -> null, (self) -> new InterpretBool(((InterpretCollection) self.getSecond().interpretValue()).getValues().contains(self.getFirst().interpretValue()))); //TODO fix and clean
+        putData("...", 440, BINARY,
+                (self, file) -> null,
+                (self) -> new InterpretRanges(self.getFirst().interpretValue().asValue(), self.getSecond().interpretValue().asValue(), new InterpretNumber<>(1)),
+                (self) -> new InterpretRanges(self.getFirst().getType())
+        );    //TODO fix and clean
+        putData("in", 420, BINARY, (self, file) -> null, (self) -> new InterpretBool(((InterpretCollection) self.getSecond().interpretValue()).getValues().contains(self.getFirst().interpretValue()))); //TODO fix and clean
         putData("#", 1800, PREFIX, (self, file) -> null, listStringChecked(
-                        (list) -> new InterpretNumber<>(list.get(0).getValues().size()),
+                        (list) -> new InterpretNumber<>(list.get(0).size()),
                         (strs) -> new InterpretNumber<>(strs.get(0).getValue().length())),
                 (self) -> self.getFirst().getType() //TODO fix
         );
@@ -256,6 +252,7 @@ public final class Operator {
      * Control operators inhabit the precedence range -100-50
      * This range overlaps with some other operators
      */
+    @SuppressWarnings({"FeatureEnvy"})
     private static void initControl() {
         putData("if", -20, PRIMARY_CONTROL, IfNode::new);
         putData("repeat", -20, PRIMARY_CONTROL, RepeatNode::new);

@@ -17,6 +17,10 @@ public class InterpretSequence extends InterpretCollection {
         return values;
     }
 
+    public void add(InterpretValue value) {
+        values.add(value);
+    }
+
     public InterpretSequence clone() {
         throw new Error("TODO unimplemented");
     }

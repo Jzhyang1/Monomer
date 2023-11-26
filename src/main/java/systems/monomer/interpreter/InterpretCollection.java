@@ -5,6 +5,7 @@ import systems.monomer.types.CollectionType;
 import systems.monomer.types.Type;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 @Getter
 public abstract class InterpretCollection extends CollectionType implements InterpretValue {
@@ -12,11 +13,18 @@ public abstract class InterpretCollection extends CollectionType implements Inte
         super(elementType);
     }
 
-    public abstract Collection<InterpretValue> getValues();
+    public abstract Collection<? extends InterpretValue> getValues();
 
-    public void add(InterpretValue value) {
-        getValues().add(value);
+    public Iterator<? extends InterpretValue> iterator() {
+        return getValues().iterator();
     }
+
+    public int size() {
+        return getValues().size();
+    }
+
+    public abstract void add(InterpretValue value);
+
     public String valueString() {
         return getValues().stream()
                 .map(InterpretValue::valueString)

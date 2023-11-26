@@ -29,7 +29,7 @@ public final class ControlGroupNode extends OperatorNode {
             if(closestType.typeContains(type)) {
                 closestType = type;
             } else if (!type.typeContains(closestType)) {
-                throwError("Types of branches do not match in control group");
+                throwError("Types of branches do not match in control group (" + type + " vs " + closestType + ")");
             }
         }
         setType(closestType);

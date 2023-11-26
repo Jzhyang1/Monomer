@@ -72,7 +72,7 @@ public final class Bitwise {
             else if (first instanceof InterpretChar firstChar)
                 return new InterpretBool(firstChar.getValue() != '\0');
             else if (first instanceof InterpretCollection firstCollection)
-                return new InterpretBool(!firstCollection.getValues().isEmpty());
+                return new InterpretBool(firstCollection.size() != 0);
             else
                 throw new Error("Expected a boolean-y value, got " + first);
         };
