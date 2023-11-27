@@ -337,7 +337,9 @@ public abstract class Source {
                             //interpolation via \(VALUE)
                             line.unget();
                             if (!strbuild.isEmpty()) {
-                                ret.add(new Token(Token.Usage.STRING, strbuild.toString()));
+                                ret.add(new Token(Token.Usage.STRING, strbuild.toString())
+                                                .with(currentStartingIndex, line.getIndex(), this));
+                                currentStartingIndex = line.getIndex();
                                 strbuild.setLength(0);
                             }
                             Token interpolate = parseNext();

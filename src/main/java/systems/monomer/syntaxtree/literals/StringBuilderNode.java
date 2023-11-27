@@ -15,7 +15,7 @@ public class StringBuilderNode extends LiteralNode {
 
     public StringBuilderNode(Collection<? extends Node> list) {
         super("stringbuilder");
-        getChildren().addAll(list);
+        addAll(list);
     }
 
     @Override
