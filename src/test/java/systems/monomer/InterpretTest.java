@@ -254,6 +254,12 @@ public class InterpretTest {
 
     @Test
     public void interpretTest21() {
+        assertEquals("string interpolation", "hi1",
+                wrapTest("@\"hi\\(1)\""));
+    }
+
+    @Test
+    public void interpretTest22() {
         assertEquals("long condition chain", "even\ndivisible by 3\ndivisible by 6\ndivisible by 2 or 3\n",
                 wrapTest("n = 102 \n" +
                         "if n % 2 == 0: io write(\"even\\n\") \n" +

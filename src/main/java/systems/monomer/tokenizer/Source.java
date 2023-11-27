@@ -336,7 +336,10 @@ public abstract class Source {
                         default -> {
                             //interpolation via \(VALUE)
                             line.unget();
-                            if (!strbuild.isEmpty()) ret.add(new Token(Token.Usage.STRING, strbuild.toString()));
+                            if (!strbuild.isEmpty()) {
+                                ret.add(new Token(Token.Usage.STRING, strbuild.toString()));
+                                strbuild.setLength(0);
+                            }
                             Token interpolate = parseNext();
 
                             if (interpolate.getUsage() != Token.Usage.GROUP) {
