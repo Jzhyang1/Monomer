@@ -34,4 +34,18 @@ public class EditorOutputStream extends OutputStream {
             });
         }
     }
+
+    @Override
+    public void flush(){
+        String s = stringBuilder.toString();
+        stringBuilder.setLength(0);
+        SwingUtilities.invokeLater(() -> {
+            try {
+                Document document = console.getDocument();
+                document.insertString(document.getLength(), s, attributeSet);
+            } catch (BadLocationException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 }

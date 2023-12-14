@@ -621,10 +621,11 @@ public final class Editor extends JFrame {
                     String contents = tab.sanitizedText();
                     new Thread(() -> {
                         try {
-
+                            tab.console.setText("");
                             Constants.getOut().write("Running file...\n\n".getBytes());
                             Interpret.interpret(contents);
                             Constants.getOut().flush();
+                            System.out.println();
                         } catch (RuntimeException e) {try {
                             e.printStackTrace();
                             Constants.getErr().write(e.getMessage().getBytes());
