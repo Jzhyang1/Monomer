@@ -621,17 +621,21 @@ public final class Editor extends JFrame {
                     String contents = tab.sanitizedText();
                     new Thread(() -> {
                         try {
+
+                            Constants.getOut().write("Running file...\n\n".getBytes());
                             Interpret.interpret(contents);
                             Constants.getOut().flush();
                         } catch (RuntimeException e) {try {
                             e.printStackTrace();
-                            Constants.err.write(e.getMessage().getBytes());
+                            Constants.getErr().write(e.getMessage().getBytes());
+                            Constants.getErr().flush();
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }} catch (IOException e) {try{
-                                e.printStackTrace();
-                                Constants.err.write("Internal error (this is a bug):".getBytes());
-                                Constants.err.write(e.getMessage().getBytes());
+                            e.printStackTrace();
+                            Constants.getErr().write("Internal error (this is a bug):".getBytes());
+                            Constants.getErr().write(e.getMessage().getBytes());
+                            Constants.getErr().flush();
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }}

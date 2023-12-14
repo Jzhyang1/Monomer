@@ -4,6 +4,7 @@ import org.junit.Test;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.SourceFile;
+import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
 
 import static org.junit.Assert.*;
@@ -109,6 +110,86 @@ public class TokenTest {
                 "\t\t\t]\n" +
                 "\t\t]\n" +
                 "\t]\n" +
+                "]", node.toString());
+    }
+
+    @Test
+    public void testToNode4() {
+        Source source = new SourceString(""+
+                "for i in 1 ... 100:\n" +
+                "    good = true\n" +
+                "    for j in 2 ... i */ 2:\n" +
+                "        if !?(i%j):\n" +
+                "            good = false\n" +
+                "            break\n" +
+                "    if good:\n" +
+                "        @i"
+        );
+
+
+        Token token = source.parse();
+        Node node = token.toNode();
+        assertEquals("nested condition tokens toNode", "LITERAL block[\n" +
+                "    CONTROL_GROUP control[\n" +
+                "        LABEL for[\n" +
+                "            OPERATOR in[\n" +
+                "                IDENTIFIER i\n" +
+                "                OPERATOR ...[\n" +
+                "                    LITERAL 1\n" +
+                "                    LITERAL 100\n" +
+                "                ]\n" +
+                "            ]\n" +
+                "            LITERAL block[\n" +
+                "                OPERATOR =[\n" +
+                "                    IDENTIFIER good\n" +
+                "                    IDENTIFIER true\n" +
+                "                ]\n" +
+                "                CONTROL_GROUP control[\n" +
+                "                    LABEL for[\n" +
+                "                        OPERATOR in[\n" +
+                "                            IDENTIFIER j\n" +
+                "                            OPERATOR ...[\n" +
+                "                                LITERAL 2\n" +
+                "                                OPERATOR */[\n" +
+                "                                    IDENTIFIER i\n" +
+                "                                    LITERAL 2\n" +
+                "                                ]\n" +
+                "                            ]\n" +
+                "                        ]\n" +
+                "                        LITERAL block[\n" +
+                "                            CONTROL_GROUP control[\n" +
+                "                                LABEL if[\n" +
+                "                                    OPERATOR ![\n" +
+                "                                        OPERATOR ?[\n" +
+                "                                            OPERATOR %[\n" +
+                "                                                IDENTIFIER i\n" +
+                "                                                IDENTIFIER j\n" +
+                "                                            ]\n" +
+                "                                        ]\n" +
+                "                                    ]\n" +
+                "                                    LITERAL block[\n" +
+                "                                        OPERATOR =[\n" +
+                "                                            IDENTIFIER good\n" +
+                "                                            IDENTIFIER false\n" +
+                "                                        ]\n" +
+                "                                        OPERATOR break\n" +
+                "                                    ]\n" +
+                "                                ]\n" +
+                "                            ]\n" +
+                "                        ]\n" +
+                "                    ]\n" +
+                "                ]\n" +
+                "            ]\n" +
+                "            CONTROL_GROUP control[\n" +
+                "                LABEL if[\n" +
+                "                    IDENTIFIER good\n" +
+                "                    OPERATOR @[\n" +
+                "                        IDENTIFIER i\n" +
+                "                    ]\n" +
+                "                ]\n" +
+                "            ]\n" +
+                "        ]\n" +
+                "    ]\n" +
                 "]", node.toString());
     }
 }

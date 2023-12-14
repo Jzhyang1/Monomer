@@ -129,6 +129,16 @@ public class Token extends ErrorBlock {
     private Node partialOperatorToNode(@Nullable Token prevOp, @Nullable Node cur, @Nullable Token nullableOp, ListIterator<Token> iter) {
         return partialOperatorToNode(prevOp, cur, nullableOp, iter, null);
     }
+
+    /**
+     * Gets the next Node when parts of the operation are already known
+     * @param prevOp the previous operation Token (null if none)
+     * @param cur the current Node, the first value of the operation (null if none)
+     * @param nullableOp the current operation Token (if null, the function will get the next Token)
+     * @param iter the iterator of the Token stream
+     * @param stopAt the value of the operation to stop at (null unless this is being used for reading an end delimiter)
+     * @return
+     */
     private Node partialOperatorToNode(@Nullable Token prevOp, @Nullable Node cur, @Nullable Token nullableOp, ListIterator<Token> iter, @Nullable String stopAt) {
         Token op = nullableOp;
         if (op == null) {
