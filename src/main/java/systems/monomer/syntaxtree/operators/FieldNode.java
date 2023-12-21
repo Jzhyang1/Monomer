@@ -34,7 +34,7 @@ public final class FieldNode extends OperatorNode {
         if(fieldNode instanceof VariableNode field)
             fieldName = field.getName();
         else
-            fieldNode.throwError("Expected variable name");
+            fieldNode.syntaxError("Expected variable name");
 
         Key parentKey = getFirst().getVariableKey();
         if(parentKey == null)
@@ -77,7 +77,7 @@ public final class FieldNode extends OperatorNode {
         if(variableKey == null) {
             InterpretResult first = getFirst().interpretValue();
             if(!first.isValue()) {
-                throwError("Attempting to access " + fieldName + " as a variable");
+                syntaxError("Attempting to access " + fieldName + " as a variable");
             }
             return first.asValue().get(fieldName);
         }

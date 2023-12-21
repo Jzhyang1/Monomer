@@ -3,7 +3,6 @@ package systems.monomer.tokenizer;
 import lombok.Getter;
 import systems.monomer.Constants;
 import systems.monomer.errorhandling.Index;
-import systems.monomer.syntaxtree.operators.Operator;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -462,11 +461,11 @@ public abstract class Source {
     private void throwParseError(Index start, Index stop, Token.Usage usage, String value, String reason) {
         new Token(usage, value)
                 .with(start, stop, Source.this)
-                .throwError(reason);
+                .syntaxError(reason);
     }
 
     private void throwParseError(Token token, String reason) {
-        token.throwError(reason);
+        token.syntaxError(reason);
     }
 
 

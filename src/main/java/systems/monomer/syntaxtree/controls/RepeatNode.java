@@ -31,7 +31,7 @@ public class RepeatNode extends ControlOperatorNode {
             }
             return new InterpretControlResult(true, ret);
         } else {
-            getFirst().throwError("Repeat operator requires a number for the number of repetitions");
+            getFirst().syntaxError("Repeat operator requires a number for the number of repetitions");
             return null;
         }
     }

@@ -12,6 +12,8 @@ import systems.monomer.syntaxtree.operators.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//sub_ are helpers for partial_
+
 @Getter
 public class Token extends ErrorBlock {
     public static enum Usage {
@@ -24,53 +26,6 @@ public class Token extends ErrorBlock {
     @Getter
     private final Usage usage;
 
-    private Node partialToNode(Node cur, ListIterator<Token> iter) {
-        if (!iter.hasNext()) return cur;
-//        if(cur.getUsage() == LITERAL && "block".equals(cur.getName())) return cur;
-
-        Token nextOp = iter.next();
-        switch (nextOp.usage) {
-            case IDENTIFIER -> {    //TODO move this under partialOperator or remember to call after every operation
-                Node fieldNode = new FieldNode().with(cur).with(nextOp.toNode());
-                fieldNode.setContext(cur.getStart(), nextOp.getStop(), cur.getSource());
-                return partialToNode(fieldNode, iter);
-            }
-            case GROUP -> { //TODO move this as well
-                Node opNode = switch (nextOp.value) {
-                    case "()" -> new CallNode().with(cur).with(nextOp.toNode());
-                    case "[]" -> new IndexNode().with(cur).with(nextOp.getFirst().toNode());
-                    case "{}" -> {
-                        Token peekToken = iter.next();
-                        if(peekToken.usage == Usage.GROUP && "()".equals(peekToken.value)) {
-                            yield new CallNode()
-                                    .with(cur)
-                                    .with(peekToken.toNode())
-                                    .with(nextOp.toNode());
-                        }
-                        else {
-                            iter.previous();
-                            yield new FieldNode().with(cur).with(nextOp.toNode());
-                        }
-                    }
-                    default -> {
-                        nextOp.throwError("Expected (), {}, or []");
-                        yield null;
-                    }
-                };
-                opNode.setContext(cur.getStart(), nextOp.getStop(), cur.getSource());
-                return partialToNode(opNode, iter);
-            }
-            case OPERATOR -> {
-                iter.previous();
-                return cur;
-            }
-            default -> {
-                nextOp.throwError("Expected operator, group, or identifier");
-                return null;
-            }
-        }
-    }
-
     public Token(Usage usage, String value) {
         this.usage = usage;
         this.value = value;
@@ -80,48 +35,82 @@ public class Token extends ErrorBlock {
         this.usage = usage;
     }
 
-    private Node partialControlToNode(Token control, ListIterator<Token> iter) {
-        if (!iter.hasNext()) control.throwError("Unexpected control at end of file");
+    private static Node subGroupSuffixToNode(Node cur, Token suffixGroup, ListIterator<Token> iter) {
+        Node opChildrenNode = suffixGroup.toNode();
 
-        Node controlNode = control.toNode();
+        Node opNode = switch (suffixGroup.value) {
+            case "()" -> new CallNode().with(cur).with(opChildrenNode);
+            case "[]" -> new IndexNode().with(cur).with(opChildrenNode);
+            case "{}" -> {
+                Token peekToken = iter.next();
+                if(peekToken.usage == Usage.GROUP && "()".equals(peekToken.value)) {
+                    yield new CallNode()
+                            .with(cur)
+                            .with(peekToken.toNode())
+                            .with(opChildrenNode);
+                }
+                else {
+                    iter.previous();
+                    yield new FieldNode().with(cur).with(opChildrenNode);
+                }
+            }
+            default -> throw suffixGroup.syntaxError("Expected (), {}, or []");
+        };
+        opNode.setContext(cur.getStart(), suffixGroup.getStop(), cur.getSource());
+        return opNode;
+    }
+
+    /**
+     * Gets the next Node when the first part of the node is already known
+     * @param cur an expression
+     * @param iter
+     * @return the new expression
+     */
+    private static Node partialToNode(Node cur, ListIterator<Token> iter) {    //TODO move this under partialOperator or remember to call after every operation
+        if (!iter.hasNext()) return cur;
+
+        Token nextOp = iter.next();
+        return switch (nextOp.usage) {
+            case IDENTIFIER -> {
+                Node fieldNode = new FieldNode().with(cur).with(nextOp.toNode());
+                fieldNode.setContext(cur.getStart(), nextOp.getStop(), cur.getSource());
+                yield partialToNode(fieldNode, iter);
+            }
+            case GROUP -> partialToNode(subGroupSuffixToNode(cur, nextOp, iter), iter);
+            case OPERATOR -> {
+                iter.previous();
+                yield cur;
+            }
+            default -> throw nextOp.syntaxError("Expected operator, group, or identifier");
+        };
+    }
+
+
+    private Node subControlPartToNode(Token control, boolean endAtColon, ListIterator<Token> iter) {
+        if (!iter.hasNext()) throw control.syntaxError("Unexpected control at end of file");
+
+        String stopAt = endAtColon ? ":" : null;
         Token token = iter.next();
+        Node part;
 
-        Node condition;
-        if (token.usage == Usage.OPERATOR && ":".equals(token.getValue()))
-            condition = new BoolNode(true);
-        else {
-            if (token.usage == Usage.OPERATOR && Operator.isPrefix(token.value))
-                condition = partialOperatorToNode(control, null, token, iter, ":");
-            else {
-                condition = partialToNode(token.toNode(), iter);
-                if (iter.hasNext()) {
-                    token = iter.next();
-                    condition = partialOperatorToNode(control, condition, token, iter, ":");
-                } else {
-                    throwError("Expecting body after condition");
-                }
-            }
-            iter.next();   //skip colon
-        }
-        token = iter.next();
-
-        Node body;
-        if(token.usage == Usage.GROUP && token.value.equals("block")) {
-            body = token.toNode();
+        if (endAtColon && token.usage == Usage.OPERATOR && ":".equals(token.value)) {
+            part = new BoolNode(true);
         }
         else {
-            if (token.usage == Usage.OPERATOR && Operator.isPrefix(token.value))
-                body = partialOperatorToNode(control, null, token, iter);
-            else {
-                body = partialToNode(token.toNode(), iter);
-                if(iter.hasNext()) {
-                    token = iter.next();
-                    body = partialOperatorToNode(control, body, token, iter);
-                }
-            }
+            part = partialOperatorToNode(control, token, iter, stopAt);
+            iter.next();   //skip colon or semicolon
         }
-        if(body instanceof TupleNode && body.size() == 1) body = body.get(0);
-        if(iter.hasNext()) iter.next();    //skip semicolon
+        if(part instanceof TupleNode && part.size() == 1) part = part.get(0);
+
+        return part;
+    }
+
+    private Node partialControlToNode(Token control, ListIterator<Token> iter) {
+        if (!iter.hasNext()) throw control.syntaxError("Unexpected control at end of file");
+
+        Node condition = subControlPartToNode(control, true, iter);
+        Node body = subControlPartToNode(control, false, iter);
+        Node controlNode = control.toNode();
 
         return controlNode.with(condition).with(body);
     }
@@ -131,12 +120,35 @@ public class Token extends ErrorBlock {
     }
 
     /**
+     * partialOperatorToNode but handles prefix operators and tokens as cur (read from iter)
+     * @param prevOp the previous operation Token (null if none)
+     * @param token the current Token (null if none)
+     */
+    private Node partialOperatorToNode(@Nullable Token prevOp, @Nullable Token token, ListIterator<Token> iter, @Nullable String stopAt) {
+        if(token == null) {
+            if(!iter.hasNext()) throw syntaxError("Expected token after this");
+            token = iter.next();
+        }
+        if(token.usage == Usage.OPERATOR) {
+            if(Operator.isPrefix(token.value)) {
+                Node cur = partialOperatorToNode(prevOp, null, token, iter, stopAt);
+                return partialToNode(cur, iter);
+            }
+            else throw token.syntaxError("Expected operator to be prefix");
+        }
+        else {
+            Node cur = partialToNode(token.toNode(), iter);
+            return partialOperatorToNode(prevOp, cur, null, iter, stopAt);
+        }
+    }
+
+    /**
      * Gets the next Node when parts of the operation are already known
      * @param prevOp the previous operation Token (null if none)
      * @param cur the current Node, the first value of the operation (null if none)
      * @param nullableOp the current operation Token (if null, the function will get the next Token)
      * @param iter the iterator of the Token stream
-     * @param stopAt the value of the operation to stop at (null unless this is being used for reading an end delimiter)
+     * @param stopAt the value of the operation to stop at; does not eat (null unless this is being used for reading an end delimiter)
      * @return
      */
     private Node partialOperatorToNode(@Nullable Token prevOp, @Nullable Node cur, @Nullable Token nullableOp, ListIterator<Token> iter, @Nullable String stopAt) {
@@ -144,11 +156,9 @@ public class Token extends ErrorBlock {
         if (op == null) {
             if (iter.hasNext()) {
                 op = iter.next();
-                if (op.usage != Usage.OPERATOR) op.throwError("Expected operator");
+                if (op.usage != Usage.OPERATOR) throw op.syntaxError("Expected operator");
             } else if (cur != null) return cur;
-            else throwError("Expected operator somewhere in here");
-
-            assert op != null;
+            else throw syntaxError("Expected operator after this");
         }
 
         //check if previous operation is before this op
@@ -166,11 +176,12 @@ public class Token extends ErrorBlock {
                     return op.toNode().with(cur);
                 else if(Operator.isPrefix(op.value))
                     return op.toNode();
-            } else op.throwError("Expected value after operator");
+            } else throw op.syntaxError("Expected value after operator");
         }
 
         //check if condition operation
         if(Operator.isPrimaryControl(op.value)) {
+            if(cur != null)
             assert cur == null;
             cur = new ControlGroupNode().with(partialControlToNode(op, iter));
 
@@ -205,7 +216,7 @@ public class Token extends ErrorBlock {
                 next = partialOperatorToNode(op, null, token, iter, stopAt);
             else if (Operator.isSuffix(op.value)) {
                 next = opNode.with(cur);
-            } else token.throwError("Expected value or prefix");
+            } else throw token.syntaxError("Expected value or prefix");
         } else
             next = tokenNode;
         assert next != null;
@@ -250,7 +261,7 @@ public class Token extends ErrorBlock {
     public Node toNode() {
         return (switch (usage) {
             case STRING_BUILDER ->
-                (children == null) ? new StringBuilderNode(List.of(StringNode.EMPTY)) :
+                (children == null) ? StringNode.EMPTY :
                         new StringBuilderNode(children.stream().map(Token::toNode).collect(Collectors.toList()));
 
             case STRING -> new StringNode(value);
@@ -262,7 +273,7 @@ public class Token extends ErrorBlock {
             case OPERATOR -> Operator.getOperator(value);
             case GROUP -> { //TODO account for all the different types of groups
                 Node node = switch (value) {
-                    case "()", "block" -> new TupleNode("block");
+                    case "()", "block" -> new TupleNode();
                     case "[]" -> new ListNode();
                     case "{}" -> new StructureNode();
                     default -> null;
@@ -277,7 +288,7 @@ public class Token extends ErrorBlock {
 
                 while (iter.hasNext()) {
                     token = iter.next();
-                    if (token.usage != Usage.OPERATOR) token.throwError("Expected operator");   //TODO **
+                    if (token.usage != Usage.OPERATOR) throw token.syntaxError("Expected operator");   //TODO **
                     cur = partialOperatorToNode(null, cur, token, iter);
                 }
 

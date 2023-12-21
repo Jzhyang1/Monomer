@@ -45,7 +45,7 @@ public class AssertTypeNode extends OperatorNode {
                 convertBy = overloads.getOverload(new Signature(getType(), second.getType()));
             }
             if(convertFunc == null || convertBy == null) {
-                throwError("Cannot convert from " + second.getType() + " to " + getType());
+                syntaxError("Cannot convert from " + second.getType() + " to " + getType());
             }
         }
     }

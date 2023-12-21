@@ -27,33 +27,33 @@ public class TokenTest {
         Node node = token.toNode();
         System.out.println(node);
         assertEquals("operator file token toNode", "LITERAL block[\n" +
-                "\tOPERATOR =[\n" +
-                "\t\tIDENTIFIER x\n" +
-                "\t\tLITERAL 0\n" +
-                "\t]\n" +
-                "\tOPERATOR =[\n" +
-                "\t\tIDENTIFIER y\n" +
-                "\t\tOPERATOR +[\n" +
-                "\t\t\tLITERAL 1\n" +
-                "\t\t\tIDENTIFIER x\n" +
-                "\t\t]\n" +
-                "\t]\n" +
-                "\tOPERATOR =[\n" +
-                "\t\tIDENTIFIER z\n" +
-                "\t\tOPERATOR *[\n" +
-                "\t\t\tIDENTIFIER y\n" +
-                "\t\t\tIDENTIFIER x\n" +
-                "\t\t]\n" +
-                "\t]\n" +
-                "\tOPERATOR @[\n" +
-                "\t\tIDENTIFIER x\n" +
-                "\t]\n" +
-                "\tOPERATOR @[\n" +
-                "\t\tIDENTIFIER y\n" +
-                "\t]\n" +
-                "\tOPERATOR @[\n" +
-                "\t\tIDENTIFIER z\n" +
-                "\t]\n" +
+                "    OPERATOR =[\n" +
+                "        IDENTIFIER x\n" +
+                "        LITERAL 0\n" +
+                "    ]\n" +
+                "    OPERATOR =[\n" +
+                "        IDENTIFIER y\n" +
+                "        OPERATOR +[\n" +
+                "            LITERAL 1\n" +
+                "            IDENTIFIER x\n" +
+                "        ]\n" +
+                "    ]\n" +
+                "    OPERATOR =[\n" +
+                "        IDENTIFIER z\n" +
+                "        OPERATOR *[\n" +
+                "            IDENTIFIER y\n" +
+                "            IDENTIFIER x\n" +
+                "        ]\n" +
+                "    ]\n" +
+                "    OPERATOR @[\n" +
+                "        IDENTIFIER x\n" +
+                "    ]\n" +
+                "    OPERATOR @[\n" +
+                "        IDENTIFIER y\n" +
+                "    ]\n" +
+                "    OPERATOR @[\n" +
+                "        IDENTIFIER z\n" +
+                "    ]\n" +
                 "]", node.toString());
     }
 
@@ -66,50 +66,43 @@ public class TokenTest {
         Token token = source.parse();
         Node node = token.toNode();
         assertEquals("condition file token toNode", "LITERAL block[\n" +
-                "\tCONTROL_GROUP control[\n" +
-                "\t\tLABEL if[\n" +
-                "\t\t\tOPERATOR >[\n" +
-                "\t\t\t\tIDENTIFIER nextStarting\n" +
-                "\t\t\t\tIDENTIFIER starting\n" +
-                "\t\t\t]\n" +
-                "\t\t\tLITERAL block[\n" +
-                "\t\t\t\tOPERATOR call[\n" +
-                "\t\t\t\t\tOPERATOR field[\n" +
-                "\t\t\t\t\t\tIDENTIFIER tokens\n" +
-                "\t\t\t\t\t\tIDENTIFIER add\n" +
-                "\t\t\t\t\t]\n" +
-                "\t\t\t\t\tOPERATOR call[\n" +
-                "\t\t\t\t\t\tIDENTIFIER tokenize\n" +
-                "\t\t\t\t\t\tIDENTIFIER source\n" +
-                "\t\t\t\t\t]\n" +
-                "\t\t\t\t]\n" +
-                "\t\t\t]\n" +
-                "\t\t]\n" +
-                "\t\tLABEL else[\n" +
-                "\t\t\tOPERATOR <[\n" +
-                "\t\t\t\tIDENTIFIER nextStarting\n" +
-                "\t\t\t\tIDENTIFIER starting\n" +
-                "\t\t\t]\n" +
-                "\t\t\tLITERAL block[\n" +
-                "\t\t\t\tOPERATOR field[\n" +
-                "\t\t\t\t\tIDENTIFIER return\n" +
-                "\t\t\t\t\tIDENTIFIER tokens\n" +
-                "\t\t\t\t]\n" +
-                "\t\t\t]\n" +
-                "\t\t]\n" +
-                "\t\tLABEL else[\n" +
-                "\t\t\tLITERAL bool\n" +
-                "\t\t\tLITERAL block[\n" +
-                "\t\t\t\tOPERATOR call[\n" +
-                "\t\t\t\t\tOPERATOR field[\n" +
-                "\t\t\t\t\t\tIDENTIFIER line\n" +
-                "\t\t\t\t\t\tIDENTIFIER skipSpaces\n" +
-                "\t\t\t\t\t]\n" +
-                "\t\t\t\t\tLITERAL block\n" +
-                "\t\t\t\t]\n" +
-                "\t\t\t]\n" +
-                "\t\t]\n" +
-                "\t]\n" +
+                "    CONTROL_GROUP control[\n" +
+                "        LABEL if[\n" +
+                "            OPERATOR >[\n" +
+                "                IDENTIFIER nextStarting\n" +
+                "                IDENTIFIER starting\n" +
+                "            ]\n" +
+                "            OPERATOR call[\n" +
+                "                OPERATOR field[\n" +
+                "                    IDENTIFIER tokens\n" +
+                "                    IDENTIFIER add\n" +
+                "                ]\n" +
+                "                OPERATOR call[\n" +
+                "                    IDENTIFIER tokenize\n" +
+                "                    IDENTIFIER source\n" +
+                "                ]\n" +
+                "            ]\n" +
+                "        ]\n" +
+                "        LABEL else[\n" +
+                "            OPERATOR <[\n" +
+                "                IDENTIFIER nextStarting\n" +
+                "                IDENTIFIER starting\n" +
+                "            ]\n" +
+                "            OPERATOR return[\n" +
+                "                IDENTIFIER tokens\n" +
+                "            ]\n" +
+                "        ]\n" +
+                "        LABEL else[\n" +
+                "            LITERAL bool\n" +
+                "            OPERATOR call[\n" +
+                "                OPERATOR field[\n" +
+                "                    IDENTIFIER line\n" +
+                "                    IDENTIFIER skipSpaces\n" +
+                "                ]\n" +
+                "                LITERAL block\n" +
+                "            ]\n" +
+                "        ]\n" +
+                "    ]\n" +
                 "]", node.toString());
     }
 
@@ -128,6 +121,7 @@ public class TokenTest {
 
 
         Token token = source.parse();
+        System.out.println(token);
         Node node = token.toNode();
         assertEquals("nested condition tokens toNode", "LITERAL block[\n" +
                 "    CONTROL_GROUP control[\n" +
@@ -189,6 +183,33 @@ public class TokenTest {
                 "                ]\n" +
                 "            ]\n" +
                 "        ]\n" +
+                "    ]\n" +
+                "]", node.toString());
+    }
+
+    @Test
+    public void testToNode5() {
+        Source source = new SourceString("\"hello\"");
+        Token token = source.parse();
+        Node node = token.toNode();
+        assertEquals("string token toNode", "LITERAL block[\n" +
+                "    LITERAL stringbuilder[\n" +
+                "        LITERAL string\n" +
+                "    ]\n" +
+                "]", node.toString());
+        assertEquals("string token toNode value", "\"hello\"", node.getChildren().get(0).getChildren().get(0).toString());
+    }
+
+    @Test
+    public void testToNode6() {
+        Source source = new SourceString("-(1,2,3)");
+        Token token = source.parse();
+        Node node = token.toNode();
+        assertEquals("tuple token toNode", "LITERAL block[\n" +
+                "    LITERAL tuple[\n" +
+                "        LITERAL 1\n" +
+                "        LITERAL 2\n" +
+                "        LITERAL 3\n" +
                 "    ]\n" +
                 "]", node.toString());
     }

@@ -1,10 +1,11 @@
-package systems.monomer.syntaxtree.operators;
+package systems.monomer.tokenizer;
 
 import systems.monomer.interpreter.InterpretCollection;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretString;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.operators.GenericOperatorNode;
 import systems.monomer.types.StringType;
 import systems.monomer.types.Type;
 
@@ -25,7 +26,7 @@ public final class Lists {
                 if (value instanceof InterpretCollection collection) {
                     values.add(collection);
                 } else {
-                    self.throwError("Unsupported operation \"" + self.getName() + "\" with non-list values");
+                    self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
                     return null;
                 }
             }
@@ -46,7 +47,7 @@ public final class Lists {
                     if (value instanceof InterpretString string) {
                         values.add(string);
                     } else {
-                        self.throwError("Unsupported operation \"" + self.getName() + "\" with non-string values");
+                        self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-string values");
                         return null;
                     }
                 }
@@ -62,7 +63,7 @@ public final class Lists {
                     if (value instanceof InterpretCollection collection) {
                         values.add(collection);
                     } else {
-                        self.throwError("Unsupported operation \"" + self.getName() + "\" with non-list values");
+                        self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
                         return null;
                     }
                 }

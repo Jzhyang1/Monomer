@@ -53,4 +53,9 @@ public class StringNode extends LiteralNode {
     public CompileSize compileSize() {
         return new CompileSize(value.length());
     }
+
+    @Override
+    public String toString() {
+        return "\"" + value + "\"";
+    }
 }

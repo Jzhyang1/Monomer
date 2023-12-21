@@ -19,10 +19,10 @@ public class IndexNode extends OperatorNode {
     public void matchTypes() {
         super.matchTypes();
         if (!(getFirst().getType() instanceof ListType))    //TODO add support for other collection types
-            throwError("Cannot index non-collection type " + getFirst().getType());
+            syntaxError("Cannot index non-collection type " + getFirst().getType());
         if (!(getSecond().getType() instanceof NumberType<?> num &&
                 num.getValue() instanceof Integer)) //TODO replace Instanceof Integer check with getTypeName check
-            throwError("Cannot index with non-integer type " + getSecond().getType());
+            syntaxError("Cannot index with non-integer type " + getSecond().getType());
 
         setType(((CollectionType) getFirst().getType()).getElementType());
     }
@@ -30,9 +30,9 @@ public class IndexNode extends OperatorNode {
     @Override
     public InterpretValue interpretValue() {
         InterpretResult firstResult = getFirst().interpretValue();
-        if(!firstResult.isValue()) throwError("Can not index first value");
+        if(!firstResult.isValue()) syntaxError("Can not index first value");
         InterpretResult secondResult = getSecond().interpretValue();
-        if(!secondResult.isValue()) throwError("Second value is not an index");
+        if(!secondResult.isValue()) syntaxError("Second value is not an index");
 
         InterpretValue value = firstResult.asValue(), index = secondResult.asValue();
 
@@ -42,12 +42,12 @@ public class IndexNode extends OperatorNode {
             int intIndex = number.getValue().intValue();
 
             if(intIndex < 0 || intIndex >= valueList.size())
-                throwError("Index " + number.getValue().intValue() + " out of bounds for list of size " + collection.size());
+                syntaxError("Index " + number.getValue().intValue() + " out of bounds for list of size " + collection.size());
 
             return valueList.get(intIndex);
         }
         else {
-            throwError("Cannot index " + value + " with " + index);
+            syntaxError("Cannot index " + value + " with " + index);
             return null;
         }
     }

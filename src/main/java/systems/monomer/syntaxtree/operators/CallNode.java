@@ -55,7 +55,7 @@ public class CallNode extends OperatorNode {
             functionIndex = overload.randomAccessIndex(new Signature(returnType, argType, namedArgType));
 
             if(functionIndex == -1)
-               throwError("No matching function found for " + argType + " -> " + returnType);
+               syntaxError("No matching function found for " + argType + " -> " + returnType);
 
             InterpretFunction function = overload.getFunction(functionIndex);
 
@@ -71,7 +71,7 @@ public class CallNode extends OperatorNode {
         } else if (funcType instanceof Signature signature) {
             setType(signature.getReturnType());
         } else {
-            getFirst().throwError("Expected function, got " + funcType);
+            getFirst().syntaxError("Expected function, got " + funcType);
         }
     }
 

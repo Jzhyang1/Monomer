@@ -1,4 +1,4 @@
-package systems.monomer.syntaxtree.operators;
+package systems.monomer.tokenizer;
 
 import lombok.experimental.UtilityClass;
 import systems.monomer.compiler.Assembly.Instruction;
@@ -12,6 +12,7 @@ import systems.monomer.interpreter.InterpretNumber;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.operators.GenericOperatorNode;
 import systems.monomer.types.NumberType;
 import systems.monomer.types.Type;
 
@@ -35,7 +36,7 @@ class Arithmetic {
             if (first instanceof InterpretNumber<? extends Number> firstNum && second instanceof InterpretNumber<? extends Number> secondNum) {
                 return callback.apply(firstNum, secondNum);
             }
-            self.throwError("Unsupported operation \"" + self.getName() + "\" with non-numeric values");
+            self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-numeric values");
             return null;
         };
     }
@@ -70,7 +71,7 @@ class Arithmetic {
             } else if (second.getType() instanceof NumberType<?> secondNum) {
                 return secondNum;
             } else {
-                self.throwError("Unsupported operation \"" + self.getName() + "\" with non-numeric values: " + first.getType() + " and " + second.getType());
+                self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-numeric values: " + first.getType() + " and " + second.getType());
                 return null;
             }
         }

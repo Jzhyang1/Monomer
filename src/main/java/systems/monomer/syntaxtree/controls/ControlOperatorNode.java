@@ -50,7 +50,7 @@ public abstract class ControlOperatorNode extends OperatorNode {
     }
 
     public InterpretValue interpretValue() {
-        throwError("Control operator must appear in a control group. If you are getting this error, please report it as a bug.");
+        syntaxError("Control operator must appear in a control group. If you are getting this error, please report it as a bug.");
         return null;
     }
 
@@ -61,7 +61,7 @@ public abstract class ControlOperatorNode extends OperatorNode {
         if (condition instanceof InterpretBool boolCondition) {
             return callback.apply(boolCondition);
         }
-        getFirst().throwError("Condition must be a boolean");
+        getFirst().syntaxError("Condition must be a boolean");
         return null;
     }
 

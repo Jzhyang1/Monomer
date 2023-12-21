@@ -1,4 +1,4 @@
-package systems.monomer.syntaxtree.operators;
+package systems.monomer.tokenizer;
 
 import lombok.NonNull;
 import systems.monomer.Constants;
@@ -14,6 +14,7 @@ import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.syntaxtree.operators.*;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.BoolType;
 import systems.monomer.types.NumberType;
@@ -27,9 +28,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static systems.monomer.syntaxtree.operators.Arithmetic.*;
-import static systems.monomer.syntaxtree.operators.Bitwise.*;
-import static systems.monomer.syntaxtree.operators.Lists.*;
+import static systems.monomer.tokenizer.Arithmetic.*;
+import static systems.monomer.tokenizer.Bitwise.*;
+import static systems.monomer.tokenizer.Lists.*;
 
 public final class Operator {
     @SuppressWarnings("StaticCollection")

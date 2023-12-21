@@ -73,7 +73,7 @@ public class StructureNode extends LiteralNode {
             }
         }
         else {
-            throwError("Cannot assign " + value + " to " + this);
+            syntaxError("Cannot assign " + value + " to " + this);
         }
     }
 

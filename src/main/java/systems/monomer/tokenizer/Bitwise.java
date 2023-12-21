@@ -1,4 +1,4 @@
-package systems.monomer.syntaxtree.operators;
+package systems.monomer.tokenizer;
 
 import lombok.experimental.UtilityClass;
 import systems.monomer.compiler.Assembly.Instruction;
@@ -6,6 +6,7 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.Assembly.Register;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.interpreter.*;
+import systems.monomer.syntaxtree.operators.GenericOperatorNode;
 import systems.monomer.types.BoolType;
 
 import java.util.function.BiFunction;
@@ -28,7 +29,7 @@ public final class Bitwise {
             } else if (first instanceof InterpretBool firstBool && second instanceof InterpretBool secondBool) {
                 return new InterpretBool(boolCallback.apply(firstBool.getValue(), secondBool.getValue()));
             }
-            self.throwError("Unsupported operation \"" + self.getName() + "\" between " + first + " and " + second);
+            self.syntaxError("Unsupported operation \"" + self.getName() + "\" between " + first + " and " + second);
             return null;
         };
     }
@@ -42,7 +43,7 @@ public final class Bitwise {
             if (first instanceof InterpretBool firstBool) {
                 return new InterpretBool(callback.apply(firstBool.getValue()));
             }
-            self.throwError("Unsupported operation \"" + self.getName() + "\" on " + first);
+            self.syntaxError("Unsupported operation \"" + self.getName() + "\" on " + first);
             return null;
         };
     }

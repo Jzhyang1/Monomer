@@ -57,7 +57,7 @@ public class ConvertDefaults {
 
             @Override
             public CompileSize compileSize() {
-                throwError("TODO unimplemented");
+                syntaxError("TODO unimplemented");
                 return null;
             }
         });

@@ -114,7 +114,7 @@ public abstract class Node extends ErrorBlock {
     }
 
     public InterpretVariable interpretVariable() {
-        throwError("Attempting to access " + name + " as a variable");
+        syntaxError("Attempting to access " + name + " as a variable");
         return null;
     }
 

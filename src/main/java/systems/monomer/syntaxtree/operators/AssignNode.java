@@ -49,7 +49,7 @@ public class AssignNode extends OperatorNode {
         if (varType == ANY) {
             potentialvar.setType(valType);
         } else if (!valType.typeContains(varType)) {
-            potentialval.throwError("Type mismatch: " + potentialvar.getType() + " and " + potentialval.getType());
+            potentialval.syntaxError("Type mismatch: " + potentialvar.getType() + " and " + potentialval.getType());
             return null;
         }
 
@@ -154,7 +154,7 @@ public class AssignNode extends OperatorNode {
         if (first instanceof CallNode callNode) {
             Node identifier = callNode.getFirst(), args = callNode.getSecond();
             Node namedArgs = callNode.size() == 2 ? StructureNode.EMPTY : callNode.get(2);
-            if (!(namedArgs instanceof StructureNode)) namedArgs.throwError("Expected named args, got " + namedArgs);
+            if (!(namedArgs instanceof StructureNode)) namedArgs.syntaxError("Expected named args, got " + namedArgs);
             StructureNode namedArgsStruct = (StructureNode) namedArgs;
             namedArgsStruct.matchVariables();
 
