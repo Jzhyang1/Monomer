@@ -192,4 +192,112 @@ public class TokenTest {
                 "    ]\n" +
                 "]", node.toString());
     }
+
+    @Test
+    public void testToNode10() {
+        Source source = new SourceString("" +
+                "for i in 1 ... 100:\n" +
+                "    good = true\n" +
+                "    for j in 2 ... i */ 2:\n" +
+                "        if !?(i%j):\n" +
+                "            good = false\n" +
+                "            break\n" +
+                "    if good:\n" +
+                "        @i"
+        );
+        assertEquals("Tokenize for loop", "GROUP block[\n" +
+                "\tOPERATOR for,\n" +
+                "\tIDENTIFIER i,\n" +
+                "\tOPERATOR in,\n" +
+                "\tINTEGER 1,\n" +
+                "\tOPERATOR ...,\n" +
+                "\tINTEGER 100,\n" +
+                "\tOPERATOR :,\n" +
+                "\tGROUP block[\n" +
+                "\tIDENTIFIER good,\n" +
+                "\tOPERATOR =,\n" +
+                "\tIDENTIFIER true,\n" +
+                "\tOPERATOR ;,\n" +
+                "\tOPERATOR for,\n" +
+                "\tIDENTIFIER j,\n" +
+                "\tOPERATOR in,\n" +
+                "\tINTEGER 2,\n" +
+                "\tOPERATOR ...,\n" +
+                "\tIDENTIFIER i,\n" +
+                "\tOPERATOR */,\n" +
+                "\tINTEGER 2,\n" +
+                "\tOPERATOR :,\n" +
+                "\tGROUP block[\n" +
+                "\tOPERATOR if,\n" +
+                "\tOPERATOR !,\n" +
+                "\tOPERATOR ?,\n" +
+                "\tGROUP ()[\n" +
+                "\tIDENTIFIER i,\n" +
+                "\tOPERATOR %,\n" +
+                "\tIDENTIFIER j\n" +
+                "\t]\n" +
+                ",\n" +
+                "\tOPERATOR :,\n" +
+                "\tGROUP block[\n" +
+                "\tIDENTIFIER good,\n" +
+                "\tOPERATOR =,\n" +
+                "\tIDENTIFIER false,\n" +
+                "\tOPERATOR ;,\n" +
+                "\tOPERATOR break\n" +
+                "\t]\n" +
+                ",\n" +
+                "\tOPERATOR ;,\n" +
+                "\tOPERATOR if,\n" +
+                "\tIDENTIFIER good,\n" +
+                "\tOPERATOR :,\n" +
+                "\tOPERATOR @,\n" +
+                "\tIDENTIFIER i\n" +
+                "\t]\n" +
+                ",\n" +
+                "\tOPERATOR ;\n" +
+                "\t]\n" +
+                ",\n" +
+                "\tOPERATOR ;\n" +
+                "\t]\n", source.parse().toString());
+    }
+
+    @Test
+    public void testToNode16() {
+        Source source = new SourceString("" +
+                "if a:\n" +
+                "    @a\n" +
+                "else b:\n" +
+                "    @b\n" +
+                "else:\n" +
+                "    @c\n"
+        );
+        assertEquals("Tokenize if else", "GROUP block[\n" +
+                "\tOPERATOR if,\n" +
+                "\tIDENTIFIER a,\n" +
+                "\tOPERATOR :,\n" +
+                "\tGROUP block[\n" +
+                "\tOPERATOR @,\n" +
+                "\tIDENTIFIER a\n" +
+                "\t]\n" +
+                ",\n" +
+                "\tOPERATOR ;,\n" +
+                "\tOPERATOR else,\n" +
+                "\tIDENTIFIER b,\n" +
+                "\tOPERATOR :,\n" +
+                "\tGROUP block[\n" +
+                "\tOPERATOR @,\n" +
+                "\tIDENTIFIER b\n" +
+                "\t]\n" +
+                ",\n" +
+                "\tOPERATOR ;,\n" +
+                "\tOPERATOR else,\n" +
+                "\tOPERATOR :,\n" +
+                "\tGROUP block[\n" +
+                "\tOPERATOR @,\n" +
+                "\tIDENTIFIER c\n" +
+                "\t]\n" +
+                ",\n" +
+                "\tOPERATOR ;\n" +
+                "\t]\n", source.parse().toString());
+    }
 }
