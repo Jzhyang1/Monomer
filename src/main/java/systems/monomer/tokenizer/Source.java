@@ -220,6 +220,7 @@ public abstract class Source {
                     //child group
                     ret.add(parseBlock());
                     ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
+                    if(line.startingSpaces() < startingSpaces) break;
                 } else if (nextStarting < startingSpaces) {
                     break;
                 } else {

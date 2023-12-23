@@ -40,7 +40,7 @@ public final class ControlGroupNode extends OperatorNode {
 
         InterpretControlResult result = getFirst().interpretControl(previousSuccess, previousFailure, InterpretTuple.EMPTY);
         for (int i = 1; i < size(); i++) {
-            if(!result.isBroken) break;
+            if(result.isBroken) break;
             assert result.value != null;
 
             previousSuccess = previousSuccess || result.isSuccess;

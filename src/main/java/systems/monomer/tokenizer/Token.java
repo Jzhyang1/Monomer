@@ -40,7 +40,7 @@ public class Token extends ErrorBlock {
 
         Node opNode = switch (suffixGroup.value) {
             case "()" -> new CallNode().with(cur).with(opChildrenNode);
-            case "[]" -> new IndexNode().with(cur).with(opChildrenNode);
+            case "[]" -> new IndexNode().with(cur).with(opChildrenNode.get(0));
             case "{}" -> {
                 Token peekToken = iter.next();
                 if(peekToken.usage == Usage.GROUP && "()".equals(peekToken.value)) {
@@ -98,7 +98,7 @@ public class Token extends ErrorBlock {
         }
         else {
             part = partialOperatorToNode(control, token, iter, stopAt);
-            iter.next();   //skip colon or semicolon
+            if(iter.hasNext()) iter.next();   //skip colon or semicolon
         }
         if(part instanceof TupleNode && part.size() == 1) part = part.get(0);
 
@@ -181,7 +181,6 @@ public class Token extends ErrorBlock {
 
         //check if condition operation
         if(Operator.isPrimaryControl(op.value)) {
-            if(cur != null)
             assert cur == null;
             cur = new ControlGroupNode().with(partialControlToNode(op, iter));
 
@@ -202,8 +201,10 @@ public class Token extends ErrorBlock {
             Index stop = cur.get(cur.size()-1).getStop();
             cur.setContext(start, stop, op.getSource());
 
-            return partialOperatorToNode(prevOp, cur, new Token(Usage.OPERATOR, ";"), iter);
-
+            if(iter.hasNext())
+                return partialOperatorToNode(prevOp, cur, new Token(Usage.OPERATOR, ";"), iter);
+            else
+                return cur;
         }
 
         Token token = iter.next();
@@ -262,6 +263,7 @@ public class Token extends ErrorBlock {
         return (switch (usage) {
             case STRING_BUILDER ->
                 (children == null) ? StringNode.EMPTY :
+                (children.size() == 1 && children.get(0).usage == Usage.STRING) ? children.get(0).toNode() :
                         new StringBuilderNode(children.stream().map(Token::toNode).collect(Collectors.toList()));
 
             case STRING -> new StringNode(value);

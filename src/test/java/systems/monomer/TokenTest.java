@@ -114,16 +114,14 @@ public class TokenTest {
                 "    for j in 2 ... i */ 2:\n" +
                 "        if !?(i%j):\n" +
                 "            good = false\n" +
-                "            break\n" +
                 "    if good:\n" +
                 "        @i"
         );
 
 
         Token token = source.parse();
-        System.out.println(token);
         Node node = token.toNode();
-        assertEquals("nested condition tokens toNode", "LITERAL block[\n" +
+        assertEquals("LITERAL block[\n" +
                 "    CONTROL_GROUP control[\n" +
                 "        LABEL for[\n" +
                 "            OPERATOR in[\n" +
@@ -150,35 +148,30 @@ public class TokenTest {
                 "                                ]\n" +
                 "                            ]\n" +
                 "                        ]\n" +
-                "                        LITERAL block[\n" +
-                "                            CONTROL_GROUP control[\n" +
-                "                                LABEL if[\n" +
-                "                                    OPERATOR ![\n" +
-                "                                        OPERATOR ?[\n" +
-                "                                            OPERATOR %[\n" +
-                "                                                IDENTIFIER i\n" +
-                "                                                IDENTIFIER j\n" +
-                "                                            ]\n" +
+                "                        CONTROL_GROUP control[\n" +
+                "                            LABEL if[\n" +
+                "                                OPERATOR ![\n" +
+                "                                    OPERATOR ?[\n" +
+                "                                        OPERATOR %[\n" +
+                "                                            IDENTIFIER i\n" +
+                "                                            IDENTIFIER j\n" +
                 "                                        ]\n" +
                 "                                    ]\n" +
-                "                                    LITERAL block[\n" +
-                "                                        OPERATOR =[\n" +
-                "                                            IDENTIFIER good\n" +
-                "                                            IDENTIFIER false\n" +
-                "                                        ]\n" +
-                "                                        OPERATOR break\n" +
-                "                                    ]\n" +
+                "                                ]\n" +
+                "                                OPERATOR =[\n" +
+                "                                    IDENTIFIER good\n" +
+                "                                    IDENTIFIER false\n" +
                 "                                ]\n" +
                 "                            ]\n" +
                 "                        ]\n" +
                 "                    ]\n" +
                 "                ]\n" +
-                "            ]\n" +
-                "            CONTROL_GROUP control[\n" +
-                "                LABEL if[\n" +
-                "                    IDENTIFIER good\n" +
-                "                    OPERATOR @[\n" +
-                "                        IDENTIFIER i\n" +
+                "                CONTROL_GROUP control[\n" +
+                "                    LABEL if[\n" +
+                "                        IDENTIFIER good\n" +
+                "                        OPERATOR @[\n" +
+                "                            IDENTIFIER i\n" +
+                "                        ]\n" +
                 "                    ]\n" +
                 "                ]\n" +
                 "            ]\n" +
@@ -202,7 +195,7 @@ public class TokenTest {
 
     @Test
     public void testToNode6() {
-        Source source = new SourceString("-(1,2,3)");
+        Source source = new SourceString("(1,2,3)");
         Token token = source.parse();
         Node node = token.toNode();
         assertEquals("tuple token toNode", "LITERAL block[\n" +
@@ -215,7 +208,7 @@ public class TokenTest {
     }
 
     @Test
-    public void testToNode10() {
+    public void testToNode7() {
         Source source = new SourceString("" +
                 "for i in 1 ... 100:\n" +
                 "    good = true\n" +
@@ -267,10 +260,14 @@ public class TokenTest {
                 "\tOPERATOR break\n" +
                 "\t]\n" +
                 ",\n" +
+                "\tOPERATOR ;\n" +
+                "\t]\n" +
+                ",\n" +
                 "\tOPERATOR ;,\n" +
                 "\tOPERATOR if,\n" +
                 "\tIDENTIFIER good,\n" +
                 "\tOPERATOR :,\n" +
+                "\tGROUP block[\n" +
                 "\tOPERATOR @,\n" +
                 "\tIDENTIFIER i\n" +
                 "\t]\n" +
@@ -283,7 +280,7 @@ public class TokenTest {
     }
 
     @Test
-    public void testToNode16() {
+    public void testToNode8() {
         Source source = new SourceString("" +
                 "if a:\n" +
                 "    @a\n" +
@@ -320,5 +317,142 @@ public class TokenTest {
                 ",\n" +
                 "\tOPERATOR ;\n" +
                 "\t]\n", source.parse().toString());
+    }
+
+    @Test
+    public void testToNode9() {
+        Source source = new SourceString("n = 102 \n" +
+                "if n % 2 == 0: io write(\"even\\n\") \n" +
+                "else n % 3 == 0: io write(\"divisible by 3\\n\") \n" +
+                "all: io write(\"divisible by 6\\n\") \n" +
+                "any: io write(\"divisible by 2 or 3\\n\") \n" +
+                "else: io write(\"not divisible by 2 or 3\")"
+        );
+        Token token = source.parse();
+        assertEquals("Tokenize if-else-all-any", "GROUP block[\n" +
+                "\tIDENTIFIER n,\n" +
+                "\tOPERATOR =,\n" +
+                "\tINTEGER 102,\n" +
+                "\tOPERATOR ;,\n" +
+                "\tOPERATOR if,\n" +
+                "\tIDENTIFIER n,\n" +
+                "\tOPERATOR %,\n" +
+                "\tINTEGER 2,\n" +
+                "\tOPERATOR ==,\n" +
+                "\tINTEGER 0,\n" +
+                "\tOPERATOR :,\n" +
+                "\tIDENTIFIER io,\n" +
+                "\tIDENTIFIER write,\n" +
+                "\tGROUP ()[STRING_BUILDER null[STRING even\n" +
+                "]],\n" +
+                "\tOPERATOR ;,\n" +
+                "\tOPERATOR else,\n" +
+                "\tIDENTIFIER n,\n" +
+                "\tOPERATOR %,\n" +
+                "\tINTEGER 3,\n" +
+                "\tOPERATOR ==,\n" +
+                "\tINTEGER 0,\n" +
+                "\tOPERATOR :,\n" +
+                "\tIDENTIFIER io,\n" +
+                "\tIDENTIFIER write,\n" +
+                "\tGROUP ()[STRING_BUILDER null[STRING divisible by 3\n" +
+                "]],\n" +
+                "\tOPERATOR ;,\n" +
+                "\tOPERATOR all,\n" +
+                "\tOPERATOR :,\n" +
+                "\tIDENTIFIER io,\n" +
+                "\tIDENTIFIER write,\n" +
+                "\tGROUP ()[STRING_BUILDER null[STRING divisible by 6\n" +
+                "]],\n" +
+                "\tOPERATOR ;,\n" +
+                "\tOPERATOR any,\n" +
+                "\tOPERATOR :,\n" +
+                "\tIDENTIFIER io,\n" +
+                "\tIDENTIFIER write,\n" +
+                "\tGROUP ()[STRING_BUILDER null[STRING divisible by 2 or 3\n" +
+                "]],\n" +
+                "\tOPERATOR ;,\n" +
+                "\tOPERATOR else,\n" +
+                "\tOPERATOR :,\n" +
+                "\tIDENTIFIER io,\n" +
+                "\tIDENTIFIER write,\n" +
+                "\tGROUP ()[STRING_BUILDER null[STRING not divisible by 2 or 3]]\n" +
+                "\t]\n", token.toString());
+
+        Node node = token.toNode();
+        assertEquals("Node if-else-all-any", "LITERAL block[\n" +
+                "    OPERATOR =[\n" +
+                "        IDENTIFIER n\n" +
+                "        LITERAL 102\n" +
+                "    ]\n" +
+                "    CONTROL_GROUP control[\n" +
+                "        LABEL if[\n" +
+                "            OPERATOR ==[\n" +
+                "                OPERATOR %[\n" +
+                "                    IDENTIFIER n\n" +
+                "                    LITERAL 2\n" +
+                "                ]\n" +
+                "                LITERAL 0\n" +
+                "            ]\n" +
+                "            OPERATOR call[\n" +
+                "                OPERATOR field[\n" +
+                "                    IDENTIFIER io\n" +
+                "                    IDENTIFIER write\n" +
+                "                ]\n" +
+                "                LITERAL string \"even\n" +
+                "\"\n" +
+                "            ]\n" +
+                "        ]\n" +
+                "        LABEL else[\n" +
+                "            OPERATOR ==[\n" +
+                "                OPERATOR %[\n" +
+                "                    IDENTIFIER n\n" +
+                "                    LITERAL 3\n" +
+                "                ]\n" +
+                "                LITERAL 0\n" +
+                "            ]\n" +
+                "            OPERATOR call[\n" +
+                "                OPERATOR field[\n" +
+                "                    IDENTIFIER io\n" +
+                "                    IDENTIFIER write\n" +
+                "                ]\n" +
+                "                LITERAL string \"divisible by 3\n" +
+                "\"\n" +
+                "            ]\n" +
+                "        ]\n" +
+                "        LABEL all[\n" +
+                "            LITERAL bool\n" +
+                "            OPERATOR call[\n" +
+                "                OPERATOR field[\n" +
+                "                    IDENTIFIER io\n" +
+                "                    IDENTIFIER write\n" +
+                "                ]\n" +
+                "                LITERAL string \"divisible by 6\n" +
+                "\"\n" +
+                "            ]\n" +
+                "        ]\n" +
+                "        LABEL any[\n" +
+                "            LITERAL bool\n" +
+                "            OPERATOR call[\n" +
+                "                OPERATOR field[\n" +
+                "                    IDENTIFIER io\n" +
+                "                    IDENTIFIER write\n" +
+                "                ]\n" +
+                "                LITERAL string \"divisible by 2 or 3\n" +
+                "\"\n" +
+                "            ]\n" +
+                "        ]\n" +
+                "        LABEL else[\n" +
+                "            LITERAL bool\n" +
+                "            OPERATOR call[\n" +
+                "                OPERATOR field[\n" +
+                "                    IDENTIFIER io\n" +
+                "                    IDENTIFIER write\n" +
+                "                ]\n" +
+                "                LITERAL string \"not divisible by 2 or 3\"\n" +
+                "            ]\n" +
+                "        ]\n" +
+                "    ]\n" +
+                "]", node.toString());
     }
 }

@@ -55,6 +55,11 @@ public class StringNode extends LiteralNode {
     }
 
     @Override
+    public String toString(int indention) {
+        return super.toString(indention) + " \"" + value + "\"";
+    }
+
+    @Override
     public String toString() {
         return "\"" + value + "\"";
     }

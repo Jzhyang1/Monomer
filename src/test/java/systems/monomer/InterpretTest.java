@@ -260,10 +260,10 @@ public class InterpretTest {
 
     @Test
     public void interpretTest22() {
-        assertEquals("long condition chain", "even\ndivisible by 3\ndivisible by 6\ndivisible by 2 or 3\n",
+        assertEquals("long condition chain", "even\ndivisible by 6\ndivisible by 2 or 3",
                 wrapTest("n = 102 \n" +
                         "if n % 2 == 0: io write(\"even\\n\") \n" +
-                        "else n % 3 == 0: io write(\"divisible by 3\\n\") \n" +
+                        "else n % 3 == 0: io write(\"divisible by 3 but not 2\\n\") \n" +
                         "all: io write(\"divisible by 6\\n\") \n" +
                         "any: io write(\"divisible by 2 or 3\\n\") \n" +
                         "else: io write(\"not divisible by 2 or 3\")"));
