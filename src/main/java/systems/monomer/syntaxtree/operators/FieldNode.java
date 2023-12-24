@@ -26,6 +26,11 @@ public final class FieldNode extends OperatorNode {
     public FieldNode(){
         super("field");
     }
+    public FieldNode(Node parent, Node field) {
+        this();
+        add(parent);
+        add(field);
+    }
 
     public void matchVariables() {
         getFirst().matchVariables();

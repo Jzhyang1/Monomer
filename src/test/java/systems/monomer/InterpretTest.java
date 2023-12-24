@@ -268,4 +268,17 @@ public class InterpretTest {
                         "any: io write(\"divisible by 2 or 3\\n\") \n" +
                         "else: io write(\"not divisible by 2 or 3\")"));
     }
+
+    @Test
+    public void interpretTest23() {
+        assertEquals("lists", "1",
+                wrapTest("a = [1,2,3]\n" +
+                        "@a[0]"));
+    }
+    @Test
+    public void interpretTest24() {
+        assertEquals("spread in lists", "1",
+                wrapTest("a = [repeat 3: 1]\n" +
+                        "@a[1])"));
+    }
 }

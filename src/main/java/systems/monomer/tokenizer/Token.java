@@ -30,7 +30,6 @@ public class Token extends ErrorBlock {
         this.usage = usage;
         this.value = value;
     }
-
     public Token(Usage usage) {
         this.usage = usage;
     }
@@ -56,8 +55,18 @@ public class Token extends ErrorBlock {
             }
             default -> throw suffixGroup.syntaxError("Expected (), {}, or []");
         };
-        opNode.setContext(cur.getStart(), suffixGroup.getStop(), cur.getSource());
-        return opNode;
+        return opNode.with(cur.getStart(), suffixGroup.getStop(), cur.getSource());
+    }
+
+    private Node groupToNode(String paren) {
+        return switch (paren) {
+            case "()", "block" -> new TupleNode();
+            case "[]" -> new ListNode();
+            case "{}" -> new StructureNode();
+            case "[)" -> null;  //TODO
+            case "(]" -> null;  //TODO
+            default -> throw syntaxError("Invalid group type " + paren);
+        };
     }
 
     /**
@@ -71,11 +80,11 @@ public class Token extends ErrorBlock {
 
         Token nextOp = iter.next();
         return switch (nextOp.usage) {
-            case IDENTIFIER -> {
-                Node fieldNode = new FieldNode().with(cur).with(nextOp.toNode());
-                fieldNode.setContext(cur.getStart(), nextOp.getStop(), cur.getSource());
-                yield partialToNode(fieldNode, iter);
-            }
+            case IDENTIFIER ->
+                partialToNode(
+                        new FieldNode(cur, nextOp.toNode())
+                                .with(cur.getStart(), nextOp.getStop(), cur.getSource()),
+                        iter);
             case GROUP -> partialToNode(subGroupSuffixToNode(cur, nextOp, iter), iter);
             case OPERATOR -> {
                 iter.previous();
@@ -273,13 +282,8 @@ public class Token extends ErrorBlock {
             case FLOAT ->  new FloatNode(Double.valueOf(value));
             case IDENTIFIER -> new VariableNode(value);
             case OPERATOR -> Operator.getOperator(value);
-            case GROUP -> { //TODO account for all the different types of groups
-                Node node = switch (value) {
-                    case "()", "block" -> new TupleNode();
-                    case "[]" -> new ListNode();
-                    case "{}" -> new StructureNode();
-                    default -> null;
-                };
+            case GROUP -> {
+                Node node = groupToNode(value);
                 if(children == null) yield node;
 
                 ListIterator<Token> iter = children.listIterator();
@@ -294,10 +298,16 @@ public class Token extends ErrorBlock {
                     cur = partialOperatorToNode(null, cur, token, iter);
                 }
 
-                //TODO this is ugly
-                if(cur instanceof TupleNode) node.addAll(cur.getChildren());
-                else if(value.equals("()"))  yield cur;
+                node.setContext(cur.getContext());
+                if(cur.isOperator("...")) { //also make sure it's range, not spread
+                    throw syntaxError("TODO unimplemented");    //TODO
+                }
+
+                if("()".equals(value)) node = cur;
+//                else if(cur.isControl()) node = new AssertTypeNode(node, cur);
+                else if(cur.isTuple()) node.addAll(cur.getChildren());
                 else node.add(cur);
+
                 yield node;
             }
         }).with(getContext());

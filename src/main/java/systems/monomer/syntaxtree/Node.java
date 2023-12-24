@@ -8,9 +8,12 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.errorhandling.Context;
+import systems.monomer.errorhandling.Index;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.errorhandling.ErrorBlock;
+import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.tokenizer.Source;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.Key;
@@ -77,13 +80,34 @@ public abstract class Node extends ErrorBlock {
         add(node);
         return this;
     }
+    public Node with(Collection<? extends Node> children) {
+        addAll(children);
+        return this;
+    }
     public Node with(Context context) {
         setContext(context);
+        return this;
+    }
+    public Node with(Index start, Index stop, Source source) {
+        setContext(start, stop, source);
         return this;
     }
     public Node with(Type type) {
         setType(type);
         return this;
+    }
+
+    public boolean isOperator() {
+        return getUsage() == Usage.OPERATOR;
+    }
+    public boolean isOperator(String name) {
+        return isOperator() && this.name.equals(name);
+    }
+    public boolean isTuple() {
+        return TupleNode.isTuple(this);
+    }
+    public boolean isControl() {
+        return getUsage() == Usage.CONTROL_GROUP || getUsage() == Usage.LABEL;
     }
 
     public final void addAll(Collection<? extends Node> children) {

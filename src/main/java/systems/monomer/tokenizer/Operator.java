@@ -15,10 +15,7 @@ import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.syntaxtree.operators.*;
-import systems.monomer.types.AnyType;
-import systems.monomer.types.BoolType;
-import systems.monomer.types.NumberType;
-import systems.monomer.types.Type;
+import systems.monomer.types.*;
 import systems.monomer.util.Pair;
 
 import java.io.IOException;
@@ -61,6 +58,11 @@ public final class Operator {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, constructor));
     }
 
+private static void putData(String symbol, int prec, int info, Function<Node, Node> constructor) {
+        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> constructor.apply(null)));
+    }
+
+    //TODO get rid of this
     private static void putData(String symbol, int prec, int info, BiFunction<GenericOperatorNode, AssemblyFile, Operand> compile, Function<GenericOperatorNode, ? extends InterpretResult> interpret) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, (self) -> AnyType.ANY)));
     }
@@ -236,10 +238,10 @@ public final class Operator {
                                 new InterpretList(lists.stream().flatMap((list) -> list.getValues().stream()).collect(Collectors.toList())),
                         (strs) -> new InterpretString(strs.stream().map((str) -> str.getValue()).collect(Collectors.joining()))),
                 (self) -> self.getFirst().getType()); //TODO fix
-        putData("...", 440, BINARY,
-                (self, file) -> null,
-                (self) -> new InterpretRanges(self.getFirst().interpretValue().asValue(), self.getSecond().interpretValue().asValue(), new InterpretNumber<>(1)),
-                (self) -> new InterpretRanges(self.getFirst().getType())
+        putData("...", 440, PREFIX | BINARY,
+                (self, file) -> null,   //TODO
+                (self) -> self.size() == 1 ? new InterpretSequence(((InterpretCollection)self.getFirst().interpretValue().asValue()).getValues()) : new InterpretRanges(self.getFirst().interpretValue().asValue(), self.getSecond().interpretValue().asValue(), new InterpretNumber<>(1)),
+                (self) -> self.size() == 1 ? new SequenceType(((InterpretCollection)self.getFirst().interpretValue().asValue()).getElementType()) : new InterpretRanges(self.getFirst().getType())
         );    //TODO fix and clean
         putData("in", 420, BINARY, (self, file) -> null, (self) -> new InterpretBool(((InterpretCollection) self.getSecond().interpretValue()).getValues().contains(self.getFirst().interpretValue()))); //TODO fix and clean
         putData("#", 1800, PREFIX, (self, file) -> null, listStringChecked(
@@ -422,6 +424,7 @@ public final class Operator {
     final int leftPrec, rightPrec;
     final int info;
     private final Supplier<Node> constructor;
+    //TODO make it possible to sort operators that have the same symbol but differ by prefix/suffix/binary
 
     private Operator(int info, int leftPrec, int rightPrec, @NonNull Supplier<Node> constructor) {
         this.info = info;

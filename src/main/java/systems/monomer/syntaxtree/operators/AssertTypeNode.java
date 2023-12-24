@@ -21,6 +21,12 @@ public class AssertTypeNode extends OperatorNode {
         super(":");
     }
 
+    public AssertTypeNode(Node parent, Node child) {
+        this();
+        add(parent);
+        add(child);
+    }
+
     public void matchTypes() {
         getFirst().matchTypes();
         setType(getFirst().getType());
@@ -51,8 +57,17 @@ public class AssertTypeNode extends OperatorNode {
     }
 
     public InterpretResult interpretValue() {
-        //TODO check that the type is a subtype of the type
-        return convertBy == null ? getSecond().interpretValue() : convertBy.call(getSecond().interpretValue().asValue(), InterpretObject.EMPTY);
+        if(convertBy != null)
+            return convertBy.call(getSecond().interpretValue().asValue(), InterpretObject.EMPTY);
+
+        InterpretResult result = getSecond().interpretValue();
+        if(!result.isValue())
+            return result;
+
+        if(result.asValue().getType().equals(getType()))
+            return result;
+        else
+            throw syntaxError("Cannot convert from " + result.asValue().getType() + " to " + getType());
     }
 
     @Override

@@ -4,11 +4,18 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.syntaxtree.Node;
 
 public class ConvertNode extends OperatorNode {
 
     public ConvertNode() {
         super("to");
+    }
+
+    public ConvertNode(Node parent, Node child) {
+        this();
+        add(parent);
+        add(child);
     }
 
     public void matchTypes() {
