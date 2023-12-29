@@ -19,12 +19,17 @@ public class IndexNode extends OperatorNode {
     public void matchTypes() {
         super.matchTypes();
         if (!(getFirst().getType() instanceof ListType))    //TODO add support for other collection types
-            syntaxError("Cannot index non-collection type " + getFirst().getType());
+            throw syntaxError("Cannot index non-collection type " + getFirst().getType());
         if (!(getSecond().getType() instanceof NumberType<?> num &&
                 num.getValue() instanceof Integer)) //TODO replace Instanceof Integer check with getTypeName check
-            syntaxError("Cannot index with non-integer type " + getSecond().getType());
+            throw syntaxError("Cannot index with non-integer type " + getSecond().getType());
 
-        setType(((CollectionType) getFirst().getType()).getElementType());
+        //TODO something like .unwrapped() below
+        Type elementType = ((CollectionType) getFirst().getType()).getElementType();
+        if (SequenceType.isSequence(elementType))
+            setType(((CollectionType) elementType).getElementType());
+        else
+            setType(elementType);
     }
 
     private Pair<List<InterpretValue>, Number> getIndexing() {

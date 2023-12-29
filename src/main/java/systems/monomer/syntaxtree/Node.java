@@ -10,6 +10,7 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.errorhandling.Context;
 import systems.monomer.errorhandling.Index;
 import systems.monomer.interpreter.InterpretResult;
+import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.syntaxtree.literals.TupleNode;
@@ -143,6 +144,15 @@ public abstract class Node extends ErrorBlock {
     }
 
     public abstract InterpretResult interpretValue();
+    protected InterpretResult checkedResult(InterpretResult result) {
+        if(!result.isValue()) return result;
+
+        InterpretValue value = result.asValue();
+        if(getType() == AnyType.ANY) return result;
+        if(value.getType().typeContains(getType())) return result;
+        return result;  //TODO this is just here for production
+//        else throw syntaxError("Internal error (please report as bug) " + value.getType() + " received when expecting " + getType());
+    }
 
     public abstract Operand compileValue(AssemblyFile file);
 

@@ -22,7 +22,19 @@ public class ObjectType extends AnyType {
             for(Map.Entry<String, Type> entry : typeOther.fields.entrySet()) {
                 Type assignedValue = entry.getValue();
                 Type value = fields.get(entry.getKey());
-                if(value == null || !value.getType().typeContains(assignedValue.getType()))
+                if(value == null || !value.getType().typeContains(assignedValue.getType())) //This is the line that is different
+                    return false;
+            }
+            return true;
+        }
+        return false;
+    }
+    public boolean typeConvertsTo(Type type) {
+        if(type instanceof ObjectType typeOther) {
+            for(Map.Entry<String, Type> entry : typeOther.fields.entrySet()) {
+                Type assignedValue = entry.getValue();
+                Type value = fields.get(entry.getKey());
+                if(value == null || !assignedValue.getType().typeContains(value.getType())) //This is the line that is different
                     return false;
             }
             return true;
@@ -102,5 +114,10 @@ public class ObjectType extends AnyType {
         InterpretObject ret = new InterpretObject();
         fields.forEach((key, value) -> ret.set(key, value.defaultValue()));
         return ret;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + valueString();
     }
 }

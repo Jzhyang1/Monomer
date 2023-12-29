@@ -61,8 +61,7 @@ public abstract class ControlOperatorNode extends OperatorNode {
         if (condition instanceof InterpretBool boolCondition) {
             return callback.apply(boolCondition);
         }
-        getFirst().syntaxError("Condition must be a boolean");
-        return null;
+        throw getFirst().syntaxError("Condition must be a boolean, got " + condition.getType());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package systems.monomer.syntaxtree;
+package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
@@ -6,7 +6,7 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.literals.LiteralNode;
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.AssignNode;
 import systems.monomer.types.ObjectType;
 import systems.monomer.variables.VariableKey;

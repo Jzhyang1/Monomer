@@ -45,6 +45,6 @@ public class GenericOperatorNode extends OperatorNode {
     }
 
     public InterpretResult interpretValue() {
-        return interpretGenerator.apply(this);
+        return checkedResult(interpretGenerator.apply(this));
     }
 }

@@ -5,7 +5,7 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.StructureNode;
+import systems.monomer.syntaxtree.literals.StructureNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
 import systems.monomer.variables.Key;

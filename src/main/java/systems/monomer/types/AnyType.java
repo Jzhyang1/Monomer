@@ -54,6 +54,7 @@ public class AnyType implements Type, Cloneable {
 
     @Override
     public String toString() {
-        return this.getClass().toString();
+        String ret = this.getClass().toString();
+        return ret.substring(ret.lastIndexOf('.') + 1);
     }
 }

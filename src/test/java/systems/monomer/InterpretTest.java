@@ -279,6 +279,20 @@ public class InterpretTest {
     public void interpretTest24() {
         assertEquals("spread in lists", "1",
                 wrapTest("a = [repeat 3: 1]\n" +
-                        "@a[1])"));
+                        "@a[1]"));
+    }
+
+    @Test
+    public void interpretTest25() {
+        assertEquals("casting objects", "{a=1}",
+                wrapTest("x = {a=int}:{a=1;b=2}\n" +
+                        "@x"));
+    }
+
+    @Test
+    public void interpretTest26() {
+        assertEquals("casting objects without type", "{a=2}",
+                wrapTest("b = {a}:{a=2}\n" +
+                        "@b"));
     }
 }
