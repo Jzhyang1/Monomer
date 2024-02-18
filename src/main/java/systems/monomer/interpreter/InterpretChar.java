@@ -5,7 +5,7 @@ import systems.monomer.types.CharType;
 
 @Getter
 public class InterpretChar extends CharType implements InterpretValue {
-    private final char value;
+    private final Character value;
     public InterpretChar(char value) {
         this.value = value;
     }

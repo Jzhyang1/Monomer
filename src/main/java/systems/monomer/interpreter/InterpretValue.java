@@ -16,5 +16,9 @@ public interface InterpretValue extends Type, InterpretResult {
         throw new Error(this + " is not a function");
     }
 
+    public default <T> T getValue() {
+        throw new Error(this + " is not a raw value");
+    }
+
     public InterpretValue clone();
 }

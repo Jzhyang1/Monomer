@@ -35,10 +35,10 @@ public class TupleNode extends LiteralNode {
 
     public void setType(Type type) {
         super.setType(type);
-        if (type instanceof TupleType tupleType) {
+        if (TupleType.EMPTY.typeContains(type)) {
             List<Node> nodeList = getChildren();
             for (int i = 0; i < nodeList.size(); i++) {
-                nodeList.get(i).setType(tupleType.getType(i));
+                nodeList.get(i).setType(((TupleType)type).getType(i));
             }
         }
     }
@@ -64,6 +64,18 @@ public class TupleNode extends LiteralNode {
             ret.add(result.asValue());
         }
         return new InterpretTuple(ret);
+    }
+
+    @Override
+    public void interpretAssign(InterpretValue value) {
+        if (InterpretTuple.EMPTY.typeContains(value)) {
+            InterpretTuple tuple = (InterpretTuple)value;
+            for (int i = 0; i < tuple.size(); i++) {
+                get(i).interpretAssign(tuple.get(i));
+            }
+        } else {
+            super.interpretAssign(value);
+        }
     }
 
     public Operand compileValue(AssemblyFile file) {

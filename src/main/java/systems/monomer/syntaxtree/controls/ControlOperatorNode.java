@@ -8,6 +8,7 @@ import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.operators.OperatorNode;
+import systems.monomer.types.BoolType;
 import systems.monomer.variables.VariableKey;
 
 import java.util.HashMap;
@@ -55,11 +56,11 @@ public abstract class ControlOperatorNode extends OperatorNode {
     }
 
     public abstract InterpretControlResult interpretControl(boolean previousSuccess, boolean previousFailure, InterpretValue previousValue);
-    protected InterpretControlResult interpretControl(Function<InterpretBool, InterpretControlResult> callback) {
+    protected InterpretControlResult interpretControl(Function<Boolean, InterpretControlResult> callback) {
         //TODO unchecked asValue
         InterpretValue condition = getFirst().interpretValue().asValue();
-        if (condition instanceof InterpretBool boolCondition) {
-            return callback.apply(boolCondition);
+        if (BoolType.BOOL.typeContains(condition)) {
+            return callback.apply(condition.<Boolean>getValue());
         }
         throw getFirst().syntaxError("Condition must be a boolean, got " + condition.getType());
     }

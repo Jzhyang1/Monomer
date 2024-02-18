@@ -139,11 +139,20 @@ public abstract class Node extends ErrorBlock {
     }
 
     public InterpretVariable interpretVariable() {
-        syntaxError("Attempting to access " + name + " as a variable");
-        return null;
+        throw syntaxError("Attempting to access " + name + " as a variable");
     }
 
     public abstract InterpretResult interpretValue();
+
+    public void interpretAssign(InterpretValue value) {
+        Key variableKey = getVariableKey();
+        if(variableKey == null) {
+            throw syntaxError("Attempting to assign to " + name + " as a variable");
+        }
+        getVariableKey().setType(value.getType());   //TODO this is a hack to get overloads to transfer over functions because they are stored as a type
+        interpretVariable().setValue(value);
+    }
+
     protected InterpretResult checkedResult(InterpretResult result) {
         if(!result.isValue()) return result;
 

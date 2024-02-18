@@ -3,6 +3,7 @@ package systems.monomer.types;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
+import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
@@ -18,6 +19,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static systems.monomer.compiler.Assembly.Operand.POINTER_SIZE;
+
 @Getter
 public class OverloadedFunction extends AnyType {
     private final PairList<Signature, InterpretFunction> overloads = new PairList<>();
@@ -32,7 +35,7 @@ public class OverloadedFunction extends AnyType {
         int index = randomAccessIndex(signature);
         return index == -1 ? null : overloads.get(index).getSecond();
     }
-    public void putOverload(Signature signature, InterpretFunction function) {
+    public void putSystemOverload(Signature signature, InterpretFunction function) {
         overloads.add(signature, function);
 
         //These handle unknown return types and unknown argument types
@@ -44,17 +47,17 @@ public class OverloadedFunction extends AnyType {
 //            overloads.put(new Signature(AnyType.ANY, AnyType.ANY), function);
     }
 
-    public void putOverload(Node args, StructureNode namedArgs, Node body, ModuleNode wrapper) {
-        putOverload(new Signature(body.getType(), args.getType(), namedArgs.getType()), new InterpretFunction(args, namedArgs, body, wrapper));
+    public void putSystemOverload(Node args, StructureNode namedArgs, Node body, ModuleNode wrapper) {
+        putSystemOverload(new Signature(body.getType(), args.getType(), namedArgs.getType()), new InterpretFunction(args, namedArgs, body, wrapper));
     }
 
-    public void putOverload(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {
+    public void putSystemOverload(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {
         List<VariableNode> args = IntStream.range(0, argTypes.size())
                 .mapToObj(i -> {
                     VariableNode ret = new VariableNode("arg"+i);
                     ret.setType(argTypes.get(i));
                     return ret;
-                }) //TODO type is wrong
+                })
                 .collect(Collectors.toList());
         Node body = bodyCallback.apply(args);
         Node argsTuple = args.size() == 1 ? args.get(0) : new TupleNode(args);
@@ -63,12 +66,12 @@ public class OverloadedFunction extends AnyType {
         wrapper.with(argsTuple).with(body).matchVariables();
         wrapper.matchTypes();
 
-        putOverload(argsTuple, StructureNode.EMPTY, body, wrapper);
+        putSystemOverload(argsTuple, StructureNode.EMPTY, body, wrapper);
     }
 
-    public void putOverload(List<Type> argTypes,
-                            List<Pair<String, Type>> names,
-                            BiFunction<List<VariableNode>, List<VariableNode>, Node> bodyCallback) {
+    public void putSystemOverload(List<Type> argTypes,
+                                  List<Pair<String, Type>> names,
+                                  BiFunction<List<VariableNode>, List<VariableNode>, Node> bodyCallback) {
         List<VariableNode> args = IntStream.range(0, argTypes.size())
                 .mapToObj(i -> {
                     VariableNode ret = new VariableNode("arg"+i);
@@ -93,7 +96,7 @@ public class OverloadedFunction extends AnyType {
         wrapper.with(argsTuple).with(namedArgsStructure).with(body).matchVariables();
         wrapper.matchTypes();
 
-        putOverload(argsTuple, namedArgsStructure, body, wrapper);
+        putSystemOverload(argsTuple, namedArgsStructure, body, wrapper);
     }
 
     /**
@@ -137,5 +140,10 @@ public class OverloadedFunction extends AnyType {
 
     public InterpretFunction getFunction(int randomAccessIndex) {
         return overloads.get(randomAccessIndex).getSecond();
+    }
+
+    @Override
+    public CompileSize compileSize() {
+        return new CompileSize(POINTER_SIZE);
     }
 }

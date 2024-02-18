@@ -36,8 +36,7 @@ class Arithmetic {
             if (first instanceof InterpretNumber<? extends Number> firstNum && second instanceof InterpretNumber<? extends Number> secondNum) {
                 return callback.apply(firstNum, secondNum);
             }
-            self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-numeric values");
-            return null;
+            throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-numeric values");
         };
     }
 

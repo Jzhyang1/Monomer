@@ -18,7 +18,7 @@ public class IndexNode extends OperatorNode {
     @Override
     public void matchTypes() {
         super.matchTypes();
-        if (!(getFirst().getType() instanceof ListType))    //TODO add support for other collection types
+        if (!ListType.LIST.typeContains(getFirst().getType()))    //TODO add support for other collection types
             throw syntaxError("Cannot index non-collection type " + getFirst().getType());
         if (!(getSecond().getType() instanceof NumberType<?> num &&
                 num.getValue() instanceof Integer)) //TODO replace Instanceof Integer check with getTypeName check

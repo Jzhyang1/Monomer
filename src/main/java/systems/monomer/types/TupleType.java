@@ -67,7 +67,7 @@ public class TupleType extends AnyType {
 
     @Override
     public boolean typeContains(Type type) {
-        return type instanceof TupleType tuple && tuple.types.size() == types.size() && IntStream.range(0, types.size()).allMatch(i -> types.get(i).typeContains(tuple.types.get(i)));
+        return type instanceof TupleType tuple && tuple.types.size() >= types.size() && IntStream.range(0, types.size()).allMatch(i -> types.get(i).typeContains(tuple.types.get(i)));
     }
 
     @Override

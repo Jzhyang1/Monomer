@@ -25,7 +25,7 @@ public class ForNode extends ControlOperatorNode {
         if(maybeCollectionType instanceof CollectionType collectionType) {
             vars.setType(collectionType.getElementType());  //TODO handle multiple vars
         } else {
-            firstNode.syntaxError("For loop requires a collection for the control of repetitions, received " + maybeCollectionType + " instead");
+            throw firstNode.syntaxError("For loop requires a collection for the control of repetitions, received " + maybeCollectionType + " instead");
         }
 
         Node secondNode = getSecond();

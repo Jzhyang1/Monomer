@@ -40,7 +40,7 @@ public class ConvertDefaults {
 
     private void putConvert(OverloadedFunction overload, Type from, Type to,
                             Function<InterpretValue, InterpretResult> convertFunc) {
-        overload.putOverload(List.of(from), (args) -> new LiteralNode() {
+        overload.putSystemOverload(List.of(from), (args) -> new LiteralNode() {
             @Override
             public Type getType() {
                 return to;

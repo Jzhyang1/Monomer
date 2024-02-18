@@ -36,10 +36,10 @@ public final class FieldNode extends OperatorNode {
         getFirst().matchVariables();
 
         Node fieldNode = getSecond();
-        if(fieldNode instanceof VariableNode field)
-            fieldName = field.getName();
+        if(fieldNode.getUsage() == Usage.IDENTIFIER)
+            fieldName = fieldNode.getName();
         else
-            fieldNode.syntaxError("Expected variable name");
+            throw fieldNode.syntaxError("Expected variable name");
 
         Key parentKey = getFirst().getVariableKey();
         if(parentKey == null)
@@ -56,6 +56,7 @@ public final class FieldNode extends OperatorNode {
             getFirst().setType(parentType = new ObjectType());
         if(!parentType.hasField(fieldName))
             parentType.setField(fieldName, super.getType());
+
         //if either this node's type or it's field's type are not set
         else if(getType() == ANY)
             setType(super.getType());
@@ -88,6 +89,11 @@ public final class FieldNode extends OperatorNode {
         }
         else
             return variableKey.getValue();
+    }
+
+    @Override
+    public void compileVariables(AssemblyFile file) {
+        getFirst().compileVariables(file);
     }
 
     public Operand compileValue(AssemblyFile file) {

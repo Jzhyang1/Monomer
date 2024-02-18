@@ -35,12 +35,16 @@ public class StringNode extends LiteralNode {
         //pushing on the 8-byte blocks of the string
         //traverses in reverse order because stack grows downwards
         for(int i = value.length(); i >= 0; i -= 8) {
-            String sub = value.substring(i, Math.max(i-8, 0));
+            String sub = value.substring(Math.max(i-8, 0), i);
             file.push(new Operand(Operand.Type.IMMEDIATE,
                         null,
                         0,
                         ByteBuffer.wrap(sub.getBytes()).getInt()));
         }
+        file.push(new Operand(Operand.Type.IMMEDIATE,
+                    null,
+                    0,
+                    value.length()));
 
         //TODO I think this is right
         return new Operand(Operand.Type.MEMORY,

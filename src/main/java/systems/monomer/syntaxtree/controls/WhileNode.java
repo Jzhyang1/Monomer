@@ -18,7 +18,7 @@ public class WhileNode extends ControlOperatorNode {
         InterpretControlResult repetition;
         do {
         repetition = interpretControl(boolCondition -> {
-            if (boolCondition.getValue()) {
+            if (boolCondition) {
                 InterpretResult result = getSecond().interpretValue();
                 if(!result.isValue() && result instanceof InterpretBreaking breaking) {
                     if("continue".equals(breaking.getName())) return new InterpretControlResult(true, null);

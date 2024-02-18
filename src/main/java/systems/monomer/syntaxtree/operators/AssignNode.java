@@ -57,19 +57,8 @@ public class AssignNode extends OperatorNode {
     }
 
     public static InterpretValue assign(Node dest, InterpretValue val) {
-        //TODO move assign to the Node class and implement it in the nodes that support it
-        if (dest instanceof TupleNode tupleDest && val instanceof InterpretTuple tupleVal) {
-            ArrayList<InterpretValue> retValues = IntStream.range(0, tupleDest.size()).mapToObj(i -> assign(tupleDest.get(i), tupleVal.get(i))).collect(Collectors.toCollection(ArrayList::new));
-            return new InterpretTuple(retValues);
-        } else if (dest instanceof StructureNode structDest) {
-            //TODO compare this with Tuple assign
-            structDest.assign(val);
-            return val;
-        } else {
-            dest.getVariableKey().setType(val.getType());   //TODO this is a hack to get overloads to transfer over functions because they are stored as a type
-            dest.interpretVariable().setValue(val);
-            return val;
-        }
+        dest.interpretAssign(val);
+        return val;
     }
 
     @Override
@@ -104,7 +93,7 @@ public class AssignNode extends OperatorNode {
 
             boolean needTempSignature = overloads.getOverload(tempSignature) == null;
             if (needTempSignature)
-                overloads.putOverload(tempSignature, function);
+                overloads.putSystemOverload(tempSignature, function);
 
             functionInit.body.matchTypes();
             Type bodyType = functionInit.body.getType();
@@ -112,7 +101,7 @@ public class AssignNode extends OperatorNode {
 //            if(needTempSignature)
 //                overloads.getOverloads().remove(tempSignature, function); //TODO remove placeholder signature used for recursion
             Signature signature = new Signature(bodyType, argsType, namedArgsType);
-            overloads.putOverload(signature, function);
+            overloads.putSystemOverload(signature, function);
 
             setType(signature);
         } else {  //normal variable assignment
@@ -185,7 +174,7 @@ public class AssignNode extends OperatorNode {
             InterpretResult ret = getSecond().interpretValue();
             if (ret.isValue()) {
                 for (int i = size() - 2; i >= 0; --i)
-                    assign(get(i), (InterpretValue) ret);
+                    get(i).interpretAssign(ret.asValue());
             }
             return ret;
         }

@@ -22,7 +22,11 @@ public class StructureNode extends LiteralNode {
 
     public StructureNode(){}
     public StructureNode(List<Node> children) {
-        children.stream().forEach((child) -> add(child));
+        children.forEach(this::add);
+    }
+
+    public static boolean isStructure(Node dest) {
+        return dest instanceof StructureNode;   //TODO
     }
 
     public void putVariable(String varName, VariableKey key) {
@@ -46,12 +50,14 @@ public class StructureNode extends LiteralNode {
     }
 
     public InterpretResult interpretValue() {
+        //evaluate body
         for(Node child : getChildren()) {
             InterpretResult res = child.interpretValue();
             if(!res.isValue())
                 return res;
         }
 
+        //return object
         InterpretObject ret = new InterpretObject();
         for(Map.Entry<String, VariableKey> entry : variables.entrySet()) {
             //TODO copy over function overloads
@@ -65,15 +71,17 @@ public class StructureNode extends LiteralNode {
         throw new Error("TODO unimplemented");
     }
 
-    public void assign(InterpretValue value) {
+    public void interpretAssign(InterpretValue value) {
         if(value instanceof InterpretObject obj) {
-            for(Node child : getChildren()) {
-                //TODO move assign to node
-                AssignNode.assign(child, obj.get(child.getName()));
+//            for(Node child : getChildren()) {
+//                AssignNode.assign(child, obj.get(child.getName()));
+//            }
+            for(Map.Entry<String, VariableKey> entry : variables.entrySet()) {
+                entry.getValue().setValue(obj.get(entry.getKey()));
             }
         }
         else {
-            syntaxError("Cannot assign " + value + " to " + this);
+            throw syntaxError("Cannot assign " + value + " to " + this);
         }
     }
 

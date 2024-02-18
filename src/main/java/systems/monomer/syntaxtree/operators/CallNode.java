@@ -4,10 +4,14 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretFunction;
+import systems.monomer.interpreter.InterpretIO;
 import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.*;
 
+import static systems.monomer.compiler.Assembly.Instruction.CALL;
+import static systems.monomer.compiler.Assembly.Instruction.MOV;
+import static systems.monomer.compiler.Assembly.Register.EAX;
 import static systems.monomer.types.AnyType.ANY;
 
 /**
@@ -26,16 +30,6 @@ public class CallNode extends OperatorNode {
 
     public CallNode() {
         super("call");
-    }
-
-    public InterpretValue interpretValue() {
-        InterpretValue overload = functionIndex == -1 ?
-                getFirst().interpretValue().asValue() :
-                ((OverloadedFunction) getFirst().getType()).getFunction(functionIndex);
-        InterpretValue second = getSecond().interpretValue().asValue();
-        InterpretValue third = size() > 2 ? get(2).interpretValue().asValue() : InterpretObject.EMPTY;
-        //TODO why are functions defined in OverloadedFunction type instead of a value?
-        return overload.call(second, third);
     }
 
     @Override
@@ -75,8 +69,29 @@ public class CallNode extends OperatorNode {
         }
     }
 
+
+    public InterpretValue interpretValue() {
+        InterpretValue overload = functionIndex == -1 ?
+                getFirst().interpretValue().asValue() :
+                ((OverloadedFunction) getFirst().getType()).getFunction(functionIndex);
+        InterpretValue second = getSecond().interpretValue().asValue();
+        InterpretValue third = size() > 2 ? get(2).interpretValue().asValue() : InterpretObject.EMPTY;
+        //TODO why are functions defined in OverloadedFunction type instead of a value?
+        return overload.call(second, third);
+    }
+
     public Operand compileValue(AssemblyFile file) {
-        throw new Error("TODO unimplemented");
+        if(functionIndex == -1) {
+            file.add(MOV, getSecond().compileValue(file), EAX.toOperand())
+                    .add(CALL, getFirst().compileValue(file), null);
+
+            return EAX.toOperand(); //TODO handle non-integer return types
+
+        }
+        else {
+            InterpretFunction function = ((OverloadedFunction) getFirst().getType()).getFunction(functionIndex);
+            return function.compileValue(file);
+        }
     }
 
     public CompileSize compileSize() {

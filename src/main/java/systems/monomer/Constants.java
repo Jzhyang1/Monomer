@@ -11,7 +11,12 @@ import java.io.OutputStream;
 public class Constants {
     public final int TAB_SIZE = 4;
     public final String TAB = " ".repeat(TAB_SIZE);
-    public final boolean IS_MAC = System.getProperty("os.name").toLowerCase().contains("mac");
+
+    public final String OS = System.getProperty("os.name").toLowerCase();
+    public final boolean IS_MAC = OS.contains("mac");
+    public final boolean IS_WINDOWS = OS.contains("win");
+    public final boolean IS_UNIX = OS.contains("nix") || OS.contains("nux") || OS.contains("aix") || OS.contains("sunos") || IS_MAC;
+
     public final int RECURSIVE_LIMIT = 200;
 
     public boolean isIdentifierChar(char c) {

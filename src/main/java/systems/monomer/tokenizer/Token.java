@@ -109,7 +109,7 @@ public class Token extends ErrorBlock {
             part = partialOperatorToNode(control, token, iter, stopAt);
             if(iter.hasNext()) iter.next();   //skip colon or semicolon
         }
-        if(part instanceof TupleNode && part.size() == 1) part = part.get(0);
+        if(TupleNode.isTuple(part) && part.size() == 1) part = part.get(0);
 
         return part;
     }

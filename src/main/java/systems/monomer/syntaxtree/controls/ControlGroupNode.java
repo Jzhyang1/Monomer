@@ -51,9 +51,8 @@ public final class ControlGroupNode extends OperatorNode {
     }
 
     public void add(Node node) {
-        if(!(node instanceof ControlOperatorNode)) {
-            node.syntaxError("Control group can only contain control operators");
-        }
+        if(node.getUsage() != Usage.LABEL)
+            throw node.syntaxError("Control group can only contain control operators");
         super.add(node);
     }
     public ControlOperatorNode get(int index) {

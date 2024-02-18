@@ -3,6 +3,13 @@ package systems.monomer.types;
 import systems.monomer.interpreter.InterpretString;
 import systems.monomer.interpreter.InterpretValue;
 
+/**
+ * The type of a string.
+ * In assembly, the memory layout of a string is:
+ * 8 bytes: the size of the string
+ * 8 bytes: the pointer to the string
+ */
+
 public class StringType extends ObjectType {
     public static final StringType STRING = new StringType();
 

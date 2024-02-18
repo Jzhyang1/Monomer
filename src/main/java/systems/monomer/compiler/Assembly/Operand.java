@@ -40,6 +40,9 @@ public class Operand {
     public final int offset;
     public final int immediate;
 
+    public Operand(int immediate) {
+        this(Type.IMMEDIATE, null, 0, immediate);
+    }
     public Operand(Type type, Register register, int offset, int immediate) {
         this.type = type;
         this.register = register;
@@ -57,11 +60,22 @@ public class Operand {
                 else
                     return "[" + register.toString() + "+" + offset + "]";
             case IMMEDIATE:
-                return "" + immediate;
+                return immediate > 128 ? "0x" + Integer.toHexString(immediate) : Integer.toString(immediate);
             case MEMORY_OF_POINTER:
                 return "[" + register.toString() + "+" + offset + "]";
             default:
                 throw new Error("TODO unimplemented");
         }
+    }
+
+    public String toAssembly() {
+        return toString();  //TODO create a platform-specific map of formats
+    }
+
+    public boolean equals(Operand to) {
+        return type == to.type &&
+            register == to.register &&
+            offset == to.offset &&
+            immediate == to.immediate;
     }
 }

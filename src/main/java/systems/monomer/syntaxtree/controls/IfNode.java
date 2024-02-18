@@ -9,7 +9,7 @@ public class IfNode extends ControlOperatorNode {
 
     public InterpretControlResult interpretControl(boolean previousSuccess, boolean previousFailure, InterpretValue previousValue) {
         return interpretControl(boolCondition -> {
-            if (boolCondition.getValue()) {
+            if (boolCondition) {
                 return new InterpretControlResult(true, getSecond().interpretValue());
             } else {
                 return new InterpretControlResult(false, previousValue);
