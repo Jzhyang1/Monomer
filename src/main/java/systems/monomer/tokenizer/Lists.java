@@ -10,10 +10,39 @@ import systems.monomer.types.StringType;
 import systems.monomer.types.Type;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public final class Lists {
+    /**
+     * Handles operators that work on collections
+     * @param callback
+     * @return
+     */
+    public static Function<GenericOperatorNode, InterpretResult> binaryCollectionChecked(
+            boolean firstCollection, boolean secondCollection,
+            BiFunction<InterpretValue, InterpretValue, InterpretValue> callback
+    ) {
+        return (self) -> {
+            InterpretResult first = self.getFirst().interpretValue(); if(!first.isValue()) return first;
+            InterpretResult second = self.getSecond().interpretValue(); if(!second.isValue()) return second;
+
+            InterpretValue firstValue = first.asValue();
+            InterpretValue secondValue = second.asValue();
+
+            if(firstCollection && !(firstValue instanceof InterpretCollection)) {
+                throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
+            }
+            if(secondCollection && !(secondValue instanceof InterpretCollection)) {
+                throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
+            }
+
+            return callback.apply(firstValue, secondValue);
+        };
+    }
+
     public static Function<GenericOperatorNode, InterpretResult> listChecked(Function<List<? extends InterpretCollection>, InterpretValue> callback) {
         return (self) -> {
             List<InterpretCollection> values = new ArrayList<>();

@@ -3,8 +3,10 @@ package systems.monomer.tokenizer;
 import lombok.NonNull;
 import systems.monomer.Constants;
 
+import static systems.monomer.compiler.ArithmeticAssembly.compileNumericalBinary;
 import static systems.monomer.compiler.Assembly.Instruction.*;
 
+import systems.monomer.compiler.ArithmeticAssembly;
 import systems.monomer.compiler.Assembly.Operand;
 
 import static systems.monomer.compiler.Assembly.Register.*;
@@ -58,15 +60,6 @@ public final class Operator {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, constructor));
     }
 
-private static void putData(String symbol, int prec, int info, Function<Node, Node> constructor) {
-        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> constructor.apply(null)));
-    }
-
-    //TODO get rid of this
-    private static void putData(String symbol, int prec, int info, BiFunction<GenericOperatorNode, AssemblyFile, Operand> compile, Function<GenericOperatorNode, ? extends InterpretResult> interpret) {
-        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, (self) -> AnyType.ANY)));
-    }
-
     private static void putData(String symbol, int prec, int info, BiFunction<GenericOperatorNode, AssemblyFile, Operand> compile, Function<GenericOperatorNode, ? extends InterpretResult> interpret, Function<GenericOperatorNode, Type> type) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, type)));
     }
@@ -76,26 +69,8 @@ private static void putData(String symbol, int prec, int info, Function<Node, No
      */
     @SuppressWarnings({"FeatureEnvy", "OverlyLongMethod"})
     private static void initArithmetic() {
-        putData("+", 1050, BINARY, (self, file) -> {
-            if (self.size() == 1)
-                return self.getFirst().compileValue(file);
-
-            return compileNumericalBinary(file, self, IADD, FADD);
-        }, numericalChecked(differentiatedIntFloat((a, b) -> a + b, (a, b) -> a + b)), Arithmetic::typeFor); //TODO positive oper
-        putData("-", 1050, BINARY, (self, file) -> {
-            if (self.size() == 1) {
-                Operand first = self.getFirst().compileValue(file);
-                file.add(MOV, first, new Operand(Operand.Type.REGISTER, RAX, 0, 0));
-                if (self.getFirst().getType().equals(NumberType.INTEGER)) {
-                    file.add(INEG, null, RDX.toOperand());
-                } else {
-                    file.add(FNEG, null, RDX.toOperand());
-                }
-                return RAX.toOperand();
-            }
-
-            return compileNumericalBinary(file, self, ISUB, FSUB);
-        }, numericalChecked(differentiatedIntFloat((a, b) -> a - b, (a, b) -> a - b)), Arithmetic::typeFor); //TODO negative oper
+        putData("+", 1050, PREFIX | BINARY, ArithmeticAssembly::addOrPos, numericalChecked(differentiatedIntFloat((a)->+a, (b)->+b), differentiatedIntFloat((a, b) -> a + b, (a, b) -> a + b)), Arithmetic::typeFor);
+        putData("-", 1050, PREFIX | BINARY, ArithmeticAssembly::subOrNeg, numericalChecked(differentiatedIntFloat((a)->-a, (b)->-b), differentiatedIntFloat((a, b) -> a - b, (a, b) -> a - b)), Arithmetic::typeFor);
         putData("*", 1055, BINARY, (self, file) -> {
             return compileNumericalBinary(file, self, IMUL, FMUL);
         }, numericalChecked(differentiatedIntFloat((a, b) -> a * b, (a, b) -> a * b)), Arithmetic::typeFor);
@@ -135,7 +110,7 @@ private static void putData(String symbol, int prec, int info, Function<Node, No
         }, (self) -> {
             //TODO
             return null;
-        });
+        }, (self) -> null);
     }
 
     /**
@@ -191,7 +166,7 @@ private static void putData(String symbol, int prec, int info, Function<Node, No
                     .add(NOT, RAX.toOperand(), null)
                     .pop(RDX.toOperand());
             return RAX.toOperand();
-        }, Comparison.generalIntFloatCharString(Objects::equals));
+        }, Comparison.generalIntFloatCharString(Objects::equals), (self) -> BoolType.BOOL);
         putData("!=", 550, BINARY | CHAINED, (self, file) -> {
             Operand first = self.getFirst().compileValue(file);
             file.push(RDX.toOperand())
@@ -202,23 +177,23 @@ private static void putData(String symbol, int prec, int info, Function<Node, No
             file.add(ISUB, RAX.toOperand(), RDX.toOperand())
                     .pop(RDX.toOperand());
             return RAX.toOperand();
-        }, Comparison.generalIntFloatCharString((a, b) -> !Objects.equals(a, b)));
+        }, Comparison.generalIntFloatCharString((a, b) -> !Objects.equals(a, b)), (self) -> BoolType.BOOL);
         putData(">", 550, BINARY | CHAINED, (self, file) -> {
             //TODO
             return null;
-        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) > 0));
+        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) > 0), (self) -> BoolType.BOOL);
         putData("<", 550, BINARY | CHAINED, (self, file) -> {
             //TODO
             return null;
-        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) < 0));
+        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) < 0), (self) -> BoolType.BOOL);
         putData(">=", 550, BINARY | CHAINED, (self, file) -> {
             //TODO
             return null;
-        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) >= 0));
+        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) >= 0), (self) -> BoolType.BOOL);
         putData("<=", 550, BINARY | CHAINED, (self, file) -> {
             //TODO
             return null;
-        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) <= 0));
+        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) <= 0), (self) -> BoolType.BOOL);
         putData("?=", 555, BINARY, (self, file) -> {
             //TODO
             return null;
@@ -243,7 +218,10 @@ private static void putData(String symbol, int prec, int info, Function<Node, No
                 (self) -> self.size() == 1 ? new InterpretSequence(((InterpretCollection)self.getFirst().interpretValue().asValue()).getValues()) : new InterpretRanges(self.getFirst().interpretValue().asValue(), self.getSecond().interpretValue().asValue(), new InterpretNumber<>(1)),
                 (self) -> self.size() == 1 ? new SequenceType(((InterpretCollection)self.getFirst().interpretValue().asValue()).getElementType()) : new InterpretRanges(self.getFirst().getType())
         );    //TODO fix and clean
-        putData("in", 420, BINARY, (self, file) -> null, (self) -> new InterpretBool(((InterpretCollection) self.getSecond().interpretValue()).getValues().contains(self.getFirst().interpretValue()))); //TODO fix and clean
+        putData("in", 420, BINARY,
+                (self, file) -> null,
+                binaryCollectionChecked(false, true, (first, second) -> new InterpretBool(((InterpretCollection) second).getValues().contains(first))),
+                (self) -> BoolType.BOOL);
         putData("#", 1800, PREFIX, (self, file) -> null, listStringChecked(
                         (list) -> new InterpretNumber<>(list.get(0).size()),
                         (strs) -> new InterpretNumber<>(strs.get(0).getValue().length())),
@@ -269,19 +247,22 @@ private static void putData(String symbol, int prec, int info, Function<Node, No
                 (self) -> new InterpretBreaking("break",
                         self.size() == 0 ?
                                 InterpretTuple.EMPTY :
-                                self.getFirst().interpretValue().asValue()));
+                                self.getFirst().interpretValue().asValue()),
+                (self)->null);
         putData("continue", -10, PREFIX | SUFFIX,
                 (self, file) -> null,
                 (self) -> new InterpretBreaking("continue",
                         self.size() == 0 ?
                                 InterpretTuple.EMPTY :
-                                self.getFirst().interpretValue().asValue()));
+                                self.getFirst().interpretValue().asValue()),
+                (self)->null);
         putData("return", -10, PREFIX | SUFFIX,
                 (self, file) -> null,
                 (self) -> new InterpretBreaking("return",
                         self.size() == 0 ?
                                 InterpretTuple.EMPTY :
-                                self.getFirst().interpretValue().asValue()));
+                                self.getFirst().interpretValue().asValue()),
+                (self)->null);
     }
 
     static {
@@ -297,7 +278,7 @@ private static void putData(String symbol, int prec, int info, Function<Node, No
         putData(",", 100, BINARY | CHAINED | SUFFIX, () -> new TupleNode(","));
         putData(";", -1000, BINARY | CHAINED | SUFFIX, () -> new TupleNode(";"));
         putData(":", 1500, 150, BINARY, AssertTypeNode::new);
-        putData("as", 5, 5, BINARY, ConvertNode::new);
+        putData("as", 5, BINARY, ConvertNode::new);
         putData("@", 5000, PREFIX, (self, file) -> {
             //TODO
             return null;

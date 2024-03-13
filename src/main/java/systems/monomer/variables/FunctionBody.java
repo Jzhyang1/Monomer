@@ -30,7 +30,6 @@ public class FunctionBody extends Signature implements InterpretValue {
     private final Node body;
     private final ModuleNode parent;
 
-    //TODO handle named args
     public FunctionBody(Node args, StructureNode namedArgs, Node body, ModuleNode parent) {
         super(null, null);
         this.args = TupleNode.asTuple(args);
@@ -117,10 +116,8 @@ public class FunctionBody extends Signature implements InterpretValue {
         return body.getType();
     }
 
-    //TODO there shouldn't be a compileValue within an Interpret class
     public Operand compileValue(AssemblyFile file) {
-        //TODO create body in a different method (e.g. compileVariable)
-        return null;    //TODO return label
+        return null;    //TODO comple function and return label
     }
 
     @Override
