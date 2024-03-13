@@ -3,7 +3,7 @@ package systems.monomer.syntaxtree.operators;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.interpreter.InterpretFunction;
+import systems.monomer.variables.FunctionBody;
 import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.*;
@@ -31,7 +31,7 @@ public class CallNode extends OperatorNode {
     public InterpretValue interpretValue() {
         InterpretValue overload = functionIndex == -1 ?
                 getFirst().interpretValue().asValue() :
-                ((OverloadedFunction) getFirst().getType()).getFunction(functionIndex);
+                ((OverloadedFunctionType) getFirst().getType()).getFunction(functionIndex);
         InterpretValue second = getSecond().interpretValue().asValue();
         InterpretValue third = size() > 2 ? get(2).interpretValue().asValue() : InterpretObject.EMPTY;
         //TODO why are functions defined in OverloadedFunction type instead of a value?
@@ -44,30 +44,22 @@ public class CallNode extends OperatorNode {
         if(functionIndex != -1) return;
 
         super.matchTypes();
-        Type argType = getSecond().getType();    //TODO fix the initial setting of signatures such that single args are not tuples
-//        if(argType == null) argType = AnyType.ANY;
+        Type funcType = getFirst().getType();
+        Type argType = getSecond().getType();
         Type returnType = getType();
         Type namedArgType = size() > 2 ? get(2).getType() : new ObjectType();
-        if(returnType == null) returnType = ANY;
+//        if(returnType == null) returnType = ANY;
 
-        Type funcType = getFirst().getType();
-        if(funcType instanceof OverloadedFunction overload) {
-            functionIndex = overload.randomAccessIndex(new Signature(returnType, argType, namedArgType));
-
-            if(functionIndex == -1)
+        if(funcType instanceof OverloadedFunctionType overload) {
+            FunctionBody function = overload.getOverload(new Signature(returnType, argType, namedArgType));
+            if(function == null)
                throwError("No matching function found for " + argType + " -> " + returnType);
 
-            InterpretFunction function = overload.getFunction(functionIndex);
-
             Type actualReturnType = function.getReturnType();
-            //TODO find out why it returns null
-            //TODO make this not change values within the function
             if(actualReturnType == ANY)
                 setType(function.testReturnType(argType));
             else if(returnType == ANY)
                 setType(actualReturnType);
-            else
-                setType(returnType);
         } else if (funcType instanceof Signature signature) {
             setType(signature.getReturnType());
         } else {

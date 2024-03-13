@@ -8,6 +8,7 @@ import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.StructureNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
+import systems.monomer.variables.FunctionBody;
 import systems.monomer.variables.Key;
 
 import static systems.monomer.compiler.Assembly.Instruction.*;
@@ -85,13 +86,13 @@ public class AssignNode extends OperatorNode {
             functionInit.identifier.matchTypes();
 
             Type potentialOverloads = functionInit.function.getType();
-            OverloadedFunction overloads;
+            OverloadedFunctionType overloads;
             if (potentialOverloads == ANY)
-                functionInit.function.setType(overloads = new OverloadedFunction());
+                functionInit.function.setType(overloads = new OverloadedFunctionType());
             else
-                overloads = (OverloadedFunction) potentialOverloads;
+                overloads = (OverloadedFunctionType) potentialOverloads;
 
-            InterpretFunction function = new InterpretFunction(functionInit.args, functionInit.namedArgs, functionInit.body, functionInit.parent);
+            FunctionBody function = new FunctionBody(functionInit.args, functionInit.namedArgs, functionInit.body, functionInit.parent);
 
             functionInit.namedArgs.matchTypes();
             Type namedArgsType = functionInit.namedArgs.getType();

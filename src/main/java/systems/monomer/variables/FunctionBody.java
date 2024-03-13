@@ -1,6 +1,9 @@
-package systems.monomer.interpreter;
+package systems.monomer.variables;
 
 import systems.monomer.Constants;
+import systems.monomer.interpreter.InterpretObject;
+import systems.monomer.interpreter.InterpretTuple;
+import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.StructureNode;
@@ -10,20 +13,19 @@ import systems.monomer.types.AnyType;
 import systems.monomer.types.Signature;
 import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
-import systems.monomer.variables.VariableKey;
 
 import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class InterpretFunction extends Signature implements InterpretValue {
+public class FunctionBody extends Signature implements InterpretValue {
     private final TupleNode args;
     private final StructureNode namedArgs;
     private final Node body;
     private final ModuleNode parent;
 
     //TODO handle named args
-    public InterpretFunction(Node args, StructureNode namedArgs, Node body, ModuleNode parent) {
+    public FunctionBody(Node args, StructureNode namedArgs, Node body, ModuleNode parent) {
         super(null, null);
         this.args = TupleNode.asTuple(args);
         this.namedArgs = namedArgs;
@@ -88,7 +90,7 @@ public class InterpretFunction extends Signature implements InterpretValue {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof InterpretFunction function &&
+        return other instanceof FunctionBody function &&
                 getReturnType().equals(function.getReturnType()) &&
                 getArgs().equals(function.getArgs());
     }
@@ -99,7 +101,7 @@ public class InterpretFunction extends Signature implements InterpretValue {
     }
 
     @Override
-    public InterpretFunction clone() {
+    public FunctionBody clone() {
         throw new Error("TODO unimplemented");
     }
 
