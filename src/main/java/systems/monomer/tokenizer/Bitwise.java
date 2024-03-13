@@ -1,4 +1,4 @@
-package systems.monomer.syntaxtree.operators;
+package systems.monomer.tokenizer;
 
 import lombok.experimental.UtilityClass;
 import systems.monomer.compiler.Assembly.Instruction;
@@ -6,7 +6,8 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.Assembly.Register;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.interpreter.*;
-import systems.monomer.types.BoolType;
+import systems.monomer.syntaxtree.operators.GenericOperatorNode;
+import systems.monomer.types.*;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -22,14 +23,18 @@ public final class Bitwise {
 
             InterpretValue first = firstr.asValue(), second = secondr.asValue();
 
-            if (first instanceof InterpretNumber<? extends Number> firstNum && second instanceof InterpretNumber<? extends Number> secondNum) {
-                if (firstNum.getValue() instanceof Integer && secondNum.getValue() instanceof Integer)
-                    return new InterpretNumber<>(intCallback.apply(firstNum.getValue().intValue(), secondNum.getValue().intValue()));
-            } else if (first instanceof InterpretBool firstBool && second instanceof InterpretBool secondBool) {
-                return new InterpretBool(boolCallback.apply(firstBool.getValue(), secondBool.getValue()));
+            if (NumberType.INTEGER.typeContains(first) && NumberType.INTEGER.typeContains(second)) {
+                return new InterpretNumber<>(intCallback.apply(
+                        (first).<Number>getValue().intValue(),
+                        (first).<Number>getValue().intValue()
+                ));
+            } else if (BoolType.BOOL.typeContains(first) && BoolType.BOOL.typeContains(second)) {
+                return new InterpretBool(boolCallback.apply(
+                        first.getValue(),
+                        second.getValue()
+                ));
             }
-            self.throwError("Unsupported operation \"" + self.getName() + "\" between " + first + " and " + second);
-            return null;
+            throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" between " + first + " and " + second);
         };
     }
 
@@ -39,11 +44,10 @@ public final class Bitwise {
             if (!firstr.isValue()) throw new RuntimeException("First value is not a value");
             InterpretValue first = firstr.asValue();
 
-            if (first instanceof InterpretBool firstBool) {
-                return new InterpretBool(callback.apply(firstBool.getValue()));
+            if (BoolType.BOOL.typeContains(first)) {
+                return new InterpretBool(callback.apply(first.getValue()));
             }
-            self.throwError("Unsupported operation \"" + self.getName() + "\" on " + first);
-            return null;
+            throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" on " + first);
         };
     }
 
@@ -63,18 +67,19 @@ public final class Bitwise {
             if (!firstr.isValue()) throw new RuntimeException("First value is not a value");
             InterpretValue first = firstr.asValue();
 
-            if (first instanceof InterpretBool firstBool)
-                return firstBool;
-            else if (first instanceof InterpretNumber<? extends Number> firstNum)
-                return new InterpretBool(firstNum.getValue().doubleValue() != 0.0);
-            else if (first instanceof InterpretString firstString)
-                return new InterpretBool(!firstString.getValue().isEmpty());
-            else if (first instanceof InterpretChar firstChar)
-                return new InterpretBool(firstChar.getValue() != '\0');
-            else if (first instanceof InterpretCollection firstCollection)
-                return new InterpretBool(firstCollection.size() != 0);
-            else
+            if (BoolType.BOOL.typeContains(first)) {
+                return first;
+            } else if (NumberType.INTEGER.typeContains(first)) {
+                return new InterpretBool(first.<Number>getValue().doubleValue() != 0.0);
+            } else if (StringType.STRING.typeContains(first)) {
+                return new InterpretBool(!first.<String>getValue().isEmpty());
+            } else if (CharType.CHAR.typeContains(first)) {
+                return new InterpretBool(first.<Character>getValue() != '\0');
+            } else if (CollectionType.COLLECTION.typeContains(first)) {
+                return new InterpretBool(((InterpretCollection)first).size() != 0);
+            } else {
                 throw new Error("Expected a boolean-y value, got " + first);
+            }
         };
     }
 

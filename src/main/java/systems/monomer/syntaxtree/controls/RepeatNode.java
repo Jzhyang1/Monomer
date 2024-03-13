@@ -19,6 +19,7 @@ public class RepeatNode extends ControlOperatorNode {
             InterpretSequence ret = new InterpretSequence(getSecond().getType());
 
             for(int i = 0; i < numRepetitions; i++) {
+                initVariables();
                 InterpretResult result = getSecond().interpretValue();
                 if(result.isValue())
                     ret.add(result.asValue());
@@ -31,8 +32,7 @@ public class RepeatNode extends ControlOperatorNode {
             }
             return new InterpretControlResult(true, ret);
         } else {
-            getFirst().throwError("Repeat operator requires a number for the number of repetitions");
-            return null;
+            throw getFirst().syntaxError("Repeat operator requires a number for the number of repetitions");
         }
     }
 }

@@ -20,7 +20,7 @@ public class ErrorBlockTest {
         errorBlock.setContext(context);
 
         try {
-            errorBlock.throwError("Bad Number Format");
+            errorBlock.syntaxError("Bad Number Format");
         } catch (RuntimeException e) {
             assertEquals("Error-printing for short string input",
                     "ERROR Bad Number Format in String source:\n" +
@@ -48,7 +48,7 @@ public class ErrorBlockTest {
         errorBlock.setContext(context);
 
         try {
-            errorBlock.throwError("Syntax");
+            errorBlock.syntaxError("Syntax");
         } catch (RuntimeException e) {
             assertEquals("ERROR Syntax in String source:\n"  +
                             " |\n"+
@@ -81,7 +81,7 @@ public class ErrorBlockTest {
         errorBlock.setContext(context);
 
         try {
-            errorBlock.throwError("Syntax");
+            errorBlock.syntaxError("Syntax");
         } catch (RuntimeException e) {
             assertEquals("ERROR Syntax in " + path + ":\n"+
                             " |\n" +

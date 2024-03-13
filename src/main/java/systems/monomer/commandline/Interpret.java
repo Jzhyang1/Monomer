@@ -15,16 +15,18 @@ import java.io.*;
 
 
 public class Interpret {
-    public static void interpret(Source source) {
+    public static void interpret(Source source, boolean defaults) {
         Token body = source.parse();
         Node node = body.toNode();
         Node global = new ModuleNode(source.getTitle());
 
         //global constants here
-        TypeDefaults.initGlobal(global);
-        ValueDefaults.initGlobal(global);
-        FileDefaults.initGlobal(global);
-        ConvertDefaults.initGlobal(global);
+        if(defaults) {
+            TypeDefaults.initGlobal(global);
+            ValueDefaults.initGlobal(global);
+            FileDefaults.initGlobal(global);
+            ConvertDefaults.initGlobal(global);
+        }
 
         global.add(node);
 
@@ -33,12 +35,20 @@ public class Interpret {
         global.setIsExpression(false);
         global.interpretValue();
     }
+
+    public static void interpret(Source source) {
+        interpret(source, true);
+    }
+
     public static void interpret(File sourceFile) {
         Source source = new SourceFile(sourceFile);
         interpret(source);
     }
     public static void interpret(String code) {
+        interpret(code, true);
+    }
+    public static void interpret(String code, boolean defaults) {
         Source source = new SourceString(code);
-        interpret(source);
+        interpret(source, defaults);
     }
 }

@@ -29,7 +29,7 @@ public final class ControlGroupNode extends OperatorNode {
             if(closestType.typeContains(type)) {
                 closestType = type;
             } else if (!type.typeContains(closestType)) {
-                throwError("Types of branches do not match in control group (" + type + " vs " + closestType + ")");
+                throw syntaxError("Types of branches do not match in control group (" + type + " vs " + closestType + ")");
             }
         }
         setType(closestType);
@@ -40,7 +40,7 @@ public final class ControlGroupNode extends OperatorNode {
 
         InterpretControlResult result = getFirst().interpretControl(previousSuccess, previousFailure, InterpretTuple.EMPTY);
         for (int i = 1; i < size(); i++) {
-            if(!result.isBroken) break;
+            if(result.isBroken) break;
             assert result.value != null;
 
             previousSuccess = previousSuccess || result.isSuccess;
@@ -51,9 +51,8 @@ public final class ControlGroupNode extends OperatorNode {
     }
 
     public void add(Node node) {
-        if(!(node instanceof ControlOperatorNode)) {
-            node.throwError("Control group can only contain control operators");
-        }
+        if(node.getUsage() != Usage.LABEL)
+            throw node.syntaxError("Control group can only contain control operators");
         super.add(node);
     }
     public ControlOperatorNode get(int index) {

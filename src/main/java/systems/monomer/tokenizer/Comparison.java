@@ -1,6 +1,7 @@
-package systems.monomer.syntaxtree.operators;
+package systems.monomer.tokenizer;
 
 import systems.monomer.interpreter.*;
+import systems.monomer.syntaxtree.operators.GenericOperatorNode;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -26,8 +27,7 @@ public final class Comparison {
             } else if (first instanceof InterpretString firstString && second instanceof InterpretString secondString) {
                 return new InterpretBool(stringCallback.apply(firstString.getValue(), secondString.getValue()));
             }
-            self.throwError("Unsupported operation \"" + first + " " + self.getName() + " " + second + "\" with the given types");
-            return null;
+            throw self.syntaxError("Unsupported operation \"" + first + " " + self.getName() + " " + second + "\" with the given types");
         };
     }
 

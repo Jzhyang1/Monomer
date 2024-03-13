@@ -12,7 +12,7 @@ public class InterpretBool extends BoolType implements InterpretValue {
         this.value = value;
     }
 
-    public boolean getValue() {
+    public Boolean getValue() {
         return value;
     }
 

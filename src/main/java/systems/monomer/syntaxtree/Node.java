@@ -8,9 +8,13 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.errorhandling.Context;
+import systems.monomer.errorhandling.Index;
 import systems.monomer.interpreter.InterpretResult;
+import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.errorhandling.ErrorBlock;
+import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.tokenizer.Source;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.Key;
@@ -68,6 +72,9 @@ public abstract class Node extends ErrorBlock {
     public Node get(int i) {
         return children.get(i);
     }
+    protected void set(int i, Node node) {
+        children.set(i, node);
+    }
 
     public void add(Node node) {
         children.add(node);
@@ -77,13 +84,34 @@ public abstract class Node extends ErrorBlock {
         add(node);
         return this;
     }
+    public Node with(Collection<? extends Node> children) {
+        addAll(children);
+        return this;
+    }
     public Node with(Context context) {
         setContext(context);
+        return this;
+    }
+    public Node with(Index start, Index stop, Source source) {
+        setContext(start, stop, source);
         return this;
     }
     public Node with(Type type) {
         setType(type);
         return this;
+    }
+
+    public boolean isOperator() {
+        return getUsage() == Usage.OPERATOR;
+    }
+    public boolean isOperator(String name) {
+        return isOperator() && this.name.equals(name);
+    }
+    public boolean isTuple() {
+        return TupleNode.isTuple(this);
+    }
+    public boolean isControl() {
+        return getUsage() == Usage.CONTROL_GROUP || getUsage() == Usage.LABEL;
     }
 
     public final void addAll(Collection<? extends Node> children) {
@@ -114,11 +142,29 @@ public abstract class Node extends ErrorBlock {
     }
 
     public InterpretVariable interpretVariable() {
-        throwError("Attempting to access " + name + " as a variable");
-        return null;
+        throw syntaxError("Attempting to access " + name + " as a variable");
     }
 
     public abstract InterpretResult interpretValue();
+
+    public void interpretAssign(InterpretValue value) {
+        Key variableKey = getVariableKey();
+        if(variableKey == null) {
+            throw syntaxError("Attempting to assign to " + name + " as a variable");
+        }
+//        getVariableKey().setType(value.getType());   //TODO this is a hack to get overloads to transfer over functions because they are stored as a type
+        interpretVariable().setValue(value);
+    }
+
+    protected InterpretResult checkedResult(InterpretResult result) {
+        if(!result.isValue()) return result;
+
+        InterpretValue value = result.asValue();
+        if(getType() == AnyType.ANY) return result;
+        if(value.getType().typeContains(getType())) return result;
+        return result;  //TODO this is just here for production
+//        else throw syntaxError("Internal error (please report as bug) " + value.getType() + " received when expecting " + getType());
+    }
 
     public abstract Operand compileValue(AssemblyFile file);
 

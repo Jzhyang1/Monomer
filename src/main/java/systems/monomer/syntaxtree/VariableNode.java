@@ -35,10 +35,11 @@ public class VariableNode extends Node {
     }
 
     public void matchTypes() {
-        if (getType() == ANY)  //TODO uncomment code below
+        if (getType() == ANY)
             setType(variableKey.getType());
-        else // if(key.getType() == ANY)
+        else if(variableKey.getType() == ANY)
             variableKey.setType(getType());
+        //TODO uncomment code below
 //        else if(!key.getType().typeContains(getType()))
 //            throwError("Type mismatch: " + getType() + " is not matchable to " + key.getType());
     }

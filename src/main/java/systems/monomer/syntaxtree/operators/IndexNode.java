@@ -4,9 +4,9 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.*;
-import systems.monomer.types.CollectionType;
-import systems.monomer.types.ListType;
-import systems.monomer.types.NumberType;
+import systems.monomer.types.*;
+import systems.monomer.util.Pair;
+import systems.monomer.variables.VariableKey;
 
 import java.util.List;
 
@@ -18,38 +18,82 @@ public class IndexNode extends OperatorNode {
     @Override
     public void matchTypes() {
         super.matchTypes();
-        if (!(getFirst().getType() instanceof ListType))    //TODO add support for other collection types
-            throwError("Cannot index non-collection type " + getFirst().getType());
+        if (!ListType.LIST.typeContains(getFirst().getType()))    //TODO add support for other collection types
+            throw syntaxError("Cannot index non-collection type " + getFirst().getType());
         if (!(getSecond().getType() instanceof NumberType<?> num &&
                 num.getValue() instanceof Integer)) //TODO replace Instanceof Integer check with getTypeName check
-            throwError("Cannot index with non-integer type " + getSecond().getType());
+            throw syntaxError("Cannot index with non-integer type " + getSecond().getType());
 
-        setType(((CollectionType) getFirst().getType()).getElementType());
+        //TODO something like .unwrapped() below
+        Type elementType = ((CollectionType) getFirst().getType()).getElementType();
+        if (SequenceType.isSequence(elementType))
+            setType(((CollectionType) elementType).getElementType());
+        else
+            setType(elementType);
+    }
+
+    private Pair<List<InterpretValue>, Number> getIndexing() {
+        InterpretResult first = getFirst().interpretValue();
+        if(!first.isValue()) throw syntaxError("Can not index first value");
+        InterpretResult second = getSecond().interpretValue();
+        if(!second.isValue()) throw syntaxError("Second value is not an index");
+
+        if (first instanceof InterpretList collection &&
+                second instanceof InterpretNumber<?> number) {
+            int intIndex = number.getValue().intValue();
+            List<InterpretValue> valueList = collection.getValues();
+
+            if(intIndex < 0 || intIndex >= valueList.size())
+                throw syntaxError("Index " + intIndex + " out of bounds for list of size " + valueList.size());
+
+            return new Pair<>(valueList, intIndex);
+        }
+        else
+            throw syntaxError("Cannot index " + first + " with " + second);
     }
 
     @Override
     public InterpretValue interpretValue() {
-        InterpretResult firstResult = getFirst().interpretValue();
-        if(!firstResult.isValue()) throwError("Can not index first value");
-        InterpretResult secondResult = getSecond().interpretValue();
-        if(!secondResult.isValue()) throwError("Second value is not an index");
+        Pair<List<InterpretValue>, Number> indexing = getIndexing();
 
-        InterpretValue value = firstResult.asValue(), index = secondResult.asValue();
+        List<InterpretValue> valueList = indexing.getFirst();
+        int intIndex = indexing.getSecond().intValue();
 
-        if (value instanceof InterpretList collection &&
-                index instanceof InterpretNumber<?> number) {
-            List<InterpretValue> valueList = collection.getValues();
-            int intIndex = number.getValue().intValue();
+        return valueList.get(intIndex);
+    }
 
-            if(intIndex < 0 || intIndex >= valueList.size())
-                throwError("Index " + number.getValue().intValue() + " out of bounds for list of size " + collection.size());
+    @Override
+    public InterpretVariable interpretVariable() {
+        return new InterpretVariable() {
+            @Override
+            public InterpretValue getValue() {
+                return IndexNode.this.interpretValue();
+            }
 
-            return valueList.get(intIndex);
-        }
-        else {
-            throwError("Cannot index " + value + " with " + index);
-            return null;
-        }
+            @Override
+            public void setValue(InterpretValue value) {
+                Pair<List<InterpretValue>, Number> indexing = getIndexing();
+                indexing.getFirst().set(indexing.getSecond().intValue(), value);
+            }
+
+            @Override
+            public String valueString() {return null;}
+            @Override
+            public CompileSize compileSize() {return null;}
+        };
+    }
+
+    @Override
+    public VariableKey getVariableKey() {
+        return new VariableKey() {
+            @Override
+            public void setType(Type type) {
+                if (IndexNode.this.getType() == AnyType.ANY)
+                    IndexNode.this.setType(type);
+                else if (!IndexNode.this.getType().typeContains(type))
+                    throw IndexNode.this.syntaxError("Type mismatch: " + IndexNode.this.getType() + " and " + type);
+            }
+        };
     }
 
     public Operand compileValue(AssemblyFile file) {

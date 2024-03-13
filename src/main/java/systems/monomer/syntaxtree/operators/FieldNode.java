@@ -26,15 +26,20 @@ public final class FieldNode extends OperatorNode {
     public FieldNode(){
         super("field");
     }
+    public FieldNode(Node parent, Node field) {
+        this();
+        add(parent);
+        add(field);
+    }
 
     public void matchVariables() {
         getFirst().matchVariables();
 
         Node fieldNode = getSecond();
-        if(fieldNode instanceof VariableNode field)
-            fieldName = field.getName();
+        if(fieldNode.getUsage() == Usage.IDENTIFIER)
+            fieldName = fieldNode.getName();
         else
-            fieldNode.throwError("Expected variable name");
+            throw fieldNode.syntaxError("Expected variable name");
 
         Key parentKey = getFirst().getVariableKey();
         if(parentKey == null)
@@ -51,6 +56,7 @@ public final class FieldNode extends OperatorNode {
             getFirst().setType(parentType = new ObjectType());
         if(!parentType.hasField(fieldName))
             parentType.setField(fieldName, super.getType());
+
         //if either this node's type or it's field's type are not set
         else if(getType() == ANY)
             setType(super.getType());
@@ -77,12 +83,17 @@ public final class FieldNode extends OperatorNode {
         if(variableKey == null) {
             InterpretResult first = getFirst().interpretValue();
             if(!first.isValue()) {
-                throwError("Attempting to access " + fieldName + " as a variable");
+                throw syntaxError("Attempting to access " + fieldName + " as a variable");
             }
             return first.asValue().get(fieldName);
         }
         else
             return variableKey.getValue();
+    }
+
+    @Override
+    public void compileVariables(AssemblyFile file) {
+        getFirst().compileVariables(file);
     }
 
     public Operand compileValue(AssemblyFile file) {

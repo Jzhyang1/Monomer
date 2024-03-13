@@ -12,7 +12,7 @@ public class AllNode extends ControlOperatorNode {
             return new InterpretControlResult(false, previousValue);
         }
         return interpretControl(boolCondition -> {
-            if (boolCondition.getValue()) {
+            if (boolCondition) {
                 return new InterpretControlResult(true, getSecond().interpretValue());
             } else {
                 return new InterpretControlResult(false, previousValue);

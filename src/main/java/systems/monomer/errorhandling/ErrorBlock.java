@@ -8,6 +8,12 @@ import java.util.List;
 
 @Getter
 public class ErrorBlock {
+    public static class SyntaxErrorException extends RuntimeException {
+        public SyntaxErrorException(String message) {
+            super(message);
+        }
+    }
+
     @Setter
     private Context context = null;
 
@@ -25,7 +31,7 @@ public class ErrorBlock {
     public Index getStop() {
         return context.getStop();
     }
-    public void throwError(String message) {
+    public SyntaxErrorException syntaxError(String message) {
         StringBuilder errorMessage = new StringBuilder();
         Source source = context.getSource();
         Index start = context.getStart(), stop = context.getStop();
@@ -66,7 +72,6 @@ public class ErrorBlock {
                     .append("\n");
         }
 
-        //noinspection ProhibitedExceptionThrown
-        throw new RuntimeException(errorMessage.toString());
+        return new SyntaxErrorException(errorMessage.toString());
     }
 }

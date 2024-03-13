@@ -145,10 +145,14 @@ public class InterpretTest {
     }
 
     private String wrapTest(String code) {
+        return wrapTest(code, true);
+    }
+
+    private String wrapTest(String code, boolean defaults) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Constants.setOut(out);
         Source source = new SourceString(code);
-        Interpret.interpret(source);
+        Interpret.interpret(source, defaults);
         return out.toString().strip();
     }
 
@@ -173,7 +177,7 @@ public class InterpretTest {
     public void interpretTest12() {
         assertEquals("function returning operation", "2.561",
                 wrapTest("a(x) = x*/1.5\n" +
-                        "@a(4.1)").substring(0, 5));
+                        "@a(4.1)", false).substring(0, 5));
     }
 
     @Test
@@ -260,12 +264,39 @@ public class InterpretTest {
 
     @Test
     public void interpretTest22() {
-        assertEquals("long condition chain", "even\ndivisible by 3\ndivisible by 6\ndivisible by 2 or 3\n",
+        assertEquals("long condition chain", "even\ndivisible by 6\ndivisible by 2 or 3",
                 wrapTest("n = 102 \n" +
                         "if n % 2 == 0: io write(\"even\\n\") \n" +
-                        "else n % 3 == 0: io write(\"divisible by 3\\n\") \n" +
+                        "else n % 3 == 0: io write(\"divisible by 3 but not 2\\n\") \n" +
                         "all: io write(\"divisible by 6\\n\") \n" +
                         "any: io write(\"divisible by 2 or 3\\n\") \n" +
                         "else: io write(\"not divisible by 2 or 3\")"));
+    }
+
+    @Test
+    public void interpretTest23() {
+        assertEquals("lists", "1",
+                wrapTest("a = [1,2,3]\n" +
+                        "@a[0]"));
+    }
+    @Test
+    public void interpretTest24() {
+        assertEquals("spread in lists", "1",
+                wrapTest("a = [repeat 3: 1]\n" +
+                        "@a[1]"));
+    }
+
+    @Test
+    public void interpretTest25() {
+        assertEquals("casting objects", "{a=1}",
+                wrapTest("x = {a=int}:{a=1;b=2}\n" +
+                        "@x"));
+    }
+
+    @Test
+    public void interpretTest26() {
+        assertEquals("casting objects without type", "{a=2}",
+                wrapTest("b = {a}:{a=2}\n" +
+                        "@b"));
     }
 }

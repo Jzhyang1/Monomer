@@ -1,5 +1,6 @@
 package systems.monomer.syntaxtree.controls;
 
+import lombok.Getter;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
@@ -8,13 +9,15 @@ import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.operators.OperatorNode;
+import systems.monomer.types.BoolType;
+import systems.monomer.variables.Locality;
 import systems.monomer.variables.VariableKey;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public abstract class ControlOperatorNode extends OperatorNode {
+public abstract class ControlOperatorNode extends OperatorNode implements Locality {
     public class InterpretControlResult {
         public final boolean isSuccess;
         public final boolean isBroken;
@@ -27,7 +30,16 @@ public abstract class ControlOperatorNode extends OperatorNode {
         }
     }
 
+    @Getter
     private final Map<String, VariableKey> variables = new HashMap<>();
+    @Override
+    public VariableKey getVariable(String varName) {
+        return getLocalizedVariable(varName);
+    }
+    @Override
+    public void putVariable(String varName, VariableKey key) {
+        putLocalizedVariable(varName, key);
+    }
 
     protected ControlOperatorNode(String name){
         super(name);
@@ -37,32 +49,25 @@ public abstract class ControlOperatorNode extends OperatorNode {
         return Usage.LABEL;
     }
 
-    public void putVariable(String varName, VariableKey key) {
-        variables.put(varName, key);
-    }
-    public VariableKey getVariable(String varName) {
-        return variables.containsKey(varName) ? variables.get(varName) : getParent().getVariable(varName);
-    }
-
     public void matchTypes() {
         super.matchTypes();
         setType(getSecond().getType());
     }
 
     public InterpretValue interpretValue() {
-        throwError("Control operator must appear in a control group. If you are getting this error, please report it as a bug.");
-        return null;
+        throw syntaxError("Control operator must appear in a control group. If you are getting this error, please report it as a bug.");
     }
 
     public abstract InterpretControlResult interpretControl(boolean previousSuccess, boolean previousFailure, InterpretValue previousValue);
-    protected InterpretControlResult interpretControl(Function<InterpretBool, InterpretControlResult> callback) {
+    protected InterpretControlResult interpretControl(Function<Boolean, InterpretControlResult> callback) {
+        initVariables();
+
         //TODO unchecked asValue
         InterpretValue condition = getFirst().interpretValue().asValue();
-        if (condition instanceof InterpretBool boolCondition) {
-            return callback.apply(boolCondition);
+        if (BoolType.BOOL.typeContains(condition)) {
+            return callback.apply(condition.<Boolean>getValue());
         }
-        getFirst().throwError("Condition must be a boolean");
-        return null;
+        throw getFirst().syntaxError("Condition must be a boolean, got " + condition.getType());
     }
 
     @Override

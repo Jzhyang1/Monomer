@@ -5,9 +5,10 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.StructureNode;
+import systems.monomer.syntaxtree.literals.StructureNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
+import systems.monomer.variables.FunctionBody;
 import systems.monomer.variables.Key;
 
 import static systems.monomer.compiler.Assembly.Instruction.*;
@@ -49,27 +50,15 @@ public class AssignNode extends OperatorNode {
         if (varType == ANY) {
             potentialvar.setType(valType);
         } else if (!valType.typeContains(varType)) {
-            potentialval.throwError("Type mismatch: " + potentialvar.getType() + " and " + potentialval.getType());
-            return null;
+            throw potentialval.syntaxError("Type mismatch: " + potentialvar.getType() + " and " + potentialval.getType());
         }
 
         return type;
     }
 
     public static InterpretValue assign(Node dest, InterpretValue val) {
-        //TODO move assign to the Node class and implement it in the nodes that support it
-        if (dest instanceof TupleNode tupleDest && val instanceof InterpretTuple tupleVal) {
-            ArrayList<InterpretValue> retValues = IntStream.range(0, tupleDest.size()).mapToObj(i -> assign(tupleDest.get(i), tupleVal.get(i))).collect(Collectors.toCollection(ArrayList::new));
-            return new InterpretTuple(retValues);
-        } else if (dest instanceof StructureNode structDest) {
-            //TODO compare this with Tuple assign
-            structDest.assign(val);
-            return val;
-        } else {
-            dest.getVariableKey().setType(val.getType());   //TODO this is a hack to get overloads to transfer over functions because they are stored as a type
-            dest.interpretVariable().setValue(val);
-            return val;
-        }
+        dest.interpretAssign(val);
+        return val;
     }
 
     @Override
@@ -85,13 +74,13 @@ public class AssignNode extends OperatorNode {
             functionInit.identifier.matchTypes();
 
             Type potentialOverloads = functionInit.function.getType();
-            OverloadedFunction overloads;
+            OverloadedFunctionType overloads;
             if (potentialOverloads == ANY)
-                functionInit.function.setType(overloads = new OverloadedFunction());
+                functionInit.function.setType(overloads = new OverloadedFunctionType());
             else
-                overloads = (OverloadedFunction) potentialOverloads;
+                overloads = (OverloadedFunctionType) potentialOverloads;
 
-            InterpretFunction function = new InterpretFunction(functionInit.args, functionInit.namedArgs, functionInit.body, functionInit.parent);
+            FunctionBody function = new FunctionBody(functionInit.args, functionInit.namedArgs, functionInit.body, functionInit.parent);
 
             functionInit.namedArgs.matchTypes();
             Type namedArgsType = functionInit.namedArgs.getType();
@@ -104,7 +93,7 @@ public class AssignNode extends OperatorNode {
 
             boolean needTempSignature = overloads.getOverload(tempSignature) == null;
             if (needTempSignature)
-                overloads.putOverload(tempSignature, function);
+                overloads.putSystemOverload(tempSignature, function);
 
             functionInit.body.matchTypes();
             Type bodyType = functionInit.body.getType();
@@ -112,9 +101,9 @@ public class AssignNode extends OperatorNode {
 //            if(needTempSignature)
 //                overloads.getOverloads().remove(tempSignature, function); //TODO remove placeholder signature used for recursion
             Signature signature = new Signature(bodyType, argsType, namedArgsType);
-            overloads.putOverload(signature, function);
+            overloads.putSystemOverload(signature, function);
 
-            setType(signature);
+            setType(overloads);
         } else {  //normal variable assignment
             List<Node> children = getChildren();
             Node value = children.get(children.size() - 1);
@@ -154,7 +143,7 @@ public class AssignNode extends OperatorNode {
         if (first instanceof CallNode callNode) {
             Node identifier = callNode.getFirst(), args = callNode.getSecond();
             Node namedArgs = callNode.size() == 2 ? StructureNode.EMPTY : callNode.get(2);
-            if (!(namedArgs instanceof StructureNode)) namedArgs.throwError("Expected named args, got " + namedArgs);
+            if (!(namedArgs instanceof StructureNode)) throw namedArgs.syntaxError("Expected named args, got " + namedArgs);
             StructureNode namedArgsStruct = (StructureNode) namedArgs;
             namedArgsStruct.matchVariables();
 
@@ -185,7 +174,7 @@ public class AssignNode extends OperatorNode {
             InterpretResult ret = getSecond().interpretValue();
             if (ret.isValue()) {
                 for (int i = size() - 2; i >= 0; --i)
-                    assign(get(i), (InterpretValue) ret);
+                    get(i).interpretAssign(ret.asValue());
             }
             return ret;
         }

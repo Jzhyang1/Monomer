@@ -3,11 +3,15 @@ package systems.monomer.syntaxtree.operators;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.interpreter.InterpretFunction;
+import systems.monomer.syntaxtree.Node;
+import systems.monomer.variables.FunctionBody;
 import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.*;
 
+import static systems.monomer.compiler.Assembly.Instruction.CALL;
+import static systems.monomer.compiler.Assembly.Instruction.MOV;
+import static systems.monomer.compiler.Assembly.Register.EAX;
 import static systems.monomer.types.AnyType.ANY;
 
 /**
@@ -22,61 +26,35 @@ import static systems.monomer.types.AnyType.ANY;
  *     the <b>getSignature</b> method returns the signature of the function call.
  */
 public class CallNode extends OperatorNode {
-    private int functionIndex = -1;
-
     public CallNode() {
         super("call");
     }
 
     public InterpretValue interpretValue() {
-        InterpretValue overload = functionIndex == -1 ?
-                getFirst().interpretValue().asValue() :
-                ((OverloadedFunction) getFirst().getType()).getFunction(functionIndex);
+        InterpretValue overload = getFirst().interpretValue().asValue();
         InterpretValue second = getSecond().interpretValue().asValue();
         InterpretValue third = size() > 2 ? get(2).interpretValue().asValue() : InterpretObject.EMPTY;
-        //TODO why are functions defined in OverloadedFunction type instead of a value?
         return overload.call(second, third);
     }
 
     @Override
     public void matchTypes() {
-        //recursion guard
-        if(functionIndex != -1) return;
-
         super.matchTypes();
-        Type argType = getSecond().getType();    //TODO fix the initial setting of signatures such that single args are not tuples
-//        if(argType == null) argType = AnyType.ANY;
+        Type argType = getSecond().getType();
         Type returnType = getType();
         Type namedArgType = size() > 2 ? get(2).getType() : new ObjectType();
-        if(returnType == null) returnType = ANY;
+        Signature signature = new Signature(returnType, argType, namedArgType);
 
-        Type funcType = getFirst().getType();
-        if(funcType instanceof OverloadedFunction overload) {
-            functionIndex = overload.randomAccessIndex(new Signature(returnType, argType, namedArgType));
-
-            if(functionIndex == -1)
-               throwError("No matching function found for " + argType + " -> " + returnType);
-
-            InterpretFunction function = overload.getFunction(functionIndex);
-
-            Type actualReturnType = function.getReturnType();
-            //TODO find out why it returns null
-            //TODO make this not change values within the function
-            if(actualReturnType == ANY)
-                setType(function.testReturnType(argType));
-            else if(returnType == ANY)
-                setType(actualReturnType);
-            else
-                setType(returnType);
-        } else if (funcType instanceof Signature signature) {
-            setType(signature.getReturnType());
-        } else {
-            getFirst().throwError("Expected function, got " + funcType);
-        }
+        Node function = new CastToFunctionNode().with(getContext()).with(getFirst()).with(signature);
+        set(0, function);
+        function.matchTypes();
     }
 
     public Operand compileValue(AssemblyFile file) {
-        throw new Error("TODO unimplemented");
+        file.add(MOV, getSecond().compileValue(file), EAX.toOperand())
+                .add(CALL, getFirst().compileValue(file), null);
+
+        return EAX.toOperand();
     }
 
     public CompileSize compileSize() {

@@ -7,7 +7,7 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.LiteralNode;
-import systems.monomer.types.OverloadedFunction;
+import systems.monomer.types.OverloadedFunctionType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
@@ -27,7 +27,7 @@ public class ConvertDefaults {
         VariableKey key = new VariableKey();
         global.putVariable(NAME, key);
 
-        OverloadedFunction overload = new OverloadedFunction();
+        OverloadedFunctionType overload = new OverloadedFunctionType();
         key.setType(overload);
 
         putConvert(overload, STRING, URI, (value) -> new InterpretURI(((InterpretString) value).getValue()));
@@ -38,9 +38,9 @@ public class ConvertDefaults {
         });
     }
 
-    private void putConvert(OverloadedFunction overload, Type from, Type to,
+    private void putConvert(OverloadedFunctionType overload, Type from, Type to,
                             Function<InterpretValue, InterpretResult> convertFunc) {
-        overload.putOverload(List.of(from), (args) -> new LiteralNode() {
+        overload.putSystemOverload(List.of(from), (args) -> new LiteralNode() {
             @Override
             public Type getType() {
                 return to;
@@ -57,7 +57,7 @@ public class ConvertDefaults {
 
             @Override
             public CompileSize compileSize() {
-                throwError("TODO unimplemented");
+                syntaxError("TODO unimplemented");
                 return null;
             }
         });

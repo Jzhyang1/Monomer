@@ -29,7 +29,7 @@ public class GenericOperatorNode extends OperatorNode {
     public void matchTypes() {
         super.matchTypes();
         if(typeGenerator == null) {
-            throwError("Unimplemented operator " + getName());
+            throw syntaxError("Unimplemented operator " + getName());
         }
 
         Type type = this.typeGenerator.apply(this);
@@ -45,6 +45,6 @@ public class GenericOperatorNode extends OperatorNode {
     }
 
     public InterpretResult interpretValue() {
-        return interpretGenerator.apply(this);
+        return checkedResult(interpretGenerator.apply(this));
     }
 }

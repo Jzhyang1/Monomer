@@ -5,6 +5,9 @@ import lombok.Setter;
 import systems.monomer.compiler.Assembly.Instruction;
 import systems.monomer.compiler.Assembly.Operand;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,4 +63,27 @@ public class AssemblyFile {
         lowestStackPosition = 0;
         return 0;
     }
+
+    public void writeAssembly(Writer outputFile) throws IOException {
+        outputFile.write("section .text\n");
+        outputFile.write("global start\n");
+        //variables
+
+        outputFile.write("start:\n");
+        outputFile.write("\tmov eax, 1\n");
+
+        for (AssemblyLine line : lines) {
+            if(!line.significant()) continue;
+
+            outputFile.write("\t");
+            outputFile.write(line.toAssembly());
+            outputFile.write("\n");
+        }
+    }
+    public void writeBinary(Writer outputFile) throws IOException {
+        for (AssemblyLine line : lines) {
+            //TODO
+        }
+    }
+
 }

@@ -25,12 +25,13 @@ public class WithThenNode extends OperatorNode {
         if(!result2.isValue()) return result2;
 
         if(!isThisExpression()) return InterpretTuple.EMPTY;
-        return valueIndex == 0 ? result1 : result2;
+        return checkedResult(valueIndex == 0 ? result1 : result2);
     }
 
     @Override
-    public Type getType() {
-        return get(valueIndex).getType();
+    public void matchTypes() {
+        super.matchTypes();
+        setType(get(valueIndex).getType());
     }
 
     @Override

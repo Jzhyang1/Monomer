@@ -16,4 +16,14 @@ public class AssemblyLine {
     public String toString() {
         return instruction + "\t" + (from == null ? "" : from) + "\t" + (to == null ? "" : to);
     }
+
+    public boolean significant() {  //Optimization
+        return !(
+                (instruction == Instruction.MOV && from.equals(to))
+                );
+    }
+
+    public String toAssembly() {
+        return instruction.toAssembly() + "\t" + (from == null ? "" : from.toAssembly()) + "\t" + (to == null ? "" : to.toAssembly());
+    }
 }

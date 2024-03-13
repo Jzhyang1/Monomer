@@ -1,5 +1,6 @@
 package systems.monomer.syntaxtree;
 
+import lombok.Getter;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
@@ -7,6 +8,7 @@ import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.util.Pair;
+import systems.monomer.variables.Locality;
 import systems.monomer.variables.VariableKey;
 
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ModuleNode extends Node {
+public class ModuleNode extends Node implements Locality {
     public ModuleNode(String name) {
         super(name);
     }
@@ -24,16 +26,17 @@ public class ModuleNode extends Node {
         return Usage.MODULE;
     }
 
-    //variables map and overloaded getVariable to access the variables
+    @Getter
     private final Map<String, VariableKey> variables = new HashMap<>();
-    public void putVariable(String varName, VariableKey key) {
-        variables.put(varName, key);
-    }
+    @Override
     public VariableKey getVariable(String varName) {
-        VariableKey ret = variables.get(varName);
-        if(ret != null) return ret;
-        return getParent() == null ? null : getParent().getVariable(varName);
+        return getLocalizedVariable(varName);
     }
+    @Override
+    public void putVariable(String varName, VariableKey key) {
+        putLocalizedVariable(varName, key);
+    }
+
     public Map<String, VariableKey> getVariableValuesMap() {
         //TODO optimize based on whether constant
         return variables.entrySet()
@@ -53,6 +56,8 @@ public class ModuleNode extends Node {
     }
 
     public InterpretResult interpretValue() {
+        initVariables();
+
         List<InterpretValue> ret = new ArrayList<>();
         for(Node child : getChildren()) {
             InterpretResult result = child.interpretValue();

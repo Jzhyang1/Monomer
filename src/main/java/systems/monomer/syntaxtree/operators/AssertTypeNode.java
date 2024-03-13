@@ -7,52 +7,97 @@ import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.OverloadedFunction;
+import systems.monomer.types.ObjectType;
+import systems.monomer.types.OverloadedFunctionType;
 import systems.monomer.types.Signature;
+import systems.monomer.types.Type;
+import systems.monomer.variables.FunctionBody;
 import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
+
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static systems.monomer.types.AnyType.ANY;
 
 public class AssertTypeNode extends OperatorNode {
-    private InterpretFunction convertBy = null;
+    private FunctionBody convertBy = null;
+    private BiFunction<ObjectType, InterpretObject, InterpretObject> castBy = null;
 
     public AssertTypeNode() {
         super(":");
     }
 
+    public AssertTypeNode(Node parent, Node child) {
+        this();
+        add(parent);
+        add(child);
+    }
+
     public void matchTypes() {
         getFirst().matchTypes();
-        setType(getFirst().getType());
+        Type type = getFirst().getType();
+
+        setType(type);
         Node second = getSecond();
         if(second instanceof CallNode) {
             //TODO when else is requiresConvert not necessary other than in call?
-            second.setType(getType());
+            second.setType(type);
             second.matchTypes();
+            return;
         }
-        else {
-            second.matchTypes();
-            if(getType().equals(second.getType())) return;  //TODO also include subtypes/masking
-            else if(second.getType() == ANY) {
-                second.setType(getType());
-                second.matchTypes();
-                return;
-            }
 
-            VariableKey convertFunc = getVariable(ConvertDefaults.NAME);
-            if(convertFunc != null) {
-                OverloadedFunction overloads = (OverloadedFunction) convertFunc.getType();
-                convertBy = overloads.getOverload(new Signature(getType(), second.getType()));
-            }
-            if(convertFunc == null || convertBy == null) {
-                throwError("Cannot convert from " + second.getType() + " to " + getType());
-            }
+        second.matchTypes();
+        if(second.getType() == ANY) {
+            second.setType(type);
+            second.matchTypes();
+            return;
         }
+
+        VariableKey convertFunc = getVariable(ConvertDefaults.NAME);
+        if(convertFunc != null) {
+            OverloadedFunctionType overloads = (OverloadedFunctionType) convertFunc.getType();
+            convertBy = overloads.getOverload(new Signature(type, second.getType()));
+
+            if(convertBy != null) return;
+        }
+
+        if(type.equals(second.getType()))
+            return;
+        if(second.getType() instanceof ObjectType secondType && secondType.typeConvertsTo(type)) {
+            //TODO consider types during matchTypes
+            castBy = (to, from) -> {
+                InterpretObject ret = new InterpretObject();
+                to.getFields().forEach((e, t) -> ret.set(e, from.get(e)));
+                return ret;
+            };
+        }
+        else
+            throw syntaxError("Cannot convert type from " + second.getType() + " to " + getType());
     }
 
     public InterpretResult interpretValue() {
-        //TODO check that the type is a subtype of the type
-        return convertBy == null ? getSecond().interpretValue() : convertBy.call(getSecond().interpretValue().asValue(), InterpretObject.EMPTY);
+        if(convertBy != null)
+            return convertBy.call(getSecond().interpretValue().asValue(), InterpretObject.EMPTY);
+        if(castBy != null) {
+            InterpretValue from = getSecond().interpretValue().asValue();
+            Type to = getType();
+
+            if(from instanceof InterpretObject ofrom && to instanceof ObjectType oto)
+                return castBy.apply(oto, ofrom);
+            else
+                throw syntaxError("Cannot cast object from " + from + " to " + to);
+        }
+
+        InterpretResult result = getSecond().interpretValue();
+        if(!result.isValue())
+            return result;
+
+        if(result.asValue().getType().equals(getType()))
+            return result;
+        else
+            throw syntaxError("Cannot convert value from " + result.asValue() + " to " + getType());
     }
 
     @Override

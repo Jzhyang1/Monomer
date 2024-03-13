@@ -1,34 +1,64 @@
-package systems.monomer.interpreter;
+package systems.monomer.variables;
 
 import systems.monomer.Constants;
+import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.AssemblyFile;
+import systems.monomer.interpreter.InterpretObject;
+import systems.monomer.interpreter.InterpretTuple;
+import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.StructureNode;
+import systems.monomer.syntaxtree.VariableNode;
+import systems.monomer.syntaxtree.literals.StructureNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.syntaxtree.operators.AssignNode;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.Signature;
 import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
-import systems.monomer.variables.VariableKey;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class InterpretFunction extends Signature implements InterpretValue {
+public class FunctionBody extends Signature implements InterpretValue {
     private final TupleNode args;
     private final StructureNode namedArgs;
     private final Node body;
     private final ModuleNode parent;
 
-    //TODO handle named args
-    public InterpretFunction(Node args, StructureNode namedArgs, Node body, ModuleNode parent) {
+    public FunctionBody(Node args, StructureNode namedArgs, Node body, ModuleNode parent) {
         super(null, null);
         this.args = TupleNode.asTuple(args);
         this.namedArgs = namedArgs;
         this.body = body;
         this.parent = parent;
+    }
+
+    public FunctionBody(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {
+        super(null, null);
+
+        List<VariableNode> args = IntStream.range(0, argTypes.size())
+                .mapToObj(i -> {
+                    VariableNode ret = new VariableNode("arg"+i);
+                    ret.setType(argTypes.get(i));
+                    return ret;
+                })
+                .collect(Collectors.toList());
+        Node body = bodyCallback.apply(args);
+        Node argsTuple = args.size() == 1 ? args.get(0) : new TupleNode(args);
+
+        ModuleNode wrapper = new ModuleNode("function");
+        wrapper.with(argsTuple).with(body).matchVariables();
+        wrapper.matchTypes();
+
+        this.args = new TupleNode(args);
+        this.namedArgs = StructureNode.EMPTY;
+        this.body = body;
+        this.parent = wrapper;
     }
 
     @Override
@@ -64,7 +94,7 @@ public class InterpretFunction extends Signature implements InterpretValue {
 
         InterpretTuple argsTuple = InterpretTuple.toTuple(args);
         //InterpretTuple paramTuple = new InterpretTuple(this.args.getChildren().stream().map(Node::interpretVariable).toList());
-        AssignNode.assign(this.args, argsTuple);
+        this.args.interpretAssign(argsTuple);
 
         //TODO unchecked asValue
         InterpretValue ret = body.interpretValue().asValue();
@@ -86,9 +116,13 @@ public class InterpretFunction extends Signature implements InterpretValue {
         return body.getType();
     }
 
+    public Operand compileValue(AssemblyFile file) {
+        return null;    //TODO comple function and return label
+    }
+
     @Override
     public boolean equals(Object other) {
-        return other instanceof InterpretFunction function &&
+        return other instanceof FunctionBody function &&
                 getReturnType().equals(function.getReturnType()) &&
                 getArgs().equals(function.getArgs());
     }
@@ -99,7 +133,12 @@ public class InterpretFunction extends Signature implements InterpretValue {
     }
 
     @Override
-    public InterpretFunction clone() {
+    public InterpretValue defaultValue() {
+        return this;
+    }
+
+    @Override
+    public FunctionBody clone() {
         throw new Error("TODO unimplemented");
     }
 

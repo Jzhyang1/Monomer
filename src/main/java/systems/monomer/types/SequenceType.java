@@ -5,6 +5,9 @@ import systems.monomer.interpreter.InterpretValue;
 
 public class SequenceType extends CollectionType {
     public static final SequenceType SEQUENCE = new SequenceType(new AnyType());
+    public static boolean isSequence(Type type) {
+        return type instanceof SequenceType || type instanceof InterpretSequence;   //TODO remove instanceof
+    }
 
     public SequenceType(Type elementType) {
         super(elementType);

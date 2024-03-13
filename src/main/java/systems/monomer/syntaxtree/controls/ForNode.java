@@ -24,9 +24,8 @@ public class ForNode extends ControlOperatorNode {
         Type maybeCollectionType = collection.getType();
         if(maybeCollectionType instanceof CollectionType collectionType) {
             vars.setType(collectionType.getElementType());  //TODO handle multiple vars
-            System.out.println(vars.getType());
         } else {
-            firstNode.throwError("For loop requires a collection for the control of repetitions, received " + maybeCollectionType + " instead");
+            throw firstNode.syntaxError("For loop requires a collection for the control of repetitions, received " + maybeCollectionType + " instead");
         }
 
         Node secondNode = getSecond();
@@ -40,7 +39,7 @@ public class ForNode extends ControlOperatorNode {
         Node firstNode = getFirst();
         if(firstNode.getUsage() != Usage.OPERATOR &&
                 !"in".equals(firstNode.getName()))
-            throwError("For loop should be formatted as 'for <variable> in <collection>'");
+            throw syntaxError("For loop should be formatted as 'for <variable> in <collection>'");
         iteratorKey = ((OperatorNode) firstNode).getFirst().getVariableKey();
     }
 
@@ -59,6 +58,8 @@ public class ForNode extends ControlOperatorNode {
                 InterpretValue val = iter.next();
                 iteratorKey.setValue(val);
 
+                initVariables();
+
                 //TODO set iterator variable within the Monomer loop
                 InterpretResult result = getSecond().interpretValue();
 
@@ -74,8 +75,7 @@ public class ForNode extends ControlOperatorNode {
             }
             return new InterpretControlResult(true, ret);
         } else {
-            getFirst().throwError("For operator requires a collection for the control of repetitions");
-            return null;
+            throw getFirst().syntaxError("For operator requires a collection for the control of repetitions");
         }
     }
 }
