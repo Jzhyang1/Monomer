@@ -5,6 +5,8 @@ import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretFunction;
+import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.variables.FunctionBody;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.StructureNode;
@@ -12,6 +14,7 @@ import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.util.Pair;
 import systems.monomer.util.PairList;
+import systems.monomer.variables.OverloadedFunction;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -22,20 +25,20 @@ import java.util.stream.IntStream;
 import static systems.monomer.compiler.Assembly.Operand.POINTER_SIZE;
 
 @Getter
-public class OverloadedFunction extends AnyType {
-    private final PairList<Signature, InterpretFunction> overloads = new PairList<>();
+public class OverloadedFunctionType extends AnyType {
+    private final PairList<Signature, FunctionBody> overloads = new PairList<>();
 
     /**
      * gets the exact overload matching _signature_
      * @param signature
      * @return the exact overload or null
      */
-    public @Nullable InterpretFunction getOverload(Signature signature) {
+    public @Nullable FunctionBody getOverload(Signature signature) {
         //TODO forward references
         int index = randomAccessIndex(signature);
         return index == -1 ? null : overloads.get(index).getSecond();
     }
-    public void putSystemOverload(Signature signature, InterpretFunction function) {
+    public void putSystemOverload(Signature signature, FunctionBody function) {
         overloads.add(signature, function);
 
         //These handle unknown return types and unknown argument types
@@ -48,7 +51,7 @@ public class OverloadedFunction extends AnyType {
     }
 
     public void putSystemOverload(Node args, StructureNode namedArgs, Node body, ModuleNode wrapper) {
-        putSystemOverload(new Signature(body.getType(), args.getType(), namedArgs.getType()), new InterpretFunction(args, namedArgs, body, wrapper));
+        putSystemOverload(new Signature(body.getType(), args.getType(), namedArgs.getType()), new FunctionBody(args, namedArgs, body, wrapper));
     }
 
     public void putSystemOverload(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {
@@ -104,7 +107,7 @@ public class OverloadedFunction extends AnyType {
      * @param signature
      * @return the matching overload
      */
-    public @SneakyThrows InterpretFunction matchingOverload(Signature signature) {
+    public @SneakyThrows FunctionBody matchingOverload(Signature signature) {
         int index = randomAccessIndex(signature);
 
         if(index != -1) {
@@ -138,12 +141,17 @@ public class OverloadedFunction extends AnyType {
         return index;
     }
 
-    public InterpretFunction getFunction(int randomAccessIndex) {
+    public FunctionBody getFunction(int randomAccessIndex) {
         return overloads.get(randomAccessIndex).getSecond();
     }
 
     @Override
     public CompileSize compileSize() {
         return new CompileSize(POINTER_SIZE);
+    }
+
+    @Override
+    public InterpretValue defaultValue() {
+        return new OverloadedFunction(overloads);
     }
 }
