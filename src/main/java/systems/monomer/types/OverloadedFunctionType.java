@@ -4,9 +4,8 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.interpreter.InterpretFunction;
-import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.variables.FunctionBody;
+import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.StructureNode;
@@ -139,6 +138,12 @@ public class OverloadedFunctionType extends AnyType {
 //            throw new Error("Conflicting matches found for " + signature);  //TODO throwError
 //        }
         return index;
+    }
+
+    @Override
+    public boolean typeContains(Type type) {
+        return type instanceof OverloadedFunctionType overloadedFunctionType
+                && overloadedFunctionType.overloads.stream().allMatch(pair -> randomAccessIndex(pair.getFirst()) != -1);
     }
 
     public FunctionBody getFunction(int randomAccessIndex) {

@@ -30,6 +30,10 @@ public class PairList<A,B> implements List<Pair<A,B>> {
         stack.add(abPair);
         return true;
     }
+
+    public boolean addAll(@NotNull PairList<A,B> other) {
+        return stack.addAll(other.stack);
+    }
     @Override
     public boolean addAll(@NotNull Collection<? extends Pair<A, B>> c) {
         return stack.addAll(c);
@@ -70,16 +74,15 @@ public class PairList<A,B> implements List<Pair<A,B>> {
      * backwards iterator
      */
     private class StackIterator implements ListIterator<Pair<A, B>> {
-        private int index = stack.size();
+        private int index;
 
-        public StackIterator() {}
         public StackIterator(int index) {
             this.index = index;
         }
 
         @Override
         public boolean hasNext() {
-            return index == 0;
+            return index > 0;
         }
         @Override
         public Pair<A, B> next() {
@@ -87,7 +90,7 @@ public class PairList<A,B> implements List<Pair<A,B>> {
         }
         @Override
         public boolean hasPrevious() {
-            return index == stack.size();
+            return index + 1 < stack.size();
         }
         @Override
         public Pair<A, B> previous() {
@@ -118,7 +121,7 @@ public class PairList<A,B> implements List<Pair<A,B>> {
     @NotNull
     @Override
     public ListIterator<Pair<A, B>> listIterator() {
-        return new StackIterator();
+        return new StackIterator(stack.size());
     }
 
     @NotNull
@@ -151,7 +154,7 @@ public class PairList<A,B> implements List<Pair<A,B>> {
     @NotNull
     @Override
     public Iterator<Pair<A, B>> iterator() {
-        return new StackIterator();
+        return new StackIterator(stack.size());
     }
 
     @NotNull

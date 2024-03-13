@@ -23,7 +23,7 @@ public class VariableKey extends Key {
     public VariableKey(){}
 
     public void setType(Type type) {
-        value = type.defaultValue();
+//        value = type.defaultValue();
         this.type = type;
     }
 

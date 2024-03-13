@@ -145,10 +145,14 @@ public class InterpretTest {
     }
 
     private String wrapTest(String code) {
+        return wrapTest(code, true);
+    }
+
+    private String wrapTest(String code, boolean defaults) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Constants.setOut(out);
         Source source = new SourceString(code);
-        Interpret.interpret(source);
+        Interpret.interpret(source, defaults);
         return out.toString().strip();
     }
 
@@ -173,7 +177,7 @@ public class InterpretTest {
     public void interpretTest12() {
         assertEquals("function returning operation", "2.561",
                 wrapTest("a(x) = x*/1.5\n" +
-                        "@a(4.1)").substring(0, 5));
+                        "@a(4.1)", false).substring(0, 5));
     }
 
     @Test

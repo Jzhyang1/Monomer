@@ -72,6 +72,9 @@ public abstract class Node extends ErrorBlock {
     public Node get(int i) {
         return children.get(i);
     }
+    protected void set(int i, Node node) {
+        children.set(i, node);
+    }
 
     public void add(Node node) {
         children.add(node);
@@ -149,7 +152,7 @@ public abstract class Node extends ErrorBlock {
         if(variableKey == null) {
             throw syntaxError("Attempting to assign to " + name + " as a variable");
         }
-        getVariableKey().setType(value.getType());   //TODO this is a hack to get overloads to transfer over functions because they are stored as a type
+//        getVariableKey().setType(value.getType());   //TODO this is a hack to get overloads to transfer over functions because they are stored as a type
         interpretVariable().setValue(value);
     }
 

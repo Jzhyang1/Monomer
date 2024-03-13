@@ -83,7 +83,7 @@ public final class FieldNode extends OperatorNode {
         if(variableKey == null) {
             InterpretResult first = getFirst().interpretValue();
             if(!first.isValue()) {
-                syntaxError("Attempting to access " + fieldName + " as a variable");
+                throw syntaxError("Attempting to access " + fieldName + " as a variable");
             }
             return first.asValue().get(fieldName);
         }

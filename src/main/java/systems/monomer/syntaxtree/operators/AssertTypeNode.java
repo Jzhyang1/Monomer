@@ -8,9 +8,10 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.ObjectType;
-import systems.monomer.types.OverloadedFunction;
+import systems.monomer.types.OverloadedFunctionType;
 import systems.monomer.types.Signature;
 import systems.monomer.types.Type;
+import systems.monomer.variables.FunctionBody;
 import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
 
@@ -21,7 +22,7 @@ import java.util.function.Supplier;
 import static systems.monomer.types.AnyType.ANY;
 
 public class AssertTypeNode extends OperatorNode {
-    private InterpretFunction convertBy = null;
+    private FunctionBody convertBy = null;
     private BiFunction<ObjectType, InterpretObject, InterpretObject> castBy = null;
 
     public AssertTypeNode() {
@@ -56,7 +57,7 @@ public class AssertTypeNode extends OperatorNode {
 
         VariableKey convertFunc = getVariable(ConvertDefaults.NAME);
         if(convertFunc != null) {
-            OverloadedFunction overloads = (OverloadedFunction) convertFunc.getType();
+            OverloadedFunctionType overloads = (OverloadedFunctionType) convertFunc.getType();
             convertBy = overloads.getOverload(new Signature(type, second.getType()));
 
             if(convertBy != null) return;

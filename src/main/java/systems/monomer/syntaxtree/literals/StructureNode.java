@@ -1,5 +1,6 @@
 package systems.monomer.syntaxtree.literals;
 
+import lombok.Getter;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
@@ -9,6 +10,7 @@ import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.AssignNode;
 import systems.monomer.types.ObjectType;
+import systems.monomer.variables.Locality;
 import systems.monomer.variables.VariableKey;
 
 import java.util.Collection;
@@ -16,8 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StructureNode extends LiteralNode {
+public class StructureNode extends LiteralNode implements Locality {
     public static final StructureNode EMPTY = new StructureNode();
+
+    @Getter
     private final Map<String, VariableKey> variables = new HashMap<>();
 
     public StructureNode(){}
@@ -29,15 +33,17 @@ public class StructureNode extends LiteralNode {
         return dest instanceof StructureNode;   //TODO
     }
 
-    public void putVariable(String varName, VariableKey key) {
-        variables.put(varName, key);
-    }
-    public VariableKey getVariable(String varName) {
-        VariableKey ret = variables.get(varName);
-        return ret == null ? getParent().getVariable(varName): ret;
-    }
     public Collection<String> getFieldNames() {
         return variables.keySet();
+    }
+
+    @Override
+    public VariableKey getVariable(String varName) {
+        return getLocalizedVariable(varName);
+    }
+    @Override
+    public void putVariable(String varName, VariableKey key) {
+        putLocalizedVariable(varName, key);
     }
 
     public void matchTypes() {
@@ -50,6 +56,8 @@ public class StructureNode extends LiteralNode {
     }
 
     public InterpretResult interpretValue() {
+        initVariables();
+
         //evaluate body
         for(Node child : getChildren()) {
             InterpretResult res = child.interpretValue();

@@ -9,14 +9,19 @@ import systems.monomer.util.PairList;
 
 public class OverloadedFunction extends OverloadedFunctionType implements InterpretValue {
     public OverloadedFunction(PairList<Signature, FunctionBody> overloads) {
-        for(Pair<Signature, FunctionBody> pair : overloads) {
-            super.putOverload(pair.getFirst(), pair.getSecond());
-        }
+        getOverloads().addAll(overloads);
     }
 
 
     @Override
     public OverloadedFunction clone() {
         return (OverloadedFunction) super.clone();
+    }
+
+    @Override
+    public String toString() {
+        return "OverloadedFunction{" +
+                "overloads=" + getOverloads() +
+                '}';
     }
 }

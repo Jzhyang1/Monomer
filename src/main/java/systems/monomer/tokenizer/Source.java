@@ -460,13 +460,13 @@ public abstract class Source {
     }
 
     private void throwParseError(Index start, Index stop, Token.Usage usage, String value, String reason) {
-        new Token(usage, value)
+        throw new Token(usage, value)
                 .with(start, stop, Source.this)
                 .syntaxError(reason);
     }
 
     private void throwParseError(Token token, String reason) {
-        token.syntaxError(reason);
+        throw token.syntaxError(reason);
     }
 
 

@@ -22,7 +22,7 @@ import java.util.function.Function;
 import static systems.monomer.types.AnyType.ANY;
 
 @UtilityClass
-class Arithmetic {
+public class Arithmetic {
 
     Function<GenericOperatorNode, InterpretResult> numericalChecked(BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, ? extends InterpretResult> callback) {
         return (self) -> {
@@ -70,8 +70,7 @@ class Arithmetic {
             } else if (second.getType() instanceof NumberType<?> secondNum) {
                 return secondNum;
             } else {
-                self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-numeric values: " + first.getType() + " and " + second.getType());
-                return null;
+                throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-numeric values: " + first.getType() + " and " + second.getType());
             }
         }
     }

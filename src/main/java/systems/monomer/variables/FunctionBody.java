@@ -39,7 +39,7 @@ public class FunctionBody extends Signature implements InterpretValue {
         this.parent = parent;
     }
 
-    public InterpretFunction(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {
+    public FunctionBody(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {
         super(null, null);
 
         List<VariableNode> args = IntStream.range(0, argTypes.size())
@@ -133,6 +133,11 @@ public class FunctionBody extends Signature implements InterpretValue {
     @Override
     public int hashCode() {
         return getReturnType().hashCode() + getArgs().hashCode() * 31 + this.getClass().hashCode() * 31 * 31;
+    }
+
+    @Override
+    public InterpretValue defaultValue() {
+        return this;
     }
 
     @Override

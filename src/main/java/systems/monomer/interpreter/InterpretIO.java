@@ -72,7 +72,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
 
     private void initFields() {
         setField("read", new VariableKey() {{
-            setType(new OverloadedFunction() {{
+            setType(new OverloadedFunctionType() {{
                 putSystemOverload(List.of(), (args) -> new CharReader(() -> InterpretIO.this.readIntent()));
                 putSystemOverload(List.of(), (args) -> new StringReader(() -> InterpretIO.this.readIntent()));
                 putSystemOverload(List.of(), (args) -> new IntReader(() -> InterpretIO.this.readIntent()));
@@ -82,7 +82,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         }});
 
         setField("write", new VariableKey() {{
-            setType(new OverloadedFunction() {{
+            setType(new OverloadedFunctionType() {{
                 putSystemOverload(List.of(CharType.CHAR), (args) -> new CharWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));
                 putSystemOverload(List.of(StringType.STRING), (args) -> new StringWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));
                 putSystemOverload(List.of(NumberType.INTEGER), (args) -> new IntWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));

@@ -50,8 +50,7 @@ public class AssignNode extends OperatorNode {
         if (varType == ANY) {
             potentialvar.setType(valType);
         } else if (!valType.typeContains(varType)) {
-            potentialval.syntaxError("Type mismatch: " + potentialvar.getType() + " and " + potentialval.getType());
-            return null;
+            throw potentialval.syntaxError("Type mismatch: " + potentialvar.getType() + " and " + potentialval.getType());
         }
 
         return type;
@@ -104,7 +103,7 @@ public class AssignNode extends OperatorNode {
             Signature signature = new Signature(bodyType, argsType, namedArgsType);
             overloads.putSystemOverload(signature, function);
 
-            setType(signature);
+            setType(overloads);
         } else {  //normal variable assignment
             List<Node> children = getChildren();
             Node value = children.get(children.size() - 1);
@@ -144,7 +143,7 @@ public class AssignNode extends OperatorNode {
         if (first instanceof CallNode callNode) {
             Node identifier = callNode.getFirst(), args = callNode.getSecond();
             Node namedArgs = callNode.size() == 2 ? StructureNode.EMPTY : callNode.get(2);
-            if (!(namedArgs instanceof StructureNode)) namedArgs.syntaxError("Expected named args, got " + namedArgs);
+            if (!(namedArgs instanceof StructureNode)) throw namedArgs.syntaxError("Expected named args, got " + namedArgs);
             StructureNode namedArgsStruct = (StructureNode) namedArgs;
             namedArgsStruct.matchVariables();
 

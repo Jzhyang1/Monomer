@@ -27,8 +27,7 @@ public final class Comparison {
             } else if (first instanceof InterpretString firstString && second instanceof InterpretString secondString) {
                 return new InterpretBool(stringCallback.apply(firstString.getValue(), secondString.getValue()));
             }
-            self.syntaxError("Unsupported operation \"" + first + " " + self.getName() + " " + second + "\" with the given types");
-            return null;
+            throw self.syntaxError("Unsupported operation \"" + first + " " + self.getName() + " " + second + "\" with the given types");
         };
     }
 

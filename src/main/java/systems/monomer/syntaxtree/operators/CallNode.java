@@ -3,8 +3,7 @@ package systems.monomer.syntaxtree.operators;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.interpreter.InterpretFunction;
-import systems.monomer.interpreter.InterpretIO;
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.variables.FunctionBody;
 import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
@@ -27,63 +26,35 @@ import static systems.monomer.types.AnyType.ANY;
  *     the <b>getSignature</b> method returns the signature of the function call.
  */
 public class CallNode extends OperatorNode {
-    private int functionIndex = -1;
-
     public CallNode() {
         super("call");
     }
 
     public InterpretValue interpretValue() {
-        InterpretValue overload = functionIndex == -1 ?
-                getFirst().interpretValue().asValue() :
-                ((OverloadedFunctionType) getFirst().getType()).getFunction(functionIndex);
+        InterpretValue overload = getFirst().interpretValue().asValue();
         InterpretValue second = getSecond().interpretValue().asValue();
         InterpretValue third = size() > 2 ? get(2).interpretValue().asValue() : InterpretObject.EMPTY;
-        //TODO why are functions defined in OverloadedFunction type instead of a value?
         return overload.call(second, third);
     }
 
     @Override
     public void matchTypes() {
-        //recursion guard
-        if(functionIndex != -1) return;
-
         super.matchTypes();
-        Type funcType = getFirst().getType();
         Type argType = getSecond().getType();
         Type returnType = getType();
         Type namedArgType = size() > 2 ? get(2).getType() : new ObjectType();
-//        if(returnType == null) returnType = ANY;
+        Signature signature = new Signature(returnType, argType, namedArgType);
 
-        if(funcType instanceof OverloadedFunctionType overload) {
-            FunctionBody function = overload.getOverload(new Signature(returnType, argType, namedArgType));
-            if(function == null)
-               throw syntaxError("No matching function found for " + argType + " -> " + returnType);
-
-            Type actualReturnType = function.getReturnType();
-            if(actualReturnType == ANY)
-                setType(function.testReturnType(argType));
-            else if(returnType == ANY)
-                setType(actualReturnType);
-        } else if (funcType instanceof Signature signature) {
-            setType(signature.getReturnType());
-        } else {
-            throw getFirst().syntaxError("Expected function, got " + funcType);
-        }
+        Node function = new CastToFunctionNode().with(getContext()).with(getFirst()).with(signature);
+        set(0, function);
+        function.matchTypes();
     }
 
     public Operand compileValue(AssemblyFile file) {
-        if(functionIndex == -1) {
-            file.add(MOV, getSecond().compileValue(file), EAX.toOperand())
-                    .add(CALL, getFirst().compileValue(file), null);
+        file.add(MOV, getSecond().compileValue(file), EAX.toOperand())
+                .add(CALL, getFirst().compileValue(file), null);
 
-            return EAX.toOperand(); //TODO handle non-integer return types
-
-        }
-        else {
-            InterpretFunction function = ((OverloadedFunction) getFirst().getType()).getFunction(functionIndex);
-            return function.compileValue(file);
-        }
+        return EAX.toOperand();
     }
 
     public CompileSize compileSize() {

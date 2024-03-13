@@ -26,8 +26,7 @@ public final class Lists {
                 if (value instanceof InterpretCollection collection) {
                     values.add(collection);
                 } else {
-                    self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
-                    return null;
+                    throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
                 }
             }
             return callback.apply(values);
@@ -47,8 +46,7 @@ public final class Lists {
                     if (value instanceof InterpretString string) {
                         values.add(string);
                     } else {
-                        self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-string values");
-                        return null;
+                        throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-string values");
                     }
                 }
                 return callbackString.apply(values);
@@ -63,8 +61,7 @@ public final class Lists {
                     if (value instanceof InterpretCollection collection) {
                         values.add(collection);
                     } else {
-                        self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
-                        return null;
+                        throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
                     }
                 }
                 return callbackCollection.apply(values);
