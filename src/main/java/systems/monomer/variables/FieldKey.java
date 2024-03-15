@@ -10,6 +10,7 @@ import systems.monomer.types.ObjectType;
 import systems.monomer.types.Type;
 
 import static systems.monomer.compiler.Assembly.Operand.Type.MEMORY;
+import static systems.monomer.errorhandling.ErrorBlock.programError;
 import static systems.monomer.types.AnyType.ANY;
 
 @Getter @Setter
@@ -34,7 +35,7 @@ public class FieldKey extends Key {
         if(parent.getValue() instanceof ObjectType objectType)
             objectType.setField(name, value);
         else {
-            throw new Error("TODO unimplemented");
+            throw programError("Can not access field " + name + " of " + parent);
         }
     }
 

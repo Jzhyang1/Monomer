@@ -4,6 +4,7 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretResult;
+import systems.monomer.syntaxtree.TypeContext;
 import systems.monomer.types.Type;
 
 import java.util.function.BiFunction;
@@ -34,6 +35,11 @@ public class GenericOperatorNode extends OperatorNode {
 
         Type type = this.typeGenerator.apply(this);
         if(type != null) setType(type);
+    }
+
+    @Override
+    public Type testType(TypeContext context) {
+        return typeGenerator.apply(this);
     }
 
     public CompileSize compileSize() {

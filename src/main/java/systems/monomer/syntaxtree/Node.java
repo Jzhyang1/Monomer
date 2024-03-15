@@ -13,7 +13,6 @@ import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.errorhandling.ErrorBlock;
-import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.Type;
@@ -101,19 +100,6 @@ public abstract class Node extends ErrorBlock {
         return this;
     }
 
-    public boolean isOperator() {
-        return getUsage() == Usage.OPERATOR;
-    }
-    public boolean isOperator(String name) {
-        return isOperator() && this.name.equals(name);
-    }
-    public boolean isTuple() {
-        return TupleNode.isTuple(this);
-    }
-    public boolean isControl() {
-        return getUsage() == Usage.CONTROL_GROUP || getUsage() == Usage.LABEL;
-    }
-
     public final void addAll(Collection<? extends Node> children) {
         for (Node child : children)
             add(child);
@@ -128,12 +114,34 @@ public abstract class Node extends ErrorBlock {
         }
     }
 
+    /**
+     * sets the type of this node after
+     * matching the types of the children
+     */
     public void matchTypes() {
         for (Node child : children) {
             child.matchTypes();
         }
     }
 
+    /**
+     * Finds the type of this node under the given context.
+     * Usually this is the same as getType(), but if the type is incomplete
+     * (i.e. it is of type ANY in a function), this will help resolve the type.
+     * No side-effects should be performed in this method.
+     * @param context variables in scope
+     * @return the type of this node
+     */
+    public Type testType(TypeContext context) {
+        return getType();
+    }
+
+
+    /**
+     * True if the value of this node is used (determines
+     * if the node only represents a side-effect)
+     * @param isExpression whether this node is an expression or not
+     */
     public void setIsExpression(boolean isExpression) {
         this.isThisExpression = isExpression;
         for (Node child : children) {
@@ -152,7 +160,6 @@ public abstract class Node extends ErrorBlock {
         if(variableKey == null) {
             throw syntaxError("Attempting to assign to " + name + " as a variable");
         }
-//        getVariableKey().setType(value.getType());   //TODO this is a hack to get overloads to transfer over functions because they are stored as a type
         interpretVariable().setValue(value);
     }
 

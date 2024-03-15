@@ -82,10 +82,11 @@ public class InterpretTest {
                 "@(a number)");
         Token token = source.parse();
         Node node = token.toNode();
-        Node global = new ModuleNode(source.getTitle());
+        ModuleNode global = new ModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
         global.matchTypes();
+        global.initVariables();
 
         System.out.println(node);
         assertEquals("interpret multiword variables", "(1,1)", node.interpretValue().asValue().valueString());
@@ -99,10 +100,11 @@ public class InterpretTest {
                 "@a");
         Token token = source.parse();
         Node node = token.toNode();
-        Node global = new ModuleNode(source.getTitle());
+        ModuleNode global = new ModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
         global.matchTypes();
+        global.initVariables();
 
         System.out.println(node);
         assertEquals("print multiword variable", "(1,2,3,{x=1,y=2,z=3})", node.interpretValue().asValue().valueString());
@@ -114,11 +116,11 @@ public class InterpretTest {
                 "f(1991)");
         Token token = source.parse();
         Node node = token.toNode();
-        Node global = new ModuleNode(source.getTitle());
+        ModuleNode global = new ModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
         global.matchTypes();
-//        global.matchOverloads();
+        global.initVariables();
 
 //        System.out.println(node);
         assertEquals("print multiword variable", "((),1991)", node.interpretValue().asValue().valueString());
@@ -133,11 +135,11 @@ public class InterpretTest {
                 "f(3)");
         Token token = source.parse();
         Node node = token.toNode();
-        Node global = new ModuleNode(source.getTitle());
+        ModuleNode global = new ModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
         global.matchTypes();
-//        global.matchOverloads();
+        global.initVariables();
 
         System.out.println(node);
         InterpretValue value = node.interpretValue().asValue();
@@ -150,15 +152,16 @@ public class InterpretTest {
 
     private String wrapTest(String code, boolean defaults) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Constants.setOut(out);
         Source source = new SourceString(code);
-        Interpret.interpret(source, defaults);
+        if(code.indexOf('@') >= 0) Constants.setOut(out);
+
+        Interpret.interpret(source, defaults, Constants.getListener(), out);
         return out.toString().strip();
     }
 
     @Test
     public void interpretTest10_1() {
-        assertEquals("debug printing constant true", "true", wrapTest("@true"));
+        assertEquals("printing constant true", "true", wrapTest("@true"));
     }
 
     @Test

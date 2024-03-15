@@ -150,6 +150,10 @@ public class OverloadedFunctionType extends AnyType {
         return overloads.get(randomAccessIndex).getSecond();
     }
 
+    public Signature getSignature(int functionIndex) {
+        return overloads.get(functionIndex).getFirst();
+    }
+
     @Override
     public CompileSize compileSize() {
         return new CompileSize(POINTER_SIZE);

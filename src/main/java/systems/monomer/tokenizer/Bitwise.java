@@ -17,9 +17,9 @@ public final class Bitwise {
     Function<GenericOperatorNode, InterpretValue> differentiatedIntBool(BiFunction<Integer, Integer, Integer> intCallback, BiFunction<Boolean, Boolean, Boolean> boolCallback) {
         return (self) -> {
             InterpretResult firstr = self.getFirst().interpretValue();
-            if (!firstr.isValue()) throw new RuntimeException("First value is not a value");
+            if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
             InterpretResult secondr = self.getSecond().interpretValue();
-            if (!secondr.isValue()) throw new RuntimeException("Second value is not a value");
+            if (!secondr.isValue()) throw self.runtimeError("Second value is not a value");
 
             InterpretValue first = firstr.asValue(), second = secondr.asValue();
 
@@ -34,27 +34,27 @@ public final class Bitwise {
                         second.getValue()
                 ));
             }
-            throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" between " + first + " and " + second);
+            throw self.runtimeError("Unsupported operation \"" + self.getName() + "\" between " + first + " and " + second);
         };
     }
 
     Function<GenericOperatorNode, ? extends InterpretResult> oneBool(Function<Boolean, Boolean> callback) {
         return (self) -> {
             InterpretResult firstr = self.getFirst().interpretValue();
-            if (!firstr.isValue()) throw new RuntimeException("First value is not a value");
+            if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
             InterpretValue first = firstr.asValue();
 
             if (BoolType.BOOL.typeContains(first)) {
                 return new InterpretBool(callback.apply(first.getValue()));
             }
-            throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" on " + first);
+            throw self.runtimeError("Unsupported operation \"" + self.getName() + "\" on " + first);
         };
     }
 
     Function<GenericOperatorNode, ? extends InterpretResult> oneAny(Function<InterpretValue, Boolean> callback) {
         return (self) -> {
             InterpretResult firstr = self.getFirst().interpretValue();
-            if (!firstr.isValue()) throw new RuntimeException("First value is not a value");
+            if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
             InterpretValue first = firstr.asValue();
 
             return new InterpretBool(callback.apply(first));
@@ -64,7 +64,7 @@ public final class Bitwise {
     Function<GenericOperatorNode, ? extends InterpretResult> isTruthy() {
         return (self) -> {
             InterpretResult firstr = self.getFirst().interpretValue();
-            if (!firstr.isValue()) throw new RuntimeException("First value is not a value");
+            if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
             InterpretValue first = firstr.asValue();
 
             if (BoolType.BOOL.typeContains(first)) {
@@ -78,7 +78,7 @@ public final class Bitwise {
             } else if (CollectionType.COLLECTION.typeContains(first)) {
                 return new InterpretBool(((InterpretCollection)first).size() != 0);
             } else {
-                throw new Error("Expected a boolean-y value, got " + first);
+                throw self.runtimeError("Expected a boolean-y value, got " + first);
             }
         };
     }
@@ -98,7 +98,7 @@ public final class Bitwise {
 //        } else if(self.getFirst().getType().equals(NumberType.INTEGER) && self.getSecond().getType().equals(NumberType.INTEGER)) {
 //            file.add(Instruction.)
         } else {
-            throw new Error("Unable to compile bitwise operation between " + self.getFirst().getType() + " and " + self.getSecond().getType());
+            throw self.runtimeError("Unable to compile bitwise operation between " + self.getFirst().getType() + " and " + self.getSecond().getType());
         }
 
         return Register.RAX.toOperand();

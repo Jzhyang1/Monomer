@@ -12,6 +12,8 @@ import systems.monomer.syntaxtree.operators.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static systems.monomer.syntaxtree.literals.TupleNode.isTuple;
+
 //sub_ are helpers for partial_
 
 @Getter
@@ -109,7 +111,7 @@ public class Token extends ErrorBlock {
             part = partialOperatorToNode(control, token, iter, stopAt);
             if(iter.hasNext()) iter.next();   //skip colon or semicolon
         }
-        if(TupleNode.isTuple(part) && part.size() == 1) part = part.get(0);
+        if(isTuple(part) && part.size() == 1) part = part.get(0);
 
         return part;
     }
@@ -299,13 +301,13 @@ public class Token extends ErrorBlock {
                 }
 
                 node.setContext(cur.getContext());
-                if(cur.isOperator("...")) { //also make sure it's range, not spread
+                if(OperatorNode.isOperator(cur, "...")) { //also make sure it's range, not spread
                     throw syntaxError("TODO unimplemented");    //TODO
                 }
 
                 if("()".equals(value)) node = cur;
 //                else if(cur.isControl()) node = new AssertTypeNode(node, cur);
-                else if(cur.isTuple()) node.addAll(cur.getChildren());
+                else if(isTuple(cur)) node.addAll(cur.getChildren());
                 else node.add(cur);
 
                 yield node;

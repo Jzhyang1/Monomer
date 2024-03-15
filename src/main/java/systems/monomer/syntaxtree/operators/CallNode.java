@@ -3,16 +3,16 @@ package systems.monomer.syntaxtree.operators;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.syntaxtree.Node;
-import systems.monomer.variables.FunctionBody;
 import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.*;
+import systems.monomer.syntaxtree.Node;
+import systems.monomer.types.ObjectType;
+import systems.monomer.types.Signature;
+import systems.monomer.types.Type;
 
 import static systems.monomer.compiler.Assembly.Instruction.CALL;
 import static systems.monomer.compiler.Assembly.Instruction.MOV;
 import static systems.monomer.compiler.Assembly.Register.EAX;
-import static systems.monomer.types.AnyType.ANY;
 
 /**
  * A node representing a function call.

@@ -16,6 +16,10 @@ public class ObjectType extends AnyType {
     //non-constant-size fields are stored as size_and_pointers to the field
     private final Map<String, Integer> fieldOffsets = new HashMap<>();
 
+    public static boolean typeInObject(Type type, Type maybeObject) {
+        return maybeObject instanceof ObjectType object && object.fields.values().stream().anyMatch(type::equals);
+    }
+
     @Override
     public boolean typeContains(Type type) {
         if(type instanceof ObjectType typeOther) {

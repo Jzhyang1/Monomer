@@ -8,6 +8,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.io.OutputStream;
 
+import static systems.monomer.errorhandling.ErrorBlock.programError;
+
 public class EditorOutputStream extends OutputStream {
     private final StringBuilder stringBuilder = new StringBuilder();
     private final JTextPane console;
@@ -29,7 +31,7 @@ public class EditorOutputStream extends OutputStream {
                     Document document = console.getDocument();
                     document.insertString(document.getLength(), s, attributeSet);
                 } catch (BadLocationException e) {
-                    throw new RuntimeException(e);
+                    throw programError(e.getMessage());
                 }
             });
         }
@@ -44,7 +46,7 @@ public class EditorOutputStream extends OutputStream {
                 Document document = console.getDocument();
                 document.insertString(document.getLength(), s, attributeSet);
             } catch (BadLocationException e) {
-                throw new RuntimeException(e);
+                throw programError(e.getMessage());
             }
         });
     }

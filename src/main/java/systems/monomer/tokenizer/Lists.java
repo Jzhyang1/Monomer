@@ -33,10 +33,10 @@ public final class Lists {
             InterpretValue secondValue = second.asValue();
 
             if(firstCollection && !(firstValue instanceof InterpretCollection)) {
-                throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
+                throw self.runtimeError("Unsupported operation \"" + self.getName() + "\" with non-list values");
             }
             if(secondCollection && !(secondValue instanceof InterpretCollection)) {
-                throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
+                throw self.runtimeError("Unsupported operation \"" + self.getName() + "\" with non-list values");
             }
 
             return callback.apply(firstValue, secondValue);
@@ -48,14 +48,14 @@ public final class Lists {
             List<InterpretCollection> values = new ArrayList<>();
             for (Node node : self.getChildren()) {
                 InterpretResult result = node.interpretValue();
-                if(!result.isValue()) throw new RuntimeException("returning from an operation");
+                if(!result.isValue()) throw self.runtimeError("returning from an operation");
 
                 InterpretValue value = result.asValue();
 
                 if (value instanceof InterpretCollection collection) {
                     values.add(collection);
                 } else {
-                    throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
+                    throw self.runtimeError("Unsupported operation \"" + self.getName() + "\" with non-list values");
                 }
             }
             return callback.apply(values);
@@ -69,13 +69,13 @@ public final class Lists {
                 List<InterpretString> values = new ArrayList<>();
                 for (Node node : children) {
                     InterpretResult result = node.interpretValue();
-                    if(!result.isValue()) throw new RuntimeException("returning from an operation");
+                    if(!result.isValue()) throw self.runtimeError("returning from an operation");
 
                     InterpretValue value = result.asValue();
                     if (value instanceof InterpretString string) {
                         values.add(string);
                     } else {
-                        throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-string values");
+                        throw self.runtimeError("Unsupported operation \"" + self.getName() + "\" with non-string values");
                     }
                 }
                 return callbackString.apply(values);
@@ -84,13 +84,13 @@ public final class Lists {
                 List<InterpretCollection> values = new ArrayList<>();
                 for (Node node : children) {
                     InterpretResult result = node.interpretValue();
-                    if(!result.isValue()) throw new RuntimeException("returning from an operation");
+                    if(!result.isValue()) throw self.runtimeError("returning from an operation");
 
                     InterpretValue value = result.asValue();
                     if (value instanceof InterpretCollection collection) {
                         values.add(collection);
                     } else {
-                        throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-list values");
+                        throw self.runtimeError("Unsupported operation \"" + self.getName() + "\" with non-list values");
                     }
                 }
                 return callbackCollection.apply(values);

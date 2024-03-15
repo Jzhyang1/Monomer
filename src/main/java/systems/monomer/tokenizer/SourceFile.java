@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static systems.monomer.errorhandling.ErrorBlock.programError;
+
 public class SourceFile extends Source {
     private final BufferedReader reader;
     private final File file;
@@ -19,7 +21,7 @@ public class SourceFile extends Source {
             file = sourceFile;
             reader = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw programError(e.getMessage());
         }
         fileName = sourceFile.getPath();
         init();
@@ -30,7 +32,7 @@ public class SourceFile extends Source {
         try {
             tempReader = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw programError(e.getMessage());
         }
 
         ArrayList<String> ret = new ArrayList<>();
@@ -43,7 +45,7 @@ public class SourceFile extends Source {
                 ret.add(tempReader.readLine());
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw programError(e.getMessage());
         }
         return ret;
     }
@@ -64,7 +66,7 @@ public class SourceFile extends Source {
                 position += nextLine.length() + 1;  //+1 for newline
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw programError(e.getMessage());
         }
         lineNumber += num;
     }

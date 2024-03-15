@@ -3,6 +3,7 @@ package systems.monomer.types;
 import lombok.Getter;
 import lombok.Setter;
 import systems.monomer.compiler.CompileSize;
+import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.interpreter.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
 
@@ -18,7 +19,7 @@ public class AnyType implements Type, Cloneable {
         try {
             return (Type) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
+            throw ErrorBlock.programError(e.getMessage());
         }
     }
 

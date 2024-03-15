@@ -1,7 +1,6 @@
 package systems.monomer.tokenizer;
 
 import lombok.experimental.UtilityClass;
-
 import systems.monomer.interpreter.InterpretNumber;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
@@ -35,16 +34,16 @@ public class Arithmetic {
     Function<GenericOperatorNode, InterpretResult> numericalChecked(BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, ? extends InterpretResult> callback) {
         return (self) -> {
             InterpretResult firstr = self.getFirst().interpretValue();
-            if (!firstr.isValue()) throw new RuntimeException("First value is not a value");
+            if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
             InterpretResult secondr = self.getSecond().interpretValue();
-            if (!secondr.isValue()) throw new RuntimeException("Second value is not a value");
+            if (!secondr.isValue()) throw self.runtimeError("Second value is not a value");
 
             InterpretValue first = firstr.asValue(), second = secondr.asValue();
 
             if (first instanceof InterpretNumber<? extends Number> firstNum && second instanceof InterpretNumber<? extends Number> secondNum) {
                 return callback.apply(firstNum, secondNum);
             }
-            throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-numeric values");
+            throw self.runtimeError("Unsupported operation \"" + self.getName() + "\" with non-numeric values");
         };
     }
 
@@ -56,14 +55,14 @@ public class Arithmetic {
     Function<GenericOperatorNode, InterpretResult> numericalChecked(Function<InterpretNumber<? extends Number>, ? extends InterpretResult> callback) {
         return (self) -> {
             InterpretResult firstr = self.getFirst().interpretValue();
-            if (!firstr.isValue()) throw new RuntimeException("First value is not a value");
+            if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
 
             InterpretValue first = firstr.asValue();
 
             if (first instanceof InterpretNumber<? extends Number> firstNum) {
                 return callback.apply(firstNum);
             }
-            throw self.syntaxError("Unsupported operation \"" + self.getName() + "\" with non-numeric values");
+            throw self.runtimeError("Unsupported operation \"" + self.getName() + "\" with non-numeric values");
         };
     }
 

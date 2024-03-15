@@ -8,16 +8,19 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.LiteralNode;
 import systems.monomer.types.*;
+import systems.monomer.variables.OverloadedFunction;
 import systems.monomer.variables.VariableKey;
 
 import java.io.*;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import static systems.monomer.compiler.Assembly.Instruction.*;
 import static systems.monomer.compiler.Assembly.Operand.POINTER_SIZE;
 import static systems.monomer.compiler.Assembly.Operand.Type.MEMORY;
 import static systems.monomer.compiler.Assembly.Register.*;
+import static systems.monomer.errorhandling.ErrorBlock.programError;
 
 //TODO fix this code
 public class InterpretIO extends ObjectType implements InterpretValue {
@@ -36,7 +39,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         try {
             return new FileInputStream(source);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e.getMessage() + " (" + source.getPath() + ")");
+            throw programError(e.getMessage() + " (" + source.getPath() + ")");
         }
     }
 
@@ -44,7 +47,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         try {
             return new FileOutputStream(source);
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage() + " (" + source.getPath() + ")");
+            throw programError(e.getMessage() + " (" + source.getPath() + ")");
         }
     }
 
@@ -52,7 +55,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         try {
             closeable.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw programError(e.getMessage());
         }
     }
 
@@ -71,28 +74,22 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     }
 
     private void initFields() {
-        setField("read", new VariableKey() {{
-            setType(new OverloadedFunctionType() {{
-                putSystemOverload(List.of(), (args) -> new CharReader(() -> InterpretIO.this.readIntent()));
-                putSystemOverload(List.of(), (args) -> new StringReader(() -> InterpretIO.this.readIntent()));
-                putSystemOverload(List.of(), (args) -> new IntReader(() -> InterpretIO.this.readIntent()));
+        //io read
+        OverloadedFunctionType readFunction = new OverloadedFunctionType();
+        readFunction.putSystemOverload(List.of(), (args) -> new CharReader(() -> InterpretIO.this.readIntent()));
+        readFunction.putSystemOverload(List.of(), (args) -> new StringReader(() -> InterpretIO.this.readIntent()));
+        readFunction.putSystemOverload(List.of(), (args) -> new IntReader(() -> InterpretIO.this.readIntent()));
+        readFunction.putSystemOverload(List.of(NumberType.INTEGER), (args) -> new MultiCharReader(() -> InterpretIO.this.readIntent(), args.get(0)));
 
-                putSystemOverload(List.of(NumberType.INTEGER), (args) -> new MultiCharReader(() -> InterpretIO.this.readIntent(), args.get(0)));
-            }});
-        }});
+        setField("read", readFunction);
 
-        setField("write", new VariableKey() {{
-            setType(new OverloadedFunctionType() {{
-                putSystemOverload(List.of(CharType.CHAR), (args) -> new CharWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));
-                putSystemOverload(List.of(StringType.STRING), (args) -> new StringWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));
-                putSystemOverload(List.of(NumberType.INTEGER), (args) -> new IntWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));
-            }});
-        }});
-    }
+        //io write
+        OverloadedFunctionType writeFunction = new OverloadedFunctionType();
+        writeFunction.putSystemOverload(List.of(CharType.CHAR), (args) -> new CharWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));
+        writeFunction.putSystemOverload(List.of(StringType.STRING), (args) -> new StringWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));
+        writeFunction.putSystemOverload(List.of(NumberType.INTEGER), (args) -> new IntWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));
 
-    @Override
-    public InterpretValue defaultValue() {
-        return this;
+        setField("write", writeFunction);
     }
 
     @Override
@@ -113,7 +110,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     private Reader readIntent() {
         if (state == IOState.READ || state == IOState.BOTH) return reader;
         else if (state == IOState.WRITE) safeClose(writer);
-        else if (state == IOState.CLOSED) throw new Error("IO is closed");
+        else if (state == IOState.CLOSED) throw programError("IO is closed");
 
         reader = new BufferedReader(new InputStreamReader(safeReader(source)));
         state = IOState.READ;
@@ -123,7 +120,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     private Writer writeIntent() {
         if (state == IOState.WRITE || state == IOState.BOTH) return writer;
         else if (state == IOState.READ) safeClose(reader);
-        else if (state == IOState.CLOSED) throw new Error("IO is closed");
+        else if (state == IOState.CLOSED) throw programError("IO is closed");
 
         writer = new BufferedWriter(new OutputStreamWriter(safeWriter(source)));
         state = IOState.WRITE;
@@ -145,7 +142,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
             try {
                 return new InterpretChar((char) reader.get().read());
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw programError(e.getMessage());
             }
         }
 
@@ -189,7 +186,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
                 }
                 return new InterpretString(ret.toString());
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw programError(e.getMessage());
             }
         }
 
@@ -226,7 +223,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
                 }
                 return new InterpretString(ret.toString());
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw programError(e.getMessage());
             }
         }
 
@@ -263,7 +260,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
                 }
                 return new InterpretNumber<>(Integer.valueOf(ret.toString()));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw programError(e.getMessage());
             }
         }
 
@@ -303,7 +300,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
                 cachedWriter.write(String.valueOf(number));
                 cachedWriter.flush();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw programError(e.getMessage());
             }
             return iValue;
         }
@@ -345,7 +342,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
                 cachedWriter.write(chr.getValue());
                 cachedWriter.flush();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw programError(e.getMessage());
             }
             return cValue;
         }
@@ -386,7 +383,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
                 cachedWriter.write(str.getValue());
                 cachedWriter.flush();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw programError(e.getMessage());
             }
             return sValue;
         }

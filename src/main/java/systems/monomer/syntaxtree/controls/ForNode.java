@@ -55,10 +55,10 @@ public class ForNode extends ControlOperatorNode {
             InterpretSequence ret = new InterpretSequence(iterable.getElementType());
 
             while(iter.hasNext()) {
+                initVariables();
                 InterpretValue val = iter.next();
                 iteratorKey.setValue(val);
 
-                initVariables();
 
                 //TODO set iterator variable within the Monomer loop
                 InterpretResult result = getSecond().interpretValue();

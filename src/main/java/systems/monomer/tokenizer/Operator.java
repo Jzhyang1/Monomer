@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static systems.monomer.errorhandling.ErrorBlock.programError;
 import static systems.monomer.tokenizer.Arithmetic.*;
 import static systems.monomer.tokenizer.Bitwise.*;
 import static systems.monomer.tokenizer.Lists.*;
@@ -289,7 +290,7 @@ public final class Operator {
                 Constants.getOut().write('\n');
                 Constants.getOut().flush();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw programError(e.getMessage());
             }
             return first;
         }, (self) -> self.getFirst().getType());
