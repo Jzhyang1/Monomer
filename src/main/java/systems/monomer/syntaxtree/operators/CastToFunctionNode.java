@@ -94,7 +94,7 @@ public class CastToFunctionNode extends CastNode {
 
     private Signature completedSignature(Signature foundSignature, Signature expectedSignature, FunctionBody functionBody) {
         if(!isIncompleteSignature(foundSignature)) return foundSignature;
-        if(!canCompleteSignature(foundSignature)) throw syntaxError("Cannot complete signature " + foundSignature + " with " + expectedSignature);
+        if(!canCompleteSignature(expectedSignature)) throw syntaxError("Cannot complete signature " + foundSignature + " with " + expectedSignature);
 
         //mock types by filling foundSignature (the signature that the function is defined with)
         // with types from expectedSignature (the signature that the calling function used)

@@ -6,6 +6,7 @@ import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.GenericOperatorNode;
+import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.types.NumberType;
 import systems.monomer.types.Type;
 
@@ -28,8 +29,6 @@ public class Arithmetic {
 
     /**
      * binary variant
-     * @param callback
-     * @return
      */
     Function<GenericOperatorNode, InterpretResult> numericalChecked(BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, ? extends InterpretResult> callback) {
         return (self) -> {
@@ -49,8 +48,6 @@ public class Arithmetic {
 
     /**
      * unary variant
-     * @param callback
-     * @return
      */
     Function<GenericOperatorNode, InterpretResult> numericalChecked(Function<InterpretNumber<? extends Number>, ? extends InterpretResult> callback) {
         return (self) -> {
@@ -91,7 +88,7 @@ public class Arithmetic {
         return (first, second) -> new InterpretNumber<>(floatCallback.apply(first.getValue().doubleValue(), second.getValue().doubleValue()));
     }
 
-    Type typeFor(GenericOperatorNode self) {
+    Type typeFor(OperatorNode self) {
         if (self.getType() != ANY) return self.getType();
         else if(self.size() == 1) {
             Node first = self.getFirst();

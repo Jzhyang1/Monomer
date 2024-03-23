@@ -61,7 +61,7 @@ public final class Operator {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, constructor));
     }
 
-    private static void putData(String symbol, int prec, int info, BiFunction<GenericOperatorNode, AssemblyFile, Operand> compile, Function<GenericOperatorNode, ? extends InterpretResult> interpret, Function<GenericOperatorNode, Type> type) {
+    private static void putData(String symbol, int prec, int info, BiFunction<GenericOperatorNode, AssemblyFile, Operand> compile, Function<GenericOperatorNode, ? extends InterpretResult> interpret, Function<OperatorNode, Type> type) {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, type)));
     }
 

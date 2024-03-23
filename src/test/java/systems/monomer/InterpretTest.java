@@ -23,28 +23,28 @@ import static org.junit.Assert.*;
  */
 public class InterpretTest {
     @Test
-    public void testInterpret1() {
+    public void testInterpretBasicAdd() {
         Source source = new SourceString("1+1");
         Token token = source.parse();
         Node node = token.toNode();
         assertEquals("interpret 1+1", "(2)", node.interpretValue().asValue().valueString());
     }
     @Test
-    public void testInterpret2() {
+    public void testInterpretDebugPrint() {
         Source source = new SourceString("@\"hello world\"");
         Token token = source.parse();
         Node node = token.toNode();
         assertEquals("interpret hello world", "(hello world)", node.interpretValue().asValue().valueString());
     }
     @Test
-    public void testInterpret3() {
+    public void testInterpretParenthesis() {
         Source source = new SourceString("@(1+1)");
         Token token = source.parse();
         Node node = token.toNode();
         assertEquals("interpret @(1+1)", "(2)", node.interpretValue().asValue().valueString());
     }
     @Test
-    public void testInterpret4() {
+    public void testInterpretAssignment() {
         Source source = new SourceString("@(a=1);@a");
         Token token = source.parse();
         Node node = new ModuleNode("module").with(token.toNode());
@@ -62,14 +62,14 @@ public class InterpretTest {
         assertEquals("interpret assign", "((0,1,0,0,1,0))", node.interpretValue().asValue().valueString());
     }
     @Test
-    public void testInterpret5() {
+    public void testInterpretChainPrefixes() {
         Source source = new SourceString("@!@?@[1,2,3]");
         Token token = source.parse();
         Node node = token.toNode();
         assertEquals("interpret some operators and list literal", "(false)", node.interpretValue().asValue().valueString());
     }
     @Test
-    public void testInterpret6() {
+    public void testInterpretIfStatement() {
         Source source = new SourceString("if 1 == 1: @1");
         Token token = source.parse();
         Node node = token.toNode();
@@ -77,7 +77,7 @@ public class InterpretTest {
         assertEquals("interpret some operators and list literal", "(1)", node.interpretValue().asValue().valueString());
     }
     @Test
-    public void testInterpret7() {
+    public void testInterpretMultiwordVariable() {
         Source source = new SourceString("a number = 1\n" +
                 "@(a number)");
         Token token = source.parse();
@@ -93,7 +93,7 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest8() {
+    public void interpretTestObjectFields() {
         Source source = new SourceString("a x = 1\n" +
                 "a y = 2\n" +
                 "a z = 3\n" +
@@ -111,7 +111,7 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest9() {
+    public void interpretTestTypelessFunction() {
         Source source = new SourceString("f(x) = @x\n" +
                 "f(1991)");
         Token token = source.parse();
@@ -127,7 +127,7 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest10() {
+    public void interpretTestTypelessFunctionLarge() {
         Source source = new SourceString("f(x) = \n" +
                 "\t@x\n" +
                 "\tif ?x: f(x-1)\n" +
@@ -160,31 +160,31 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest10_1() {
+    public void interpretTestBuiltinValues() {
         assertEquals("printing constant true", "true", wrapTest("@true"));
     }
 
     @Test
-    public void interpretTest11() {
+    public void interpretTestBuiltinIO() {
         assertEquals("simple printing constant 10", "10",
                 wrapTest("io write(10); io write(\"\n\")"));
     }
     @Test
-    public void interpretTest11_1() {
+    public void interpretTestTypelessFunctionField() {
         assertEquals("function printing variable", "1991",
                 wrapTest("a function(x) = @x\n" +
                         "a function(1991)"));
     }
 
     @Test
-    public void interpretTest12() {
+    public void interpretTestReturnValue() {
         assertEquals("function returning operation", "2.561",
                 wrapTest("a(x) = x*/1.5\n" +
                         "@a(4.1)", false).substring(0, 5));
     }
 
     @Test
-    public void interpretTest13() {
+    public void interpretTestTypedVariable() {
         assertEquals("matching function with variable with type", "123",
                 wrapTest("x = int: 123\n" +
                         "io write(x)\n" +
@@ -192,7 +192,7 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest14() {
+    public void interpretTestTypedFunction() {
 //        Source source = new SourceString("f(int:a,int:b) = a+b\n" +
 //                "io write(f(1,2))");
 //        Interpret.interpret(source);
@@ -202,7 +202,7 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest15() {
+    public void interpretTestForLoop() {
         String output = wrapTest("for i in [1,2,3]:\n" +
                 "    if i == 3:\n" +
                 "        break\n" +
@@ -211,7 +211,7 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest16() {
+    public void interpretTestReadingFile() {
         URL f = Editor.class.getResource("/generic sample.txt");
         String fpath = f.getPath().replaceAll("%20", " ");
 
@@ -221,7 +221,7 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest17() {
+    public void interpretTestOverloadedFunction() {
 //        Source source = new SourceString("f(int:x) = 123\n" +
 //                "f(string:x) = \"hi\"\n" +
 //                "io write(f(1))\n" +
@@ -235,7 +235,7 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest18() {
+    public void interpretTestObjectField() {
 //        Source source = new SourceString("a={x=1;y=3};@a x");
 //        Interpret.interpret(source);
         assertEquals("field access", "1",
@@ -243,7 +243,7 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest19() {
+    public void interpretTestNamedArg() {
 //        Source source = new SourceString("f{c=1}() = @c\n" +
 //                "f{c=2}()");
 //        Interpret.interpret(source);
@@ -253,20 +253,20 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest20() {
+    public void interpretTestDefaultArg() {
         assertEquals("default named args", "1",
                 wrapTest("f{c=1}() = @c\n" +
                         "f()"));
     }
 
     @Test
-    public void interpretTest21() {
+    public void interpretTestStringInterpolation() {
         assertEquals("string interpolation", "hi1",
                 wrapTest("@\"hi\\(1)\""));
     }
 
     @Test
-    public void interpretTest22() {
+    public void interpretTestConditions() {
         assertEquals("long condition chain", "even\ndivisible by 6\ndivisible by 2 or 3",
                 wrapTest("n = 102 \n" +
                         "if n % 2 == 0: io write(\"even\\n\") \n" +
@@ -277,27 +277,27 @@ public class InterpretTest {
     }
 
     @Test
-    public void interpretTest23() {
+    public void interpretTestList() {
         assertEquals("lists", "1",
                 wrapTest("a = [1,2,3]\n" +
                         "@a[0]"));
     }
     @Test
-    public void interpretTest24() {
+    public void interpretTestListComprehension() {
         assertEquals("spread in lists", "1",
                 wrapTest("a = [repeat 3: 1]\n" +
                         "@a[1]"));
     }
 
     @Test
-    public void interpretTest25() {
+    public void interpretTestTypedObjectNarrowing() {
         assertEquals("casting objects", "{a=1}",
                 wrapTest("x = {a=int}:{a=1;b=2}\n" +
                         "@x"));
     }
 
     @Test
-    public void interpretTest26() {
+    public void interpretTestTypelessObjectNarrowing() {
         assertEquals("casting objects without type", "{a=2}",
                 wrapTest("b = {a}:{a=2}\n" +
                         "@b"));

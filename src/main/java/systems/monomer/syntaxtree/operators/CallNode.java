@@ -45,9 +45,10 @@ public class CallNode extends OperatorNode {
         Type namedArgType = size() > 2 ? get(2).getType() : new ObjectType();
         Signature signature = new Signature(returnType, argType, namedArgType);
 
-        Node function = new CastToFunctionNode().with(getContext()).with(getFirst()).with(signature);
+        CastToFunctionNode function = new CastToFunctionNode();
+        function.with(getContext()).with(getFirst()).with(signature).matchTypes();
         set(0, function);
-        function.matchTypes();
+        setType(((Signature)function.getType()).getReturnType());
     }
 
     public Operand compileValue(AssemblyFile file) {

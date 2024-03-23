@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Function;
 
-import static systems.monomer.interpreter.InterpretIO.STDIO;
+import static systems.monomer.interpreter.IOType.STDIO;
 import static systems.monomer.interpreter.InterpretURI.URI;
 import static systems.monomer.types.StringType.STRING;
 
@@ -30,11 +30,11 @@ public class ConvertDefaults {
         OverloadedFunctionType overload = new OverloadedFunctionType();
         key.setType(overload);
 
-        putConvert(overload, STRING, URI, (value) -> new InterpretURI(((InterpretString) value).getValue()));
+        putConvert(overload, STRING, URI, (value) -> new InterpretURI(value.getValue()));
         putConvert(overload, URI, STDIO, (value) -> {
             File uri = ((InterpretURI) value).getUri();
             assert uri != null;
-            return new InterpretIO(uri);
+            return (new IOType(uri)).defaultValue();   //TODO looks weird
         });
     }
 

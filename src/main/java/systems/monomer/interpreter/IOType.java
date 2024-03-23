@@ -8,12 +8,9 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.LiteralNode;
 import systems.monomer.types.*;
-import systems.monomer.variables.OverloadedFunction;
-import systems.monomer.variables.VariableKey;
 
 import java.io.*;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import static systems.monomer.compiler.Assembly.Instruction.*;
@@ -23,8 +20,8 @@ import static systems.monomer.compiler.Assembly.Register.*;
 import static systems.monomer.errorhandling.ErrorBlock.programError;
 
 //TODO fix this code
-public class InterpretIO extends ObjectType implements InterpretValue {
-    public static final InterpretIO STDIO = new InterpretIO(Constants.getListener(), Constants.getOut());
+public class IOType extends ObjectType {
+    public static final IOType STDIO = new IOType(Constants.getListener(), Constants.getOut());
 
     private enum IOState {
         READ, WRITE, NEITHER, BOTH, CLOSED
@@ -34,6 +31,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     private final @Nullable File source;
     private @Nullable Reader reader;
     private @Nullable Writer writer;
+
 
     private static InputStream safeReader(File source) {
         try {
@@ -59,12 +57,12 @@ public class InterpretIO extends ObjectType implements InterpretValue {
         }
     }
 
-    public InterpretIO(File source) {
+    public IOType(File source) {
         this.source = source;
         initFields();
     }
 
-    public InterpretIO(InputStream inputStream, OutputStream outputStream) {
+    public IOType(InputStream inputStream, OutputStream outputStream) {
         this.source = null;
         reader = new BufferedReader(new InputStreamReader(inputStream));
         writer = new BufferedWriter(new OutputStreamWriter(outputStream));
@@ -76,18 +74,18 @@ public class InterpretIO extends ObjectType implements InterpretValue {
     private void initFields() {
         //io read
         OverloadedFunctionType readFunction = new OverloadedFunctionType();
-        readFunction.putSystemOverload(List.of(), (args) -> new CharReader(() -> InterpretIO.this.readIntent()));
-        readFunction.putSystemOverload(List.of(), (args) -> new StringReader(() -> InterpretIO.this.readIntent()));
-        readFunction.putSystemOverload(List.of(), (args) -> new IntReader(() -> InterpretIO.this.readIntent()));
-        readFunction.putSystemOverload(List.of(NumberType.INTEGER), (args) -> new MultiCharReader(() -> InterpretIO.this.readIntent(), args.get(0)));
+        readFunction.putSystemOverload(List.of(), (args) -> new CharReader(() -> IOType.this.readIntent()));
+        readFunction.putSystemOverload(List.of(), (args) -> new StringReader(() -> IOType.this.readIntent()));
+        readFunction.putSystemOverload(List.of(), (args) -> new IntReader(() -> IOType.this.readIntent()));
+        readFunction.putSystemOverload(List.of(NumberType.INTEGER), (args) -> new MultiCharReader(() -> IOType.this.readIntent(), args.get(0)));
 
         setField("read", readFunction);
 
         //io write
         OverloadedFunctionType writeFunction = new OverloadedFunctionType();
-        writeFunction.putSystemOverload(List.of(CharType.CHAR), (args) -> new CharWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));
-        writeFunction.putSystemOverload(List.of(StringType.STRING), (args) -> new StringWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));
-        writeFunction.putSystemOverload(List.of(NumberType.INTEGER), (args) -> new IntWriter(() -> InterpretIO.this.writeIntent(), args.get(0)));
+        writeFunction.putSystemOverload(List.of(CharType.CHAR), (args) -> new CharWriter(() -> IOType.this.writeIntent(), args.get(0)));
+        writeFunction.putSystemOverload(List.of(StringType.STRING), (args) -> new StringWriter(() -> IOType.this.writeIntent(), args.get(0)));
+        writeFunction.putSystemOverload(List.of(NumberType.INTEGER), (args) -> new IntWriter(() -> IOType.this.writeIntent(), args.get(0)));
 
         setField("write", writeFunction);
     }
@@ -99,12 +97,7 @@ public class InterpretIO extends ObjectType implements InterpretValue {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof InterpretIO otherIO && otherIO.reader == reader && otherIO.writer == writer;
-    }
-
-    @Override
-    public InterpretIO clone() {
-        return (InterpretIO) super.clone(); //TODO clone reader and writer
+        return other instanceof IOType otherIO && otherIO.reader == reader && otherIO.writer == writer;
     }
 
     private Reader readIntent() {

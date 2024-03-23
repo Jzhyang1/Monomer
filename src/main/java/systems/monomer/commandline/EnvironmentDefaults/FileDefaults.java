@@ -2,7 +2,7 @@ package systems.monomer.commandline.EnvironmentDefaults;
 
 import lombok.experimental.UtilityClass;
 import systems.monomer.Constants;
-import systems.monomer.interpreter.InterpretIO;
+import systems.monomer.interpreter.IOType;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.variables.VariableKey;
 
@@ -14,10 +14,10 @@ import static systems.monomer.interpreter.InterpretURI.URI;
 @UtilityClass
 public class FileDefaults {
     public void initGlobal(Node global, InputStream input, OutputStream output) {
-        InterpretIO io = new InterpretIO(input, output);
+        IOType io = new IOType(input, output);
 
         VariableKey ioVar = new VariableKey();
-        ioVar.setValue(io);
+        ioVar.setValue(io.defaultValue());
         ioVar.setType(io);
         global.putVariable("io", ioVar);
 

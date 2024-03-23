@@ -11,7 +11,7 @@ public interface InterpretValue extends Type, InterpretResult {
     }
 
     default InterpretValue get(String field) {
-        throw new Error("TODO unimplemented");
+        throw programError(this + " is not an object");
     }
 
     default InterpretValue call(InterpretValue args, InterpretValue namedArgs) {

@@ -17,7 +17,7 @@ public class TupleType extends AnyType {
         return new TupleType(List.of(type));
     }
     public static boolean typeInTuple(Type type, Type maybeTuple) {
-        return maybeTuple instanceof TupleType tuple && tuple.types.stream().anyMatch(type::equals);
+        return maybeTuple instanceof TupleType tuple && tuple.types.stream().anyMatch(t->t==type);
     }
 
     private final List<Type> types = new ArrayList<>();
