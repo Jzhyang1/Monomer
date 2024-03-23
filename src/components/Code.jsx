@@ -31,6 +31,7 @@ export default function Code({
         colored={colored}
         symbol={symbol}
         isDarkMode={isDarkMode}
+        className="overflow-x-scroll"
         blocked
       ></ProcessedCode>
     </div>
@@ -52,12 +53,14 @@ export default function Code({
 const keywords = new Set([
   "if",
   "else",
+  "also",
   "any",
   "all",
   "while",
   "repeat",
   "for",
   "in",
+  "as",
   "it",
   "var",
   "break",
@@ -82,7 +85,7 @@ function ProcessedCode({ code, blocked, symbol, isDarkMode, colored = true }) {
   function LineNumberLabel({ line }) {
     return (
       symbol ?? (
-        <span
+        <div
           className={
             "inline-block select-none w-[30px] font-serif border-r-[1px] mr-[15px] " +
             (isDarkMode
@@ -91,7 +94,7 @@ function ProcessedCode({ code, blocked, symbol, isDarkMode, colored = true }) {
           }
         >
           {line}
-        </span>
+        </div>
       )
     );
   }

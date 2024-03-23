@@ -5,6 +5,13 @@ import Title from "../../components/Title";
 
 const releases = [
   {
+    href: "https://drive.google.com/uc?export=download&id=1pLaVZAJkyG4VipO95OTmGhn4ybEYSv53",
+    name: "V 1.0.4 (JAR)",
+    type: "universal",
+    date: "12/25/2023",
+    desc: "Implemented missing operators, added structure casting, bug fixes.",
+  },
+  {
     href: "https://drive.google.com/uc?export=download&id=1Uo8HUdXs1TbYZrSQB5eVuGEr0J4HcikF",
     name: "V 1.0.3 (JAR)",
     type: "universal",

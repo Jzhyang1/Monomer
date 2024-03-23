@@ -5,7 +5,7 @@ export default function List({
   ...props
 }) {
   return (
-    <div className={`pl-6 ${className}`} {...props}>
+    <div className={`pl-6 leading-7 ${className}`} {...props}>
       <ul className={`list-outside ${isNumber ? "list-decimal" : "list-disc"}`}>
         {children.map((child, i) => (
           <li key={i}>{child}</li>

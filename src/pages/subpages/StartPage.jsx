@@ -62,16 +62,16 @@ function BeginnersPage() {
         see the example below:
         <Code blocked colored>
           path = ["up", "up", "left", "down"] <br /> <br />
-          x, y = var: 0, 0<br />
+          x, y = 0, 0<br />
           for direction in path:
           <br />
-          &emsp; &emsp; if direction == "up": ++y;
+          &emsp; &emsp; if direction == "up": y = y + 1;
           <br />
-          &emsp; &emsp; else direction == "down": --y;
+          &emsp; &emsp; else direction == "down": y = y - 1;
           <br />
-          &emsp; &emsp; else direction == "right": ++x;
+          &emsp; &emsp; else direction == "right": x = x + 1;
           <br />
-          &emsp; &emsp; else direction == "left": --x;
+          &emsp; &emsp; else direction == "left": x = x - 1;
         </Code>
         There are a couple of things to explain here.
         <List>
@@ -79,10 +79,6 @@ function BeginnersPage() {
             First, note that lists are rarely initialized by hand, as in, the
             bracket (<Code>[]</Code>) enclosed sequence of directions will
             rarely be hand-typed
-          </span>
-          <span>
-            The keyword <Code>var</Code> in the assignment of <Code>x</Code> and{" "}
-            <Code>y</Code> signals that they are variables
           </span>
           <span>
             The <Code>for</Code> loop creates the constant{" "}
@@ -98,14 +94,9 @@ function BeginnersPage() {
             <Code>for</Code> loop and <Code>if</Code> and <Code>else</Code>{" "}
             statements
           </span>
-          <span>
-            The increment (<Code>++</Code>) and decrement (<Code>--</Code>)
-            modifies the the <Code>x</Code> and <Code>y</Code> variables by
-            adding 1 or subtracting 1 to each.
-          </span>
         </List>
-        Variables are needed less frequently than constants, so the default is
-        constant.
+        Constants do not work yet. However, variables are needed less frequently
+        than constants, so the default will be constant.
       </div>
       <LargeText className="my-[10px]">Conditions and Loops</LargeText>
       <div className="m-[10px]">
@@ -116,17 +107,22 @@ function BeginnersPage() {
           n = 102 <br />
           if n % 2 == 0: <br />
           &emsp; &emsp; io write("even\n") <br />
-          else n % 3 == 0: <br />
+          also n % 3 == 0: <br />
           &emsp; &emsp; io write("divisible by 3\n") <br />
           all: io write("divisible by 6\n") <br />
           any: io write("divisible by 2 or 3\n") <br />
           else: io write("not divisible by 2 or 3")
         </Code>
-        The <Code>if</Code>-<Code>else</Code>-<Code>any</Code>-<Code>all</Code>{" "}
-        statement should not be abused.
+        The <Code>if</Code>-<Code>else</Code>-<Code>also</Code>-<Code>any</Code>
+        -<Code>all</Code> statement should not be abused.
         <br />
         <Code blocked colored>
-          grid = [repeat 10: [repeat 10: 0]] \\creates a 10x10 grid of 0s
+          \\create a 10x10 grid of 0s
+          <br />
+          grid = [repeat 10: [repeat 10: 0]]
+          <br />
+          <br />
+          \\random does not exist yet, but you get the idea
           <br />
           repeat: <br />
           &emsp; &emsp; if random([0...100)) as int == 0: break
@@ -136,7 +132,7 @@ function BeginnersPage() {
         The <Code>break</Code> statement will terminate the most recent loop.
         <br />
         <Code blocked colored>
-          while (input = io read()) then input lowercase != "q": <br />
+          while (input = io read()) != "q": <br />
           &emsp; &emsp; io write(input)
         </Code>
         The most common use of the <Code>while</Code> loop is to await a
@@ -146,8 +142,10 @@ function BeginnersPage() {
         in the condition and the body of the loop for every pass of the loop.
         <br />
         <Code blocked colored>
-          for i in [0...10): <br />
-          &emsp; &emsp; io write("*" * 10) \\prints a 10x10 block of stars
+          for i in 1 ... 10: \\print a triangle of stars <br />
+          &emsp; &emsp; repeat i: io write("*")
+          <br />
+          &emsp; &emsp; io write("\n")
         </Code>
         The for loop is the most commonly used loop. It can be used to repeat a
         block of code a fixed number of times, to use every value of an array,
@@ -171,13 +169,11 @@ function BeginnersPage() {
         </Code>
         The basic structure is <Code>name(parameters) = code</Code>
         <Code blocked colored>
-          piglatin(s = string) = &#123;return ret = string&#125; : &#123;
+          piglatin(s = string) = &#123;
           <br />
-          &emsp; &emsp; ret = var: s[[1 ... s length)]
+          {"\t"}\\range indexing does not work yet, but the rest does
           <br />
-          &emsp; &emsp; ret += " "
-          <br />
-          &emsp; &emsp; ret += s[0] + "ay"
+          {"\t"}return var: s[[1 ... s length)] . " " . s[0] . "ay"
           <br />
           &#125;
           <br />
@@ -190,22 +186,20 @@ function BeginnersPage() {
         <Code blocked colored>
           sqrt(n = float) = &#123;positive, negative = int, int&#125; : &#123;
           <br />
-          &emsp; &emsp; positive = n */ 2
+          {"\t"}positive = n */ 2
           <br />
-          &emsp; &emsp; negative = - n */ 2
+          {"\t"}negative = - n */ 2
           <br />
           &#125;
           <br />
           <br />
-          &#123; a = positive, b = negative &#125; = root16 = sqrt(16) <br />
+          root16 = sqrt(16) <br />
           <br />
           io write(a) \\4 <br />
           io write(root16 negative) \\-4
         </Code>
         This is a combination of the type-conversion and the direct
         function-value syntax. This makes it easy to return multiple values.{" "}
-        <br />
-        Destructuring isn't necessary, but it makes this relatively easy to use.
       </div>
     </section>
   );
@@ -246,13 +240,13 @@ function IntermediatePage() {
           x, y = var: 0, 0<br />
           for direction in path:
           <br />
-          &emsp; &emsp; if direction == "up": ++y;
+          {"\t"}if direction == "up": ++y;
           <br />
-          &emsp; &emsp; else direction == "down": --y;
+          {"\t"}else direction == "down": --y;
           <br />
-          &emsp; &emsp; else direction == "right": ++x;
+          {"\t"}else direction == "right": ++x;
           <br />
-          &emsp; &emsp; else direction == "left": --x;
+          {"\t"}else direction == "left": --x;
         </Code>
       </div>
       <LargeText className="my-[10px]">Conditions and Loops</LargeText>
@@ -295,7 +289,7 @@ function IntermediatePage() {
         <br />
         <Code blocked colored>
           for i in [0...10): <br />
-          &emsp; &emsp; io write("*" * 10) \\prints a 10x10 block of stars
+          &emsp; &emsp; io write("*" * 10) \\print a 10x10 block of stars
         </Code>
         The for loop is the most commonly used loop. It can be used to repeat a
         block of code a fixed number of times, to use every value of an array,
@@ -442,7 +436,7 @@ function AdvancedPage() {
         <br />
         <Code blocked colored>
           for i in [0...10): <br />
-          &emsp; &emsp; io write("*" * 10) \\prints a 10x10 block of stars
+          &emsp; &emsp; io write("*" * 10) \\print a 10x10 block of stars
         </Code>
         The for loop is the most commonly used loop. It can be used to repeat a
         block of code a fixed number of times, to use every value of an array,
