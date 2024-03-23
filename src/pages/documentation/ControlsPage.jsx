@@ -10,31 +10,31 @@ export const controls = [
   },
   {
     name: "else",
-    condition: "__bool",
+    condition: "_bool",
     description:
       "performs and returns a block if 1) no previous condition is satisfied and 2) either the current condition is satisfied or no condition is specified",
   },
   {
     name: "any",
-    condition: "__bool",
+    condition: "_bool",
     description:
       "performs and returns a block if 1) any previous condition is satisfied and 2) either the current condition is satisfied or no condition is specified",
   },
   {
     name: "all",
-    condition: "__bool",
+    condition: "_bool",
     description:
       "performs and returns a block if 1) all previous condition is satisfied and 2) either the current condition is satisfied or no condition is specified",
   },
   {
     name: "repeat",
-    condition: "__int",
+    condition: "_n",
     description:
       "performs a block a fixed number of times or, if not specified, until broken out of",
   },
   {
     name: "while",
-    condition: "__bool",
+    condition: "_bool",
     description:
       "performs a block until the condition is false and returns a list",
   },
@@ -52,12 +52,11 @@ export const controls = [
   },
 ];
 
-export default function TypesPage() {
+export default function ControlsPage() {
   return (
     <>
-      <Title>Types</Title>
-      This is the page for types
-      <List>
+      <Title>Controls</Title>
+      <List className="text-lg font-thin my-5">
         {controls.map((c, i) => (
           <Link href={`/docs/controls/${c.name}`} key={i}>
             {c.name}

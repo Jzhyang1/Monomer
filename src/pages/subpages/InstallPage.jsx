@@ -5,6 +5,13 @@ import Title from "../../components/Title";
 
 const releases = [
   {
+    href: "https://drive.google.com/uc?export=download&id=1-yhlSnrdMdTKElfvv6Z7sQAXckxJvTJ1",
+    name: "V 1.0.5 (JAR)",
+    type: "universal",
+    date: "3/23/2024",
+    desc: "Updated compiler and interpreter to be more stable. Bug fixes.",
+  },
+  {
     href: "https://drive.google.com/uc?export=download&id=1pLaVZAJkyG4VipO95OTmGhn4ybEYSv53",
     name: "V 1.0.4 (JAR)",
     type: "universal",
@@ -98,15 +105,25 @@ export default function InstallPage() {
 
 function Machine({ name, sources }) {
   return (
-    <div className="flex flex-1 flex-col items-center px-[10px]">
+    <div className="flex flex-col flex-1 items-center px-[10px]">
       <div className="font-bold mb-[10px] border-b-[1px] border-black">
         {name}
       </div>
-      {sources.map(({ href, name }, i) => (
-        <div key={i} className={`gap-1 ${i !== 0 && "italic"}`}>
-          <DownloadLink href={href}>{name}</DownloadLink>
-        </div>
-      ))}
+      <div className="flex flex-col gap-3">
+        {sources.map(({ href, name, desc }, i) => (
+          <div
+            key={i}
+            className={`gap-2 ${i !== 0 && "italic text-sm opacity-50"} group`}
+          >
+            <div className="text-center">
+              <DownloadLink href={href}>{name}</DownloadLink>
+            </div>
+            <div className="text-sm rounded-lg bg-white/30 p-3 hidden group-hover:block">
+              {desc}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

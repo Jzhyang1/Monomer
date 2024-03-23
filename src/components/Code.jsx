@@ -60,6 +60,7 @@ const keywords = new Set([
   "repeat",
   "for",
   "in",
+  "to",
   "as",
   "it",
   "var",

@@ -91,10 +91,10 @@ export default function OperatorDetails({
           ].filter(Boolean)}
         </Code>
       )}
-      <Link>
+      <Link href="/docs/operators/conventions">
         <small>see here for an explaination of our example conventions</small>
       </Link>
-      <div>{description}</div>
+      <div className="my-8">{description}</div>
     </div>
   );
 }

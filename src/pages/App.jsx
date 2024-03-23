@@ -20,6 +20,7 @@ import NavMenu from "../custom_components/NavMenu";
 import Footer from "../custom_components/Footer";
 import { useState } from "react";
 import { ThemeContext } from "../contexts";
+import ConventionsPage from "./documentation/ConventionsPage";
 
 export default function App() {
   const [isDarkMode, setDarkMode] = useState(
@@ -70,6 +71,7 @@ export default function App() {
                       element={<OperatorDetails {...op} />}
                     />
                   ))}
+                  <Route path="conventions" element={<ConventionsPage />} />
                 </Route>
                 <Route path="types">
                   <Route path="" element={<TypesPage />} />

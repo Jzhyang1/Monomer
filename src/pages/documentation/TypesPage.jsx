@@ -59,9 +59,9 @@ export const types = [
     notes: "unlike in other languages, strings are mutable",
     fields: {
       pad: {
-        start: "(int){_self = string}",
-        end: "(int){_self = string}",
-        to: "{_start = bool, _end = bool}(int){_self = string}",
+        start: "(int) -> string \\ returns modified self",
+        end: "(int) -> string \\ returns modified self",
+        to: "{_start = bool, _end = bool}(int) -> string \\ returns modified self",
       },
     },
   },
@@ -75,8 +75,8 @@ export const types = [
     fields: {
       length: "int",
       last: "_x",
-      push: "(_x1){_x1}",
-      pop: "(){_x}",
+      push: "(_x1) -> _x1",
+      pop: "() -> _x",
     },
   },
   {
@@ -88,7 +88,7 @@ export const types = [
       "no indexing. Stores unique objects only. Generally used for testing if something is in a set.",
     fields: {
       length: "int",
-      push: "(_x1){_x1}",
+      push: "(_x1) -> _x1",
     },
   },
   {
@@ -109,8 +109,7 @@ export default function TypesPage() {
   return (
     <>
       <Title>Types</Title>
-      This is the page for types
-      <List>
+      <List className="text-lg font-thin my-5">
         {types.map((t, i) => (
           <Link href={`/docs/types/${t.name}`} key={i}>
             {t.name} {t.aliases && `(${t.aliases.join(", ")})`}

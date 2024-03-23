@@ -9,9 +9,9 @@ export default function VariablesPage() {
         \\declare constant{"\n"}
         _name = _x{"\n\n"}
         \\declare constant with type{"\n"}
-        _name = _t : _x{"\n\n"}
+        _name = _type : _x{"\n\n"}
         \\declare variable{"\n"}
-        _name = var __t : _x
+        _name = var _type : _x
       </Code>
       A structure is a block that holds several variables.
       <Code blocked>
