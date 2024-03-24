@@ -4,11 +4,13 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import systems.monomer.types.Type;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 @Getter
-public class InterpretRange extends InterpretCollection implements InterpretValue, Comparable<InterpretRange> {
+public class InterpretRange extends InterpretCollection implements Comparable<InterpretRange>, Iterable<InterpretValue> {
     private final InterpretValue start, stop, step;
     private final boolean startInclusive, stopInclusive;
 
@@ -40,7 +42,10 @@ public class InterpretRange extends InterpretCollection implements InterpretValu
     }
 
     public Collection<? extends InterpretValue> getValues() {
-        throw new Error("TODO unimplemented");
+        Collection<InterpretValue> ret = new ArrayList<>();
+        for(InterpretValue value : this)
+            ret.add(value);
+        return ret;
     }
 
     @Override
@@ -49,7 +54,16 @@ public class InterpretRange extends InterpretCollection implements InterpretValu
     }
 
     @Override
-    public Iterator<? extends InterpretValue> iterator() {
+    public int size() {
+        int startInt = this.start.<Number>getValue().intValue();
+        int stopInt = this.stop.<Number>getValue().intValue();
+        int stepInt = this.step.<Number>getValue().intValue();
+        int adjust = (startInclusive ? 1 : 0) + (stopInclusive ? 1 : 0) - 1;
+        return (stopInt - startInt) / stepInt + adjust;
+    }
+
+    @Override
+    public Iterator<InterpretValue> iterator() {
         return new InterpretRangeIterator(start, stop, step, startInclusive, stopInclusive);
     }
 

@@ -1,5 +1,6 @@
 package systems.monomer.interpreter;
 
+import org.jetbrains.annotations.NotNull;
 import systems.monomer.types.Type;
 
 import java.util.Collection;
@@ -7,7 +8,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class InterpretRanges extends InterpretCollection {
+public class InterpretRanges extends InterpretCollection implements Iterable<InterpretValue> {
     private final Set<InterpretRange> ranges = new TreeSet<>();
 
     public InterpretRanges(Type elementType) {
@@ -29,7 +30,7 @@ public class InterpretRanges extends InterpretCollection {
     }
 
     @Override
-    public Iterator<? extends InterpretValue> iterator() {
+    public @NotNull Iterator<InterpretValue> iterator() {
         return new InterpretRangesIterator(ranges);
     }
 
@@ -41,6 +42,11 @@ public class InterpretRanges extends InterpretCollection {
         }
         else
             throw new Error("cannot add " + range + " to ranges");
+    }
+
+    @Override
+    public int size() {
+        return ranges.stream().mapToInt(InterpretRange::size).sum();
     }
 
     private static class InterpretRangesIterator implements Iterator<InterpretValue> {

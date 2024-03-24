@@ -300,10 +300,17 @@ public class Token extends ErrorBlock {
                     cur = partialOperatorToNode(null, cur, token, iter);
                 }
 
-                node.setContext(cur.getContext());
                 if(OperatorNode.isOperator(cur, "...")) { //also make sure it's range, not spread
-                    throw syntaxError("TODO unimplemented");    //TODO
+                    node = switch (value) {
+                        case "()" -> new RangeNode(false, false);
+                        case "[)" -> new RangeNode(true, false);
+                        case "(]" -> new RangeNode(false, true);
+                        case "[]" -> new RangeNode(true, true);
+                        default -> throw syntaxError("Invalid range braces " + value);
+                    };
+                    yield node.with(cur.getChildren()); //.with(cur.getContext());
                 }
+//                node.setContext(cur.getContext());
 
                 if("()".equals(value)) node = cur;
 //                else if(cur.isControl()) node = new AssertTypeNode(node, cur);

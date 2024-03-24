@@ -8,6 +8,7 @@ import systems.monomer.types.*;
 import systems.monomer.util.Pair;
 import systems.monomer.variables.VariableKey;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class IndexNode extends OperatorNode {
@@ -20,9 +21,8 @@ public class IndexNode extends OperatorNode {
         super.matchTypes();
         if (!ListType.LIST.typeContains(getFirst().getType()))    //TODO add support for other collection types
             throw syntaxError("Cannot index non-collection type " + getFirst().getType());
-        if (!(getSecond().getType() instanceof NumberType<?> num &&
-                num.getValue() instanceof Integer)) //TODO replace Instanceof Integer check with getTypeName check
-            throw syntaxError("Cannot index with non-integer type " + getSecond().getType());
+        if (!getSecond().getType().equals(NumberType.INTEGER) && !(getSecond().getType() instanceof InterpretRanges)) //TODO replace Instanceof check
+            throw syntaxError("Cannot index with type " + getSecond().getType());
 
         //TODO something like .unwrapped() below
         Type elementType = ((CollectionType) getFirst().getType()).getElementType();
@@ -32,55 +32,102 @@ public class IndexNode extends OperatorNode {
             setType(elementType);
     }
 
-    private Pair<List<InterpretValue>, Number> getIndexing() {
+
+    private static abstract class IndexedPosition extends InterpretVariable {
+        protected final List<InterpretValue> valueList;
+        public IndexedPosition(List<InterpretValue> valueList) {
+            this.valueList = valueList;
+        }
+        public abstract InterpretValue getValue();
+        public abstract void setValue(InterpretValue value);
+
+        @Override public String valueString() {return getValue().valueString();}
+        @Override public CompileSize compileSize() {return null;}
+    }
+
+    private static class IndexedNumber extends IndexedPosition {
+        private final int index;
+        public IndexedNumber(List<InterpretValue> valueList, int index) {
+            super(valueList);
+            this.index = index;
+        }
+        public InterpretValue getValue() {
+            return valueList.get(index);
+        }
+        public void setValue(InterpretValue value) {
+            valueList.set(index, value);
+        }
+    }
+
+    private class IndexedRanges extends IndexedPosition {
+        private final InterpretRanges range;
+        public IndexedRanges(List<InterpretValue> valueList, InterpretRanges range) {
+            super(valueList); this.range = range;
+        }
+        public InterpretValue getValue() {
+            List<InterpretValue> values = new ArrayList<>();
+            for (InterpretValue index : range) {
+                Number numIndex = index.getValue();
+                int intIndex = numIndex.intValue();
+                if (intIndex < 0 || intIndex >= valueList.size())
+                    throw runtimeError("Index " + intIndex + " out of bounds for list of size " + valueList.size());
+                values.add(valueList.get(intIndex));
+            }
+            return new InterpretList(values);
+        }
+        public void setValue(InterpretValue value) {
+            if (value instanceof InterpretList list) {
+                List<InterpretValue> values = list.getValues();
+                if (values.size() != range.size())
+                    throw runtimeError("Cannot set range of size " + range.size() + " with " + values.size() + " values");
+
+                int i = 0;
+                for (InterpretValue index : range) {
+                    Number numIndex = index.getValue();
+                    int intIndex = numIndex.intValue();
+                    if (intIndex < 0 || intIndex >= valueList.size())
+                        throw runtimeError("Index " + intIndex + " out of bounds for list of size " + valueList.size());
+                    valueList.set(intIndex, values.get(i++));
+                }
+            }
+            else
+                throw runtimeError("Cannot set range with " + value);
+        }
+    }
+
+    private IndexedPosition getIndexing() {
         InterpretResult first = getFirst().interpretValue();
         if(!first.isValue()) throw syntaxError("Can not index first value");
         InterpretResult second = getSecond().interpretValue();
         if(!second.isValue()) throw syntaxError("Second value is not an index");
 
-        if (first instanceof InterpretList collection &&
-                second instanceof InterpretNumber<?> number) {
-            int intIndex = number.getValue().intValue();
+        if (first instanceof InterpretList collection) {
             List<InterpretValue> valueList = collection.getValues();
+            if (second instanceof InterpretNumber<?> number) {
+                int intIndex = number.getValue().intValue();
 
-            if(intIndex < 0 || intIndex >= valueList.size())
-                throw syntaxError("Index " + intIndex + " out of bounds for list of size " + valueList.size());
+                if (intIndex < 0 || intIndex >= valueList.size())
+                    throw syntaxError("Index " + intIndex + " out of bounds for list of size " + valueList.size());
 
-            return new Pair<>(valueList, intIndex);
+                return new IndexedNumber(valueList, intIndex);
+            }
+            else if (second instanceof InterpretRanges range) {
+                return new IndexedRanges(valueList, range);
+            }
+            else throw syntaxError("Cannot index with " + second);
         }
         else
-            throw syntaxError("Cannot index " + first + " with " + second);
+            throw syntaxError("Cannot index " + first);
     }
 
     @Override
     public InterpretValue interpretValue() {
-        Pair<List<InterpretValue>, Number> indexing = getIndexing();
-
-        List<InterpretValue> valueList = indexing.getFirst();
-        int intIndex = indexing.getSecond().intValue();
-
-        return valueList.get(intIndex);
+        return getIndexing().getValue();
     }
 
     @Override
     public InterpretVariable interpretVariable() {
-        return new InterpretVariable() {
-            @Override
-            public InterpretValue getValue() {
-                return IndexNode.this.interpretValue();
-            }
-
-            @Override
-            public void setValue(InterpretValue value) {
-                Pair<List<InterpretValue>, Number> indexing = getIndexing();
-                indexing.getFirst().set(indexing.getSecond().intValue(), value);
-            }
-
-            @Override
-            public String valueString() {return null;}
-            @Override
-            public CompileSize compileSize() {return null;}
-        };
+        return getIndexing();
     }
 
     @Override

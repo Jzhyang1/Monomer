@@ -401,10 +401,16 @@ public abstract class Source {
             if (hasE && isDot) {
                 throwParseError(start, line.getIndex(), Token.Usage.FLOAT, strbuild.toString(), "'E' before '.' in float literal");
             }
+            strbuild.append(line.get());
+
+            if (isDot && line.peek() == '.') {
+                line.unget();
+                strbuild.deleteCharAt(strbuild.length() - 1);
+                break;
+            }
 
             hasE = hasE || isE;
             hasDot = hasDot || isDot;
-            strbuild.append(line.get());
 
             if (isE && line.peek() == '-') strbuild.append(line.get());
             isE = isDot = false;
