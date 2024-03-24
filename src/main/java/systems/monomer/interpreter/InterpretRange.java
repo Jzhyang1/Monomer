@@ -7,7 +7,6 @@ import systems.monomer.types.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 @Getter
 public class InterpretRange extends InterpretCollection implements Comparable<InterpretRange>, Iterable<InterpretValue> {

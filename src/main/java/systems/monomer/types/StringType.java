@@ -10,8 +10,12 @@ import systems.monomer.interpreter.InterpretValue;
  * 8 bytes: the pointer to the string
  */
 
-public class StringType extends ObjectType {
+public class StringType extends ListType {
     public static final StringType STRING = new StringType();
+
+    public StringType() {
+        super(CharType.CHAR);
+    }
 
     @Override
     public String valueString() {

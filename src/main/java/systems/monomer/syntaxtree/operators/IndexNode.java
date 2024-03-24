@@ -9,6 +9,7 @@ import systems.monomer.util.Pair;
 import systems.monomer.variables.VariableKey;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class IndexNode extends OperatorNode {
@@ -103,6 +104,23 @@ public class IndexNode extends OperatorNode {
 
         if (first instanceof InterpretList collection) {
             List<InterpretValue> valueList = collection.getValues();
+            if (second instanceof InterpretNumber<?> number) {
+                int intIndex = number.getValue().intValue();
+
+                if (intIndex < 0 || intIndex >= valueList.size())
+                    throw syntaxError("Index " + intIndex + " out of bounds for list of size " + valueList.size());
+
+                return new IndexedNumber(valueList, intIndex);
+            }
+            else if (second instanceof InterpretRanges range) {
+                return new IndexedRanges(valueList, range);
+            }
+            else throw syntaxError("Cannot index with " + second);
+        }
+        else if (first instanceof InterpretString string) {
+            String value = string.getValue();
+            List<InterpretValue> valueList = value.chars().mapToObj(c->(InterpretValue)(new InterpretChar((char)c))).toList();
+
             if (second instanceof InterpretNumber<?> number) {
                 int intIndex = number.getValue().intValue();
 
