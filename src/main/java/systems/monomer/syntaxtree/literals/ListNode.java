@@ -32,16 +32,20 @@ public class ListNode extends LiteralNode {
         super.matchTypes();
         if(getChildren().isEmpty()) {
             setType(ListType.LIST);
+            return;
         }
-        else {
-            Type t = get(0).getType();
-            for(int i = size() - 1; i >= 0; --i) {
-                if(!t.typeContains(get(i).getType())) {
-                    throw syntaxError("Types of elements in list do not match");
-                }
+        Type t = get(0).getType();
+        if(SequenceType.isSequence(t)) {
+            setType(new ListType(((CollectionType)t).getElementType()));
+            return;
+        }
+
+        for(int i = size() - 1; i >= 0; --i) {
+            if(!t.typeContains(get(i).getType())) {
+                throw syntaxError("Types of elements in list do not match");
             }
-            setType(new ListType(t));
         }
+        setType(new ListType(t));
     }
 
     public InterpretResult interpretValue() {

@@ -167,7 +167,7 @@ public final class Operator {
                     .add(NOT, RAX.toOperand(), null)
                     .pop(RDX.toOperand());
             return RAX.toOperand();
-        }, Comparison.generalIntFloatCharString(Objects::equals), (self) -> BoolType.BOOL);
+        }, Comparison.chained(Objects::equals), (self) -> BoolType.BOOL);
         putData("!=", 550, BINARY | CHAINED, (self, file) -> {
             Operand first = self.getFirst().compileValue(file);
             file.push(RDX.toOperand())
@@ -178,23 +178,23 @@ public final class Operator {
             file.add(ISUB, RAX.toOperand(), RDX.toOperand())
                     .pop(RDX.toOperand());
             return RAX.toOperand();
-        }, Comparison.generalIntFloatCharString((a, b) -> !Objects.equals(a, b)), (self) -> BoolType.BOOL);
+        }, Comparison.chained((a, b) -> !Objects.equals(a, b)), (self) -> BoolType.BOOL);
         putData(">", 550, BINARY | CHAINED, (self, file) -> {
             //TODO
             return null;
-        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) > 0), (self) -> BoolType.BOOL);
+        }, Comparison.chained((a, b) -> a.compareTo(b) > 0), (self) -> BoolType.BOOL);
         putData("<", 550, BINARY | CHAINED, (self, file) -> {
             //TODO
             return null;
-        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) < 0), (self) -> BoolType.BOOL);
+        }, Comparison.chained((a, b) -> a.compareTo(b) < 0), (self) -> BoolType.BOOL);
         putData(">=", 550, BINARY | CHAINED, (self, file) -> {
             //TODO
             return null;
-        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) >= 0), (self) -> BoolType.BOOL);
+        }, Comparison.chained((a, b) -> a.compareTo(b) >= 0), (self) -> BoolType.BOOL);
         putData("<=", 550, BINARY | CHAINED, (self, file) -> {
             //TODO
             return null;
-        }, Comparison.generalIntFloatCharString((a, b) -> a.compareTo(b) <= 0), (self) -> BoolType.BOOL);
+        }, Comparison.chained((a, b) -> a.compareTo(b) <= 0), (self) -> BoolType.BOOL);
         putData("?=", 555, BINARY, (self, file) -> {
             //TODO
             return null;

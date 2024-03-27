@@ -25,6 +25,12 @@ public class RangeNode extends LiteralNode {
     }
 
     @Override
+    public void matchTypes() {
+        super.matchTypes();
+        setType(new InterpretRanges(get(0).getType())); //TODO first and second could be different types
+    }
+
+    @Override
     public InterpretRanges interpretValue() {
         return new InterpretRanges(
                 new InterpretRange(

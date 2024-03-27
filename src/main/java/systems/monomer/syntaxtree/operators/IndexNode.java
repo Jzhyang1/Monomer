@@ -25,12 +25,8 @@ public class IndexNode extends OperatorNode {
         if (!getSecond().getType().equals(NumberType.INTEGER) && !(getSecond().getType() instanceof InterpretRanges)) //TODO replace Instanceof check
             throw syntaxError("Cannot index with type " + getSecond().getType());
 
-        //TODO something like .unwrapped() below
         Type elementType = ((CollectionType) getFirst().getType()).getElementType();
-        if (SequenceType.isSequence(elementType))
-            setType(((CollectionType) elementType).getElementType());
-        else
-            setType(elementType);
+        setType(elementType);
     }
 
 

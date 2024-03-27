@@ -20,6 +20,12 @@ public class ErrorBlock {
         }
     }
 
+    public static class ProgramErrorException extends RuntimeException {
+        public ProgramErrorException(String message) {
+            super(message);
+        }
+    }
+
     @Setter
     private Context context = null;
 
@@ -51,8 +57,8 @@ public class ErrorBlock {
      * @param message the internal error message
      * @return a RuntimeErrorException
      */
-    public static RuntimeErrorException programError(String message) {
-        return new RuntimeErrorException("Program Error: " + message);
+    public static ProgramErrorException programError(String message) {
+        return new ProgramErrorException("Program Error: " + message);
     }
 
     private String errorMessage(String type, String message) {
