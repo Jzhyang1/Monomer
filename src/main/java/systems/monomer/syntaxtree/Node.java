@@ -156,9 +156,14 @@ public abstract class Node extends ErrorBlock {
     public abstract InterpretResult interpretValue();
 
     public void interpretAssign(InterpretValue value) {
+        interpretAssign(value, true);
+    }
+    public void interpretAssign(InterpretValue value, boolean checkConstant) {
         Key variableKey = getVariableKey();
         if(variableKey == null) {
             throw syntaxError("Attempting to assign to " + name + " as a variable");
+        } else if (checkConstant && variableKey.isConstant()) {
+            throw syntaxError("Cannot assign to constant " + name);
         }
         interpretVariable().setValue(value);
     }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import systems.monomer.compiler.Assembly.Operand;
 import static systems.monomer.compiler.Assembly.Register.*;
+import static systems.monomer.errorhandling.ErrorBlock.programError;
 
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
@@ -17,15 +18,10 @@ public class VariableKey extends Key {
     private InterpretValue value;
     private Type type = AnyType.ANY;
 
-    private boolean isConstant = false; //TODO make this true by default
+    private boolean isConstant = true; //TODO make this true by default
     private Operand address;
 
     public VariableKey(){}
-
-    public void setType(Type type) {
-//        value = type.defaultValue();
-        this.type = type;
-    }
 
     @Override
     public void setField(String field, Type type) {

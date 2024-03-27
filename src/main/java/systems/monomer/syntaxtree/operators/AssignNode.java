@@ -5,6 +5,7 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.StructureNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
@@ -54,11 +55,6 @@ public class AssignNode extends OperatorNode {
         }
 
         return type;
-    }
-
-    public static InterpretValue assign(Node dest, InterpretValue val) {
-        dest.interpretAssign(val);
-        return val;
     }
 
     @Override
@@ -159,6 +155,13 @@ public class AssignNode extends OperatorNode {
             wrapper.with(args).with(namedArgs);//.matchVariables();    //TODO this solves a problem with not being able to reference types in args, but makes it so that the args can not have names that are the same as elsewhere
             wrapper.with(second).matchVariables();
             functionInit = new FunctionInitInfo(identifier, identifierKey, args, (StructureNode) namedArgs, second, wrapper);
+        } else if(second instanceof AssertTypeNode assertTypeNode &&
+                    assertTypeNode.getFirst() instanceof VariableNode variableNode &&
+                    "var".equals(variableNode.getName())) {
+            set(1, assertTypeNode.getSecond());
+            first.matchVariables();
+            first.getVariableKey().setConstant(false);
+            second.matchVariables();
         } else {
             super.matchVariables();
         }
@@ -174,7 +177,7 @@ public class AssignNode extends OperatorNode {
             InterpretResult ret = getSecond().interpretValue();
             if (ret.isValue()) {
                 for (int i = size() - 2; i >= 0; --i)
-                    get(i).interpretAssign(ret.asValue());
+                    get(i).interpretAssign(ret.asValue(), false);
             }
             return ret;
         }

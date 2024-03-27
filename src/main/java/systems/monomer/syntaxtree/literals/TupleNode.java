@@ -67,14 +67,14 @@ public class TupleNode extends LiteralNode {
     }
 
     @Override
-    public void interpretAssign(InterpretValue value) {
+    public void interpretAssign(InterpretValue value, boolean checkConstant) {
         if (InterpretTuple.EMPTY.typeContains(value)) {
             InterpretTuple tuple = (InterpretTuple)value;
             for (int i = 0; i < tuple.size(); i++) {
-                get(i).interpretAssign(tuple.get(i));
+                get(i).interpretAssign(tuple.get(i), checkConstant);
             }
         } else {
-            super.interpretAssign(value);
+            super.interpretAssign(value, checkConstant);
         }
     }
 

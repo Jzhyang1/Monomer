@@ -40,6 +40,15 @@ public class FieldKey extends Key {
     }
 
     @Override
+    public boolean isConstant() {
+        return parent.getField(name).isConstant();
+    }
+
+    public void setConstant(boolean constant) {
+        ((Key) parent.getField(name)).setConstant(constant);
+    }
+
+    @Override
     public Type getType() {
         return parent.getField(name).getType();
     }

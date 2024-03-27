@@ -14,6 +14,11 @@ public abstract class Key extends InterpretVariable {
     public abstract Type getType();
     public abstract void setType(Type type);
 
+    public boolean isConstant(){ return true; }
+    public void setConstant(boolean constant) {
+        throw new UnsupportedOperationException("Can not set constant on " + this);
+    }
+
     public void put(String field, Type value) {
         Type type = this.getType();
         if(type == ANY) setType(type = new ObjectType());

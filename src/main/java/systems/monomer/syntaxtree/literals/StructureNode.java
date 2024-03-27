@@ -79,12 +79,14 @@ public class StructureNode extends LiteralNode implements Locality {
         throw new Error("TODO unimplemented");
     }
 
-    public void interpretAssign(InterpretValue value) {
+    public void interpretAssign(InterpretValue value, boolean checkConstant) {
         if(value instanceof InterpretObject obj) {
 //            for(Node child : getChildren()) {
 //                AssignNode.assign(child, obj.get(child.getName()));
 //            }
             for(Map.Entry<String, VariableKey> entry : variables.entrySet()) {
+                if(checkConstant && entry.getValue().isConstant())
+                    throw syntaxError("Cannot assign to constant " + entry.getKey());
                 entry.getValue().setValue(obj.get(entry.getKey()));
             }
         }
