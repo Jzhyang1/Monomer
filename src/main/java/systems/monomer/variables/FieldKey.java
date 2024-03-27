@@ -6,6 +6,7 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.types.ObjectType;
 import systems.monomer.types.Type;
 
@@ -46,6 +47,15 @@ public class FieldKey extends Key {
 
     public void setConstant(boolean constant) {
         ((Key) parent.getField(name)).setConstant(constant);
+    }
+
+    @Override
+    public boolean isLocked() {
+        return ((InterpretVariable) parent.getField(name)).isLocked();
+    }
+    @Override
+    public void lock() {
+        ((InterpretVariable) parent.getField(name)).lock();
     }
 
     @Override

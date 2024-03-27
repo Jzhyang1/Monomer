@@ -27,6 +27,7 @@ public class AssignNode extends OperatorNode {
     }
 
     private FunctionInitInfo functionInit = null;
+    private boolean toLock = true;
 
     public AssignNode() {
         super("=");
@@ -160,8 +161,9 @@ public class AssignNode extends OperatorNode {
                     "var".equals(variableNode.getName())) {
             set(1, assertTypeNode.getSecond());
             first.matchVariables();
-            first.getVariableKey().setConstant(false);
+//            first.getVariableKey().setConstant(false);    //todo get rid of 'constant' and use 'lock'
             second.matchVariables();
+            toLock = false;
         } else {
             super.matchVariables();
         }
@@ -177,7 +179,7 @@ public class AssignNode extends OperatorNode {
             InterpretResult ret = getSecond().interpretValue();
             if (ret.isValue()) {
                 for (int i = size() - 2; i >= 0; --i)
-                    get(i).interpretAssign(ret.asValue(), false);
+                    get(i).interpretAssign(ret.asValue(), toLock);
             }
             return ret;
         }

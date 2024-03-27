@@ -12,6 +12,11 @@ public abstract class InterpretVariable implements Type, Cloneable {
     public abstract InterpretValue getValue();
     public abstract void setValue(InterpretValue value);
 
+    public boolean isLocked(){ return false; }
+    public void lock(){
+        throw new UnsupportedOperationException("Can not lock " + this);
+    }
+
     @Override
     public boolean typeContains(Type type) {
         return getType().typeContains(type);

@@ -18,10 +18,12 @@ public class VariableKey extends Key {
     private InterpretValue value;
     private Type type = AnyType.ANY;
 
-    private boolean isConstant = true; //TODO make this true by default
+    private boolean isConstant = true;
+    private boolean isLocked = false;
     private Operand address;
 
     public VariableKey(){}
+
 
     @Override
     public void setField(String field, Type type) {
@@ -40,6 +42,13 @@ public class VariableKey extends Key {
 
     public String valueString() {
         return value.valueString();
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+    public void lock() {
+        isLocked = true;
     }
 
     @Override
