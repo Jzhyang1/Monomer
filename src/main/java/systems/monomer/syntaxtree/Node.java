@@ -29,7 +29,7 @@ public abstract class Node extends ErrorBlock {
         OPERATOR, LITERAL, IDENTIFIER, LABEL, CONTROL_GROUP, MODULE
     }
 
-    private String name;
+    private final String name;
     @Setter
     private Node parent;
     @Getter
@@ -38,16 +38,20 @@ public abstract class Node extends ErrorBlock {
     @Setter
     private Type type = AnyType.ANY;
 
+    /**
+     * Whether the value of this node is used.
+     * Used for optimization purposes to determine
+     * whether to compute the value of this node.
+     */
     @Setter
     private boolean isThisExpression = true;
 
+    @Setter
+    private boolean isVolatile = false;
+
 
     public Node(String name) {
-        addName(name);
-    }
-
-    public void addName(String newName) {
-        this.name = newName;
+        this.name = name;
     }
 
     public abstract Usage getUsage();
@@ -55,7 +59,6 @@ public abstract class Node extends ErrorBlock {
     public VariableKey getVariable(String varName) {
         return parent.getVariable(varName);
     }
-
     public void putVariable(String varName, VariableKey key) {
         parent.putVariable(varName, key);
     }
@@ -155,9 +158,13 @@ public abstract class Node extends ErrorBlock {
 
     public abstract InterpretResult interpretValue();
 
-    public void interpretAssign(InterpretValue value) {
-        interpretAssign(value, true);
-    }
+    /**
+     * Takes a value and attempts to assign it to the variable
+     * that this node represents. If the node is not a variable,
+     * an error is thrown. If the variable is locked, an error is thrown.
+     * @param value the value to assign
+     * @param lock whether to lock the variable after assignment
+     */
     public void interpretAssign(InterpretValue value, boolean lock) {
         InterpretVariable variable = interpretVariable();
 

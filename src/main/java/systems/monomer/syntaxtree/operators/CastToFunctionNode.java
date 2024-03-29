@@ -102,6 +102,7 @@ public class CastToFunctionNode extends CastNode {
 
         TypeContext context = new TypeContext(getParent());
 
+        //todo move this logic to FunctionBody
         //add in the types from the expected signature to context
         //first the ordered arguments
         TupleType argTypes = TupleType.asTuple(expectedSignature.getArgs());

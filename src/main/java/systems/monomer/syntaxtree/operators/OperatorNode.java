@@ -25,14 +25,4 @@ public abstract class OperatorNode extends Node {
     public Usage getUsage() {
         return Usage.OPERATOR;
     }
-
-    //TODO probably make a ChainedOperatorNode and move this there
-    private List<String> names = null;
-    public void addName(String newName) {
-        if(names == null) {
-            super.addName(newName);
-            names = new ArrayList<>();
-        }
-        names.add(newName);
-    }
 }

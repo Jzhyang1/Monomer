@@ -153,7 +153,7 @@ public class AssignNode extends OperatorNode {
             for (String fieldName : namedArgsStruct.getFieldNames()) {
                 wrapper.putVariable(fieldName, namedArgsStruct.getVariable(fieldName));
             }
-            wrapper.with(args).with(namedArgs);//.matchVariables();    //TODO this solves a problem with not being able to reference types in args, but makes it so that the args can not have names that are the same as elsewhere
+            wrapper.with(args).with(namedArgs);
             wrapper.with(second).matchVariables();
             functionInit = new FunctionInitInfo(identifier, identifierKey, args, (StructureNode) namedArgs, second, wrapper);
         } else if(second instanceof AssertTypeNode assertTypeNode &&
@@ -161,7 +161,7 @@ public class AssignNode extends OperatorNode {
                     "var".equals(variableNode.getName())) {
             set(1, assertTypeNode.getSecond());
             first.matchVariables();
-//            first.getVariableKey().setConstant(false);    //todo get rid of 'constant' and use 'lock'
+//            first.getVariableKey().setConstant(false); //TODO set variable(s) to non-constant
             second.matchVariables();
             toLock = false;
         } else {

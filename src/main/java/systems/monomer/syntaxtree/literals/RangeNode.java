@@ -6,7 +6,6 @@ import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretNumber;
 import systems.monomer.interpreter.InterpretRange;
 import systems.monomer.interpreter.InterpretRanges;
-import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.syntaxtree.Node;
 
 
