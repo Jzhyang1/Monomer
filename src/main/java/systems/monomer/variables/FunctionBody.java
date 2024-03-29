@@ -8,15 +8,21 @@ import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.syntaxtree.controls.ReturnNode;
 import systems.monomer.syntaxtree.literals.StructureNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
+import systems.monomer.syntaxtree.operators.CallNode;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.Signature;
 import systems.monomer.types.TupleType;
 import systems.monomer.types.Type;
+import systems.monomer.util.Pair;
+import systems.monomer.util.PairList;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.stream.IntStream;
 
 public class FunctionBody extends Signature implements InterpretValue {
@@ -75,9 +81,6 @@ public class FunctionBody extends Signature implements InterpretValue {
     public TupleNode getArgNodes() {
         return args;
     }
-    public StructureNode getNamedArgNodes() {
-        return namedArgs;
-    }
     public ModuleNode getWrapper() {
         return parent;
     }
@@ -87,6 +90,7 @@ public class FunctionBody extends Signature implements InterpretValue {
 
     private final ArrayDeque<Map<String, VariableKey>> recursiveSlices = new ArrayDeque<>();
 
+    private boolean isLastStatement = false;    //TODO use this in call
     @Override
     public InterpretValue call(InterpretValue args, InterpretValue namedArgs) {
         assert namedArgs instanceof InterpretObject;
@@ -94,8 +98,9 @@ public class FunctionBody extends Signature implements InterpretValue {
         if(recursiveSlices.size() > Constants.RECURSIVE_LIMIT) {
             throw new Error("Recursive limit exceeded (" + Constants.RECURSIVE_LIMIT + ")");
         }
-        //TODO optimize to not push if args is empty or if tail recursion
-        recursiveSlices.push(parent.getVariableValuesMap());
+        boolean optimized = this.args.size() == 0 || isLastStatement; //|| isTailRecursive();   //TODO decide if tail recursion is accounted for by isLastStatement
+        if(optimized) parent.getVariables().clear();
+        else recursiveSlices.push(parent.getVariableValuesMap());
 
         this.namedArgs.interpretValue();    //TODO optimize to not have to interpret everything
         InterpretObject namedArgsObj = (InterpretObject)namedArgs;
@@ -106,12 +111,55 @@ public class FunctionBody extends Signature implements InterpretValue {
 
         InterpretTuple argsTuple = InterpretTuple.toTuple(args);
         //InterpretTuple paramTuple = new InterpretTuple(this.args.getChildren().stream().map(Node::interpretVariable).toList());
-        this.args.interpretAssign(argsTuple);
+        this.args.interpretAssign(argsTuple, true);
 
-        //TODO unchecked asValue
         InterpretValue ret = body.interpretValue().asValue();
-        parent.setVariableValues(recursiveSlices.pop());
+        if(!optimized) parent.setVariableValues(recursiveSlices.pop());
         return ret;
+    }
+
+    boolean isTailRecursive = false; //cache
+    boolean cached = false;
+    private boolean isTailRecursive() {
+        if (cached) return isTailRecursive;
+        cached = true;
+
+        isTailRecursive = true;
+
+        PairList<List<Node>, Integer> stack = new PairList<>();
+        List<Node> currentSiblings = body.getChildren();
+        int currentIndex = 0;
+
+        //TODO this is probably better done with recursion
+        while(!(stack.isEmpty() && currentIndex >= currentSiblings.size())) {
+            if(currentIndex >= currentSiblings.size()) {
+                Pair<List<Node>, Integer> pair = stack.remove(stack.size() - 1);
+                currentSiblings = pair.getFirst();
+                currentIndex = pair.getSecond();
+            }
+            Node current = currentSiblings.get(currentIndex);
+            if(current instanceof ReturnNode returnNode) {
+                //if the return is this function and this functions' arguments do not include any concerning calls, then it's tail
+                //TODO actually check
+                isTailRecursive = false;
+                break;
+            } if(current instanceof CallNode call) {
+                Node called = call.getFirst();
+                //if called is done on this function or a run-time function or it calls this function in its body, then it's not tail
+                //but if it's a simple utility function, then it can be tail
+                //TODO actually check
+                isTailRecursive = false;
+                break;
+            } else if(current.size() > 0) {
+                stack.add(currentSiblings, currentIndex + 1);
+                currentSiblings = current.getChildren();
+                currentIndex = 0;
+            } else {
+                currentIndex++;
+            }
+        }
+
+        return isTailRecursive;
     }
 
     private boolean isTesting = false;
