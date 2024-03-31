@@ -30,10 +30,6 @@ public class VariableKey extends Key {
         this.type.setField(field, type);
         value.setField(field, type.defaultValue());
     }
-    @Override
-    public Type getField(String field) {
-        return type.getField(field);
-    }
 
     @Override
     public CompileSize compileSize() {

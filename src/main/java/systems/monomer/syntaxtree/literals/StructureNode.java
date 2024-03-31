@@ -50,7 +50,7 @@ public class StructureNode extends LiteralNode implements Locality {
         super.matchTypes();
         ObjectType ret = new ObjectType();
         for(Map.Entry<String, VariableKey> entry : variables.entrySet()) {
-            ret.setField(entry.getKey(), entry.getValue().getType());
+            ret.setField(entry.getKey(), entry.getValue());
         }
         setType(ret);
     }

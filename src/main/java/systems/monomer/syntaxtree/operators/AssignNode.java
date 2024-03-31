@@ -159,7 +159,7 @@ public class AssignNode extends OperatorNode {
         } else if(second instanceof AssertTypeNode assertTypeNode &&
                     assertTypeNode.getFirst() instanceof VariableNode variableNode &&
                     "var".equals(variableNode.getName())) {
-            set(1, assertTypeNode.getSecond());
+            set(1, second = assertTypeNode.getSecond());
             first.matchVariables();
 //            first.getVariableKey().setConstant(false); //TODO set variable(s) to non-constant
             second.matchVariables();
@@ -170,7 +170,6 @@ public class AssignNode extends OperatorNode {
     }
 
     public InterpretVariable interpretVariable() {
-        //needed for functions to work
         return getFirst().interpretVariable();
     }
 
