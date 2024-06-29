@@ -2,10 +2,7 @@ package systems.monomer.syntaxtree.operators;
 
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.commandline.EnvironmentDefaults.ConvertDefaults;
-import systems.monomer.compiler.Assembly.Operand;
-import systems.monomer.compiler.AssemblyFile;
-import systems.monomer.compiler.CompileSize;
-import systems.monomer.interpreter.*;
+import systems.monomer.interpreter.values.InterpretObject;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.ObjectType;
 import systems.monomer.types.OverloadedFunctionType;
@@ -16,14 +13,12 @@ import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static systems.monomer.types.AnyType.ANY;
 
 public class AssertTypeNode extends OperatorNode {
-    private FunctionBody convertBy = null;
-    private BiFunction<ObjectType, InterpretObject, InterpretObject> castBy = null;
+    protected FunctionBody convertBy = null;
+    protected BiFunction<ObjectType, InterpretObject, InterpretObject> castBy = null;
 
     public AssertTypeNode() {
         super(":");
@@ -77,44 +72,8 @@ public class AssertTypeNode extends OperatorNode {
             throw syntaxError("Cannot convert type from " + second.getType() + " to " + getType());
     }
 
-    public InterpretResult interpretValue() {
-        if(convertBy != null)
-            return convertBy.call(getSecond().interpretValue().asValue(), InterpretObject.EMPTY);
-        if(castBy != null) {
-            InterpretValue from = getSecond().interpretValue().asValue();
-            Type to = getType();
-
-            if(from instanceof InterpretObject ofrom && to instanceof ObjectType oto)
-                return castBy.apply(oto, ofrom);
-            else
-                throw syntaxError("Cannot cast object from " + from + " to " + to);
-        }
-
-        InterpretResult result = getSecond().interpretValue();
-        if(!result.isValue())
-            return result;
-
-        if(result.asValue().getType().equals(getType()))
-            return result;
-        else
-            throw syntaxError("Cannot convert value from " + result.asValue() + " to " + getType());
-    }
-
-    @Override
-    public InterpretVariable interpretVariable() {
-        return getSecond().interpretVariable();
-    }
-
     @Override
     public @Nullable Key getVariableKey() {
         return getSecond().getVariableKey();
-    }
-
-    public Operand compileValue(AssemblyFile file) {
-        throw new Error("TODO unimplemented");
-    }
-
-    public CompileSize compileSize() {
-        throw new Error("TODO unimplemented");
     }
 }

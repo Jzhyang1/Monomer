@@ -5,8 +5,12 @@ import systems.monomer.compiler.Assembly.Instruction;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.Assembly.Register;
 import systems.monomer.compiler.AssemblyFile;
+import systems.monomer.compiler.operators.CompileOperatorNode;
 import systems.monomer.interpreter.*;
-import systems.monomer.syntaxtree.operators.GenericOperatorNode;
+import systems.monomer.interpreter.operators.InterpretOperatorNode;
+import systems.monomer.interpreter.values.InterpretBool;
+import systems.monomer.interpreter.values.InterpretCollection;
+import systems.monomer.interpreter.values.InterpretNumber;
 import systems.monomer.types.*;
 
 import java.util.function.BiFunction;
@@ -14,11 +18,11 @@ import java.util.function.Function;
 
 @UtilityClass
 public final class Bitwise {
-    Function<GenericOperatorNode, InterpretValue> differentiatedIntBool(BiFunction<Integer, Integer, Integer> intCallback, BiFunction<Boolean, Boolean, Boolean> boolCallback) {
+    Function<InterpretOperatorNode, InterpretValue> differentiatedIntBool(BiFunction<Integer, Integer, Integer> intCallback, BiFunction<Boolean, Boolean, Boolean> boolCallback) {
         return (self) -> {
-            InterpretResult firstr = self.getFirst().interpretValue();
+            InterpretResult firstr = self.getFirstInterpretNode().interpretValue();
             if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
-            InterpretResult secondr = self.getSecond().interpretValue();
+            InterpretResult secondr = self.getSecondInterpretNode().interpretValue();
             if (!secondr.isValue()) throw self.runtimeError("Second value is not a value");
 
             InterpretValue first = firstr.asValue(), second = secondr.asValue();
@@ -38,9 +42,9 @@ public final class Bitwise {
         };
     }
 
-    Function<GenericOperatorNode, ? extends InterpretResult> oneBool(Function<Boolean, Boolean> callback) {
+    Function<InterpretOperatorNode, ? extends InterpretResult> oneBool(Function<Boolean, Boolean> callback) {
         return (self) -> {
-            InterpretResult firstr = self.getFirst().interpretValue();
+            InterpretResult firstr = self.getFirstInterpretNode().interpretValue();
             if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
             InterpretValue first = firstr.asValue();
 
@@ -51,9 +55,9 @@ public final class Bitwise {
         };
     }
 
-    Function<GenericOperatorNode, ? extends InterpretResult> oneAny(Function<InterpretValue, Boolean> callback) {
+    Function<InterpretOperatorNode, ? extends InterpretResult> oneAny(Function<InterpretValue, Boolean> callback) {
         return (self) -> {
-            InterpretResult firstr = self.getFirst().interpretValue();
+            InterpretResult firstr = self.getFirstInterpretNode().interpretValue();
             if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
             InterpretValue first = firstr.asValue();
 
@@ -61,9 +65,9 @@ public final class Bitwise {
         };
     }
 
-    Function<GenericOperatorNode, ? extends InterpretResult> isTruthy() {
+    Function<InterpretOperatorNode, ? extends InterpretResult> isTruthy() {
         return (self) -> {
-            InterpretResult firstr = self.getFirst().interpretValue();
+            InterpretResult firstr = self.getFirstInterpretNode().interpretValue();
             if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
             InterpretValue first = firstr.asValue();
 
@@ -83,13 +87,13 @@ public final class Bitwise {
         };
     }
 
-    Operand compileBitwiseBinary(AssemblyFile file, GenericOperatorNode self, Instruction instruction) {
-        Operand first = self.getFirst().compileValue(file);
+    Operand compileBitwiseBinary(AssemblyFile file, CompileOperatorNode self, Instruction instruction) {
+        Operand first = self.getFirstCompileNode().compileValue(file);
         //TODO optimize by checking for if possible to store in registers w/o being overwritten
         //TODO check all compileValue functions to make sure that all volatile data is stored
         //TODO all bools will be stored in _X registers, and unused values will be popped before returning
         file.push(first);
-        Operand second = self.getSecond().compileValue(file);
+        Operand second = self.getSecondCompileNode().compileValue(file);
         file.mov(second, Register.AX.toOperand())
                 .pop(Register.BX.toOperand());
 

@@ -3,7 +3,7 @@ package systems.monomer.types;
 import lombok.Getter;
 import org.jetbrains.annotations.NonNls;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.interpreter.InterpretNumber;
+import systems.monomer.interpreter.values.InterpretNumber;
 import systems.monomer.interpreter.InterpretValue;
 
 @Getter

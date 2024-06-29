@@ -1,33 +1,26 @@
 package systems.monomer.syntaxtree.operators;
 
-import systems.monomer.compiler.*;
-import systems.monomer.compiler.Assembly.Operand;
-import systems.monomer.interpreter.*;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.StructureNode;
-import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
 import systems.monomer.variables.FunctionBody;
 import systems.monomer.variables.Key;
 
-import static systems.monomer.compiler.Assembly.Instruction.*;
+import static systems.monomer.syntaxtree.Configuration.create;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static systems.monomer.types.AnyType.ANY;
 
 public class AssignNode extends OperatorNode {
-    private static record FunctionInitInfo(Node identifier, Key function, Node args, StructureNode namedArgs, Node body,
+    protected static record FunctionInitInfo(Node identifier, Key function, Node args, StructureNode namedArgs, Node body,
                                            ModuleNode parent) {
     }
 
-    private FunctionInitInfo functionInit = null;
-    private boolean toLock = true;
+    protected FunctionInitInfo functionInit = null;
+    protected boolean toLock = true;
 
     public AssignNode() {
         super("=");
@@ -90,7 +83,7 @@ public class AssignNode extends OperatorNode {
 
             boolean needTempSignature = overloads.getOverload(tempSignature) == null;
             if (needTempSignature)
-                overloads.putSystemOverload(tempSignature, function);
+                overloads.putInterpretOverload(tempSignature, function);
 
             functionInit.body.matchTypes();
             Type bodyType = functionInit.body.getType();
@@ -98,7 +91,7 @@ public class AssignNode extends OperatorNode {
 //            if(needTempSignature)
 //                overloads.getOverloads().remove(tempSignature, function); //TODO remove placeholder signature used for recursion
             Signature signature = new Signature(bodyType, argsType, namedArgsType);
-            overloads.putSystemOverload(signature, function);
+            overloads.putInterpretOverload(signature, function);
 
             setType(overloads);
         } else {  //normal variable assignment
@@ -148,7 +141,7 @@ public class AssignNode extends OperatorNode {
             Key identifierKey = identifier.getVariableKey();
             assert identifierKey != null;
 
-            ModuleNode wrapper = new ModuleNode("function");
+            ModuleNode wrapper = create().moduleNode("function");
             wrapper.setParent(this);
             for (String fieldName : namedArgsStruct.getFieldNames()) {
                 wrapper.putVariable(fieldName, namedArgsStruct.getVariable(fieldName));
@@ -169,36 +162,21 @@ public class AssignNode extends OperatorNode {
         }
     }
 
-    public InterpretVariable interpretVariable() {
-        return getFirst().interpretVariable();
-    }
-
-    public InterpretResult interpretValue() {
-        if (functionInit == null) {
-            InterpretResult ret = getSecond().interpretValue();
-            if (ret.isValue()) {
-                for (int i = size() - 2; i >= 0; --i)
-                    get(i).interpretAssign(ret.asValue(), toLock);
-            }
-            return ret;
-        }
-        return InterpretTuple.EMPTY;
-    }
-
-    public Operand compileValue(AssemblyFile file) {
-        //TODO switch direction of assignment
-
-        Operand dest = getFirst().compileValue(file);
-        for (int i = 1; i < size(); ++i) {
-            Operand src = get(i).compileValue(file);
-            //TODO non-basic memory types
-            file.add(MOV, src, dest);
-            dest = src;
-        }
-        return dest;
-    }
-
-    public CompileSize compileSize() {
-        throw new Error("TODO unimplemented");
-    }
+//
+//    public Operand compileValue(AssemblyFile file) {
+//        //TODO switch direction of assignment
+//
+//        Operand dest = getFirst().compileValue(file);
+//        for (int i = 1; i < size(); ++i) {
+//            Operand src = get(i).compileValue(file);
+//            //TODO non-basic memory types
+//            file.add(MOV, src, dest);
+//            dest = src;
+//        }
+//        return dest;
+//    }
+//
+//    public CompileSize compileSize() {
+//        throw new Error("TODO unimplemented");
+//    }
 }

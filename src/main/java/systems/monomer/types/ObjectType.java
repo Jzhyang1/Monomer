@@ -2,7 +2,7 @@ package systems.monomer.types;
 
 import lombok.Getter;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.interpreter.InterpretObject;
+import systems.monomer.interpreter.values.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
 
 import java.util.HashMap;

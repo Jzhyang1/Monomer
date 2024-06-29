@@ -1,12 +1,10 @@
 package systems.monomer.syntaxtree.operators;
 
-import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.TypeContext;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
 import systems.monomer.variables.FunctionBody;
-import systems.monomer.variables.OverloadedFunction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +21,7 @@ import static systems.monomer.types.AnyType.ANY;
  * </ol>
  */
 public class CastToFunctionNode extends CastNode {
-    private int functionIndex = -1;
+    protected int functionIndex = -1;
 
     @Override
     public void matchTypes() {
@@ -59,18 +57,6 @@ public class CastToFunctionNode extends CastNode {
                 setType(completedSignature);
             }
         }
-    }
-
-    @Override
-    public InterpretResult interpretValue() {
-        InterpretResult result = getFirst().interpretValue();
-        if(!result.isValue()) return result;
-
-        if(functionIndex < 0) return result;
-        if(result.asValue() instanceof OverloadedFunction overloadedFunction)
-            return overloadedFunction.getFunction(functionIndex);
-
-        throw syntaxError("Expected a function, but got " + result.asValue());
     }
 
     private void orderArgNames(Node node, Set<String> argNames, List<String> orderedArgNames){

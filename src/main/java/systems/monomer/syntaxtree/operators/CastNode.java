@@ -1,13 +1,5 @@
 package systems.monomer.syntaxtree.operators;
 
-import systems.monomer.compiler.Assembly.Operand;
-import systems.monomer.compiler.AssemblyFile;
-import systems.monomer.compiler.CompileSize;
-import systems.monomer.interpreter.InterpretResult;
-import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
-import systems.monomer.types.Type;
-
 import static systems.monomer.types.AnyType.ANY;
 
 /**
@@ -27,18 +19,18 @@ public class CastNode extends OperatorNode {
         if(!getFirst().getType().typeContains(getSecond().getType())) throw syntaxError("Cannot cast " + getFirst().getType() + " to " + getSecond().getType());
     }
 
-    public InterpretVariable interpretVariable() {
-        throw new Error("TODO unimplemented");
-    }
-    public InterpretResult interpretValue() {
-        throw new Error("TODO unimplemented");
-    }
-
-    public Operand compileValue(AssemblyFile file) {
-        throw new Error("TODO unimplemented");
-        //TODO idk how to do this
-    }
-    public CompileSize compileSize() {
-        throw new Error("TODO unimplemented");
-    }
+//    public InterpretVariable interpretVariable() {
+//        throw new Error("TODO unimplemented");
+//    }
+//    public InterpretResult interpretValue() {
+//        throw new Error("TODO unimplemented");
+//    }
+//
+//    public Operand compileValue(AssemblyFile file) {
+//        throw new Error("TODO unimplemented");
+//        //TODO idk how to do this
+//    }
+//    public CompileSize compileSize() {
+//        throw new Error("TODO unimplemented");
+//    }
 }

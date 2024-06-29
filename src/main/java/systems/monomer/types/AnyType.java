@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.errorhandling.ErrorBlock;
-import systems.monomer.interpreter.InterpretObject;
+import systems.monomer.interpreter.values.InterpretObject;
 import systems.monomer.interpreter.InterpretValue;
 
 @Getter @Setter

@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.errorhandling.Index;
 import systems.monomer.syntaxtree.*;
-import systems.monomer.syntaxtree.controls.*;
 import systems.monomer.syntaxtree.literals.*;
 import systems.monomer.syntaxtree.operators.*;
 
@@ -13,6 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static systems.monomer.syntaxtree.literals.TupleNode.isTuple;
+import static systems.monomer.syntaxtree.Configuration.create;
 
 //sub_ are helpers for partial_
 
@@ -40,19 +40,19 @@ public class Token extends ErrorBlock {
         Node opChildrenNode = suffixGroup.toNode();
 
         Node opNode = switch (suffixGroup.value) {
-            case "()" -> new CallNode().with(cur).with(opChildrenNode);
-            case "[]" -> new IndexNode().with(cur).with(opChildrenNode.get(0));
+            case "()" -> create().callNode().with(cur).with(opChildrenNode);
+            case "[]" -> create().indexNode().with(cur).with(opChildrenNode.get(0));
             case "{}" -> {
                 Token peekToken = iter.next();
                 if(peekToken.usage == Usage.GROUP && "()".equals(peekToken.value)) {
-                    yield new CallNode()
+                    yield create().callNode()
                             .with(cur)
                             .with(peekToken.toNode())
                             .with(opChildrenNode);
                 }
                 else {
                     iter.previous();
-                    yield new FieldNode().with(cur).with(opChildrenNode);
+                    yield create().fieldNode().with(cur).with(opChildrenNode);
                 }
             }
             default -> throw suffixGroup.syntaxError("Expected (), {}, or []");
@@ -62,11 +62,11 @@ public class Token extends ErrorBlock {
 
     private Node groupToNode(String paren) {
         return switch (paren) {
-            case "()", "block" -> new TupleNode();
-            case "[]" -> new ListNode();
-            case "{}" -> new StructureNode();
-            case "[)" -> null;  //TODO
-            case "(]" -> null;  //TODO
+            case "()", "block" -> create().tupleNode();
+            case "[]" -> create().listNode();
+            case "{}" -> create().structureNode();
+            case "[)" -> create().rangeNode(true, false);
+            case "(]" -> create().rangeNode(false, true);
             default -> throw syntaxError("Invalid group type " + paren);
         };
     }
@@ -84,7 +84,8 @@ public class Token extends ErrorBlock {
         return switch (nextOp.usage) {
             case IDENTIFIER ->
                 partialToNode(
-                        new FieldNode(cur, nextOp.toNode())
+                        create().fieldNode()
+                                .with(cur).with(nextOp.toNode())
                                 .with(cur.getStart(), nextOp.getStop(), cur.getSource()),
                         iter);
             case GROUP -> partialToNode(subGroupSuffixToNode(cur, nextOp, iter), iter);
@@ -105,7 +106,7 @@ public class Token extends ErrorBlock {
         Node part;
 
         if (endAtColon && token.usage == Usage.OPERATOR && ":".equals(token.value)) {
-            part = new BoolNode(true);
+            part = create().boolNode(true);
         }
         else {
             part = partialOperatorToNode(control, token, iter, stopAt);
@@ -193,7 +194,7 @@ public class Token extends ErrorBlock {
         //check if condition operation
         if(Operator.isPrimaryControl(op.value)) {
             assert cur == null;
-            cur = new ControlGroupNode().with(partialControlToNode(op, iter));
+            cur = create().controlGroupNode().with(partialControlToNode(op, iter));
 
             //TODO ugly
             if(!iter.hasNext()) return cur;
@@ -272,17 +273,17 @@ public class Token extends ErrorBlock {
 
     public Node toNode() {
         return (switch (usage) {
-            case STRING_BUILDER ->
-                (children == null) ? StringNode.EMPTY :
-                (children.size() == 1 && children.get(0).usage == Usage.STRING) ? children.get(0).toNode() :
-                        new StringBuilderNode(children.stream().map(Token::toNode).collect(Collectors.toList()));
-
-            case STRING -> new StringNode(value);
-            case CHARACTER -> new CharNode(value.charAt(0));
-            case CHARACTER_FROM_INT -> new CharNode((char) Integer.parseInt(value));
-            case INTEGER -> new IntNode(Integer.valueOf(value));
-            case FLOAT ->  new FloatNode(Double.valueOf(value));
-            case IDENTIFIER -> new VariableNode(value);
+            case STRING_BUILDER -> {
+                if (children == null) yield  StringNode.EMPTY;
+                if (children.size() == 1 && children.get(0).usage == Usage.STRING) yield children.get(0).toNode();
+                yield create().stringBuilderNode(children.stream().map(Token::toNode).collect(Collectors.toList()));
+            }
+            case STRING -> create().stringNode(value);
+            case CHARACTER -> create().charNode(value.charAt(0));
+            case CHARACTER_FROM_INT -> create().charNode((char) Integer.parseInt(value));
+            case INTEGER -> create().intNode(Integer.valueOf(value));
+            case FLOAT ->  create().floatNode(Double.valueOf(value));
+            case IDENTIFIER -> create().variableNode(value);
             case OPERATOR -> Operator.getOperator(value);
             case GROUP -> {
                 Node node = groupToNode(value);
@@ -302,10 +303,10 @@ public class Token extends ErrorBlock {
 
                 if(OperatorNode.isOperator(cur, "...")) { //also make sure it's range, not spread
                     node = switch (value) {
-                        case "()" -> new RangeNode(false, false);
-                        case "[)" -> new RangeNode(true, false);
-                        case "(]" -> new RangeNode(false, true);
-                        case "[]" -> new RangeNode(true, true);
+                        case "()" -> create().rangeNode(false, false);
+                        case "[)" -> create().rangeNode(true, false);
+                        case "(]" -> create().rangeNode(false, true);
+                        case "[]" -> create().rangeNode(true, true);
                         default -> throw syntaxError("Invalid range braces " + value);
                     };
                     yield node.with(cur.getChildren()); //.with(cur.getContext());

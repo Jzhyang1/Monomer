@@ -2,15 +2,7 @@ package systems.monomer.syntaxtree.operators;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import systems.monomer.compiler.Assembly.Operand;
-import systems.monomer.compiler.AssemblyFile;
-import systems.monomer.compiler.CompileSize;
-import systems.monomer.errorhandling.UnimplementedError;
-import systems.monomer.interpreter.InterpretResult;
-import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.types.ObjectType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.FieldKey;
@@ -18,10 +10,11 @@ import systems.monomer.variables.Key;
 
 import static systems.monomer.types.AnyType.ANY;
 
-public final class FieldNode extends OperatorNode {
+public class FieldNode extends OperatorNode {
     @Getter
-    private @Nullable FieldKey variableKey;
-    private String fieldName = null;
+    protected @Nullable FieldKey variableKey;
+    protected String fieldName = null;
+
 
     public FieldNode(){
         super("field");
@@ -74,42 +67,5 @@ public final class FieldNode extends OperatorNode {
         assert variableKey != null;
 
         variableKey.setType(type);
-    }
-
-    public InterpretVariable interpretVariable() {
-        return variableKey;
-    }
-    public InterpretValue interpretValue() {
-        if(variableKey == null) {
-            InterpretResult first = getFirst().interpretValue();
-            if(!first.isValue()) {
-                throw syntaxError("Attempting to access " + fieldName + " as a variable");
-            }
-            return first.asValue().get(fieldName);
-        }
-        else
-            return variableKey.getValue();
-    }
-
-    @Override
-    public void compileVariables(AssemblyFile file) {
-        getFirst().compileVariables(file);
-    }
-
-    public Operand compileValue(AssemblyFile file) {
-        if(variableKey == null) {
-            Node first = getFirst();
-            Type firstType = first.getType();
-            Operand firstLoc = first.compileValue(file);
-            return new Operand(Operand.Type.MEMORY,
-                    firstLoc.register,
-                    firstLoc.offset + firstType.getFieldOffset(fieldName),
-                    0);
-        }
-        else
-            return variableKey.getAddress();
-    }
-    public CompileSize compileSize() {
-        throw new UnimplementedError();
     }
 }

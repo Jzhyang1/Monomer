@@ -1,11 +1,9 @@
 package systems.monomer.commandline;
 
 import systems.monomer.Constants;
-import systems.monomer.commandline.EnvironmentDefaults.ConvertDefaults;
-import systems.monomer.commandline.EnvironmentDefaults.FileDefaults;
-import systems.monomer.commandline.EnvironmentDefaults.TypeDefaults;
-import systems.monomer.commandline.EnvironmentDefaults.ValueDefaults;
-import systems.monomer.syntaxtree.ModuleNode;
+import systems.monomer.commandline.EnvironmentDefaults.*;
+import systems.monomer.interpreter.InterpretModuleNode;
+import systems.monomer.syntaxtree.Configuration;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.SourceFile;
@@ -17,9 +15,11 @@ import java.io.*;
 
 public class Interpret {
     public static void interpret(Source source, boolean defaults, InputStream input, OutputStream output) {
+        Configuration.setAction(Configuration.INTERPRET);
+
         Token body = source.parse();
         Node node = body.toNode();
-        Node global = new ModuleNode(source.getTitle());
+        InterpretModuleNode global = (InterpretModuleNode) Configuration.create().moduleNode(source.getTitle());
 
         //global constants here
         if(defaults) {

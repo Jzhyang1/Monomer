@@ -1,7 +1,7 @@
 package systems.monomer.commandline.EnvironmentDefaults;
 
 import lombok.experimental.UtilityClass;
-import systems.monomer.interpreter.InterpretBool;
+import systems.monomer.interpreter.values.InterpretBool;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.variables.VariableKey;
 

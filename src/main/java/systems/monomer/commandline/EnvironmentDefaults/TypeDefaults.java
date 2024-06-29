@@ -1,10 +1,10 @@
 package systems.monomer.commandline.EnvironmentDefaults;
 
 import lombok.experimental.UtilityClass;
-import systems.monomer.interpreter.InterpretBool;
-import systems.monomer.interpreter.InterpretChar;
-import systems.monomer.interpreter.InterpretNumber;
-import systems.monomer.interpreter.InterpretString;
+import systems.monomer.interpreter.values.InterpretBool;
+import systems.monomer.interpreter.values.InterpretChar;
+import systems.monomer.interpreter.values.InterpretNumber;
+import systems.monomer.interpreter.values.InterpretString;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.CharType;
 import systems.monomer.types.StringType;

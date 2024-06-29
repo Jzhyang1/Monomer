@@ -3,7 +3,6 @@ package systems.monomer.variables;
 import lombok.Getter;
 import lombok.Setter;
 import systems.monomer.compiler.Assembly.Operand;
-import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;

@@ -12,10 +12,11 @@ import systems.monomer.compiler.Assembly.Operand;
 import static systems.monomer.compiler.Assembly.Register.*;
 
 import systems.monomer.compiler.AssemblyFile;
+import systems.monomer.compiler.operators.CompileOperatorNode;
 import systems.monomer.interpreter.*;
+import systems.monomer.interpreter.operators.InterpretOperatorNode;
+import systems.monomer.interpreter.values.*;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.controls.*;
-import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.syntaxtree.operators.*;
 import systems.monomer.types.*;
 import systems.monomer.util.Pair;
@@ -28,6 +29,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static systems.monomer.errorhandling.ErrorBlock.programError;
+import static systems.monomer.syntaxtree.Configuration.create;
 import static systems.monomer.tokenizer.Arithmetic.*;
 import static systems.monomer.tokenizer.Bitwise.*;
 import static systems.monomer.tokenizer.Lists.*;
@@ -61,14 +63,29 @@ public final class Operator {
         operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, constructor));
     }
 
-    private static void putData(String symbol, int prec, int info, BiFunction<GenericOperatorNode, AssemblyFile, Operand> compile, Function<GenericOperatorNode, ? extends InterpretResult> interpret, Function<OperatorNode, Type> type) {
-        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, () -> new GenericOperatorNode(symbol, interpret, compile, type)));
+    private static void putData(String symbol, int prec, int info,
+                                BiFunction<CompileOperatorNode, AssemblyFile, Operand> compile,
+                                Function<InterpretOperatorNode, ? extends InterpretResult> interpret,
+                                Function<OperatorNode, Type> type) {
+        Node node = create().genericOperatorNode(symbol, type);
+        Supplier<Node> constructor = switch(create().getType()){
+            case DOC -> null;
+            case COMPILE -> () -> {
+                ((CompileOperatorNode) node).setCompileGenerator(compile);
+                return node;
+            };
+            case INTERPRET -> () -> {
+                ((InterpretOperatorNode) node).setInterpretGenerator(interpret);
+                return node;
+            };
+        };
+        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, constructor));
     }
 
     /**
      * Arithmetic operators inhabit the precedence range 1000-1200
      */
-    @SuppressWarnings({"FeatureEnvy", "OverlyLongMethod"})
+    @SuppressWarnings("FeatureEnvy")
     private static void initArithmetic() {
         putData("+", 1050, PREFIX | BINARY, ArithmeticAssembly::addOrPos, numericalChecked(differentiatedIntFloat((a)->+a, (b)->+b), differentiatedIntFloat((a, b) -> a + b, (a, b) -> a + b)), Arithmetic::typeFor);
         putData("-", 1050, PREFIX | BINARY, ArithmeticAssembly::subOrNeg, numericalChecked(differentiatedIntFloat((a)->-a, (b)->-b), differentiatedIntFloat((a, b) -> a - b, (a, b) -> a - b)), Arithmetic::typeFor);
@@ -117,17 +134,17 @@ public final class Operator {
     /**
      * Bitwise operators inhabit the precedence range 700-900
      */
-    @SuppressWarnings({"FeatureEnvy"})
+    @SuppressWarnings("FeatureEnvy")
     private static void initBitwise() {
         //TODO replace (self) -> BoolType.BOOL with a named function that also handles non-bool
         putData("!", 860, PREFIX, (self, file) -> {
-            Operand first = self.getFirst().compileValue(file);
+            Operand first = self.getFirstCompileNode().compileValue(file);
             file.add(MOV, first, AX.toOperand())
                     .add(NOT, null, AX.toOperand());
             return AX.toOperand();
         }, oneBool((a) -> !a), (self) -> BoolType.BOOL);
         putData("?", 860, PREFIX, (self, file) -> {
-            Operand first = self.getFirst().compileValue(file);
+            Operand first = self.getFirstCompileNode().compileValue(file);
             file.add(MOV, first, AX.toOperand());
             return AX.toOperand();
         }, isTruthy(), (self) -> BoolType.BOOL);
@@ -157,10 +174,10 @@ public final class Operator {
     @SuppressWarnings({"FeatureEnvy"})
     private static void initComparison() {
         putData("==", 550, BINARY | CHAINED, (self, file) -> {
-            Operand first = self.getFirst().compileValue(file);
+            Operand first = self.getFirstCompileNode().compileValue(file);
             file.push(RDX.toOperand())
                     .mov(first, RDX.toOperand());
-            Operand second = self.getSecond().compileValue(file);
+            Operand second = self.getSecondCompileNode().compileValue(file);
             file.mov(second, RAX.toOperand());
             //TODO optimize with CMP
             file.add(ISUB, RAX.toOperand(), RDX.toOperand())
@@ -169,10 +186,10 @@ public final class Operator {
             return RAX.toOperand();
         }, Comparison.chained(Objects::equals), (self) -> BoolType.BOOL);
         putData("!=", 550, BINARY | CHAINED, (self, file) -> {
-            Operand first = self.getFirst().compileValue(file);
+            Operand first = self.getFirstCompileNode().compileValue(file);
             file.push(RDX.toOperand())
                     .mov(first, RDX.toOperand());
-            Operand second = self.getSecond().compileValue(file);
+            Operand second = self.getSecondCompileNode().compileValue(file);
             file.mov(second, RAX.toOperand());
             //TODO optimize with CMP
             file.add(ISUB, RAX.toOperand(), RDX.toOperand())
@@ -216,8 +233,8 @@ public final class Operator {
                 (self) -> self.getFirst().getType()); //TODO fix
         putData("...", 440, PREFIX | BINARY,
                 (self, file) -> null,   //TODO
-                (self) -> self.size() == 1 ? new InterpretSequence(((InterpretCollection)self.getFirst().interpretValue().asValue()).getValues()) : new InterpretRanges(self.getFirst().interpretValue().asValue(), self.getSecond().interpretValue().asValue(), new InterpretNumber<>(1)),
-                (self) -> self.size() == 1 ? new SequenceType(((InterpretCollection)self.getFirst().interpretValue().asValue()).getElementType()) : new InterpretRanges(self.getFirst().getType())
+                (self) -> self.size() == 1 ? new InterpretSequence(((InterpretCollection)self.getFirstInterpretNode().interpretValue().asValue()).getValues()) : new InterpretRanges(self.getFirstInterpretNode().interpretValue().asValue(), self.getSecondInterpretNode().interpretValue().asValue(), new InterpretNumber<>(1)),
+                (self) -> self.size() == 1 ? new SequenceType(((CollectionType)self.getFirst().getType()).getElementType()) : new InterpretRanges(self.getFirst().getType())
         );    //TODO fix and clean
         putData("in", 420, BINARY,
                 (self, file) -> null,
@@ -236,38 +253,38 @@ public final class Operator {
      */
     @SuppressWarnings({"FeatureEnvy"})
     private static void initControl() {
-        putData("if", -20, PRIMARY_CONTROL, IfNode::new);
-        putData("repeat", -20, PRIMARY_CONTROL, RepeatNode::new);
-        putData("while", -20, PRIMARY_CONTROL, WhileNode::new);
-        putData("for", -20, PRIMARY_CONTROL, ForNode::new);
-        putData("else", -20, SECONDARY_CONTROL, ElseNode::new);
-        putData("any", -20, SECONDARY_CONTROL, AnyNode::new);
-        putData("all", -20, SECONDARY_CONTROL, AllNode::new);
-        putData("break", -10, PREFIX | SUFFIX,
+        putData("if",       -20, PRIMARY_CONTROL,   create()::ifNode);
+        putData("repeat",   -20, PRIMARY_CONTROL,   create()::repeatNode);
+        putData("while",    -20, PRIMARY_CONTROL,   create()::whileNode);
+        putData("for",      -20, PRIMARY_CONTROL,   create()::forNode);
+        putData("else",     -20, SECONDARY_CONTROL, create()::elseNode);
+        putData("any",      -20, SECONDARY_CONTROL, create()::anyNode);
+        putData("all",      -20, SECONDARY_CONTROL, create()::allNode);
+        putData("break",    -10, PREFIX | SUFFIX,
                 (self, file) -> null,
                 (self) -> new InterpretBreaking("break",
                         self.size() == 0 ?
                                 InterpretTuple.EMPTY :
-                                self.getFirst().interpretValue().asValue()),
+                                self.getFirstInterpretNode().interpretValue().asValue()),
                 (self)->null);
         putData("continue", -10, PREFIX | SUFFIX,
                 (self, file) -> null,
                 (self) -> new InterpretBreaking("continue",
                         self.size() == 0 ?
                                 InterpretTuple.EMPTY :
-                                self.getFirst().interpretValue().asValue()),
+                                self.getFirstInterpretNode().interpretValue().asValue()),
                 (self)->null);
         putData("return", -10, PREFIX | SUFFIX,
                 (self, file) -> null,
                 (self) -> new InterpretBreaking("return",
                         self.size() == 0 ?
                                 InterpretTuple.EMPTY :
-                                self.getFirst().interpretValue().asValue()),
+                                self.getFirstInterpretNode().interpretValue().asValue()),
                 (self)->null);
     }
 
     static {
-        putData("=", 0, BINARY | CHAINED | ASSIGN, AssignNode::new);
+        putData("=", 0, BINARY | CHAINED | ASSIGN, create()::assignNode);
 //        putData("+=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
 //        putData("-=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
 //        putData("*=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
@@ -276,15 +293,16 @@ public final class Operator {
 //        putData("&=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
 //        putData("|=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
 //        putData("^=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
-        putData(",", 100, BINARY | CHAINED | SUFFIX, () -> new TupleNode(","));
-        putData(";", -1000, BINARY | CHAINED | SUFFIX, () -> new TupleNode(";"));
-        putData(":", 1500, 150, BINARY, AssertTypeNode::new);
-        putData("as", 5, BINARY, ConvertNode::new);
+        putData(",", 100, BINARY | CHAINED | SUFFIX, create()::tupleNode);
+        putData(";", -1000, BINARY | CHAINED | SUFFIX, create()::linesNode);
+        putData(":", 1500, 150, BINARY, create()::assertTypeNode);
+        putData("as", 5, BINARY, create()::convertNode);
+        putData("to", 5, BINARY, create()::castNode);
         putData("@", 5000, PREFIX, (self, file) -> {
             //TODO
             return null;
         }, (self) -> {
-            InterpretValue first = self.getFirst().interpretValue().asValue();
+            InterpretValue first = self.getFirstInterpretNode().interpretValue().asValue();
             try {
                 Constants.getOut().write(first.valueString().getBytes());
                 Constants.getOut().write('\n');
@@ -294,8 +312,8 @@ public final class Operator {
             }
             return first;
         }, (self) -> self.getFirst().getType());
-        putData("with", -5, PREFIX, () -> new WithThenNode("with"));
-        putData("then", -5, PREFIX, () -> new WithThenNode("then"));
+        putData("with", -5, PREFIX, create()::withNode);
+        putData("then", -5, PREFIX, create()::thenNode);
 
         initComparison();
         initBitwise();

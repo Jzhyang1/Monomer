@@ -1,16 +1,15 @@
 package systems.monomer.tokenizer;
 
-import systems.monomer.interpreter.InterpretCollection;
+import systems.monomer.interpreter.InterpretNode;
+import systems.monomer.interpreter.operators.InterpretOperatorNode;
+import systems.monomer.interpreter.values.InterpretCollection;
 import systems.monomer.interpreter.InterpretResult;
-import systems.monomer.interpreter.InterpretString;
+import systems.monomer.interpreter.values.InterpretString;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.operators.GenericOperatorNode;
 import systems.monomer.types.StringType;
 import systems.monomer.types.Type;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -21,13 +20,13 @@ public final class Lists {
      * @param callback
      * @return
      */
-    public static Function<GenericOperatorNode, InterpretResult> binaryCollectionChecked(
+    public static Function<InterpretOperatorNode, InterpretResult> binaryCollectionChecked(
             boolean firstCollection, boolean secondCollection,
             BiFunction<InterpretValue, InterpretValue, InterpretValue> callback
     ) {
         return (self) -> {
-            InterpretResult first = self.getFirst().interpretValue(); if(!first.isValue()) return first;
-            InterpretResult second = self.getSecond().interpretValue(); if(!second.isValue()) return second;
+            InterpretResult first = self.getFirstInterpretNode().interpretValue(); if(!first.isValue()) return first;
+            InterpretResult second = self.getSecondInterpretNode().interpretValue(); if(!second.isValue()) return second;
 
             InterpretValue firstValue = first.asValue();
             InterpretValue secondValue = second.asValue();
@@ -43,10 +42,10 @@ public final class Lists {
         };
     }
 
-    public static Function<GenericOperatorNode, InterpretResult> listChecked(Function<List<? extends InterpretCollection>, InterpretValue> callback) {
+    public static Function<InterpretOperatorNode, InterpretResult> listChecked(Function<List<? extends InterpretCollection>, InterpretValue> callback) {
         return (self) -> {
             List<InterpretCollection> values = new ArrayList<>();
-            for (Node node : self.getChildren()) {
+            for (InterpretNode node : self.getChildrenInterpretNodes()) {
                 InterpretResult result = node.interpretValue();
                 if(!result.isValue()) throw self.runtimeError("returning from an operation");
 
@@ -61,13 +60,14 @@ public final class Lists {
             return callback.apply(values);
         };
     }
-    public static Function<GenericOperatorNode, InterpretResult> listStringChecked(Function<List<? extends InterpretCollection>, InterpretValue> callbackCollection, Function<List<? extends InterpretString>, InterpretValue> callbackString) {
+    public static Function<InterpretOperatorNode, InterpretResult> listStringChecked(Function<List<? extends InterpretCollection>, InterpretValue> callbackCollection, Function<List<? extends InterpretString>, InterpretValue> callbackString) {
         return (self) -> {
-            List<Node> children = self.getChildren();
-            Type type = children.get(0).getType();
+            List<InterpretNode> children = self.getChildrenInterpretNodes();
+            Type type = self.get(0).getType();
+
             if(type.equals(StringType.STRING)) {
                 List<InterpretString> values = new ArrayList<>();
-                for (Node node : children) {
+                for (InterpretNode node : children) {
                     InterpretResult result = node.interpretValue();
                     if(!result.isValue()) throw self.runtimeError("returning from an operation");
 
@@ -82,7 +82,7 @@ public final class Lists {
             }
             else {
                 List<InterpretCollection> values = new ArrayList<>();
-                for (Node node : children) {
+                for (InterpretNode node : children) {
                     InterpretResult result = node.interpretValue();
                     if(!result.isValue()) throw self.runtimeError("returning from an operation");
 

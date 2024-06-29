@@ -3,8 +3,11 @@ package systems.monomer.variables;
 import systems.monomer.Constants;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
-import systems.monomer.interpreter.InterpretObject;
-import systems.monomer.interpreter.InterpretTuple;
+import systems.monomer.interpreter.InterpretNode;
+import systems.monomer.interpreter.literals.InterpretStructureNode;
+import systems.monomer.interpreter.literals.InterpretTupleNode;
+import systems.monomer.interpreter.values.InterpretObject;
+import systems.monomer.interpreter.values.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
@@ -22,7 +25,6 @@ import systems.monomer.util.PairList;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.stream.IntStream;
 
 public class FunctionBody extends Signature implements InterpretValue {
@@ -41,29 +43,6 @@ public class FunctionBody extends Signature implements InterpretValue {
         this.body = body;
         this.parent = parent;
     }
-
-//    public FunctionBody(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {
-//        super(null, null);
-//
-//        List<VariableNode> args = IntStream.range(0, argTypes.size())
-//                .mapToObj(i -> {
-//                    VariableNode ret = new VariableNode("arg"+i);
-//                    ret.setType(argTypes.get(i));
-//                    return ret;
-//                })
-//                .collect(Collectors.toList());
-//        Node body = bodyCallback.apply(args);
-//        Node argsTuple = args.size() == 1 ? args.get(0) : new TupleNode(args);
-//
-//        ModuleNode wrapper = new ModuleNode("function");
-//        wrapper.with(argsTuple).with(body).matchVariables();
-//        wrapper.matchTypes();
-//
-//        this.args = new TupleNode(args);
-//        this.namedArgs = StructureNode.EMPTY;
-//        this.body = body;
-//        this.parent = wrapper;
-//    }
 
     @Override
     public Type getReturnType() {
@@ -102,7 +81,7 @@ public class FunctionBody extends Signature implements InterpretValue {
         if(optimized) parent.getVariables().clear();
         else recursiveSlices.push(parent.getVariableValuesMap());
 
-        this.namedArgs.interpretValue();    //TODO optimize to not have to interpret everything
+        ((InterpretStructureNode) this.namedArgs).interpretValue();
         InterpretObject namedArgsObj = (InterpretObject)namedArgs;
         for(Map.Entry<String, Type> entry : namedArgsObj.getFields().entrySet()) {
             InterpretValue val = (InterpretValue) entry.getValue();
@@ -111,9 +90,11 @@ public class FunctionBody extends Signature implements InterpretValue {
 
         InterpretTuple argsTuple = InterpretTuple.toTuple(args);
         //InterpretTuple paramTuple = new InterpretTuple(this.args.getChildren().stream().map(Node::interpretVariable).toList());
-        this.args.interpretAssign(argsTuple, true);
+        ((InterpretTupleNode)this.args).interpretAssign(argsTuple, true);
 
-        InterpretValue ret = body.interpretValue().asValue();
+        assert body instanceof InterpretNode;
+
+        InterpretValue ret = ((InterpretNode) body).interpretValue().asValue();
         if(!optimized) parent.setVariableValues(recursiveSlices.pop());
         return ret;
     }

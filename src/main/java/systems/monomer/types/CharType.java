@@ -1,6 +1,6 @@
 package systems.monomer.types;
 
-import systems.monomer.interpreter.InterpretChar;
+import systems.monomer.interpreter.values.InterpretChar;
 import systems.monomer.interpreter.InterpretValue;
 
 public class CharType extends AnyType {

@@ -1952,7 +1952,7 @@
     <inspection_tool class="MethodOverridesStaticMethod" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MethodRefCanBeReplacedWithLambda" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="MethodReturnAlwaysConstant" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="MethodWithMultipleLoops" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MethodWithMultipleLoops" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MicronautDataMethodInconsistency" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="MicronautDataRepositoryMethodParameters" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MicronautDataRepositoryMethodReturnType" enabled="true" level="WARNING" enabled_by_default="true" />

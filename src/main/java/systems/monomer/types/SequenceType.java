@@ -1,6 +1,6 @@
 package systems.monomer.types;
 
-import systems.monomer.interpreter.InterpretSequence;
+import systems.monomer.interpreter.values.InterpretSequence;
 import systems.monomer.interpreter.InterpretValue;
 
 public class SequenceType extends CollectionType {

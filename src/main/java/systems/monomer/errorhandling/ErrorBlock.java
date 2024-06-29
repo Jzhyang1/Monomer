@@ -9,19 +9,19 @@ import java.util.List;
 @Getter
 public class ErrorBlock {
     public static class SyntaxErrorException extends RuntimeException {
-        public SyntaxErrorException(String message) {
+        SyntaxErrorException(String message) {
             super(message);
         }
     }
 
     public static class RuntimeErrorException extends RuntimeException {
-        public RuntimeErrorException(String message) {
+        RuntimeErrorException(String message) {
             super(message);
         }
     }
 
     public static class ProgramErrorException extends RuntimeException {
-        public ProgramErrorException(String message) {
+        ProgramErrorException(String message) {
             super(message);
         }
     }

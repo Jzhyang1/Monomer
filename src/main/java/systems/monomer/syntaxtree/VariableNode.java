@@ -1,20 +1,14 @@
 package systems.monomer.syntaxtree;
 
 import lombok.Getter;
-import systems.monomer.compiler.Assembly.Operand;
-import systems.monomer.compiler.AssemblyFile;
-import systems.monomer.compiler.CompileSize;
-import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
-import static systems.monomer.compiler.Assembly.Register.EBP;
 import static systems.monomer.types.AnyType.ANY;
 
 @Getter
 public class VariableNode extends Node {
-    private VariableKey variableKey = null;
+    protected VariableKey variableKey = null;
 
     public VariableNode(String name) {
         super(name);
@@ -54,39 +48,5 @@ public class VariableNode extends Node {
         if (variableKey == null) variableKey = new VariableKey();
 
         variableKey.setType(type);
-    }
-
-    public InterpretVariable interpretVariable() {
-        return variableKey;
-    }
-
-    public InterpretValue interpretValue() {
-        return variableKey.getValue();
-    }
-
-    @Override
-    public void compileVariables(AssemblyFile file) {
-        if(variableKey.getAddress() != null) return;
-        if (variableKey.getType().isConstant())
-            variableKey.setAddress(new Operand(
-                    Operand.Type.MEMORY,
-                    EBP,
-                    file.incrementStackPosition(compileSize().getConstantSize()),
-                    0));
-        else
-            variableKey.setAddress(new Operand(
-                    Operand.Type.MEMORY_OF_POINTER,
-                    EBP,
-                    file.incrementStackPosition(Operand.SIZE_POINTER_SIZE),
-                    0));
-    }
-
-    public Operand compileValue(AssemblyFile file) {
-//        System.out.println("compiling variable " + getName() + " with address " + variableKey.getAddress(file));
-        return variableKey.getAddress();
-    }
-
-    public CompileSize compileSize() {
-        return variableKey.compileSize();
     }
 }

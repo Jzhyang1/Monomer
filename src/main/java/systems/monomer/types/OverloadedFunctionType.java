@@ -4,13 +4,10 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.compiler.CompileSize;
+import systems.monomer.syntaxtree.*;
 import systems.monomer.variables.FunctionBody;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.ModuleNode;
-import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.StructureNode;
-import systems.monomer.syntaxtree.VariableNode;
-import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.util.Pair;
 import systems.monomer.util.PairList;
 import systems.monomer.variables.OverloadedFunction;
@@ -22,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static systems.monomer.compiler.Assembly.Operand.POINTER_SIZE;
+import static systems.monomer.syntaxtree.Configuration.create;
 
 @Getter
 public class OverloadedFunctionType extends AnyType {
@@ -37,7 +35,7 @@ public class OverloadedFunctionType extends AnyType {
         int index = randomAccessIndex(signature);
         return index == -1 ? null : overloads.get(index).getSecond();
     }
-    public void putSystemOverload(Signature signature, FunctionBody function) {
+    public void putInterpretOverload(Signature signature, FunctionBody function) {
         overloads.add(signature, function);
 
         //These handle unknown return types and unknown argument types
@@ -49,56 +47,28 @@ public class OverloadedFunctionType extends AnyType {
 //            overloads.put(new Signature(AnyType.ANY, AnyType.ANY), function);
     }
 
-    public void putSystemOverload(Node args, StructureNode namedArgs, Node body, ModuleNode wrapper) {
-        putSystemOverload(new Signature(body.getType(), args.getType(), namedArgs.getType()), new FunctionBody(args, namedArgs, body, wrapper));
+    public void putTypeOverload(List<Type> args, Type ret) {
+
     }
 
-    public void putSystemOverload(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {
+    public void putInterpretOverload(Node args, StructureNode namedArgs, Node body, ModuleNode wrapper) {
+        putInterpretOverload(new Signature(body.getType(), args.getType(), namedArgs.getType()), new FunctionBody(args, namedArgs, body, wrapper));
+    }
+
+    public void putInterpretOverload(List<Type> argTypes, Function<List<VariableNode>, Node> bodyCallback) {
         List<VariableNode> args = IntStream.range(0, argTypes.size())
-                .mapToObj(i -> {
-                    VariableNode ret = new VariableNode("arg"+i);
-                    ret.setType(argTypes.get(i));
-                    return ret;
-                })
+                .mapToObj(i ->
+                        (VariableNode)create().variableNode("arg"+i).with(argTypes.get(i))
+                )
                 .collect(Collectors.toList());
         Node body = bodyCallback.apply(args);
-        Node argsTuple = args.size() == 1 ? args.get(0) : new TupleNode(args);
+        Node argsTuple = args.size() == 1 ? args.get(0) : create().tupleNode(args);
 
-        ModuleNode wrapper = new ModuleNode("function");
+        ModuleNode wrapper = create().moduleNode("function");
         wrapper.with(argsTuple).with(body).matchVariables();
         wrapper.matchTypes();
 
-        putSystemOverload(argsTuple, StructureNode.EMPTY, body, wrapper);
-    }
-
-    public void putSystemOverload(List<Type> argTypes,
-                                  List<Pair<String, Type>> names,
-                                  BiFunction<List<VariableNode>, List<VariableNode>, Node> bodyCallback) {
-        List<VariableNode> args = IntStream.range(0, argTypes.size())
-                .mapToObj(i -> {
-                    VariableNode ret = new VariableNode("arg"+i);
-                    ret.setType(argTypes.get(i));
-                    return ret;
-                })
-                .toList();
-        List<VariableNode> namedArgs = names.stream()
-                .map(pair -> {
-                    VariableNode ret = new VariableNode(pair.getFirst());
-                    ret.setType(pair.getSecond());
-                    return ret;
-                })
-                .toList();
-        Node body = bodyCallback.apply(args, namedArgs);
-        Node argsTuple = args.size() == 1 ? args.get(0) : new TupleNode(args);
-        StructureNode namedArgsStructure = new StructureNode(); namedArgsStructure.addAll(namedArgs);
-
-        ModuleNode wrapper = new ModuleNode("function");
-        for(String fieldName : namedArgsStructure.getFieldNames())
-            wrapper.putVariable(fieldName, namedArgsStructure.getVariable(fieldName));
-        wrapper.with(argsTuple).with(namedArgsStructure).with(body).matchVariables();
-        wrapper.matchTypes();
-
-        putSystemOverload(argsTuple, namedArgsStructure, body, wrapper);
+        putInterpretOverload(argsTuple, StructureNode.EMPTY, body, wrapper);
     }
 
     /**

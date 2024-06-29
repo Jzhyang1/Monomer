@@ -1,7 +1,7 @@
 package systems.monomer.types;
 
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.interpreter.InterpretBool;
+import systems.monomer.interpreter.values.InterpretBool;
 import systems.monomer.interpreter.InterpretValue;
 
 public class BoolType extends AnyType {

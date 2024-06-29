@@ -5,6 +5,8 @@ import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.interpreter.*;
+import systems.monomer.interpreter.values.InterpretIO;
+import systems.monomer.interpreter.values.InterpretURI;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.LiteralNode;
 import systems.monomer.types.OverloadedFunctionType;
@@ -15,8 +17,8 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Function;
 
-import static systems.monomer.interpreter.IOType.STDIO;
-import static systems.monomer.interpreter.InterpretURI.URI;
+import static systems.monomer.interpreter.values.InterpretURI.URI;
+import static systems.monomer.syntaxtree.Configuration.create;
 import static systems.monomer.types.StringType.STRING;
 
 @UtilityClass
@@ -34,13 +36,14 @@ public class ConvertDefaults {
         putConvert(overload, URI, STDIO, (value) -> {
             File uri = ((InterpretURI) value).getUri();
             assert uri != null;
-            return (new IOType(uri)).defaultValue();   //TODO looks weird
+            return new InterpretIO(uri);
         });
     }
 
     private void putConvert(OverloadedFunctionType overload, Type from, Type to,
                             Function<InterpretValue, InterpretResult> convertFunc) {
-        overload.putSystemOverload(List.of(from), (args) -> new LiteralNode() {
+        create().definedValueNode();
+        overload.putInterpretOverload(List.of(from), (args) -> new LiteralNode() {
             @Override
             public Type getType() {
                 return to;

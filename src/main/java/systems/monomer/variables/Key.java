@@ -1,7 +1,6 @@
 package systems.monomer.variables;
 
 import systems.monomer.compiler.Assembly.Operand;
-import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.types.ObjectType;

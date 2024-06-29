@@ -9,12 +9,12 @@ import systems.monomer.variables.VariableKey;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static systems.monomer.interpreter.InterpretURI.URI;
+import static systems.monomer.interpreter.values.InterpretURI.URI;
 
 @UtilityClass
 public class FileDefaults {
     public void initGlobal(Node global, InputStream input, OutputStream output) {
-        IOType io = new IOType(input, output);
+        IOType io = new IOType();
 
         VariableKey ioVar = new VariableKey();
         ioVar.setValue(io.defaultValue());

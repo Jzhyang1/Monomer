@@ -1,6 +1,6 @@
 package systems.monomer.types;
 
-import systems.monomer.interpreter.InterpretString;
+import systems.monomer.interpreter.values.InterpretString;
 import systems.monomer.interpreter.InterpretValue;
 
 /**

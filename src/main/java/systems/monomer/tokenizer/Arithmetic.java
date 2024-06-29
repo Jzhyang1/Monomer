@@ -1,11 +1,11 @@
 package systems.monomer.tokenizer;
 
 import lombok.experimental.UtilityClass;
-import systems.monomer.interpreter.InterpretNumber;
+import systems.monomer.interpreter.operators.InterpretOperatorNode;
+import systems.monomer.interpreter.values.InterpretNumber;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.operators.GenericOperatorNode;
 import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.types.NumberType;
 import systems.monomer.types.Type;
@@ -17,7 +17,7 @@ import static systems.monomer.types.AnyType.ANY;
 
 @UtilityClass
 public class Arithmetic {
-    Function<GenericOperatorNode, InterpretResult> numericalChecked(
+    Function<InterpretOperatorNode, InterpretResult> numericalChecked(
             Function<InterpretNumber<? extends Number>, ? extends InterpretResult> unaryCallback,
             BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, ? extends InterpretResult> binaryCallback
     ) {
@@ -30,11 +30,11 @@ public class Arithmetic {
     /**
      * binary variant
      */
-    Function<GenericOperatorNode, InterpretResult> numericalChecked(BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, ? extends InterpretResult> callback) {
+    Function<InterpretOperatorNode, InterpretResult> numericalChecked(BiFunction<InterpretNumber<? extends Number>, InterpretNumber<? extends Number>, ? extends InterpretResult> callback) {
         return (self) -> {
-            InterpretResult firstr = self.getFirst().interpretValue();
+            InterpretResult firstr = self.getFirstInterpretNode().interpretValue();
             if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
-            InterpretResult secondr = self.getSecond().interpretValue();
+            InterpretResult secondr = self.getSecondInterpretNode().interpretValue();
             if (!secondr.isValue()) throw self.runtimeError("Second value is not a value");
 
             InterpretValue first = firstr.asValue(), second = secondr.asValue();
@@ -49,9 +49,9 @@ public class Arithmetic {
     /**
      * unary variant
      */
-    Function<GenericOperatorNode, InterpretResult> numericalChecked(Function<InterpretNumber<? extends Number>, ? extends InterpretResult> callback) {
+    Function<InterpretOperatorNode, InterpretResult> numericalChecked(Function<InterpretNumber<? extends Number>, ? extends InterpretResult> callback) {
         return (self) -> {
-            InterpretResult firstr = self.getFirst().interpretValue();
+            InterpretResult firstr = self.getFirstInterpretNode().interpretValue();
             if (!firstr.isValue()) throw self.runtimeError("First value is not a value");
 
             InterpretValue first = firstr.asValue();

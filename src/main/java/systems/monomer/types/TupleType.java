@@ -1,7 +1,7 @@
 package systems.monomer.types;
 
 import lombok.Getter;
-import systems.monomer.interpreter.InterpretTuple;
+import systems.monomer.interpreter.values.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
 
 import java.util.ArrayList;

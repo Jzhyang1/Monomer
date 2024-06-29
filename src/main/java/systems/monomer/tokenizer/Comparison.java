@@ -2,7 +2,11 @@ package systems.monomer.tokenizer;
 
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.interpreter.*;
-import systems.monomer.syntaxtree.operators.GenericOperatorNode;
+import systems.monomer.interpreter.operators.InterpretOperatorNode;
+import systems.monomer.interpreter.values.InterpretBool;
+import systems.monomer.interpreter.values.InterpretChar;
+import systems.monomer.interpreter.values.InterpretNumber;
+import systems.monomer.interpreter.values.InterpretString;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -27,13 +31,13 @@ public final class Comparison {
         };
     }
 
-    public static Function<GenericOperatorNode, InterpretValue> binary(BiFunction<Integer, Integer, Boolean> intCallback, BiFunction<Double, Double, Boolean> floatCallback, BiFunction<Character, Character, Boolean> charCallback, BiFunction<String, String, Boolean> stringCallback) {
+    public static Function<InterpretOperatorNode, InterpretValue> binary(BiFunction<Integer, Integer, Boolean> intCallback, BiFunction<Double, Double, Boolean> floatCallback, BiFunction<Character, Character, Boolean> charCallback, BiFunction<String, String, Boolean> stringCallback) {
         BiFunction<InterpretValue, InterpretValue, Boolean> callback = differentiatedIntFloatCharString(intCallback, floatCallback, charCallback, stringCallback);
 
         return (self) -> {
-            InterpretResult firstr = self.getFirst().interpretValue();
+            InterpretResult firstr = self.getFirstInterpretNode().interpretValue();
             if(!firstr.isValue()) throw self.runtimeError("First value is not a value");
-            InterpretResult secondr = self.getSecond().interpretValue();
+            InterpretResult secondr = self.getSecondInterpretNode().interpretValue();
             if(!secondr.isValue()) throw self.runtimeError("Second value is not a value");
 
             InterpretValue first = firstr.asValue(), second = secondr.asValue();
@@ -46,18 +50,18 @@ public final class Comparison {
         };
     }
 
-    public static Function<GenericOperatorNode, InterpretValue> chained(BiFunction<Integer, Integer, Boolean> intCallback, BiFunction<Double, Double, Boolean> floatCallback, BiFunction<Character, Character, Boolean> charCallback, BiFunction<String, String, Boolean> stringCallback) {
+    public static Function<InterpretOperatorNode, InterpretValue> chained(BiFunction<Integer, Integer, Boolean> intCallback, BiFunction<Double, Double, Boolean> floatCallback, BiFunction<Character, Character, Boolean> charCallback, BiFunction<String, String, Boolean> stringCallback) {
         BiFunction<InterpretValue, InterpretValue, Boolean> callback = differentiatedIntFloatCharString(intCallback, floatCallback, charCallback, stringCallback);
 
         return (self) -> {
             int stop = self.size() - 1;
-            InterpretResult previous = self.get(0).interpretValue();
+            InterpretResult previous = self.getFirstInterpretNode().interpretValue();
             if(!previous.isValue()) throw self.runtimeError("First value is not a value");
             InterpretValue previousValue = previous.asValue();
             boolean previousBool = true;
 
             for(int i = 0; i < stop && previousBool; ++i) {
-                InterpretResult next = self.get(i + 1).interpretValue();
+                InterpretResult next = self.getInterpretNode(i + 1).interpretValue();
                 if(!next.isValue()) throw self.runtimeError("Value at " + i + " is not a value");
 
                 InterpretValue nextValue = next.asValue();
@@ -74,11 +78,11 @@ public final class Comparison {
         };
     }
 
-    public static Function<GenericOperatorNode, InterpretValue> binary(BiFunction<Comparable, Comparable, Boolean> callback) {
+    public static Function<InterpretOperatorNode, InterpretValue> binary(BiFunction<Comparable, Comparable, Boolean> callback) {
         return binary(callback::apply, callback::apply, callback::apply, callback::apply);
     }
 
-    public static Function<GenericOperatorNode, InterpretValue> chained(BiFunction<Comparable, Comparable, Boolean> callback) {
+    public static Function<InterpretOperatorNode, InterpretValue> chained(BiFunction<Comparable, Comparable, Boolean> callback) {
         return chained(callback::apply, callback::apply, callback::apply, callback::apply);
     }
 }

@@ -3,15 +3,12 @@ package systems.monomer.syntaxtree.controls;
 import systems.monomer.compiler.Assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
-import systems.monomer.interpreter.InterpretResult;
-import systems.monomer.interpreter.InterpretTuple;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.types.AnyType;
 import systems.monomer.types.Type;
-import systems.monomer.syntaxtree.controls.ControlOperatorNode.InterpretControlResult;
 
-public final class ControlGroupNode extends OperatorNode {
+public class ControlGroupNode extends OperatorNode {
     public ControlGroupNode(){
         super("control");
     }
@@ -33,21 +30,6 @@ public final class ControlGroupNode extends OperatorNode {
             }
         }
         setType(closestType);
-    }
-
-    public InterpretResult interpretValue() {
-        boolean previousSuccess = false, previousFailure = false;
-
-        InterpretControlResult result = getFirst().interpretControl(previousSuccess, previousFailure, InterpretTuple.EMPTY);
-        for (int i = 1; i < size(); i++) {
-            if(result.isBroken) break;
-            assert result.value != null;
-
-            previousSuccess = previousSuccess || result.isSuccess;
-            previousFailure = previousFailure || !result.isSuccess;
-            result = get(i).interpretControl(previousSuccess, previousFailure, result.value.asValue());
-        }
-        return result.value != null ? result.value : InterpretTuple.EMPTY;
     }
 
     public void add(Node node) {

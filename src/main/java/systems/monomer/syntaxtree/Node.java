@@ -4,14 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.Constants;
-import systems.monomer.compiler.Assembly.Operand;
-import systems.monomer.compiler.AssemblyFile;
-import systems.monomer.compiler.CompileSize;
 import systems.monomer.errorhandling.Context;
 import systems.monomer.errorhandling.Index;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.types.AnyType;
@@ -152,29 +148,6 @@ public abstract class Node extends ErrorBlock {
         }
     }
 
-    public InterpretVariable interpretVariable() {
-        throw syntaxError("Attempting to access " + name + " as a variable");
-    }
-
-    public abstract InterpretResult interpretValue();
-
-    /**
-     * Takes a value and attempts to assign it to the variable
-     * that this node represents. If the node is not a variable,
-     * an error is thrown. If the variable is locked, an error is thrown.
-     * @param value the value to assign
-     * @param lock whether to lock the variable after assignment
-     */
-    public void interpretAssign(InterpretValue value, boolean lock) {
-        InterpretVariable variable = interpretVariable();
-
-        if (variable == null) throw syntaxError("Cannot assign to " + name + " as it is not a variable");
-        if (variable.isLocked()) throw syntaxError("Cannot assign to constant " + name);
-
-        variable.setValue(value);
-        if(lock) variable.lock();
-    }
-
     protected InterpretResult checkedResult(InterpretResult result) {
         if(!result.isValue()) return result;
 
@@ -183,16 +156,6 @@ public abstract class Node extends ErrorBlock {
         if(value.getType().typeContains(getType())) return result;
         return result;  //TODO this is just here for production
 //        else throw syntaxError("Internal error (please report as bug) " + value.getType() + " received when expecting " + getType());
-    }
-
-    public abstract Operand compileValue(AssemblyFile file);
-
-    public abstract CompileSize compileSize();
-
-    public void compileVariables(AssemblyFile file) {
-        for (Node child : children) {
-            child.compileVariables(file);
-        }
     }
 
     protected String toString(int tabs) {

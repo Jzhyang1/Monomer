@@ -16,7 +16,7 @@ public abstract class Source {
 //            put('\n', 0);
             put(' ', 1);
             put('\r', 1);
-            put('\t', Constants.TAB_SIZE);
+            put('\t', TAB_SIZE);
         }};
 
         private final String line;
@@ -267,7 +267,7 @@ public abstract class Source {
 
         char delim = line.get();
         int initialStartingSpaces = line.startingSpaces();
-        int startingSpaces = initialStartingSpaces + Constants.TAB_SIZE;
+        int startingSpaces = initialStartingSpaces + TAB_SIZE;
 
         Token ret = new Token(Token.Usage.STRING_BUILDER);
         StringBuilder strbuild = new StringBuilder();
