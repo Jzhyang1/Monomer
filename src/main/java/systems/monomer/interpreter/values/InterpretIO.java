@@ -2,14 +2,11 @@ package systems.monomer.interpreter.values;
 
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.Constants;
-import systems.monomer.interpreter.IOType;
+import systems.monomer.types.IOType;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariableNode;
 import systems.monomer.syntaxtree.literals.LiteralNode;
-import systems.monomer.types.CharType;
-import systems.monomer.types.NumberType;
-import systems.monomer.types.OverloadedFunctionType;
-import systems.monomer.types.StringType;
+import systems.monomer.types.*;
 
 import java.io.*;
 import java.util.List;
@@ -90,6 +87,11 @@ public class InterpretIO extends IOType implements InterpretValue {
     @Override
     public boolean equals(Object other) {
         return other instanceof InterpretIO otherIO && otherIO.reader == reader && otherIO.writer == writer;
+    }
+
+    @Override
+    public InterpretIO clone() {
+        return (InterpretIO) super.clone();
     }
 
     private Reader readIntent() {

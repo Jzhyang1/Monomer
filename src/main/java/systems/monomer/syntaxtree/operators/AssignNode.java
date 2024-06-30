@@ -78,21 +78,20 @@ public class AssignNode extends OperatorNode {
             functionInit.args.matchTypes();
             Type argsType = functionInit.args.getType();
 
-            //used for recursion
-            Signature tempSignature = new Signature(ANY, argsType, namedArgsType);
+            //used for recursion TODO add back support for recursion
+//            Signature tempSignature = new Signature(ANY, argsType, namedArgsType);
 
-            boolean needTempSignature = overloads.getOverload(tempSignature) == null;
-            if (needTempSignature)
-                overloads.putInterpretOverload(tempSignature, function);
+//            boolean needTempSignature = overloads.getOverload(tempSignature) == null;
+//            if (needTempSignature)
+//                overloads.putInterpretOverload(tempSignature, function);
 
             functionInit.body.matchTypes();
             Type bodyType = functionInit.body.getType();
 
 //            if(needTempSignature)
 //                overloads.getOverloads().remove(tempSignature, function); //TODO remove placeholder signature used for recursion
-            Signature signature = new Signature(bodyType, argsType, namedArgsType);
-            overloads.putInterpretOverload(signature, function);
-
+//            Signature signature = new Signature(bodyType, argsType, namedArgsType);
+            overloads.putInterpretOverload(function);
             setType(overloads);
         } else {  //normal variable assignment
             List<Node> children = getChildren();

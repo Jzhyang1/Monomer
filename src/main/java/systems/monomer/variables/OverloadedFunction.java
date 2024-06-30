@@ -5,8 +5,10 @@ import systems.monomer.types.OverloadedFunctionType;
 import systems.monomer.types.Signature;
 import systems.monomer.util.PairList;
 
+import java.util.List;
+
 public class OverloadedFunction extends OverloadedFunctionType implements InterpretValue {
-    public OverloadedFunction(PairList<Signature, FunctionBody> overloads) {
+    public OverloadedFunction(List<Signature> overloads) {
         getOverloads().addAll(overloads);
     }
 

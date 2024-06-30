@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Function;
 
+import static systems.monomer.interpreter.values.InterpretIO.STDIO;
 import static systems.monomer.interpreter.values.InterpretURI.URI;
 import static systems.monomer.syntaxtree.Configuration.create;
 import static systems.monomer.types.StringType.STRING;
@@ -42,27 +43,6 @@ public class ConvertDefaults {
 
     private void putConvert(OverloadedFunctionType overload, Type from, Type to,
                             Function<InterpretValue, InterpretResult> convertFunc) {
-        create().definedValueNode();
-        overload.putInterpretOverload(List.of(from), (args) -> new LiteralNode() {
-            @Override
-            public Type getType() {
-                return to;
-            }
-
-            @Override
-            public InterpretResult interpretValue() {
-                return convertFunc.apply(args.get(0).interpretValue());
-            }
-
-            public Operand compileValue(AssemblyFile file) {
-                throw new Error("TODO unimplemented");
-            }
-
-            @Override
-            public CompileSize compileSize() {
-                syntaxError("TODO unimplemented");
-                return null;
-            }
-        });
+        overload.putSingleInterpretOverload(from, to, convertFunc);
     }
 }

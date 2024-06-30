@@ -1,7 +1,9 @@
 package systems.monomer.syntaxtree;
 
 import lombok.experimental.UtilityClass;
+import systems.monomer.interpreter.InterpretDefinedValueNode;
 import systems.monomer.interpreter.InterpretModuleNode;
+import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretVariableNode;
 import systems.monomer.interpreter.controls.*;
 import systems.monomer.interpreter.literals.*;
@@ -14,6 +16,7 @@ import systems.monomer.types.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @UtilityClass
 public class Configuration {
@@ -25,7 +28,7 @@ public class Configuration {
 
         InitializerEnum getType();
 
-        Node definedValueNode();
+        Node definedValueNode(Supplier<InterpretResult> interpret);
 
         ControlGroupNode controlGroupNode();
         IfNode ifNode(); AllNode allNode(); AnyNode anyNode(); ElseNode elseNode();
@@ -67,8 +70,8 @@ public class Configuration {
             return InitializerEnum.INTERPRET;
         }
 
-        public Node definedValueNode() {
-            return null;
+        public Node definedValueNode(Supplier<InterpretResult> interpret) {
+            return new InterpretDefinedValueNode(interpret);
         }
 
         public ControlGroupNode controlGroupNode() {

@@ -2,7 +2,7 @@ package systems.monomer.commandline.EnvironmentDefaults;
 
 import lombok.experimental.UtilityClass;
 import systems.monomer.Constants;
-import systems.monomer.interpreter.IOType;
+import systems.monomer.types.IOType;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.variables.VariableKey;
 

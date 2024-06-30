@@ -51,8 +51,14 @@ public class FunctionBody extends Signature implements InterpretValue {
     }
 
     @Override
-    public Type getArgs() {
+    public Type getArgsType() {
         Type t = args.getType();
+        return t == null ? AnyType.ANY : t;
+    }
+
+    @Override
+    public Type getNamedArgsType() {
+        Type t = namedArgs.getType();
         return t == null ? AnyType.ANY : t;
     }
 
@@ -162,15 +168,8 @@ public class FunctionBody extends Signature implements InterpretValue {
     }
 
     @Override
-    public boolean equals(Object other) {
-        return other instanceof FunctionBody function &&
-                getReturnType().equals(function.getReturnType()) &&
-                getArgs().equals(function.getArgs());
-    }
-
-    @Override
     public int hashCode() {
-        return getReturnType().hashCode() + getArgs().hashCode() * 31 + this.getClass().hashCode() * 31 * 31;
+        return getReturnType().hashCode() + getArgsType().hashCode() * 31 + this.getClass().hashCode() * 31 * 31;
     }
 
     @Override
@@ -185,6 +184,6 @@ public class FunctionBody extends Signature implements InterpretValue {
 
     @Override
     public String toString() {
-        return getArgs().valueString() + " -> " + getReturnType().valueString();
+        return getArgsType().valueString() + " -> " + getReturnType().valueString();
     }
 }

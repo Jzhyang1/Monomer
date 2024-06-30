@@ -28,7 +28,7 @@ public class CallNode extends OperatorNode {
         Type argType = getSecond().getType();
         Type returnType = getType();
         Type namedArgType = size() > 2 ? get(2).getType() : new ObjectType();
-        Signature signature = new Signature(returnType, argType, namedArgType);
+        Signature signature = new Signature(argType, namedArgType, returnType);
 
         CastToFunctionNode function = create().castToFunctionNode();
         function.with(getContext()).with(getFirst()).with(signature).matchTypes();
