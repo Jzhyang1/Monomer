@@ -6,7 +6,7 @@ import systems.monomer.interpreter.values.InterpretCollection;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.values.InterpretString;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.StringType;
+import systems.monomer.types.plural.StringType;
 import systems.monomer.types.Type;
 
 import java.util.ArrayList;

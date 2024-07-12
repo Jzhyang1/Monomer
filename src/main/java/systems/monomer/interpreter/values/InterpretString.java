@@ -2,7 +2,7 @@ package systems.monomer.interpreter.values;
 
 import lombok.Getter;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.StringType;
+import systems.monomer.types.plural.StringType;
 
 @Getter
 public class InterpretString extends StringType implements InterpretValue {

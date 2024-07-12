@@ -1,12 +1,12 @@
 package systems.monomer.compiler;
 
-import systems.monomer.compiler.Assembly.Instruction;
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Instruction;
+import systems.monomer.compiler.assembly.Operand;
 import systems.monomer.compiler.operators.CompileOperatorNode;
-import systems.monomer.types.NumberType;
+import systems.monomer.types.primative.NumberType;
 
-import static systems.monomer.compiler.Assembly.Instruction.*;
-import static systems.monomer.compiler.Assembly.Register.*;
+import static systems.monomer.compiler.assembly.Instruction.*;
+import static systems.monomer.compiler.assembly.Register.*;
 
 //TODO move things over to here
 public class ArithmeticAssembly {

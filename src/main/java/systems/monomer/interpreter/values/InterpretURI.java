@@ -3,7 +3,7 @@ package systems.monomer.interpreter.values;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.ObjectType;
+import systems.monomer.types.primative.ObjectType;
 
 import java.io.File;
 import java.util.Objects;

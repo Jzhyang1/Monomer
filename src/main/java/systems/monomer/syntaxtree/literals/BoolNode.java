@@ -1,6 +1,6 @@
 package systems.monomer.syntaxtree.literals;
 
-import systems.monomer.types.BoolType;
+import systems.monomer.types.primative.BoolType;
 
 public class BoolNode extends LiteralNode {
     protected final boolean value;

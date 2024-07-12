@@ -1,12 +1,10 @@
 package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.StringType;
-
-import static systems.monomer.syntaxtree.Configuration.create;
+import systems.monomer.types.plural.StringType;
 
 public class StringNode extends LiteralNode {
-    public static final Node EMPTY = create().stringNode("");
+    public static final Node EMPTY = init.stringNode("");
     protected final String value;
 
 

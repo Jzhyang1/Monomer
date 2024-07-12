@@ -1,11 +1,11 @@
 package systems.monomer.interpreter.values;
 
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.BoolType;
+import systems.monomer.types.primitive.BoolType;
 
-public class InterpretBool extends BoolType implements InterpretValue {
-    public static final InterpretValue FALSE = new InterpretBool(false);
-    public static final InterpretValue TRUE = new InterpretBool(true);
+public final class InterpretBool extends BoolType implements InterpretValue {
+    public static final InterpretBool FALSE = new InterpretBool(false);
+    public static final InterpretBool TRUE = new InterpretBool(true);
 
     private final boolean value;
 
@@ -18,7 +18,7 @@ public class InterpretBool extends BoolType implements InterpretValue {
     }
 
     @Override
-    public InterpretValue defaultValue() {
+    public InterpretBool defaultValue() {
         return this;
     }
 
@@ -27,6 +27,6 @@ public class InterpretBool extends BoolType implements InterpretValue {
     }
 
     public InterpretBool clone() {
-        return (InterpretBool) super.clone();
+        return new InterpretBool(value);
     }
 }

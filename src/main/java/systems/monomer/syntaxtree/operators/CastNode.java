@@ -1,6 +1,6 @@
 package systems.monomer.syntaxtree.operators;
 
-import static systems.monomer.types.AnyType.ANY;
+import static systems.monomer.types.pseudo.AnyType.ANY;
 
 /**
  * The first child is the value

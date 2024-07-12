@@ -1,7 +1,7 @@
 package systems.monomer.interpreter.values;
 
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.ObjectType;
+import systems.monomer.types.primative.ObjectType;
 
 public class InterpretObject extends ObjectType implements InterpretValue {
     public static final InterpretValue EMPTY = new InterpretObject();

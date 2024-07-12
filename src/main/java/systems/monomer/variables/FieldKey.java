@@ -2,16 +2,17 @@ package systems.monomer.variables;
 
 import lombok.Getter;
 import lombok.Setter;
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Operand;
 import systems.monomer.compiler.CompileSize;
+import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
-import systems.monomer.types.ObjectType;
+import systems.monomer.types.primative.ObjectType;
 import systems.monomer.types.Type;
 
-import static systems.monomer.compiler.Assembly.Operand.Type.MEMORY;
+import static systems.monomer.compiler.assembly.Operand.Type.MEMORY;
 import static systems.monomer.errorhandling.ErrorBlock.programError;
-import static systems.monomer.types.AnyType.ANY;
+import static systems.monomer.types.pseudo.AnyType.ANY;
 
 @Getter @Setter
 public class FieldKey extends Key {
@@ -35,7 +36,7 @@ public class FieldKey extends Key {
         if(parent.getValue() instanceof ObjectType objectType)
             objectType.setField(name, value);
         else {
-            throw programError("Can not access field " + name + " of " + parent);
+            throw programError("Can not access field " + name + " of " + parent, ErrorBlock.Reason.RUNTIME);
         }
     }
 

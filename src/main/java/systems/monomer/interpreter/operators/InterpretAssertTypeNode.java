@@ -6,7 +6,7 @@ import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.interpreter.values.InterpretObject;
 import systems.monomer.syntaxtree.operators.AssertTypeNode;
-import systems.monomer.types.ObjectType;
+import systems.monomer.types.primative.ObjectType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.FunctionBody;
 

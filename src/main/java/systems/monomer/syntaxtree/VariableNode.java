@@ -4,7 +4,7 @@ import lombok.Getter;
 import systems.monomer.types.Type;
 import systems.monomer.variables.VariableKey;
 
-import static systems.monomer.types.AnyType.ANY;
+import static systems.monomer.types.pseudo.AnyType.ANY;
 
 @Getter
 public class VariableNode extends Node {

@@ -1,7 +1,7 @@
 package systems.monomer.interpreter.values;
 
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.TupleType;
+import systems.monomer.types.plural.TupleType;
 
 import java.util.List;
 

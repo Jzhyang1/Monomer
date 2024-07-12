@@ -1,7 +1,7 @@
 package systems.monomer;
 
 import org.junit.Test;
-import systems.monomer.commandline.Compile;
+import systems.monomer.execution.commandline.Compile;
 
 public class CompileTest {
     @Test

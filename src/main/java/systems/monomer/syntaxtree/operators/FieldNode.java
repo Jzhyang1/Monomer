@@ -3,12 +3,12 @@ package systems.monomer.syntaxtree.operators;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.ObjectType;
+import systems.monomer.types.primative.ObjectType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.FieldKey;
 import systems.monomer.variables.Key;
 
-import static systems.monomer.types.AnyType.ANY;
+import static systems.monomer.types.pseudo.AnyType.ANY;
 
 public class FieldNode extends OperatorNode {
     @Getter

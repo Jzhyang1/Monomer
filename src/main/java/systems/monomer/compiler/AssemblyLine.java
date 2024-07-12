@@ -1,7 +1,7 @@
 package systems.monomer.compiler;
 
-import systems.monomer.compiler.Assembly.Instruction;
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Instruction;
+import systems.monomer.compiler.assembly.Operand;
 
 public class AssemblyLine {
     private final Instruction instruction;

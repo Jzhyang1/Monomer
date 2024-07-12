@@ -1,6 +1,6 @@
 package systems.monomer.syntaxtree.literals;
 
-import systems.monomer.types.NumberType;
+import systems.monomer.types.primative.NumberType;
 
 public class FloatNode extends LiteralNode {
     protected final Double value;

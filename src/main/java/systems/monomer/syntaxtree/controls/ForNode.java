@@ -2,7 +2,7 @@ package systems.monomer.syntaxtree.controls;
 import systems.monomer.interpreter.values.InterpretSequence;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
-import systems.monomer.types.CollectionType;
+import systems.monomer.types.plural.CollectionType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.Key;
 

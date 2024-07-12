@@ -1,9 +1,9 @@
 package systems.monomer.compiler;
 
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Operand;
 import systems.monomer.syntaxtree.VariableNode;
 
-import static systems.monomer.compiler.Assembly.Register.EBP;
+import static systems.monomer.compiler.assembly.Register.EBP;
 
 public class CompileVariableNode extends VariableNode implements CompileNode {
     public CompileVariableNode(String name) {

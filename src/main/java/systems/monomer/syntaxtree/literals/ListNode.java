@@ -1,9 +1,9 @@
 package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.CollectionType;
-import systems.monomer.types.ListType;
-import systems.monomer.types.SequenceType;
+import systems.monomer.types.collection.CollectionType;
+import systems.monomer.types.collection.ListType;
+import systems.monomer.types.plural.SequenceType;
 import systems.monomer.types.Type;
 
 import java.util.Collection;
@@ -26,7 +26,7 @@ public class ListNode extends LiteralNode {
             return;
         }
         Type t = get(0).getType();
-        if(SequenceType.isSequence(t)) {
+        if(SequenceType.SEQUENCE.typeContains(t)) {
             setType(new ListType(((CollectionType)t).getElementType()));
             return;
         }

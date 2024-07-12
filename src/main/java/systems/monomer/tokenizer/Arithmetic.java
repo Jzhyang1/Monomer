@@ -7,13 +7,13 @@ import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
-import systems.monomer.types.NumberType;
+import systems.monomer.types.primative.NumberType;
 import systems.monomer.types.Type;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static systems.monomer.types.AnyType.ANY;
+import static systems.monomer.types.pseudo.AnyType.ANY;
 
 @UtilityClass
 public class Arithmetic {

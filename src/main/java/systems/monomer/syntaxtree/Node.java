@@ -3,14 +3,16 @@ package systems.monomer.syntaxtree;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import systems.monomer.Constants;
+import systems.monomer.execution.Constants;
 import systems.monomer.errorhandling.Context;
 import systems.monomer.errorhandling.Index;
+import systems.monomer.execution.Initializer;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.errorhandling.ErrorBlock;
+import systems.monomer.interpreter.Interpreter;
 import systems.monomer.tokenizer.Source;
-import systems.monomer.types.AnyType;
+import systems.monomer.types.pseudo.AnyType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
@@ -21,6 +23,8 @@ import java.util.ArrayList;
 
 @Getter
 public abstract class Node extends ErrorBlock {
+    public static Initializer init = new Interpreter();
+
     public enum Usage {
         OPERATOR, LITERAL, IDENTIFIER, LABEL, CONTROL_GROUP, MODULE
     }

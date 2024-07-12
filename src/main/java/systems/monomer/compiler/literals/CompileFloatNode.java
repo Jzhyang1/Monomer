@@ -1,6 +1,6 @@
 package systems.monomer.compiler.literals;
 
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileNode;
 import systems.monomer.compiler.CompileSize;

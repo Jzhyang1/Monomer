@@ -1,11 +1,11 @@
 package systems.monomer.syntaxtree.controls;
 
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileSize;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
-import systems.monomer.types.AnyType;
+import systems.monomer.types.pseudo.AnyType;
 import systems.monomer.types.Type;
 
 public class ControlGroupNode extends OperatorNode {

@@ -1,13 +1,12 @@
 package systems.monomer.tokenizer;
 
 import lombok.Getter;
-import systems.monomer.Constants;
 import systems.monomer.errorhandling.Index;
 
 import java.util.*;
 import java.util.stream.IntStream;
 
-import static systems.monomer.Constants.*;
+import static systems.monomer.execution.Constants.*;
 
 //TODO needs optimization, especially for matching operators
 public abstract class Source {

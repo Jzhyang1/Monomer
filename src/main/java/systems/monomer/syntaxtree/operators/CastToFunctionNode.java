@@ -1,16 +1,10 @@
 package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.TypeContext;
-import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.types.*;
+import systems.monomer.types.pseudo.IncompleteSignature;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static systems.monomer.types.AnyType.ANY;
+import static systems.monomer.types.pseudo.AnyType.ANY;
 
 /**
  * ConvertToFunctionNode is a ConvertNode optimized for converting to a function type
@@ -27,93 +21,77 @@ public class CastToFunctionNode extends CastNode {
         Node functionNode = getFirst();
         functionNode.matchTypes();
 
-        Type expectedType = getType();
-        Type actualType = functionNode.getType();
+        Type expectedType = getType();  //should be a signature
+        Type actualType = functionNode.getType();   //should be a signature or an overloadedFunction
+
+        //if expectedType is not given, take on the actual type
+        //if actual type is not given, take on the given type TODO an overloadedFunction and add a placeholder/forward-reference signature
 
         if(expectedType == ANY)
             setType(expectedType = actualType);
         if(!(expectedType instanceof Signature))
-            throw syntaxError("The operations here should require a function type, but instead, the internal message required " + expectedType);
+            throw syntaxError("A function type should be required here, but instead, the syntax tree required " + expectedType);
+        if(actualType == ANY)
+            functionNode.setType(actualType = expectedType);
+
+        //if actualType is a signature, check that the two signatures match
+        //if actualType is an overloadedFunction, check that it is in the function signature list
 
         Signature expectedSignature = (Signature) expectedType;
 
-        if(actualType.typeContains(expectedSignature))
+        if(actualType.typeContains(expectedType))
             return;
-        else if(actualType == ANY)
-            functionNode.setType(expectedSignature);
-
-        if(actualType instanceof OverloadedFunctionType overloadedFunctionType) {
+        else if(actualType instanceof OverloadedFunctionType overloadedFunctionType) {
             functionIndex = overloadedFunctionType.randomAccessIndex(expectedSignature);
             if(functionIndex == -1)
                 throw syntaxError("No function found with signature " + expectedSignature);
 
             Signature foundSignature = overloadedFunctionType.getSignature(functionIndex);
-            if(!isIncompleteSignature(foundSignature))
+            if(foundSignature.isComplete())
                 setType(foundSignature);
             else {
-                Signature completedSignature = completedSignature(foundSignature, expectedSignature);
-                setType(completedSignature);
+                IncompleteSignature incompleteSignature = (IncompleteSignature) foundSignature;
+                setType(incompleteSignature.completedSignature(expectedSignature));
             }
         }
-    }
-
-    private void orderArgNames(Node node, Set<String> argNames, List<String> orderedArgNames){
-        if(node.getUsage() == Usage.IDENTIFIER && argNames.contains(node.getName())) {
-            orderedArgNames.add(node.getName());
-        }
-        else for (Node child : node.getChildren()) {
-            orderArgNames(child, argNames, orderedArgNames);
-        }
-    }
-
-    private boolean isIncompleteSignature(Signature signature) {
-        return signature.getReturnType() == ANY || signature.getArgsType() == ANY ||
-                TupleType.typeInTuple(ANY, signature.getReturnType()) ||
-                TupleType.typeInTuple(ANY, signature.getArgsType()) ||
-                ObjectType.typeInObject(ANY, signature.getNamedArgsType());
-    }
-    private boolean canCompleteSignature(Signature signature) {
-        return signature.getArgsType() != ANY && !TupleType.typeInTuple(ANY, signature.getArgsType());
-    }
-
-    private Signature completedSignature(Signature foundSignature, Signature expectedSignature) {
-        if(!isIncompleteSignature(foundSignature)) return foundSignature;
-        if(!canCompleteSignature(expectedSignature)) throw syntaxError("Cannot complete signature " + foundSignature + " with " + expectedSignature);
-
-        //mock types by filling foundSignature (the signature that the function is defined with)
-        // with types from expectedSignature (the signature that the calling function used)
-        // to find the resulting type of functionBody
-
-        TypeContext context = new TypeContext(getParent());
-
-        //todo move this logic to FunctionBody
-        //add in the types from the expected signature to context
-        //first the ordered arguments
-        TupleType argTypes = TupleType.asTuple(expectedSignature.getArgsType());
-        TupleNode paramNodes = functionBody.getArgNodes();
-        Set<String> paramNames = functionBody.getWrapper().getVariables().keySet();
-
-        List<String> orderedParamNames = new ArrayList<>();
-        orderArgNames(paramNodes, paramNames, orderedParamNames);
-
-        for (int i = 0; i < orderedParamNames.size(); i++) {
-            context.putVariableType(orderedParamNames.get(i), argTypes.getType(i));
+        else {
+            throw syntaxError("The signature " + actualType + " does not match the expected signature " + expectedType);
         }
 
-        //next the named arguments
-        Type maybeNamedArgTypes = expectedSignature.getNamedArgsType();
-        if(maybeNamedArgTypes instanceof ObjectType namedArgTypes) {
-            for (Map.Entry<String, Type> entry : namedArgTypes.getFields().entrySet()) {
-                context.putVariableType(entry.getKey(), entry.getValue());
-            }
-        }
 
-        //find the resulting type of functionBody
-        Type resultingType = functionBody.getBody().testType(context);
-        if(context.getReturnType() == null) {
-            return new Signature(foundSignature.getArgsType(), foundSignature.getNamedArgsType(), resultingType);
-        } else {
-            return new Signature(foundSignature.getArgsType(), foundSignature.getNamedArgsType(), context.getReturnType());
-        }
+
+//        if(actualType.typeContains(expectedType))
+//            return;
+//        else if(actualType instanceof Signature actualSignature) {
+//            if(actualSignature.isComplete()) {
+//                throw syntaxError("The signature " + actualType + " does not match the expected signature " + expectedType);
+//            } else {
+//                throw syntaxError("Internal error in handling the conversion from " + expectedType + " to " + actualType);
+//            }
+//        }
+//
+//
+//        Signature expectedSignature = (Signature) expectedType;
+//
+//        if(actualType instanceof OverloadedFunctionType overloadedFunctionType) {
+//            functionIndex = overloadedFunctionType.randomAccessIndex(expectedSignature);
+//            if(functionIndex == -1)
+//                throw syntaxError("No function found with signature " + expectedSignature);
+//
+//            Signature foundSignature = overloadedFunctionType.getSignature(functionIndex);
+//            if(!isIncompleteSignature(foundSignature))
+//                setType(foundSignature);
+//            else {
+//                Signature completedSignature = completedSignature(foundSignature, expectedSignature);
+//                setType(completedSignature);
+//            }
+//        }
     }
+
+//    private boolean isIncompleteSignature(Signature signature) {
+//        return signature.getReturnType() == ANY || signature.getArgsType() == ANY ||
+//                TupleType.typeInTuple(ANY, signature.getReturnType()) ||
+//                TupleType.typeInTuple(ANY, signature.getArgsType()) ||
+//                ObjectType.typeInObject(ANY, signature.getNamedArgsType());
+//    }
 }

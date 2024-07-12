@@ -1,7 +1,7 @@
 package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.StringType;
+import systems.monomer.types.plural.StringType;
 
 import java.util.Collection;
 

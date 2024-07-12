@@ -1,15 +1,13 @@
 package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.TupleType;
+import systems.monomer.types.plural.TupleType;
 import systems.monomer.types.Type;
 
 import java.util.List;
 
-import static systems.monomer.syntaxtree.Configuration.create;
-
 public class TupleNode extends LiteralNode {
-    public static TupleNode EMPTY = create().tupleNode();
+    public static TupleNode EMPTY = init.tupleNode();
 
     public static boolean isTuple(Node node) {
         //TODO this is ugly
@@ -17,7 +15,7 @@ public class TupleNode extends LiteralNode {
     }
 
     public static TupleNode asTuple(Node node) {
-        return isTuple(node) ? (TupleNode) node : create().tupleNode(List.of(node));
+        return isTuple(node) ? (TupleNode) node : init.tupleNode(List.of(node));
     }
 
     @Override

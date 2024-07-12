@@ -1,6 +1,6 @@
 package systems.monomer.compiler;
 
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Operand;
 import systems.monomer.syntaxtree.Node;
 
 import java.util.List;

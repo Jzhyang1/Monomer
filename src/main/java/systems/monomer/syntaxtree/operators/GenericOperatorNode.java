@@ -23,8 +23,12 @@ public class GenericOperatorNode extends OperatorNode {
             throw syntaxError("Unimplemented operator " + getName());
         }
 
-        Type type = this.typeGenerator.apply(this);
-        if(type != null) setType(type);
+        try {
+            Type type = this.typeGenerator.apply(this);
+            if(type != null) setType(type);
+        } catch (ProgramErrorException ex) {
+            throw rethrowError(ex);
+        }
     }
 
 

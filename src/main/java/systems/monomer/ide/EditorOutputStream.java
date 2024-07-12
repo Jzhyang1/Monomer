@@ -1,6 +1,7 @@
 package systems.monomer.ide;
 
 import org.jetbrains.annotations.Nullable;
+import systems.monomer.errorhandling.ErrorBlock;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
@@ -31,7 +32,7 @@ public class EditorOutputStream extends OutputStream {
                     Document document = console.getDocument();
                     document.insertString(document.getLength(), s, attributeSet);
                 } catch (BadLocationException e) {
-                    throw programError(e.getMessage());
+                    throw programError(e.getMessage(), ErrorBlock.Reason.OTHER);
                 }
             });
         }
@@ -46,7 +47,7 @@ public class EditorOutputStream extends OutputStream {
                 Document document = console.getDocument();
                 document.insertString(document.getLength(), s, attributeSet);
             } catch (BadLocationException e) {
-                throw programError(e.getMessage());
+                throw programError(e.getMessage(), ErrorBlock.Reason.OTHER);
             }
         });
     }

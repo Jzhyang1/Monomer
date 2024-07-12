@@ -7,7 +7,7 @@ import systems.monomer.interpreter.InterpretVariable;
 import systems.monomer.interpreter.values.InterpretCollection;
 import systems.monomer.interpreter.values.InterpretList;
 import systems.monomer.syntaxtree.literals.ListNode;
-import systems.monomer.types.SequenceType;
+import systems.monomer.types.plural.SequenceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class InterpretListNode extends ListNode implements InterpretNode {
             if (!result.isValue()) return result;
 
             InterpretValue value = result.asValue();
-            if(SequenceType.isSequence(value.getType()))
+            if(SequenceType.SEQUENCE.typeContains(value.getType()))
                 ret.addAll(((InterpretCollection)value).getValues());
             else
                 ret.add(value);

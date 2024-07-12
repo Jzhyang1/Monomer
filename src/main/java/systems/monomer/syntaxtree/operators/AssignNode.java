@@ -8,11 +8,9 @@ import systems.monomer.types.*;
 import systems.monomer.variables.FunctionBody;
 import systems.monomer.variables.Key;
 
-import static systems.monomer.syntaxtree.Configuration.create;
-
 import java.util.List;
 
-import static systems.monomer.types.AnyType.ANY;
+import static systems.monomer.types.pseudo.AnyType.ANY;
 
 public class AssignNode extends OperatorNode {
     protected static record FunctionInitInfo(Node identifier, Key function, Node args, StructureNode namedArgs, Node body,
@@ -70,13 +68,16 @@ public class AssignNode extends OperatorNode {
             else
                 overloads = (OverloadedFunctionType) potentialOverloads;
 
-            FunctionBody function = new FunctionBody(functionInit.args, functionInit.namedArgs, functionInit.body, functionInit.parent);
 
             functionInit.namedArgs.matchTypes();
-            Type namedArgsType = functionInit.namedArgs.getType();
-
             functionInit.args.matchTypes();
-            Type argsType = functionInit.args.getType();
+            //TODO add a placeholder signature so that recursion doesn't loop forever
+            functionInit.body.matchTypes();
+
+            FunctionBody function = new FunctionBody(functionInit.args, functionInit.namedArgs, functionInit.body, functionInit.parent);
+
+            //generate Signature from FunctionBody
+            Signature signature = function.getType();
 
             //used for recursion TODO add back support for recursion
 //            Signature tempSignature = new Signature(ANY, argsType, namedArgsType);
@@ -85,13 +86,12 @@ public class AssignNode extends OperatorNode {
 //            if (needTempSignature)
 //                overloads.putInterpretOverload(tempSignature, function);
 
-            functionInit.body.matchTypes();
             Type bodyType = functionInit.body.getType();
 
 //            if(needTempSignature)
 //                overloads.getOverloads().remove(tempSignature, function); //TODO remove placeholder signature used for recursion
 //            Signature signature = new Signature(bodyType, argsType, namedArgsType);
-            overloads.putInterpretOverload(function);
+            overloads.putOverload(function);
             setType(overloads);
         } else {  //normal variable assignment
             List<Node> children = getChildren();
@@ -140,7 +140,7 @@ public class AssignNode extends OperatorNode {
             Key identifierKey = identifier.getVariableKey();
             assert identifierKey != null;
 
-            ModuleNode wrapper = create().moduleNode("function");
+            ModuleNode wrapper = init.moduleNode("function");
             wrapper.setParent(this);
             for (String fieldName : namedArgsStruct.getFieldNames()) {
                 wrapper.putVariable(fieldName, namedArgsStruct.getVariable(fieldName));

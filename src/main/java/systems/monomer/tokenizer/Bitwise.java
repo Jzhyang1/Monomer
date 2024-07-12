@@ -1,9 +1,9 @@
 package systems.monomer.tokenizer;
 
 import lombok.experimental.UtilityClass;
-import systems.monomer.compiler.Assembly.Instruction;
-import systems.monomer.compiler.Assembly.Operand;
-import systems.monomer.compiler.Assembly.Register;
+import systems.monomer.compiler.assembly.Instruction;
+import systems.monomer.compiler.assembly.Operand;
+import systems.monomer.compiler.assembly.Register;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.operators.CompileOperatorNode;
 import systems.monomer.interpreter.*;
@@ -11,7 +11,11 @@ import systems.monomer.interpreter.operators.InterpretOperatorNode;
 import systems.monomer.interpreter.values.InterpretBool;
 import systems.monomer.interpreter.values.InterpretCollection;
 import systems.monomer.interpreter.values.InterpretNumber;
-import systems.monomer.types.*;
+import systems.monomer.types.plural.CollectionType;
+import systems.monomer.types.plural.StringType;
+import systems.monomer.types.primative.BoolType;
+import systems.monomer.types.primative.CharType;
+import systems.monomer.types.primative.NumberType;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

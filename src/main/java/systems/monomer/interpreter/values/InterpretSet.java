@@ -1,6 +1,7 @@
 package systems.monomer.interpreter.values;
 
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.types.Type;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,6 +12,9 @@ public class InterpretSet extends InterpretCollection {
 
     private final Set<InterpretValue> set = new HashSet<>();
 
+    public InterpretSet(Type elementType) {
+        super(elementType);
+    }
     public InterpretSet(List<? extends InterpretValue> list) {
         super(list.get(0));
         set.addAll(list);

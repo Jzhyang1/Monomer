@@ -2,6 +2,10 @@ package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.interpreter.values.*;
 import systems.monomer.types.*;
+import systems.monomer.types.plural.CollectionType;
+import systems.monomer.types.plural.ListType;
+import systems.monomer.types.primative.NumberType;
+import systems.monomer.types.pseudo.AnyType;
 import systems.monomer.variables.VariableKey;
 
 public class IndexNode extends OperatorNode {

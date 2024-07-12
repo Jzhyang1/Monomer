@@ -1,5 +1,7 @@
 package systems.monomer.tokenizer;
 
+import systems.monomer.errorhandling.ErrorBlock;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ public class SourceFile extends Source {
             file = sourceFile;
             reader = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException e) {
-            throw programError(e.getMessage());
+            throw programError(e.getMessage(), ErrorBlock.Reason.OTHER);
         }
         fileName = sourceFile.getPath();
         init();
@@ -32,7 +34,7 @@ public class SourceFile extends Source {
         try {
             tempReader = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException e) {
-            throw programError(e.getMessage());
+            throw programError(e.getMessage(), ErrorBlock.Reason.OTHER);
         }
 
         ArrayList<String> ret = new ArrayList<>();
@@ -45,7 +47,7 @@ public class SourceFile extends Source {
                 ret.add(tempReader.readLine());
             }
         } catch (IOException e) {
-            throw programError(e.getMessage());
+            throw programError(e.getMessage(), ErrorBlock.Reason.OTHER);
         }
         return ret;
     }
@@ -66,7 +68,7 @@ public class SourceFile extends Source {
                 position += nextLine.length() + 1;  //+1 for newline
             }
         } catch (IOException e) {
-            throw programError(e.getMessage());
+            throw programError(e.getMessage(), ErrorBlock.Reason.OTHER);
         }
         lineNumber += num;
     }

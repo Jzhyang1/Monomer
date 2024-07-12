@@ -1,10 +1,8 @@
 package systems.monomer.syntaxtree.operators;
 
-import systems.monomer.types.ObjectType;
+import systems.monomer.types.primative.ObjectType;
 import systems.monomer.types.Signature;
 import systems.monomer.types.Type;
-
-import static systems.monomer.syntaxtree.Configuration.create;
 
 /**
  * A node representing a function call.
@@ -30,7 +28,7 @@ public class CallNode extends OperatorNode {
         Type namedArgType = size() > 2 ? get(2).getType() : new ObjectType();
         Signature signature = new Signature(argType, namedArgType, returnType);
 
-        CastToFunctionNode function = create().castToFunctionNode();
+        CastToFunctionNode function = init.castToFunctionNode();
         function.with(getContext()).with(getFirst()).with(signature).matchTypes();
         set(0, function);
         setType(((Signature)function.getType()).getReturnType());

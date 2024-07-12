@@ -1,12 +1,12 @@
 package systems.monomer.variables;
 
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Operand;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.InterpretVariable;
-import systems.monomer.types.ObjectType;
+import systems.monomer.types.primative.ObjectType;
 import systems.monomer.types.Type;
 
-import static systems.monomer.types.AnyType.ANY;
+import static systems.monomer.types.pseudo.AnyType.ANY;
 
 public abstract class Key extends InterpretVariable {
 

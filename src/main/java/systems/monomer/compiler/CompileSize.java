@@ -1,7 +1,7 @@
 package systems.monomer.compiler;
 
 import lombok.Getter;
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Operand;
 
 @Getter
 public class CompileSize {

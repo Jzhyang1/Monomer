@@ -1,7 +1,8 @@
 package systems.monomer;
 
 import org.junit.Test;
-import systems.monomer.commandline.Interpret;
+import systems.monomer.execution.commandline.Interpret;
+import systems.monomer.execution.Constants;
 import systems.monomer.ide.Editor;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.ModuleNode;
@@ -13,8 +14,6 @@ import systems.monomer.tokenizer.Token;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
-
-import static org.junit.Assert.*;
 
 /**
  * some tests fail because Constants is using static variables

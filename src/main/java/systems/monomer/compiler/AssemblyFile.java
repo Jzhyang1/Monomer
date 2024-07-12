@@ -2,8 +2,8 @@ package systems.monomer.compiler;
 
 import lombok.Getter;
 import lombok.Setter;
-import systems.monomer.compiler.Assembly.Instruction;
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Instruction;
+import systems.monomer.compiler.assembly.Operand;
 
 import java.io.IOException;
 import java.io.Writer;

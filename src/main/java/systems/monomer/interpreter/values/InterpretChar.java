@@ -2,10 +2,10 @@ package systems.monomer.interpreter.values;
 
 import lombok.Getter;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.CharType;
+import systems.monomer.types.primitive.CharType;
 
 @Getter
-public class InterpretChar extends CharType implements InterpretValue {
+public final class InterpretChar extends CharType implements InterpretValue {
     private final Character value;
     public InterpretChar(char value) {
         this.value = value;
@@ -16,6 +16,6 @@ public class InterpretChar extends CharType implements InterpretValue {
     }
 
     public InterpretChar clone() {
-        return (InterpretChar) super.clone();
+        return new InterpretChar(value);
     }
 }

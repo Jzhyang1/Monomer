@@ -20,6 +20,9 @@ public class TypeContext {
     @Getter @Setter
     private @Nullable Type returnType;
 
+    public TypeContext(){
+        parent = new ModuleNode(TypeContext.class.getName());
+    }
     public TypeContext(Node parent) {
         this.parent = parent;
     }

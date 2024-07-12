@@ -8,23 +8,37 @@ import java.util.List;
 
 @Getter
 public class ErrorBlock {
-    public static class SyntaxErrorException extends RuntimeException {
+    public enum Reason {
+        SYNTAX, RUNTIME, OTHER
+    };
+
+    public static class ErrorException extends RuntimeException{
+        ErrorException(String message) {
+            super(message);
+        }
+    }
+
+    public static class SyntaxErrorException extends ErrorException {
         SyntaxErrorException(String message) {
             super(message);
         }
     }
 
-    public static class RuntimeErrorException extends RuntimeException {
+    public static class RuntimeErrorException extends ErrorException {
         RuntimeErrorException(String message) {
             super(message);
         }
     }
 
-    public static class ProgramErrorException extends RuntimeException {
-        ProgramErrorException(String message) {
+    public static class ProgramErrorException extends ErrorException {
+        private final Reason reason;
+        ProgramErrorException(String message, Reason reason) {
             super(message);
+            this.reason = reason;
         }
     }
+
+
 
     @Setter
     private Context context = null;
@@ -52,13 +66,21 @@ public class ErrorBlock {
         return new RuntimeErrorException(errorMessage("Runtime Error", message));
     }
 
+    public ErrorException rethrowError(ProgramErrorException former) {
+        return switch (former.reason) {
+            case SYNTAX -> syntaxError(former.getMessage());
+            case RUNTIME -> runtimeError(former.getMessage());
+            case OTHER -> former;
+        };
+    }
+
     /**
      * For errors that are not the user's fault
      * @param message the internal error message
      * @return a RuntimeErrorException
      */
-    public static ProgramErrorException programError(String message) {
-        return new ProgramErrorException("Program Error: " + message);
+    public static ProgramErrorException programError(String message, Reason reason) {
+        return new ProgramErrorException("Program Error: " + message, reason);
     }
 
     private String errorMessage(String type, String message) {

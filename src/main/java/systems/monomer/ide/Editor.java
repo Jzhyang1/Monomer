@@ -1,8 +1,8 @@
 package systems.monomer.ide;
 
-import systems.monomer.Constants;
-import systems.monomer.commandline.Compile;
-import systems.monomer.commandline.Interpret;
+import systems.monomer.execution.Constants;
+import systems.monomer.execution.commandline.Compile;
+import systems.monomer.execution.commandline.Interpret;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
 import systems.monomer.util.Pair;

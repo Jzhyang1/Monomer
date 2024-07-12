@@ -27,7 +27,7 @@ public final class Comparison {
             } else if (first instanceof InterpretString firstString && second instanceof InterpretString secondString) {
                 return stringCallback.apply(firstString.getValue(), secondString.getValue());
             }
-            throw programError("Failed in Comparison.java");
+            throw programError("Failed in Comparison.java", ErrorBlock.Reason.RUNTIME);
         };
     }
 

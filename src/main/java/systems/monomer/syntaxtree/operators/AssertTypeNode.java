@@ -1,10 +1,10 @@
 package systems.monomer.syntaxtree.operators;
 
 import org.jetbrains.annotations.Nullable;
-import systems.monomer.commandline.EnvironmentDefaults.ConvertDefaults;
+import systems.monomer.execution.environmentDefaults.ConvertDefaults;
 import systems.monomer.interpreter.values.InterpretObject;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.ObjectType;
+import systems.monomer.types.primative.ObjectType;
 import systems.monomer.types.OverloadedFunctionType;
 import systems.monomer.types.Signature;
 import systems.monomer.types.Type;
@@ -13,7 +13,7 @@ import systems.monomer.variables.VariableKey;
 
 import java.util.function.BiFunction;
 
-import static systems.monomer.types.AnyType.ANY;
+import static systems.monomer.types.pseudo.AnyType.ANY;
 
 public class AssertTypeNode extends OperatorNode {
     protected Signature convertBy = null;

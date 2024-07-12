@@ -1,18 +1,18 @@
 package systems.monomer.interpreter.values;
 
 import org.jetbrains.annotations.Nullable;
-import systems.monomer.Constants;
-import systems.monomer.types.IOType;
+import systems.monomer.errorhandling.ErrorBlock;
+import systems.monomer.execution.Constants;
+import systems.monomer.types.system.IOType;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariableNode;
-import systems.monomer.syntaxtree.literals.LiteralNode;
-import systems.monomer.types.*;
+import systems.monomer.variables.OverloadedFunction;
 
 import java.io.*;
-import java.util.List;
-import java.util.function.Supplier;
 
 import static systems.monomer.errorhandling.ErrorBlock.programError;
+import static systems.monomer.types.primitive.CharType.CHAR;
+import static systems.monomer.types.primitive.IntType.INT;
+import static systems.monomer.types.collection.StringType.STRING;
 
 public class InterpretIO extends IOType implements InterpretValue {
     public static final InterpretIO STDIO = new InterpretIO(Constants.getListener(), Constants.getOut());
@@ -31,14 +31,14 @@ public class InterpretIO extends IOType implements InterpretValue {
         try {
             return new FileInputStream(source);
         } catch (FileNotFoundException e) {
-            throw programError(e.getMessage() + " (" + source.getPath() + ")");
+            throw programError(e.getMessage() + " (" + source.getPath() + ")", ErrorBlock.Reason.RUNTIME);
         }
     }
     private static OutputStream safeWriter(File source) {
         try {
             return new FileOutputStream(source);
         } catch (FileNotFoundException e) {
-            throw programError(e.getMessage() + " (" + source.getPath() + ")");
+            throw programError(e.getMessage() + " (" + source.getPath() + ")", ErrorBlock.Reason.RUNTIME);
         }
     }
     private static void safeClose(@Nullable Closeable closeable) {
@@ -47,7 +47,7 @@ public class InterpretIO extends IOType implements InterpretValue {
         try {
             closeable.close();
         } catch (IOException e) {
-            throw programError(e.getMessage());
+            throw programError(e.getMessage(), ErrorBlock.Reason.RUNTIME);
         }
     }
 
@@ -67,20 +67,18 @@ public class InterpretIO extends IOType implements InterpretValue {
 
     private void initFields() {
         //io read
-        OverloadedFunctionType readFunction = new OverloadedFunctionType();
-        readFunction.putInterpretOverload(List.of(), (args) -> new InterpretIO.CharReader(() -> InterpretIO.this.readIntent()));
-        readFunction.putInterpretOverload(List.of(), (args) -> new InterpretIO.StringReader(() -> InterpretIO.this.readIntent()));
-        readFunction.putInterpretOverload(List.of(), (args) -> new InterpretIO.IntReader(() -> InterpretIO.this.readIntent()));
-        readFunction.putInterpretOverload(List.of(NumberType.INTEGER), (args) -> new InterpretIO.MultiCharReader(() -> InterpretIO.this.readIntent(), (InterpretVariableNode) args.get(0)));
-
+        OverloadedFunction readFunction = new OverloadedFunction();
+        readFunction.putSupplierInterpretOverload(CHAR, this::readChar);
+        readFunction.putSupplierInterpretOverload(STRING, this::readString);
+        readFunction.putSupplierInterpretOverload(INT, this::readInt);
+        readFunction.putSingleInterpretOverload(INT, STRING, this::readMultichar);
         setField("read", readFunction);
 
         //io write
-        OverloadedFunctionType writeFunction = new OverloadedFunctionType();
-        writeFunction.putInterpretOverload(List.of(CharType.CHAR), (args) -> new InterpretIO.CharWriter(() -> InterpretIO.this.writeIntent(), (InterpretVariableNode) args.get(0)));
-        writeFunction.putInterpretOverload(List.of(StringType.STRING), (args) -> new InterpretIO.StringWriter(() -> InterpretIO.this.writeIntent(), (InterpretVariableNode) args.get(0)));
-        writeFunction.putInterpretOverload(List.of(NumberType.INTEGER), (args) -> new InterpretIO.IntWriter(() -> InterpretIO.this.writeIntent(), (InterpretVariableNode) args.get(0)));
-
+        OverloadedFunction writeFunction = new OverloadedFunction();
+        writeFunction.putSingleInterpretOverload(CHAR, CHAR, this::writeChar);
+        writeFunction.putSingleInterpretOverload(STRING, STRING, this::writeString);
+        writeFunction.putSingleInterpretOverload(INT, INT, this::writeInt);
         setField("write", writeFunction);
     }
 
@@ -97,7 +95,7 @@ public class InterpretIO extends IOType implements InterpretValue {
     private Reader readIntent() {
         if (state == InterpretIO.IOState.READ || state == InterpretIO.IOState.BOTH) return reader;
         else if (state == InterpretIO.IOState.WRITE) safeClose(writer);
-        else if (state == InterpretIO.IOState.CLOSED) throw programError("IO is closed");
+        else if (state == InterpretIO.IOState.CLOSED) throw programError("IO is closed", ErrorBlock.Reason.RUNTIME);
 
         reader = new BufferedReader(new InputStreamReader(safeReader(source)));
         state = InterpretIO.IOState.READ;
@@ -107,7 +105,7 @@ public class InterpretIO extends IOType implements InterpretValue {
     private Writer writeIntent() {
         if (state == InterpretIO.IOState.WRITE || state == InterpretIO.IOState.BOTH) return writer;
         else if (state == InterpretIO.IOState.READ) safeClose(reader);
-        else if (state == InterpretIO.IOState.CLOSED) throw programError("IO is closed");
+        else if (state == InterpretIO.IOState.CLOSED) throw programError("IO is closed", ErrorBlock.Reason.RUNTIME);
 
         writer = new BufferedWriter(new OutputStreamWriter(safeWriter(source)));
         state = InterpretIO.IOState.WRITE;
@@ -118,206 +116,105 @@ public class InterpretIO extends IOType implements InterpretValue {
         return "io";
     }
 
-    public static class CharReader extends LiteralNode {
-        private final Supplier<Reader> reader;
-
-        public CharReader(Supplier<Reader> reader) {
-            this.reader = reader;
-        }
-
-        public InterpretValue interpretValue() {
-            try {
-                return new InterpretChar((char) reader.get().read());
-            } catch (IOException e) {
-                throw programError(e.getMessage());
-            }
-        }
-
-        @Override
-        public void matchTypes() {
-            setType(CharType.CHAR);
+    private InterpretValue readChar() {
+        try {
+            return new InterpretChar((char) readIntent().read());
+        } catch (IOException e) {
+            throw programError(e.getMessage(), ErrorBlock.Reason.RUNTIME);
         }
     }
 
-    public static class MultiCharReader extends LiteralNode {
-        private final Supplier<Reader> reader;
-        private final InterpretVariableNode count;
+    private InterpretValue readMultichar(InterpretValue countValue) {
+//        if(!INTEGER.typeContains(countValue.getType()))
+//            throw programError("expected " + countValue + " to be int, but was " + countValue.getType(), ErrorBlock.Reason.RUNTIME);
 
-        public MultiCharReader(Supplier<Reader> reader, InterpretVariableNode count) {
-            this.reader = reader;
-            this.count = count;
-        }
-
-        public InterpretValue interpretValue() {
-            InterpretValue countValue = count.interpretValue();
-            if(!NumberType.INTEGER.typeContains(countValue.getType()))
-                throw syntaxError("expected " + countValue + " to be int, but was " + countValue.getType());
-
-            try {
-                Reader cachedReader = reader.get();
-                //return new InterpretString(reader.read(count.interpretValue()));
-                int number = ((InterpretNumber) countValue).getValue().intValue();
-                StringBuilder ret = new StringBuilder();
-                for (int i = 0; i < number; i++) {
-                    ret.append((char) cachedReader.read());
-                }
-                return new InterpretString(ret.toString());
-            } catch (IOException e) {
-                throw programError(e.getMessage());
+        try {
+            Reader cachedReader = readIntent();
+            //return new InterpretString(reader.read(count.interpretValue()));
+            int number = ((InterpretNumber) countValue).getValue().intValue();
+            StringBuilder ret = new StringBuilder();
+            for (int i = 0; i < number; i++) {
+                ret.append((char) cachedReader.read());
             }
-        }
-
-        @Override
-        public void matchTypes() {
-            setType(StringType.STRING);
+            return new InterpretString(ret.toString());
+        } catch (IOException e) {
+            throw programError(e.getMessage(), ErrorBlock.Reason.RUNTIME);
         }
     }
 
-    public static class StringReader extends LiteralNode {
-        private final Supplier<Reader> reader;
-
-        public StringReader(Supplier<Reader> reader) {
-            this.reader = reader;
-        }
-
-        public InterpretValue interpretValue() {
-            try {
-                Reader cachedReader = reader.get();
-                StringBuilder ret = new StringBuilder();
-                int c;
-                while ((c = cachedReader.read()) != -1 && c != '\n') {
-                    ret.append((char) c);
-                }
-                return new InterpretString(ret.toString());
-            } catch (IOException e) {
-                throw programError(e.getMessage());
+    private InterpretValue readString() {
+        try {
+            Reader cachedReader = readIntent();
+            StringBuilder ret = new StringBuilder();
+            int c;
+            while ((c = cachedReader.read()) != -1 && c != '\n') {
+                ret.append((char) c);
             }
-        }
-
-        @Override
-        public void matchTypes() {
-            setType(StringType.STRING);
+            return new InterpretString(ret.toString());
+        } catch (IOException e) {
+            throw programError(e.getMessage(), ErrorBlock.Reason.RUNTIME);
         }
     }
 
-    public static class IntReader extends LiteralNode {
-        private final Supplier<Reader> reader;
-
-        public IntReader(Supplier<Reader> reader) {
-            this.reader = reader;
-        }
-
-        public InterpretValue interpretValue() {
-            try {
-                Reader cachedReader = reader.get();
-                StringBuilder ret = new StringBuilder();
-                int c;
-                while ((c = cachedReader.read()) != -1 && c != '\n') {
-                    ret.append((char) c);
-                }
-                return new InterpretNumber<>(Integer.valueOf(ret.toString()));
-            } catch (IOException e) {
-                throw programError(e.getMessage());
+    private InterpretValue readInt() {
+        try {
+            Reader cachedReader = readIntent();
+            StringBuilder ret = new StringBuilder();
+            int c;
+            while ((c = cachedReader.read()) != -1 && c != '\n') {
+                ret.append((char) c);
             }
-        }
-
-        @Override
-        public void matchTypes() {
-            setType(NumberType.INTEGER);
+            return new InterpretNumber<>(Integer.valueOf(ret.toString()));
+        } catch (IOException e) {
+            throw programError(e.getMessage(), ErrorBlock.Reason.RUNTIME);
         }
     }
 
-    public static class IntWriter extends LiteralNode {
-        private final Supplier<Writer> writer;
-        private final InterpretVariableNode val;
 
-        public IntWriter(Supplier<Writer> writer, InterpretVariableNode val) {
-            this.writer = writer;
-            this.val = val;
+
+    private InterpretValue writeInt(InterpretValue iValue) {
+//        if(!INTEGER.typeContains(iValue.getType()))
+//            throw programError("expected " + iValue + " to be int, but was " + iValue.getType(), ErrorBlock.Reason.RUNTIME);
+        int number = ((InterpretNumber) iValue).getValue().intValue();
+
+        Writer cachedWriter = writeIntent();
+        try {
+            cachedWriter.write(String.valueOf(number));
+            cachedWriter.flush();
+        } catch (IOException e) {
+            throw programError(e.getMessage(), ErrorBlock.Reason.RUNTIME);
         }
-
-        public InterpretValue interpretValue() {
-            InterpretValue iValue = val.interpretValue();
-            if(!NumberType.INTEGER.typeContains(iValue.getType()))
-                throw syntaxError("expected " + iValue + " to be int, but was " + iValue.getType());
-            int number = ((InterpretNumber) iValue).getValue().intValue();
-
-            Writer cachedWriter = writer.get();
-            try {
-                cachedWriter.write(String.valueOf(number));
-                cachedWriter.flush();
-            } catch (IOException e) {
-                throw programError(e.getMessage());
-            }
-            return iValue;
-        }
-
-        @Override
-        public void matchTypes() {
-            setType(NumberType.INTEGER);
-        }
+        return iValue;
     }
 
-    public static class CharWriter extends LiteralNode {
-        private final Supplier<Writer> writer;
-        private final InterpretVariableNode val;
+    private InterpretValue writeChar(InterpretValue cValue) {
+//        if(!CHAR.typeContains(cValue.getType()))
+//            throw programError("expected " + cValue + " to be char, but was " + cValue.getType(), ErrorBlock.Reason.RUNTIME);
 
-        public CharWriter(Supplier<Writer> writer, InterpretVariableNode val) {
-            this.writer = writer;
-            this.val = val;
+        Writer cachedWriter = writeIntent();
+        InterpretChar chr = (InterpretChar) cValue;
+
+        try {
+            cachedWriter.write(chr.getValue());
+            cachedWriter.flush();
+        } catch (IOException e) {
+            throw programError(e.getMessage(), ErrorBlock.Reason.RUNTIME);
         }
-
-        public InterpretValue interpretValue() {
-            InterpretValue cValue = val.interpretValue();
-            if(!CharType.CHAR.typeContains(cValue.getType()))
-                throw syntaxError("expected " + cValue + " to be char, but was " + cValue.getType());
-
-            Writer cachedWriter = writer.get();
-            InterpretChar chr = (InterpretChar) cValue;
-
-            try {
-                cachedWriter.write(chr.getValue());
-                cachedWriter.flush();
-            } catch (IOException e) {
-                throw programError(e.getMessage());
-            }
-            return cValue;
-        }
-
-        @Override
-        public void matchTypes() {
-            setType(CharType.CHAR);
-        }
+        return cValue;
     }
 
-    public static class StringWriter extends LiteralNode {
-        private final Supplier<Writer> writer;
-        private final InterpretVariableNode val;
+    private InterpretValue writeString(InterpretValue sValue) {
+//        if(!STRING.typeContains(sValue.getType()))
+//            throw programError("expected " + sValue + " to be string, but was " + sValue.getType(), ErrorBlock.Reason.RUNTIME);
 
-        public StringWriter(Supplier<Writer> writer, InterpretVariableNode val) {
-            this.writer = writer;
-            this.val = val;
+        Writer cachedWriter = writeIntent();
+        InterpretString str = (InterpretString) sValue;
+        try {
+            cachedWriter.write(str.getValue());
+            cachedWriter.flush();
+        } catch (IOException e) {
+            throw programError(e.getMessage(), ErrorBlock.Reason.RUNTIME);
         }
-
-        public InterpretValue interpretValue() {
-            InterpretValue sValue = val.interpretValue();
-            if(!StringType.STRING.typeContains(sValue.getType()))
-                throw syntaxError("expected " + sValue + " to be string, but was " + sValue.getType());
-
-            Writer cachedWriter = writer.get();
-            InterpretString str = (InterpretString) sValue;
-            try {
-                cachedWriter.write(str.getValue());
-                cachedWriter.flush();
-            } catch (IOException e) {
-                throw programError(e.getMessage());
-            }
-            return sValue;
-        }
-
-        @Override
-        public void matchTypes() {
-            setType(StringType.STRING);
-        }
+        return sValue;
     }
 }

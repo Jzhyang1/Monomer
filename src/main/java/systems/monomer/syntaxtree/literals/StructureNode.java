@@ -2,7 +2,7 @@ package systems.monomer.syntaxtree.literals;
 
 import lombok.Getter;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.ObjectType;
+import systems.monomer.types.primative.ObjectType;
 import systems.monomer.variables.Locality;
 import systems.monomer.variables.VariableKey;
 

@@ -1,15 +1,15 @@
 package systems.monomer.tokenizer;
 
 import lombok.NonNull;
-import systems.monomer.Constants;
+import systems.monomer.execution.Constants;
 
 import static systems.monomer.compiler.ArithmeticAssembly.compileNumericalBinary;
-import static systems.monomer.compiler.Assembly.Instruction.*;
+import static systems.monomer.compiler.assembly.Instruction.*;
 
 import systems.monomer.compiler.ArithmeticAssembly;
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Operand;
 
-import static systems.monomer.compiler.Assembly.Register.*;
+import static systems.monomer.compiler.assembly.Register.*;
 
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.operators.CompileOperatorNode;
@@ -19,6 +19,9 @@ import systems.monomer.interpreter.values.*;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.*;
 import systems.monomer.types.*;
+import systems.monomer.types.plural.CollectionType;
+import systems.monomer.types.plural.SequenceType;
+import systems.monomer.types.primative.BoolType;
 import systems.monomer.util.Pair;
 
 import java.io.IOException;
@@ -28,8 +31,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static systems.monomer.errorhandling.ErrorBlock.programError;
-import static systems.monomer.syntaxtree.Configuration.create;
 import static systems.monomer.tokenizer.Arithmetic.*;
 import static systems.monomer.tokenizer.Bitwise.*;
 import static systems.monomer.tokenizer.Lists.*;
@@ -67,19 +68,7 @@ public final class Operator {
                                 BiFunction<CompileOperatorNode, AssemblyFile, Operand> compile,
                                 Function<InterpretOperatorNode, ? extends InterpretResult> interpret,
                                 Function<OperatorNode, Type> type) {
-        Node node = create().genericOperatorNode(symbol, type);
-        Supplier<Node> constructor = switch(create().getType()){
-            case DOC -> null;
-            case COMPILE -> () -> {
-                ((CompileOperatorNode) node).setCompileGenerator(compile);
-                return node;
-            };
-            case INTERPRET -> () -> {
-                ((InterpretOperatorNode) node).setInterpretGenerator(interpret);
-                return node;
-            };
-        };
-        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, constructor));
+        operators.put(symbol, new Operator(fillInfo(info, symbol), prec, prec, ()->Node.init.genericOperatorNode(symbol, type, compile, interpret)));
     }
 
     /**
@@ -253,13 +242,13 @@ public final class Operator {
      */
     @SuppressWarnings({"FeatureEnvy"})
     private static void initControl() {
-        putData("if",       -20, PRIMARY_CONTROL,   create()::ifNode);
-        putData("repeat",   -20, PRIMARY_CONTROL,   create()::repeatNode);
-        putData("while",    -20, PRIMARY_CONTROL,   create()::whileNode);
-        putData("for",      -20, PRIMARY_CONTROL,   create()::forNode);
-        putData("else",     -20, SECONDARY_CONTROL, create()::elseNode);
-        putData("any",      -20, SECONDARY_CONTROL, create()::anyNode);
-        putData("all",      -20, SECONDARY_CONTROL, create()::allNode);
+        putData("if",       -20, PRIMARY_CONTROL,   Node.init::ifNode);
+        putData("repeat",   -20, PRIMARY_CONTROL,   Node.init::repeatNode);
+        putData("while",    -20, PRIMARY_CONTROL,   Node.init::whileNode);
+        putData("for",      -20, PRIMARY_CONTROL,   Node.init::forNode);
+        putData("else",     -20, SECONDARY_CONTROL, Node.init::elseNode);
+        putData("any",      -20, SECONDARY_CONTROL, Node.init::anyNode);
+        putData("all",      -20, SECONDARY_CONTROL, Node.init::allNode);
         putData("break",    -10, PREFIX | SUFFIX,
                 (self, file) -> null,
                 (self) -> new InterpretBreaking("break",
@@ -284,7 +273,7 @@ public final class Operator {
     }
 
     static {
-        putData("=", 0, BINARY | CHAINED | ASSIGN, create()::assignNode);
+        putData("=", 0, BINARY | CHAINED | ASSIGN, Node.init::assignNode);
 //        putData("+=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
 //        putData("-=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
 //        putData("*=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
@@ -293,11 +282,11 @@ public final class Operator {
 //        putData("&=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
 //        putData("|=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
 //        putData("^=", 0,  BINARY | CHAINED | ASSIGN, AssignNode::new);
-        putData(",", 100, BINARY | CHAINED | SUFFIX, create()::tupleNode);
-        putData(";", -1000, BINARY | CHAINED | SUFFIX, create()::linesNode);
-        putData(":", 1500, 150, BINARY, create()::assertTypeNode);
-        putData("as", 5, BINARY, create()::convertNode);
-        putData("to", 5, BINARY, create()::castNode);
+        putData(",", 100, BINARY | CHAINED | SUFFIX, Node.init::tupleNode);
+        putData(";", -1000, BINARY | CHAINED | SUFFIX, Node.init::linesNode);
+        putData(":", 1500, 150, BINARY, Node.init::assertTypeNode);
+        putData("as", 5, BINARY, Node.init::convertNode);
+        putData("to", 5, BINARY, Node.init::castNode);
         putData("@", 5000, PREFIX, (self, file) -> {
             //TODO
             return null;
@@ -308,12 +297,12 @@ public final class Operator {
                 Constants.getOut().write('\n');
                 Constants.getOut().flush();
             } catch (IOException e) {
-                throw programError(e.getMessage());
+                throw self.runtimeError(e.getMessage());
             }
             return first;
         }, (self) -> self.getFirst().getType());
-        putData("with", -5, PREFIX, create()::withNode);
-        putData("then", -5, PREFIX, create()::thenNode);
+        putData("with", -5, PREFIX, Node.init::withNode);
+        putData("then", -5, PREFIX, Node.init::thenNode);
 
         initComparison();
         initBitwise();

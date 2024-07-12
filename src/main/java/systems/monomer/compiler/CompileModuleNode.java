@@ -1,6 +1,6 @@
 package systems.monomer.compiler;
 
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.compiler.assembly.Operand;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.util.Pair;
 import systems.monomer.variables.VariableKey;

@@ -1,7 +1,7 @@
 package systems.monomer.variables;
 
-import systems.monomer.Constants;
-import systems.monomer.compiler.Assembly.Operand;
+import systems.monomer.execution.Constants;
+import systems.monomer.compiler.assembly.Operand;
 import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.literals.InterpretStructureNode;
@@ -15,10 +15,10 @@ import systems.monomer.syntaxtree.controls.ReturnNode;
 import systems.monomer.syntaxtree.literals.StructureNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.syntaxtree.operators.CallNode;
-import systems.monomer.types.AnyType;
-import systems.monomer.types.Signature;
-import systems.monomer.types.TupleType;
-import systems.monomer.types.Type;
+import systems.monomer.types.*;
+import systems.monomer.types.plural.TupleType;
+import systems.monomer.types.pseudo.AnyType;
+import systems.monomer.types.pseudo.IncompleteSignature;
 import systems.monomer.util.Pair;
 import systems.monomer.util.PairList;
 
@@ -31,6 +31,8 @@ public class FunctionBody extends Signature implements InterpretValue {
     private final TupleNode args;
     private final StructureNode namedArgs;
     private final Node body;
+    private final Signature signature;
+
     /**
      * where the variables are stored
      */
@@ -42,6 +44,12 @@ public class FunctionBody extends Signature implements InterpretValue {
         this.namedArgs = namedArgs;
         this.body = body;
         this.parent = parent;
+
+        if(body.getType() == ANY) {
+            signature = new IncompleteSignature(args.getType(), namedArgs.getType(), this);
+        } else {
+            signature = new Signature(args.getType(), namedArgs.getType());
+        }
     }
 
     @Override
@@ -60,6 +68,11 @@ public class FunctionBody extends Signature implements InterpretValue {
     public Type getNamedArgsType() {
         Type t = namedArgs.getType();
         return t == null ? AnyType.ANY : t;
+    }
+
+    @Override
+    public Signature getType() {
+        return signature;
     }
 
     //TODO remove these methods somehow
