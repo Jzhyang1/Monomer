@@ -1,10 +1,7 @@
 package systems.monomer.variables;
 
 import lombok.Getter;
-import lombok.Setter;
-
 import systems.monomer.errorhandling.ErrorBlock;
-import systems.monomer.types.pseudo.AnyType;
 import systems.monomer.types.Type;
 import systems.monomer.types.pseudo.PlaceholderType;
 

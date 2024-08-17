@@ -7,16 +7,14 @@ import systems.monomer.interpreter.InterpretVariableNode;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.literals.StructureNode;
+import systems.monomer.types.Type;
 import systems.monomer.types.function.OverloadableType;
 import systems.monomer.types.signature.Signature;
-import systems.monomer.types.Type;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static systems.monomer.errorhandling.ErrorBlock.programError;
 import static systems.monomer.execution.Handler.init;

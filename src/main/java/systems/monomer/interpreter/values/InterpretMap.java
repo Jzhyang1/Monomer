@@ -8,7 +8,6 @@ import systems.monomer.types.tuple.TupleType;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static systems.monomer.errorhandling.ErrorBlock.programError;

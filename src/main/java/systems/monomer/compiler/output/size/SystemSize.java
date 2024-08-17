@@ -1,7 +1,7 @@
 package systems.monomer.compiler.output.size;
 
-public class SystemSize extends FixedSize {
-    public static SystemSize   B1 = new SystemSize(1), B2 = new SystemSize(2),
+public final class SystemSize extends FixedSize {
+    public static final SystemSize B1 = new SystemSize(1), B2 = new SystemSize(2),
             B4 = new SystemSize(4), B8 = new SystemSize(8), B16 = new SystemSize(16),
             B32 = new SystemSize(32), B64 = new SystemSize(64), B128 = new SystemSize(128),
             B256 = new SystemSize(256);

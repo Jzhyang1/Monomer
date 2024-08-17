@@ -1,10 +1,9 @@
 package systems.monomer.interpreter;
 
+import systems.monomer.compiler.operators.CompileOperatorNode;
 import systems.monomer.compiler.output.CompileOutput;
 import systems.monomer.compiler.output.CompileValue;
-import systems.monomer.compiler.operators.CompileOperatorNode;
 import systems.monomer.execution.Handler;
-import systems.monomer.execution.NodeInit;
 import systems.monomer.execution.environmentDefaults.ConvertDefaults;
 import systems.monomer.execution.environmentDefaults.FileDefaults;
 import systems.monomer.execution.environmentDefaults.TypeDefaults;

@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.Type;
 import systems.monomer.types.object.ObjectType;
 
 import java.io.File;

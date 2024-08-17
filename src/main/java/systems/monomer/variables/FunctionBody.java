@@ -164,20 +164,6 @@ public class FunctionBody extends Signature implements InterpretValue, Interpret
         return isTailRecursive;
     }
 
-    private boolean isTesting = false;
-    public Type testReturnType(Type argType) {
-        if(isTesting) return AnyType.ANY;
-        else isTesting = true;
-
-        TupleType argTypes = TupleType.asTuple(argType);
-        IntStream.range(0, args.size()).forEach((i)->args.get(i).getVariableKey().setType(argTypes.get(i)));
-        args.matchTypes();
-        body.matchTypes();
-
-        isTesting = false;
-        return body.getType();
-    }
-
     @Override
     public int hashCode() {
         return getReturnType().hashCode() + getArgsType().hashCode() * 31 + this.getClass().hashCode() * 31 * 31;

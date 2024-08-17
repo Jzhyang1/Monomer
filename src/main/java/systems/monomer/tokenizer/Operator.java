@@ -374,8 +374,8 @@ public final class Operator {
     }
 
 
-    final int leftPrec, rightPrec;
-    final int info;
+    private final int leftPrec, rightPrec;
+    private final int info;
     private final Supplier<Node> constructor;
     
     private Operator(int info, int leftPrec, int rightPrec, @NonNull Supplier<Node> constructor) {

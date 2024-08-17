@@ -1,14 +1,8 @@
 package systems.monomer.compiler;
 
-import systems.monomer.compiler.CompileNode;
 import systems.monomer.compiler.output.CompileOutput;
 import systems.monomer.compiler.output.CompileValue;
 import systems.monomer.syntaxtree.ModuleNode;
-import systems.monomer.util.Pair;
-import systems.monomer.variables.VariableKey;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CompileModuleNode extends ModuleNode implements CompileNode {
     public CompileModuleNode(String name) {

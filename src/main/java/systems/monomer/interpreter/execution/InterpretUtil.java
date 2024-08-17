@@ -1,6 +1,5 @@
 package systems.monomer.interpreter.execution;
 
-import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.interpreter.InterpretResult;

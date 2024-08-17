@@ -12,7 +12,6 @@ import java.util.TreeMap;
 public class PlaceholderType extends PseudoType {
     @Getter @Setter
     private Type expressed = AnyType.ANY;
-    boolean hasReplaced = false;
 
     public PlaceholderType() {
     }
@@ -24,13 +23,11 @@ public class PlaceholderType extends PseudoType {
 
     @Override
     public boolean hasDependencies() {
-        return !hasReplaced || expressed.hasDependencies();
+        return expressed.hasDependencies();
     }
 
     @Override
     public Type simplify() {
-        if (!hasReplaced) return this;
-
         //to prevent infinite recursion, remove expressed while performing simplify
         Type temp = expressed;
         expressed = ErasedType.ERASED;

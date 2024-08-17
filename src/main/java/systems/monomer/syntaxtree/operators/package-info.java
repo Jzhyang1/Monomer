@@ -9,8 +9,6 @@
  *     <ul>
  *         <li>{@link systems.monomer.syntaxtree.operators.OperatorNode} all operators inherit from this. And manages all operators through its static helper functions</li>
  *         <li>{@link systems.monomer.interpreter.execution.InterpretUtil} contains helper methods for arithmetic operators</li>
- *         <li>{@link systems.monomer.tokenizer.Comparison} contains helper methods for comparison operators</li>
- *         <li>{@link systems.monomer.interpreter.execution.Bitwise} contains helper methods for bitwise/logical operators</li>
  *         <li>{@link systems.monomer.syntaxtree.operators.GenericOperatorNode} all generic operators (add, equals, etc)</li>
  *         <li>{@link systems.monomer.syntaxtree.operators.AssignNode} the assignment node</li>
  *         <li>{@link systems.monomer.syntaxtree.operators.CallNode} the call node</li>
