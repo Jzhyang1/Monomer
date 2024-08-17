@@ -1,21 +1,29 @@
 package systems.monomer.types.collection;
 
-import interpret.InterpretValue;
-import interpret.InterpretValueA;
-import types.Type;
 
-//TODO
+import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.interpreter.values.InterpretRange;
+import systems.monomer.types.Type;
+
 public class RangeType extends CollectionType {
-    public RangeType() {
-    }
-
     public RangeType(Type elementType) {
         super(elementType);
     }
 
     @Override
+    public Type indexResult(Type indexType) {
+        return getElementType();
+    }
+
+    @Override
     public InterpretValue defaultValue() {
-        return new InterpretValueA();
+        InterpretValue defaultElementValue = getElementType().defaultValue();
+        InterpretRange ret = new InterpretRange(getElementType(), true, true);
+        ret.setStart(defaultElementValue);
+        ret.setStop(defaultElementValue);
+        ret.setStep(defaultElementValue);
+
+        return ret;
     }
 
     @Override

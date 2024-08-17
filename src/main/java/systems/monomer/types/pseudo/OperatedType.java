@@ -50,7 +50,7 @@ public class OperatedType extends PseudoType {
 
 
             //handle union expansion
-            if (t instanceof UnionType ut) {
+            if (t instanceof UnionType<?> ut) {
                 isUnion = true;
 
                 if (newUnionType.isEmpty()) newUnionType.addAll(ut.getOptions());

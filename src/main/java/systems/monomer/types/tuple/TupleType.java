@@ -24,13 +24,21 @@ public class TupleType implements Type {
     public TupleType() {
     }
 
-    public TupleType(List<Type> sequence) {
+    public TupleType(List<? extends Type> sequence) {
         this.sequence.addAll(sequence);
     }
 
     @Override
     public List<Type> getChildren() {
         return sequence;
+    }
+
+    public Type get(int i) {
+        return sequence.get(i);
+    }
+
+    public int size() {
+        return sequence.size();
     }
 
 //    @Override

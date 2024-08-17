@@ -1,8 +1,10 @@
 package systems.monomer.syntaxtree.operators;
 
-import systems.monomer.types.primative.ObjectType;
-import systems.monomer.types.Signature;
+import systems.monomer.types.object.ObjectType;
+import systems.monomer.types.signature.Signature;
 import systems.monomer.types.Type;
+
+import static systems.monomer.execution.Handler.init;
 
 /**
  * A node representing a function call.
@@ -31,16 +33,6 @@ public class CallNode extends OperatorNode {
         CastToFunctionNode function = init.castToFunctionNode();
         function.with(getContext()).with(getFirst()).with(signature).matchTypes();
         set(0, function);
-        setType(((Signature)function.getType()).getReturnType());
+        setType(((Signature)function.getType()).getRet());
     }
-
-//    public Operand compileValue(AssemblyFile file) {
-//        file.add(MOV, getSecond().compileValue(file), EAX.toOperand())
-//                .add(CALL, getFirst().compileValue(file), null);
-//
-//        return EAX.toOperand();
-//    }
-//
-//    public CompileSize compileSize() {
-//    }
 }

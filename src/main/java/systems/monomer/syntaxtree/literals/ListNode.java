@@ -3,12 +3,11 @@ package systems.monomer.syntaxtree.literals;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.collection.CollectionType;
 import systems.monomer.types.collection.ListType;
-import systems.monomer.types.plural.SequenceType;
 import systems.monomer.types.Type;
 
 import java.util.Collection;
 
-public class ListNode extends LiteralNode {
+public class ListNode extends ExplicitCollectionNode {
 
     public ListNode() {
         super("list");
@@ -19,24 +18,9 @@ public class ListNode extends LiteralNode {
         addAll(list);
     }
 
-    public void matchTypes() {
-        super.matchTypes();
-        if(getChildren().isEmpty()) {
-            setType(ListType.LIST);
-            return;
-        }
-        Type t = get(0).getType();
-        if(SequenceType.SEQUENCE.typeContains(t)) {
-            setType(new ListType(((CollectionType)t).getElementType()));
-            return;
-        }
-
-        for(int i = size() - 1; i >= 0; --i) {
-            if(!t.typeContains(get(i).getType())) {
-                throw syntaxError("Types of elements in list do not match");
-            }
-        }
-        setType(new ListType(t));
+    @Override
+    protected CollectionType getCollectionType(Type elementType) {
+        return new ListType(elementType);
     }
 
     @Override

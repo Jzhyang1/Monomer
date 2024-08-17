@@ -1,9 +1,9 @@
 package systems.monomer.types.collection;
 
 import systems.monomer.interpreter.values.InterpretString;
-import systems.monomer.types.primative.CharType;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.Type;
+import systems.monomer.types.primitive.CharType;
 
 import java.util.Map;
 

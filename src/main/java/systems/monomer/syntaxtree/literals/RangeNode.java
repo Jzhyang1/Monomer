@@ -2,6 +2,7 @@ package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.interpreter.values.InterpretRanges;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.types.collection.RangeType;
 
 
 public class RangeNode extends LiteralNode {
@@ -21,6 +22,7 @@ public class RangeNode extends LiteralNode {
     @Override
     public void matchTypes() {
         super.matchTypes();
-        setType(new InterpretRanges(get(0).getType())); //TODO first and second could be different types
+        //TODO first and second could be different types
+        setType(new RangeType(get(0).getType()));
     }
 }

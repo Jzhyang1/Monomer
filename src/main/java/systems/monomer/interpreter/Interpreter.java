@@ -1,9 +1,10 @@
 package systems.monomer.interpreter;
 
-import systems.monomer.compiler.AssemblyFile;
-import systems.monomer.compiler.assembly.Operand;
+import systems.monomer.compiler.output.CompileOutput;
+import systems.monomer.compiler.output.CompileValue;
 import systems.monomer.compiler.operators.CompileOperatorNode;
-import systems.monomer.execution.Initializer;
+import systems.monomer.execution.Handler;
+import systems.monomer.execution.NodeInit;
 import systems.monomer.execution.environmentDefaults.ConvertDefaults;
 import systems.monomer.execution.environmentDefaults.FileDefaults;
 import systems.monomer.execution.environmentDefaults.TypeDefaults;
@@ -11,6 +12,9 @@ import systems.monomer.execution.environmentDefaults.ValueDefaults;
 import systems.monomer.interpreter.controls.*;
 import systems.monomer.interpreter.literals.*;
 import systems.monomer.interpreter.operators.*;
+import systems.monomer.interpreter.variables.InterpretFieldKey;
+import systems.monomer.interpreter.variables.InterpretIndexKey;
+import systems.monomer.interpreter.variables.InterpretKey;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.VariableNode;
@@ -20,21 +24,26 @@ import systems.monomer.syntaxtree.operators.*;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.Token;
 import systems.monomer.types.Type;
+import systems.monomer.variables.FieldKey;
+import systems.monomer.variables.IndexKey;
+import systems.monomer.variables.Key;
+import systems.monomer.variables.VariableKey;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class Interpreter implements Initializer {
+public class Interpreter extends Handler {
     public static void interpret(Source source, boolean defaults, InputStream input, OutputStream output) {
-        Node.init = new Interpreter();
+        init = new Interpreter();
 
         Token body = source.parse();
         Node node = body.toNode();
-        InterpretModuleNode global = (InterpretModuleNode) Node.init.moduleNode(source.getTitle());
+        InterpretModuleNode global = (InterpretModuleNode) init.moduleNode(source.getTitle());
 
         //global constants here
         if(defaults) {
@@ -156,14 +165,17 @@ public class Interpreter implements Initializer {
     public SpreadNode spreadNode() {
         throw new RuntimeException("Spread has not been implemented");
     }
-    public WithThenNode withThenNode(String name) {
-        return new InterpretWithThenNode(name);
+    public WithNode withNode() {
+        return new InterpretWithNode();
+    }
+    public ThenNode thenNode() {
+        return new InterpretThenNode();
     }
     public GenericOperatorNode genericOperatorNode(
             String name,
             Function<OperatorNode, Type> type,
-            BiFunction<CompileOperatorNode, AssemblyFile, Operand> compile,
-            Function<InterpretOperatorNode, ? extends InterpretResult> interpret
+            Function<GenericOperatorNode, BiFunction<CompileOperatorNode, CompileOutput, CompileValue>> compile,
+            Function<GenericOperatorNode, Function<Iterator<InterpretValue>, ? extends InterpretResult>> interpret
     ) {
         InterpretOperatorNode ret = new InterpretOperatorNode(name, type);
         ret.setInterpretGenerator(interpret);
@@ -175,5 +187,15 @@ public class Interpreter implements Initializer {
     }
     public VariableNode variableNode(String name) {
         return new InterpretVariableNode(name);
+    }
+
+    public VariableKey variableKey() {
+        return new InterpretKey();
+    }
+    public FieldKey fieldKey(String name, Key parent) {
+        return new InterpretFieldKey(name, parent);
+    }
+    public IndexKey indexKey(IndexNode owner) {
+        return new InterpretIndexKey(owner);
     }
 }

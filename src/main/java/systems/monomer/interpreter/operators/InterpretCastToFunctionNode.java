@@ -3,9 +3,10 @@ package systems.monomer.interpreter.operators;
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.values.InterpretOverloads;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.syntaxtree.operators.CastToFunctionNode;
-import systems.monomer.variables.OverloadedFunction;
+import systems.monomer.variables.Overloadable;
 
 public class InterpretCastToFunctionNode extends CastToFunctionNode implements InterpretNode {
     @Override
@@ -23,8 +24,8 @@ public class InterpretCastToFunctionNode extends CastToFunctionNode implements I
         InterpretValue value = result.asValue();
 
         if(functionIndex < 0) return value;
-        if(value instanceof OverloadedFunction overloadedFunction)
-            return overloadedFunction.getFunction(functionIndex);
+        if(value instanceof InterpretOverloads overloadedFunction)
+            return overloadedFunction.getOverload(functionIndex);
 
         throw syntaxError("Expected a function, but got " + value);
     }

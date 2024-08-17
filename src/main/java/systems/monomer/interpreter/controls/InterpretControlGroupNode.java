@@ -2,7 +2,7 @@ package systems.monomer.interpreter.controls;
 
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretResult;
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.interpreter.values.InterpretTuple;
 import systems.monomer.syntaxtree.controls.ControlGroupNode;
 
@@ -19,7 +19,7 @@ public class InterpretControlGroupNode extends ControlGroupNode implements Inter
     public InterpretResult interpretValue() {
         boolean previousSuccess = false, previousFailure = false;
 
-        List<InterpretControlNode> children = (List) getChildrenInterpretNodes();
+        List<InterpretControlNode> children = getChildrenInterpretNodes();
         int size = children.size();
 
         InterpretControlResult result = children.get(0).interpretControl(previousSuccess, previousFailure, InterpretTuple.EMPTY);

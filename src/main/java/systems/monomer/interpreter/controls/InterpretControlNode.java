@@ -4,7 +4,7 @@ import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.types.primative.BoolType;
+import systems.monomer.types.primitive.BoolType;
 
 import static systems.monomer.errorhandling.ErrorBlock.programError;
 import static systems.monomer.interpreter.controls.InterpretControls.InterpretControlResult;
@@ -20,7 +20,7 @@ public interface InterpretControlNode extends InterpretNode {
         InterpretResult conditionResult = getFirstInterpretNode().interpretValue();
         InterpretValue condition = conditionResult.asValue();
         if (!conditionResult.isValue() || !BoolType.BOOL.typeContains(condition)) {
-            throw programError("Condition must be a boolean, got " + condition.getType(), ErrorBlock.Reason.RUNTIME);
+            throw programError("Condition must be a boolean, got " + condition, ErrorBlock.Reason.RUNTIME);
         }
         return condition.<Boolean>getValue();
     }

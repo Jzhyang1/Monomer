@@ -14,34 +14,42 @@ import static systems.monomer.errorhandling.ErrorBlock.programError;
  * try to use .union whenever possible; UnionType is used primarily to temporarily hold PlaceholderTypes
  */
 @Getter
-public class UnionType extends PseudoType {
+public class UnionType<T extends Type> extends PseudoType {
     //TODO cache whether options is simplified
-    private final List<Type> options = new LinkedList<>();
+    private final List<T> options = new LinkedList<>();
     private boolean isSimplified = false;
 
     public UnionType() {
     }
 
-    public UnionType(Collection<? extends Type> options) {
+    public UnionType(Collection<? extends T> options) {
         this.options.addAll(options);
     }
 
+    /**
+     * adds an option to the UnionType
+     */
+    public void add(T option) {
+        options.add(option);
+        isSimplified = false;
+    }
 
     /**
      * flattens all union types and removes duplicates
      *
      * @return this
      */
-    protected UnionType simplifyOptions() {
+    protected UnionType<T> simplifyOptions() {
         if(isSimplified) return this;
 
         //flatten all internal UnionTypes
         //similar to FlatTupleType.simplifyTuple
-        for (ListIterator<Type> iter = options.listIterator(); iter.hasNext(); ) {
+        for (ListIterator<T> iter = options.listIterator(); iter.hasNext(); ) {
             if (iter.next() instanceof UnionType ut) {
                 iter.remove();
+                List<T> tList = ut.simplifyOptions().options;
 
-                for (Type t : ut.simplifyOptions().options) iter.add(t);
+                for (T t : tList) iter.add(t);
             }
         }
 
@@ -49,10 +57,10 @@ public class UnionType extends PseudoType {
         //remove any ErasedTypes
         options.sort(null);    //most inclusive types to the left
 
-        ListIterator<Type> uniqueIter = options.listIterator();  //iterator pointing to position after the last unique value
-        Type lastUnique = uniqueIter.next();   //the value of the last unique value
+        ListIterator<T> uniqueIter = options.listIterator();  //iterator pointing to position after the last unique value
+        T lastUnique = uniqueIter.next();   //the value of the last unique value
 
-        for (Type t : options.subList(1, options.size())) {
+        for (T t : options.subList(1, options.size())) {
             //use typeContains to keep the most inclusive types
             if (!lastUnique.typeContains(t) && t != ErasedType.ERASED) {
                 uniqueIter.next();  //point to next available space
@@ -73,7 +81,7 @@ public class UnionType extends PseudoType {
     @Override
     public Type simplify() {
         //simplify all component types
-        options.replaceAll(Type::simplify);
+        options.replaceAll(e->(T)e.simplify());
 
         simplifyOptions();
 
@@ -96,7 +104,7 @@ public class UnionType extends PseudoType {
 
     @Override
     public Type unwrapReturns() {
-        options.replaceAll(Type::unwrapReturns);
+        options.replaceAll(e->(T)e.unwrapReturns());
         isSimplified = false;
         return this;
     }
@@ -109,8 +117,8 @@ public class UnionType extends PseudoType {
         ut.simplifyOptions();
 
         //2 pointers
-        Iterator<Type> refIter = options.iterator();
-        Iterator<Type> compIter = ut.options.iterator();
+        Iterator<T> refIter = options.iterator();
+        Iterator<T> compIter = ut.options.iterator();
 
         while (compIter.hasNext()) {
             if (!refIter.hasNext()) return false;

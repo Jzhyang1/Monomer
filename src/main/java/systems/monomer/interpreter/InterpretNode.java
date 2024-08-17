@@ -1,6 +1,8 @@
 package systems.monomer.interpreter;
 
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.syntaxtree.Node;
+import systems.monomer.util.CastingList;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ public interface InterpretNode {
 
 
     Node get(int i);
-    List<? extends Node> getChildren();
+    List<Node> getChildren();
 
     default InterpretNode getInterpretNode(int i) {
         return (InterpretNode) get(i);
@@ -40,7 +42,7 @@ public interface InterpretNode {
         return (InterpretNode) get(1);
     }
 
-    default List<InterpretNode> getChildrenInterpretNodes() {
-        return (List<InterpretNode>) (List) getChildren();
+    default<T extends InterpretNode> List<T> getChildrenInterpretNodes() {
+        return new CastingList<>(getChildren());
     }
 }

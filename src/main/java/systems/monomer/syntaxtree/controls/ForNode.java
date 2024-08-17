@@ -2,8 +2,9 @@ package systems.monomer.syntaxtree.controls;
 import systems.monomer.interpreter.values.InterpretSequence;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
-import systems.monomer.types.plural.CollectionType;
+import systems.monomer.types.collection.CollectionType;
 import systems.monomer.types.Type;
+import systems.monomer.types.collection.SequenceType;
 import systems.monomer.variables.Key;
 
 public class ForNode extends ControlOperatorNode {
@@ -28,7 +29,7 @@ public class ForNode extends ControlOperatorNode {
 
         Node secondNode = getSecond();
         secondNode.matchTypes();
-        setType(new InterpretSequence(secondNode.getType()));
+        setType(new SequenceType(secondNode.getType()));
     }
 
     public void matchVariables() {

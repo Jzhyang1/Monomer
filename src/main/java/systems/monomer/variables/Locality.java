@@ -17,10 +17,4 @@ public interface Locality {
         if(ret != null) return ret;
         return getParent() == null ? null : getParent().getVariable(varName);
     }
-
-    default void initVariables() {
-        for(VariableKey key : getVariables().values()) {
-            key.setValue(key.getType().defaultValue());
-        }
-    }
 }

@@ -2,7 +2,6 @@ package systems.monomer.execution.commandline;
 
 import systems.monomer.compiler.Compiler;
 import systems.monomer.ide.MonomerIdle;
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Option;

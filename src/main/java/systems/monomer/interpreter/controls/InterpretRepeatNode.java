@@ -1,24 +1,24 @@
 package systems.monomer.interpreter.controls;
 
-import systems.monomer.interpreter.InterpretNode;
+import systems.monomer.interpreter.InterpretLocality;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.values.InterpretInt;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.interpreter.values.InterpretBreaking;
-import systems.monomer.interpreter.values.InterpretNumber;
 import systems.monomer.interpreter.values.InterpretSequence;
 import systems.monomer.syntaxtree.controls.RepeatNode;
 
 import static systems.monomer.interpreter.controls.InterpretControls.InterpretControlResult;
 
-public class InterpretRepeatNode extends RepeatNode implements InterpretControlNode {
+public class InterpretRepeatNode extends RepeatNode implements InterpretControlNode, InterpretLocality {
     public InterpretControlResult interpretControl(boolean previousSuccess, boolean previousFailure, InterpretValue previousValue) {
         InterpretResult maybeRepetitionsResult = getFirstInterpretNode().interpretValue();
         if(!maybeRepetitionsResult.isValue()) throw getFirst().runtimeError("Unexpected return in condition for repeat operator");
 
         InterpretValue maybeRepetitions = maybeRepetitionsResult.asValue();
-        if(maybeRepetitions instanceof InterpretNumber<?> repetitions) {
-            int numRepetitions = repetitions.getValue().intValue();
+        if(maybeRepetitions instanceof InterpretInt repetitions) {
+            int numRepetitions = repetitions.getValue();
             InterpretSequence ret = new InterpretSequence(getSecond().getType());
 
             for(int i = 0; i < numRepetitions; i++) {

@@ -5,9 +5,12 @@ import lombok.experimental.UtilityClass;
 import java.util.*;
 import java.util.function.BiFunction;
 
-@UtilityClass
-public class Util {
-    public <T, U> T pairCheck(Collection<U> col1, Collection<U> col2, BiFunction<U, U, T> callback, T nullValue) {
+public final class Util {
+    public static int boolAsInt(boolean b) {
+        return b ? 1 : 0;
+    }
+
+    public static <T, U> T pairCheck(Collection<U> col1, Collection<U> col2, BiFunction<U, U, T> callback, T nullValue) {
         Iterator<U> iter1 = col1.iterator();
         Iterator<U> iter2 = col2.iterator();
 
@@ -19,13 +22,11 @@ public class Util {
         return nullValue;
     }
 
-    public <T extends Comparable<T>> int lowerBound(List<? extends T> col, T value) {
+    public static <T extends Comparable<T>> int lowerBound(List<? extends T> col, T value) {
         int i = Collections.binarySearch(col, value);
         while(value.compareTo(col.get(i-1)) <= 0) {
             --i;
         }
         return i;
     }
-
-    public Map EMPTY_MAP = Collections.unmodifiableMap(new HashMap<>());
 }

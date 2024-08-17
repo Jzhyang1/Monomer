@@ -1,9 +1,11 @@
 package systems.monomer.interpreter.controls;
 
+import systems.monomer.interpreter.InterpretLocality;
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.variables.InterpretKey;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.interpreter.values.InterpretBreaking;
 import systems.monomer.interpreter.values.InterpretCollection;
 import systems.monomer.interpreter.values.InterpretSequence;
@@ -12,7 +14,7 @@ import static systems.monomer.interpreter.controls.InterpretControls.InterpretCo
 
 import java.util.Iterator;
 
-public class InterpretForNode extends ForNode implements InterpretControlNode {
+public class InterpretForNode extends ForNode implements InterpretControlNode, InterpretLocality {
     public InterpretControlResult interpretControl(boolean previousSuccess, boolean previousFailure, InterpretValue previousValue) {
         InterpretNode firstNode = getFirstInterpretNode();
         InterpretNode collection = firstNode.getSecondInterpretNode();
@@ -29,7 +31,7 @@ public class InterpretForNode extends ForNode implements InterpretControlNode {
             while(iter.hasNext()) {
                 initVariables();
                 InterpretValue val = iter.next();
-                iteratorKey.setValue(val);
+                ((InterpretKey) iteratorKey).setValue(val);
 
 
                 //TODO set iterator variable within the Monomer loop

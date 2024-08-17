@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Getter
 public class ModuleNode extends Node implements Locality {
     public ModuleNode(String name) {
         super(name);
@@ -17,7 +18,6 @@ public class ModuleNode extends Node implements Locality {
         return Usage.MODULE;
     }
 
-    @Getter
     private final Map<String, VariableKey> variables = new HashMap<>();
     @Override
     public VariableKey getVariable(String varName) {
@@ -38,11 +38,5 @@ public class ModuleNode extends Node implements Locality {
                         (a, b) -> b,
                         HashMap::new
                 ));
-    }
-    public void setVariableValues(Map<String, VariableKey> values) {
-        for(Map.Entry<String, VariableKey> entry : values.entrySet()) {
-            VariableKey original = variables.get(entry.getKey());
-            original.setValue(entry.getValue().getValue());
-        }
     }
 }

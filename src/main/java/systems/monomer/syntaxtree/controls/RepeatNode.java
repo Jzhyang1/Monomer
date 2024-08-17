@@ -1,6 +1,7 @@
 package systems.monomer.syntaxtree.controls;
 
 import systems.monomer.interpreter.values.InterpretSequence;
+import systems.monomer.types.collection.SequenceType;
 
 public class RepeatNode extends ControlOperatorNode {
     public RepeatNode() {
@@ -8,7 +9,7 @@ public class RepeatNode extends ControlOperatorNode {
     }
     public void matchTypes() {
         super.matchTypes();
-        setType(new InterpretSequence(getType()));
+        setType(new SequenceType(getType()));
     }
 
 }

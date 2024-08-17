@@ -1,11 +1,16 @@
 package systems.monomer.types.pseudo;
 
-import types.Type;
+
+import lombok.Getter;
+import lombok.Setter;
+import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.types.Type;
 
 import java.util.Map;
 import java.util.TreeMap;
 
 public class PlaceholderType extends PseudoType {
+    @Getter @Setter
     private Type expressed = AnyType.ANY;
     boolean hasReplaced = false;
 
@@ -16,18 +21,6 @@ public class PlaceholderType extends PseudoType {
         this.expressed = expressed;
     }
 
-
-    /**
-     * stores the replacement to _this_
-     *
-     * @param newT the replacement type
-     * @return this
-     */
-    public Type replace(Type newT) {
-        hasReplaced = true;
-        expressed = newT;
-        return this;
-    }
 
     @Override
     public boolean hasDependencies() {
@@ -52,7 +45,12 @@ public class PlaceholderType extends PseudoType {
         return ret;
     }
 
-//    @Override
+    @Override
+    public InterpretValue defaultValue() {
+        return expressed.defaultValue();
+    }
+
+    //    @Override
 //    public boolean typeContains(Type other) {
 //        return (other instanceof PlaceholderType pt) ? expressed.typeContains(pt.expressed) : expressed.typeContains(other);
 //    }

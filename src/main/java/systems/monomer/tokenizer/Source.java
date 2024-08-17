@@ -7,6 +7,8 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 import static systems.monomer.execution.Constants.*;
+import static systems.monomer.tokenizer.Operator.BINARY;
+import static systems.monomer.tokenizer.Operator.PREFIX;
 
 //TODO needs optimization, especially for matching operators
 public abstract class Source {
@@ -224,8 +226,10 @@ public abstract class Source {
                     break;
                 } else {
                     Token lastToken = ret.getLast();
+                    String lastValue = lastToken.getValue();
                     if (!(lastToken.getUsage() == Token.Usage.OPERATOR &&
-                            Operator.isBreaking(lastToken.getValue()))) {
+                            //if ending in a prefix or binary operator, the line is not finished yet
+                            (Operator.isToken(lastValue, PREFIX) || Operator.isToken(lastValue, BINARY)))) {
                         ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
                     }
                 }

@@ -1,40 +1,33 @@
 package systems.monomer.syntaxtree.operators;
 
-import systems.monomer.interpreter.values.*;
+import org.jetbrains.annotations.NotNull;
 import systems.monomer.types.*;
-import systems.monomer.types.plural.CollectionType;
-import systems.monomer.types.plural.ListType;
-import systems.monomer.types.primative.NumberType;
-import systems.monomer.types.pseudo.AnyType;
-import systems.monomer.variables.VariableKey;
+import systems.monomer.types.collection.CollectionType;
+import systems.monomer.variables.IndexKey;
 
 public class IndexNode extends OperatorNode {
+    private final IndexKey indexKey;
+
     public IndexNode() {
         super("index");
+        indexKey = new IndexKey(this);
     }
 
     @Override
     public void matchTypes() {
         super.matchTypes();
-        if (!ListType.LIST.typeContains(getFirst().getType()))    //TODO add support for other collection types
-            throw syntaxError("Cannot index non-collection type " + getFirst().getType());
-        if (!getSecond().getType().equals(NumberType.INTEGER) && !(getSecond().getType() instanceof InterpretRanges)) //TODO replace Instanceof check
-            throw syntaxError("Cannot index with type " + getSecond().getType());
-
-        Type elementType = ((CollectionType) getFirst().getType()).getElementType();
-        setType(elementType);
+        if(getFirst().getType() instanceof CollectionType colType) {
+            Type indexType = getSecond().getType();
+            Type accessedType = colType.indexResult(indexType);
+            setType(accessedType);
+        } else {
+            throw syntaxError("Cannot index into non-collection type: " + getFirst().getType());
+        }
     }
 
     @Override
-    public VariableKey getVariableKey() {
-        return new VariableKey() {
-            @Override
-            public void setType(Type type) {
-                if (IndexNode.this.getType() == AnyType.ANY)
-                    IndexNode.this.setType(type);
-                else if (!IndexNode.this.getType().typeContains(type))
-                    throw IndexNode.this.syntaxError("Type mismatch: " + IndexNode.this.getType() + " and " + type);
-            }
-        };
+    @NotNull
+    public IndexKey getVariableKey() {
+        return indexKey;
     }
 }

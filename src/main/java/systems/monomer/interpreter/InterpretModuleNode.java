@@ -1,12 +1,16 @@
 package systems.monomer.interpreter;
 
 import systems.monomer.interpreter.values.InterpretTuple;
+import systems.monomer.interpreter.variables.InterpretKey;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.syntaxtree.ModuleNode;
+import systems.monomer.variables.VariableKey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class InterpretModuleNode extends ModuleNode implements InterpretNode {
+public class InterpretModuleNode extends ModuleNode implements InterpretNode, InterpretLocality {
 
     public InterpretModuleNode(String name) {
         super(name);
@@ -28,5 +32,13 @@ public class InterpretModuleNode extends ModuleNode implements InterpretNode {
             ret.add(result.asValue());
         }
         return new InterpretTuple(ret);
+    }
+
+    public void setVariableValues(Map<String, VariableKey> values) {
+        for(Map.Entry<String, VariableKey> entry : values.entrySet()) {
+            InterpretKey original = (InterpretKey) getVariables().get(entry.getKey());
+            InterpretKey modified = (InterpretKey) entry.getValue();
+            original.setValue(modified.getValue());
+        }
     }
 }

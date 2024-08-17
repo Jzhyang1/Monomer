@@ -6,11 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import systems.monomer.execution.Constants;
 import systems.monomer.errorhandling.Context;
 import systems.monomer.errorhandling.Index;
-import systems.monomer.execution.Initializer;
-import systems.monomer.interpreter.InterpretResult;
-import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.errorhandling.ErrorBlock;
-import systems.monomer.interpreter.Interpreter;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.types.pseudo.AnyType;
 import systems.monomer.types.Type;
@@ -23,8 +19,6 @@ import java.util.ArrayList;
 
 @Getter
 public abstract class Node extends ErrorBlock {
-    public static Initializer init = new Interpreter();
-
     public enum Usage {
         OPERATOR, LITERAL, IDENTIFIER, LABEL, CONTROL_GROUP, MODULE
     }
@@ -50,7 +44,7 @@ public abstract class Node extends ErrorBlock {
     private boolean isVolatile = false;
 
 
-    public Node(String name) {
+    protected Node(String name) {
         this.name = name;
     }
 
@@ -86,8 +80,8 @@ public abstract class Node extends ErrorBlock {
         add(node);
         return this;
     }
-    public Node with(Collection<? extends Node> children) {
-        addAll(children);
+    public Node with(Collection<? extends Node> nodes) {
+        addAll(nodes);
         return this;
     }
     public Node with(Context context) {
@@ -98,13 +92,13 @@ public abstract class Node extends ErrorBlock {
         setContext(start, stop, source);
         return this;
     }
-    public Node with(Type type) {
-        setType(type);
+    public Node with(Type newType) {
+        setType(newType);
         return this;
     }
 
-    public final void addAll(Collection<? extends Node> children) {
-        for (Node child : children)
+    public final void addAll(Collection<? extends Node> nodes) {
+        for (Node child : nodes)
             add(child);
     }
     public final int size() {
@@ -128,17 +122,15 @@ public abstract class Node extends ErrorBlock {
     }
 
     /**
-     * Finds the type of this node under the given context.
-     * Usually this is the same as getType(), but if the type is incomplete
-     * (i.e. it is of type ANY in a function), this will help resolve the type.
-     * No side-effects should be performed in this method.
-     * @param context variables in scope
-     * @return the type of this node
+     * sets whether this node is the destination of an assignment (ie the left side of an assignment).
+     * This is used primarily in VariableNode. False by default.
+     * @param isDestination true if this node is the destination of an assignment, false if this node is a value
      */
-    public Type testType(TypeContext context) {
-        return getType();
+    public void setIsDestination(boolean isDestination) {
+        for (Node child : children) {
+            child.setIsDestination(isDestination);
+        }
     }
-
 
     /**
      * True if the value of this node is used (determines
@@ -152,14 +144,17 @@ public abstract class Node extends ErrorBlock {
         }
     }
 
-    protected InterpretResult checkedResult(InterpretResult result) {
-        if(!result.isValue()) return result;
-
-        InterpretValue value = result.asValue();
-        if(getType() == AnyType.ANY) return result;
-        if(value.getType().typeContains(getType())) return result;
-        return result;  //TODO this is just here for production
-//        else throw syntaxError("Internal error (please report as bug) " + value.getType() + " received when expecting " + getType());
+    /**
+     * simplifies the node; this is where post-matching processes occurs
+     * (i.e. storing the conversion function). In general, anything that
+     * requires correct types (simplification, removal of extra nodes,
+     * caching, etc) will be written here.
+     * _this_ may be modified
+     * @return usually this, but sometimes the simplified node
+     */
+    //@Forbid non-simplified type
+    public Node simplify() {
+        return this;
     }
 
     protected String toString(int tabs) {

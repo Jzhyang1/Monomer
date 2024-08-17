@@ -1,6 +1,6 @@
 package systems.monomer.syntaxtree.controls;
 
-import systems.monomer.interpreter.values.InterpretSequence;
+import systems.monomer.types.collection.SequenceType;
 
 public class WhileNode extends ControlOperatorNode {
     public WhileNode() {
@@ -8,6 +8,6 @@ public class WhileNode extends ControlOperatorNode {
     }
     public void matchTypes() {
         super.matchTypes();
-        setType(new InterpretSequence(getType()));
+        setType(new SequenceType(getType()));
     }
 }

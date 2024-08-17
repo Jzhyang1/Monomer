@@ -17,9 +17,6 @@ public class Index {
     public int getRow() {
         return y + 1;
     }
-    public int getCol() {
-        return x + 1;
-    }
 
     public String toString() {
         return "(%d,%d)@%d".formatted(x,y,position);

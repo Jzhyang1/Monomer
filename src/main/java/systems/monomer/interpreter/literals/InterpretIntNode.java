@@ -2,8 +2,8 @@ package systems.monomer.interpreter.literals;
 
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
-import systems.monomer.interpreter.values.InterpretNumber;
+import systems.monomer.interpreter.variables.InterpretVariable;
+import systems.monomer.interpreter.values.InterpretInt;
 import systems.monomer.syntaxtree.literals.IntNode;
 
 public class InterpretIntNode extends IntNode implements InterpretNode {
@@ -18,7 +18,7 @@ public class InterpretIntNode extends IntNode implements InterpretNode {
 
     @Override
     public InterpretValue interpretValue() {
-        return new InterpretNumber<>(value);
+        return new InterpretInt(value);
     }
 
 }

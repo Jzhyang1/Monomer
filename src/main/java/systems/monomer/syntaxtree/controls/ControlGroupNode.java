@@ -1,8 +1,5 @@
 package systems.monomer.syntaxtree.controls;
 
-import systems.monomer.compiler.assembly.Operand;
-import systems.monomer.compiler.AssemblyFile;
-import systems.monomer.compiler.CompileSize;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.types.pseudo.AnyType;
@@ -45,13 +42,5 @@ public class ControlGroupNode extends OperatorNode {
     }
     public ControlOperatorNode getSecond() {
         return (ControlOperatorNode) super.getSecond();
-    }
-
-    public Operand compileValue(AssemblyFile file) {
-        throw new Error("TODO unimplemented");
-    }
-
-    public CompileSize compileSize() {
-        throw new Error("TODO unimplemented");
     }
 }

@@ -8,7 +8,7 @@ public abstract class OperatorNode extends Node {
         return node.getUsage() == Usage.OPERATOR && (name == null || node.getName().equals(name));
     }
 
-    public OperatorNode(String name) {
+    protected OperatorNode(String name) {
         super(name);
     }
 

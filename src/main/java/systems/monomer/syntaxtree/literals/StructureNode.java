@@ -1,30 +1,19 @@
 package systems.monomer.syntaxtree.literals;
 
 import lombok.Getter;
-import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.primative.ObjectType;
+import systems.monomer.types.object.ObjectType;
 import systems.monomer.variables.Locality;
 import systems.monomer.variables.VariableKey;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+@Getter
 public class StructureNode extends LiteralNode implements Locality {
-    public static final StructureNode EMPTY = new StructureNode();
-
-    @Getter
     private final Map<String, VariableKey> variables = new HashMap<>();
 
     public StructureNode(){}
-    public StructureNode(List<Node> children) {
-        children.forEach(this::add);
-    }
-
-    public static boolean isStructure(Node dest) {
-        return dest instanceof StructureNode;   //TODO
-    }
 
     public Collection<String> getFieldNames() {
         return variables.keySet();
@@ -43,7 +32,7 @@ public class StructureNode extends LiteralNode implements Locality {
         super.matchTypes();
         ObjectType ret = new ObjectType();
         for(Map.Entry<String, VariableKey> entry : variables.entrySet()) {
-            ret.setField(entry.getKey(), entry.getValue());
+            ret.setField(entry.getKey(), entry.getValue().getType());
         }
         setType(ret);
     }

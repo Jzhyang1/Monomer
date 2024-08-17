@@ -3,7 +3,7 @@ package systems.monomer.interpreter.operators;
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.interpreter.values.InterpretTuple;
 import systems.monomer.syntaxtree.operators.AssignNode;
 
@@ -15,8 +15,10 @@ public class InterpretAssignNode extends AssignNode implements InterpretNode {
     }
 
     public InterpretResult interpretValue() {
-        if(functionInit != null)
+        if(functionInit != null) {
+            //TODO
             return InterpretTuple.EMPTY;
+        }
 
         InterpretNode valueNode = getInterpretNode(size() - 1);
         InterpretResult valueResult = valueNode.interpretValue();

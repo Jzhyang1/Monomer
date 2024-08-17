@@ -3,7 +3,7 @@ package systems.monomer.interpreter.literals;
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.interpreter.values.InterpretTuple;
 import systems.monomer.syntaxtree.literals.TupleNode;
 

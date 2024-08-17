@@ -1,14 +1,15 @@
 package systems.monomer.variables;
 
 import systems.monomer.execution.Constants;
-import systems.monomer.compiler.assembly.Operand;
-import systems.monomer.compiler.AssemblyFile;
+import systems.monomer.interpreter.InterpretFunction;
+import systems.monomer.interpreter.InterpretModuleNode;
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.literals.InterpretStructureNode;
 import systems.monomer.interpreter.literals.InterpretTupleNode;
 import systems.monomer.interpreter.values.InterpretObject;
 import systems.monomer.interpreter.values.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.controls.ReturnNode;
@@ -16,9 +17,10 @@ import systems.monomer.syntaxtree.literals.StructureNode;
 import systems.monomer.syntaxtree.literals.TupleNode;
 import systems.monomer.syntaxtree.operators.CallNode;
 import systems.monomer.types.*;
-import systems.monomer.types.plural.TupleType;
+import systems.monomer.types.pseudo.PlaceholderType;
+import systems.monomer.types.signature.Signature;
+import systems.monomer.types.tuple.TupleType;
 import systems.monomer.types.pseudo.AnyType;
-import systems.monomer.types.pseudo.IncompleteSignature;
 import systems.monomer.util.Pair;
 import systems.monomer.util.PairList;
 
@@ -27,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class FunctionBody extends Signature implements InterpretValue {
+public class FunctionBody extends Signature implements InterpretValue, InterpretFunction {
     private final TupleNode args;
     private final StructureNode namedArgs;
     private final Node body;
@@ -39,17 +41,22 @@ public class FunctionBody extends Signature implements InterpretValue {
     private final ModuleNode parent;
 
     public FunctionBody(Node args, StructureNode namedArgs, Node body, ModuleNode parent) {
-        super(null, null);
         this.args = TupleNode.asTuple(args);
         this.namedArgs = namedArgs;
         this.body = body;
         this.parent = parent;
 
-        if(body.getType() == ANY) {
-            signature = new IncompleteSignature(args.getType(), namedArgs.getType(), this);
-        } else {
-            signature = new Signature(args.getType(), namedArgs.getType());
-        }
+        ret = new PlaceholderType(this.body.getType());
+        param = this.args.getType();
+        namedParam = this.namedArgs.getType();
+
+        signature = new Signature(param, namedParam, ret);
+    }
+
+    @Override
+    public FunctionBody simplify() {
+        //TODO
+        return this;
     }
 
     @Override
@@ -75,17 +82,6 @@ public class FunctionBody extends Signature implements InterpretValue {
         return signature;
     }
 
-    //TODO remove these methods somehow
-    public TupleNode getArgNodes() {
-        return args;
-    }
-    public ModuleNode getWrapper() {
-        return parent;
-    }
-    public Node getBody() {
-        return body;
-    }
-
     private final ArrayDeque<Map<String, VariableKey>> recursiveSlices = new ArrayDeque<>();
 
     private boolean isLastStatement = false;    //TODO use this in call
@@ -102,9 +98,10 @@ public class FunctionBody extends Signature implements InterpretValue {
 
         ((InterpretStructureNode) this.namedArgs).interpretValue();
         InterpretObject namedArgsObj = (InterpretObject)namedArgs;
-        for(Map.Entry<String, Type> entry : namedArgsObj.getFields().entrySet()) {
-            InterpretValue val = (InterpretValue) entry.getValue();
-            this.namedArgs.getVariable(entry.getKey()).setValue(val);
+        List<String> keys = namedArgsObj.getSortedKeys();
+        for(String key : keys) {
+            InterpretValue val = namedArgsObj.getField(key);
+            ((InterpretVariable) this.namedArgs.getVariable(key)).setValue(val);
         }
 
         InterpretTuple argsTuple = InterpretTuple.toTuple(args);
@@ -114,8 +111,13 @@ public class FunctionBody extends Signature implements InterpretValue {
         assert body instanceof InterpretNode;
 
         InterpretValue ret = ((InterpretNode) body).interpretValue().asValue();
-        if(!optimized) parent.setVariableValues(recursiveSlices.pop());
+        if(!optimized) ((InterpretModuleNode) parent).setVariableValues(recursiveSlices.pop());
         return ret;
+    }
+
+    @Override
+    public int compareValueTo(InterpretValue other) {
+        return compareTo(other);
     }
 
     boolean isTailRecursive = false; //cache
@@ -168,16 +170,12 @@ public class FunctionBody extends Signature implements InterpretValue {
         else isTesting = true;
 
         TupleType argTypes = TupleType.asTuple(argType);
-        IntStream.range(0, args.size()).forEach((i)->args.get(i).getVariableKey().setType(argTypes.getType(i)));
+        IntStream.range(0, args.size()).forEach((i)->args.get(i).getVariableKey().setType(argTypes.get(i)));
         args.matchTypes();
         body.matchTypes();
 
         isTesting = false;
         return body.getType();
-    }
-
-    public Operand compileValue(AssemblyFile file) {
-        return null;    //TODO comple function and return label
     }
 
     @Override

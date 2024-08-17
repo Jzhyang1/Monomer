@@ -1,8 +1,8 @@
 package systems.monomer.ide;
 
+import systems.monomer.compiler.Compiler;
 import systems.monomer.execution.Constants;
-import systems.monomer.execution.commandline.Compile;
-import systems.monomer.execution.commandline.Interpret;
+import systems.monomer.interpreter.Interpreter;
 import systems.monomer.tokenizer.SourceString;
 import systems.monomer.tokenizer.Token;
 import systems.monomer.util.Pair;
@@ -11,7 +11,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
-import javax.swing.undo.UndoManager;
+import javax.swing.undo.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -160,6 +160,7 @@ public final class Editor extends JFrame {
                 }
             });
 
+            //TODO try without actionMap.put("Copy") and actionMap.put("Paste_")
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "Copy");
             actionMap.put("Copy", new AbstractAction() { // override default action
                 @Override
@@ -171,7 +172,27 @@ public final class Editor extends JFrame {
             actionMap.put("Paste_", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
+                    int start = contents.getCaretPosition();
                     Action.getAction("Paste").run();
+                    int end = contents.getCaretPosition();
+                    UndoableEdit undoableEdit = new AbstractUndoableEdit() {
+                        private final String replacedText = contents.getText().substring(start, end);
+
+                        @Override
+                        public void undo() throws CannotUndoException {
+                            super.undo();
+                            contents.select(start, end);
+                            contents.replaceSelection("");
+                        }
+
+                        @Override
+                        public void redo() throws CannotRedoException {
+                            super.redo();
+                            contents.select(start, start);
+                            contents.replaceSelection(replacedText);
+                        }
+                    };
+                    undoManager.addEdit(undoableEdit);
                 }
             });
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK), "Cut");
@@ -623,7 +644,7 @@ public final class Editor extends JFrame {
                         try {
                             tab.console.setText("");
                             Constants.getOut().write("Running file...\n\n".getBytes());
-                            Interpret.interpret(contents);
+                            Interpreter.interpret(new SourceString(contents), true, Constants.getListener(), Constants.getOut());
                             Constants.getOut().flush();
                             System.out.println();
                         } catch (RuntimeException e) {try {
@@ -647,7 +668,7 @@ public final class Editor extends JFrame {
                     String contents = tab.sanitizedText();
                     new Thread(() -> {
                         try {
-                            Compile.compile(contents);
+                            Compiler.compile(new SourceString(contents), true, Constants.getListener(), Constants.getOut());
                         } catch (RuntimeException e) {
                             e.printStackTrace();
                             try {

@@ -1,5 +1,7 @@
 package systems.monomer.interpreter;
 
+import systems.monomer.interpreter.variables.InterpretKey;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.syntaxtree.VariableNode;
 
 public class InterpretVariableNode extends VariableNode implements InterpretNode {
@@ -9,11 +11,11 @@ public class InterpretVariableNode extends VariableNode implements InterpretNode
     }
 
     public InterpretVariable interpretVariable() {
-        return variableKey;
+        return (InterpretVariable) variableKey;
     }
 
     public InterpretValue interpretValue() {
-        return variableKey.getValue();
+        return ((InterpretVariable) variableKey).getValue();
     }
 
 }

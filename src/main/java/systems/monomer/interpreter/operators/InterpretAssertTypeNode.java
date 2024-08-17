@@ -1,14 +1,14 @@
 package systems.monomer.interpreter.operators;
 
+import systems.monomer.execution.environmentDefaults.ConvertDefaults;
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretResult;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.values.InterpretOverloads;
+import systems.monomer.interpreter.variables.InterpretKey;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.interpreter.values.InterpretObject;
 import systems.monomer.syntaxtree.operators.AssertTypeNode;
-import systems.monomer.types.primative.ObjectType;
-import systems.monomer.types.Type;
-import systems.monomer.variables.FunctionBody;
 
 public class InterpretAssertTypeNode extends AssertTypeNode implements InterpretNode {
     public InterpretResult interpretValue() {
@@ -20,21 +20,10 @@ public class InterpretAssertTypeNode extends AssertTypeNode implements Interpret
 
         InterpretValue originalValue = originalResult.asValue();
 
-        if(convertBy != null)
-            return ((FunctionBody) convertBy).call(originalValue, InterpretObject.EMPTY);
-        if(castBy != null) {
-            Type to = getType();
+        InterpretKey convertFunc = (InterpretKey) getVariable(ConvertDefaults.NAME);
+        InterpretOverloads overloads = (InterpretOverloads) convertFunc.getValue();
 
-            if(originalValue instanceof InterpretObject ofrom && to instanceof ObjectType oto)
-                return castBy.apply(oto, ofrom);
-            else
-                throw runtimeError("Cannot cast object from " + originalValue + " to " + to);
-        }
-
-        if(originalValue.getType().equals(getType()))
-            return originalValue;
-        else
-            throw runtimeError("Cannot convert value " + originalValue + " to " + getType());
+        return overloads.getOverload(convertBy).call(originalValue, InterpretObject.EMPTY);
     }
 
     @Override

@@ -1,27 +1,14 @@
 package systems.monomer.compiler;
 
-import systems.monomer.compiler.assembly.Operand;
-import systems.monomer.syntaxtree.Node;
-
-import java.util.List;
+import systems.monomer.compiler.output.CompileOutput;
+import systems.monomer.compiler.output.CompileValue;
 
 public interface CompileNode {
-    Operand compileValue(AssemblyFile file);
-    CompileSize compileSize();
-    void compileVariables(AssemblyFile file);
-
-    List<? extends Node> getChildren();
-    default List<CompileNode> getChildrenCompileNodes() {
-        return (List<CompileNode>) getChildren();
-    }
-
-    default CompileNode getCompileNode(int i) {
-        return getChildrenCompileNodes().get(i);
-    }
-    default CompileNode getFirstCompileNode(){
-        return getCompileNode(0);
-    }
-    default CompileNode getSecondCompileNode(){
-        return getCompileNode(1);
-    }
+    /**
+     * adds processes to output and returns where the result can be found
+     * @param output the accumulator for outputs
+     * @return where the output of this operation can be found
+     * after all operations in output have been processed
+     */
+    CompileValue compile(CompileOutput output);
 }

@@ -1,42 +1,41 @@
 package systems.monomer.interpreter.values;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.Type;
+import systems.monomer.types.collection.RangeType;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import static systems.monomer.errorhandling.ErrorBlock.programError;
+import static systems.monomer.util.Util.boolAsInt;
+
 @Getter
-public class InterpretRange extends InterpretCollection implements Comparable<InterpretRange>, Iterable<InterpretValue> {
-    private final InterpretValue start, stop, step;
+public final class InterpretRange extends RangeType implements InterpretCollection, Iterable<InterpretValue> {
+    @Getter @Setter
+    private InterpretValue start, stop, step;
     private final boolean startInclusive, stopInclusive;
 
-    private static Type checkTypes(InterpretValue start, InterpretValue stop, InterpretValue step) {
-        Type elementType = start.getType();
-        if(!elementType.equals(stop.getType()))
-            throw new Error(start + " and " + stop + " must have same type");
-        if(!elementType.equals(step.getType()))
-            throw new Error(start + " and " + step + " must have same type");
-        return elementType;
-    }
-
-    public InterpretRange(InterpretValue start, InterpretValue stop, InterpretValue step) {
-        super(checkTypes(start, stop, step));
+    public InterpretRange(
+            Type elementType,
+            InterpretValue start, InterpretValue stop, InterpretValue step,
+            boolean startInclusive, boolean stopInclusive
+    ) {
+        super(elementType);
         this.start = start;
         this.stop = stop;
         this.step = step;
-        this.startInclusive = true;
-        this.stopInclusive = true;
+        this.startInclusive = startInclusive;
+        this.stopInclusive = stopInclusive;
     }
 
-    public InterpretRange(InterpretValue start, InterpretValue stop, InterpretValue step, boolean startInclusive, boolean stopInclusive) {
-        super(checkTypes(start, stop, step));
-        this.start = start;
-        this.stop = stop;
-        this.step = step;
+    public InterpretRange(Type elementType, boolean startInclusive, boolean stopInclusive) {
+        super(elementType);
         this.startInclusive = startInclusive;
         this.stopInclusive = stopInclusive;
     }
@@ -49,8 +48,30 @@ public class InterpretRange extends InterpretCollection implements Comparable<In
     }
 
     @Override
+    public InterpretValue getSingleValueAt(InterpretValue index) {
+        if(!(index instanceof InterpretInt i)) throw programError("Index is not an integer", ErrorBlock.Reason.RUNTIME);
+        throw programError("Ranges are not fully implemented", ErrorBlock.Reason.OTHER); //TODO
+    }
+
+    @Override
+    public void setSingleValueAt(InterpretValue index, InterpretValue value) {
+        if (!(index instanceof InterpretInt i)) throw programError("Index is not an integer", ErrorBlock.Reason.RUNTIME);
+        throw programError("Ranges are not fully implemented", ErrorBlock.Reason.OTHER); //TODO
+    }
+
+    @Override
     public void add(InterpretValue value) {
         throw new Error("Unable to add to range");
+    }
+
+    @Override
+    public void addAll(Collection<? extends InterpretValue> values) {
+        throw programError("Ranges are not fully implemented", ErrorBlock.Reason.OTHER);
+    }
+
+    @Override
+    public InterpretCollection emptyCopy() {
+        throw programError("Ranges are not fully implemented", ErrorBlock.Reason.OTHER);
     }
 
     @Override
@@ -67,43 +88,21 @@ public class InterpretRange extends InterpretCollection implements Comparable<In
         return new InterpretRangeIterator(start, stop, step, startInclusive, stopInclusive);
     }
 
-    /**
-     * Returns a union of two adjacent or overlapping ranges, and the ranges must have the same step.
-     * @param other an overlapping range with the same step
-     * @return a union of the two ranges
-     */
-    public InterpretRange union(InterpretRange other) {
-        if(!getType().equals(other.getType()))
-            throw new Error("cannot union ranges of different types");
-        if(!step.equals(other.step))
-            throw new Error("cannot union ranges with different steps");
+    @Override
+    public int compareValueTo(InterpretValue maybeo) {
+        if(!(maybeo instanceof InterpretRange o)) return compareTo(maybeo);
 
-        //TODO this only works for integers as of now
-        int thisStart = ((InterpretNumber) start).getValue().intValue();
-        int thisStop = ((InterpretNumber) stop).getValue().intValue();
-        int otherStart = ((InterpretNumber) other.start).getValue().intValue();
-        int otherStop = ((InterpretNumber) other.stop).getValue().intValue();
-
-        if(thisStart > otherStart) {
-            if (thisStop < otherStop)
-                return other;
-            else
-                return new InterpretRange(other.start, stop, step);
-        }
-        else {
-            if (thisStop < otherStop)
-                return new InterpretRange(start, other.stop, step);
-            else
-                return this;
+        int comparison = start.compareTo(o.start);
+        if(comparison != 0) {
+            return comparison;
+        } else {
+            return boolAsInt(startInclusive) - boolAsInt(o.startInclusive);
         }
     }
 
     @Override
-    public int compareTo(@NotNull InterpretRange o) {
-        //TODO this only works for integers as of now
-        int thisStart = ((InterpretNumber) start).getValue().intValue();
-        int otherStart = ((InterpretNumber) o.start).getValue().intValue();
-        return startInclusive ? thisStart - otherStart : thisStart - otherStart - 1;
+    public InterpretValue clone() {
+        return new InterpretRange(getElementType(), start, stop, step, startInclusive, stopInclusive);
     }
 
     private static final class InterpretRangeIterator implements Iterator<InterpretValue> {
@@ -122,8 +121,8 @@ public class InterpretRange extends InterpretCollection implements Comparable<In
         @Override
         public boolean hasNext() {
             //TODO this only works for integers as of now
-            int thisStart = ((InterpretNumber) next).getValue().intValue();
-            int thisStop = ((InterpretNumber) stop).getValue().intValue();
+            int thisStart = next.getValue();
+            int thisStop = stop.getValue();
 
             return thisStart < thisStop || (stopInclusive && thisStart == thisStop);
         }
@@ -133,9 +132,9 @@ public class InterpretRange extends InterpretCollection implements Comparable<In
             InterpretValue ret = next;
 
             //TODO this only works for integers as of now
-            int thisStart = ((InterpretNumber) next).getValue().intValue();
-            int thisStep = ((InterpretNumber) step).getValue().intValue();
-            next = new InterpretNumber(thisStart + thisStep);
+            int thisStart = next.getValue();
+            int thisStep = step.getValue();
+            next = new InterpretInt(thisStart + thisStep);
 
             return ret;
         }

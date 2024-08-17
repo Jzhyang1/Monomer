@@ -1,10 +1,9 @@
 package systems.monomer.compiler.operators;
 
 import lombok.Setter;
-import systems.monomer.compiler.assembly.Operand;
-import systems.monomer.compiler.AssemblyFile;
 import systems.monomer.compiler.CompileNode;
-import systems.monomer.compiler.CompileSize;
+import systems.monomer.compiler.output.CompileOutput;
+import systems.monomer.compiler.output.CompileValue;
 import systems.monomer.syntaxtree.operators.GenericOperatorNode;
 import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.types.Type;
@@ -14,24 +13,22 @@ import java.util.function.Function;
 
 public class CompileOperatorNode extends GenericOperatorNode implements CompileNode {
     @Setter
-    private BiFunction<CompileOperatorNode, AssemblyFile, Operand> compileGenerator;
+    private Function<GenericOperatorNode, BiFunction<CompileOperatorNode, CompileOutput, CompileValue>> compileGenerator;
+
+    private BiFunction<CompileOperatorNode, CompileOutput, CompileValue> compile;
 
     public CompileOperatorNode(String name, Function<OperatorNode, Type> typeGenerator) {
         super(name, typeGenerator);
     }
 
     @Override
-    public Operand compileValue(AssemblyFile file) {
-        return null;
+    public void matchTypes() {
+        super.matchTypes();
+        compile = compileGenerator.apply(this);
     }
 
     @Override
-    public CompileSize compileSize() {
-        return null;
-    }
-
-    @Override
-    public void compileVariables(AssemblyFile file) {
-
+    public CompileValue compile(CompileOutput output) {
+        return compile.apply(this, output);
     }
 }

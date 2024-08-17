@@ -1,17 +1,16 @@
 package systems.monomer.syntaxtree.literals;
 
-import systems.monomer.syntaxtree.Node;
+import systems.monomer.types.Type;
+import systems.monomer.types.collection.CollectionType;
+import systems.monomer.types.collection.SetType;
 
-import java.util.Collection;
-
-public class SetNode extends LiteralNode {
-
+public class SetNode extends ExplicitCollectionNode {
     public SetNode(){
         super("set");
     }
 
-    public SetNode(Collection<Node> x) {
-        super("set");
-        getChildren().addAll(x);
+    @Override
+    protected CollectionType getCollectionType(Type elementType) {
+        return new SetType(elementType);
     }
 }

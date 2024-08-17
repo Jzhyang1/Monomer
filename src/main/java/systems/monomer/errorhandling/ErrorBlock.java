@@ -92,9 +92,9 @@ public class ErrorBlock {
         errorMessage.append(type)
                 .append(" ")
                 .append(message)
-                .append(" in ")
+                .append(" (")
                 .append(source.getTitle())
-                .append(":\n");
+                .append("):\n");
 
         //Padding for line number label
         int padding = String.valueOf(stop.getRow()).length();

@@ -1,6 +1,6 @@
 package systems.monomer.syntaxtree.literals;
 
-import systems.monomer.types.primative.CharType;
+import systems.monomer.types.primitive.CharType;
 
 public class CharNode extends LiteralNode {
     protected Character value;

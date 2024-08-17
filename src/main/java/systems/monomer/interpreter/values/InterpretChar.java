@@ -18,4 +18,10 @@ public final class InterpretChar extends CharType implements InterpretValue {
     public InterpretChar clone() {
         return new InterpretChar(value);
     }
+
+    public int compareValueTo(InterpretValue maybeo) {
+        if(!(maybeo instanceof InterpretChar o)) return compareTo(maybeo);
+
+        return Character.compare(value, o.value);
+    }
 }

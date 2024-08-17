@@ -2,31 +2,23 @@ package systems.monomer.syntaxtree.operators;
 
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.execution.environmentDefaults.ConvertDefaults;
-import systems.monomer.interpreter.values.InterpretObject;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.primative.ObjectType;
-import systems.monomer.types.OverloadedFunctionType;
-import systems.monomer.types.Signature;
+import systems.monomer.types.function.OverloadsType;
+import systems.monomer.types.object.ObjectType;
+import systems.monomer.types.signature.Signature;
 import systems.monomer.types.Type;
 import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
 
-import java.util.function.BiFunction;
 
+import static systems.monomer.execution.Handler.init;
 import static systems.monomer.types.pseudo.AnyType.ANY;
 
 public class AssertTypeNode extends OperatorNode {
-    protected Signature convertBy = null;
-    protected BiFunction<ObjectType, InterpretObject, InterpretObject> castBy = null;
+    protected int convertBy = -1;
 
     public AssertTypeNode() {
         super(":");
-    }
-
-    public AssertTypeNode(Node parent, Node child) {
-        this();
-        add(parent);
-        add(child);
     }
 
     public void matchTypes() {
@@ -46,29 +38,34 @@ public class AssertTypeNode extends OperatorNode {
         if(second.getType() == ANY) {
             second.setType(type);
             second.matchTypes();
-            return;
         }
+    }
+
+    @Override
+    public Node simplify() {
+        Type to = getType();
+        Type from = getSecond().getType();
 
         VariableKey convertFunc = getVariable(ConvertDefaults.NAME);
         if(convertFunc != null) {
-            OverloadedFunctionType overloads = (OverloadedFunctionType) convertFunc.getType();
-            convertBy = overloads.getOverload(new Signature(second.getType(), type));
+            OverloadsType overloads = (OverloadsType) convertFunc.getType().getExpressed();
+            convertBy = overloads.randomAccessIndex(new Signature(from, ObjectType.EMPTY, to));
 
-            if(convertBy != null) return;
+            if(convertBy >= 0) return this;
         }
 
-        if(type.equals(second.getType()))
-            return;
-        if(second.getType() instanceof ObjectType secondType && secondType.typeConvertsTo(type)) {
-            //TODO consider types during matchTypes
-            castBy = (to, from) -> {
-                InterpretObject ret = new InterpretObject();
-                to.getFields().forEach((e, t) -> ret.set(e, from.get(e)));
-                return ret;
-            };
+        if(to.equals(from))
+            return getSecond();
+
+        if(from.typeContains(to)) {
+            CastNode ret = init.castNode();
+            ret.add(getFirst()); ret.add(getSecond());
+            ret.matchTypes();
+            ret.simplify();
+            return ret;
         }
         else
-            throw syntaxError("Cannot convert type from " + second.getType() + " to " + getType());
+            throw syntaxError("Cannot convert type from " + from + " to " + to);
     }
 
     @Override

@@ -2,7 +2,8 @@ package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.*;
-import systems.monomer.types.pseudo.IncompleteSignature;
+import systems.monomer.types.function.OverloadsType;
+import systems.monomer.types.signature.Signature;
 
 import static systems.monomer.types.pseudo.AnyType.ANY;
 
@@ -17,9 +18,9 @@ public class CastToFunctionNode extends CastNode {
     protected int functionIndex = -1;
 
     @Override
-    public void matchTypes() {
+    public Node simplify() {
+        super.simplify();
         Node functionNode = getFirst();
-        functionNode.matchTypes();
 
         Type expectedType = getType();  //should be a signature
         Type actualType = functionNode.getType();   //should be a signature or an overloadedFunction
@@ -39,59 +40,18 @@ public class CastToFunctionNode extends CastNode {
 
         Signature expectedSignature = (Signature) expectedType;
 
-        if(actualType.typeContains(expectedType))
-            return;
-        else if(actualType instanceof OverloadedFunctionType overloadedFunctionType) {
-            functionIndex = overloadedFunctionType.randomAccessIndex(expectedSignature);
+        if(actualType instanceof OverloadsType overloadsType) {
+            functionIndex = overloadsType.randomAccessIndex(expectedSignature);
             if(functionIndex == -1)
                 throw syntaxError("No function found with signature " + expectedSignature);
 
-            Signature foundSignature = overloadedFunctionType.getSignature(functionIndex);
-            if(foundSignature.isComplete())
-                setType(foundSignature);
-            else {
-                IncompleteSignature incompleteSignature = (IncompleteSignature) foundSignature;
-                setType(incompleteSignature.completedSignature(expectedSignature));
-            }
-        }
-        else {
+            Signature foundSignature = (Signature) overloadsType.get(functionIndex);
+            setType(foundSignature);
+            return this;
+        } else if(actualType.typeContains(expectedType)) {
+            return functionNode;
+        } else {
             throw syntaxError("The signature " + actualType + " does not match the expected signature " + expectedType);
         }
-
-
-
-//        if(actualType.typeContains(expectedType))
-//            return;
-//        else if(actualType instanceof Signature actualSignature) {
-//            if(actualSignature.isComplete()) {
-//                throw syntaxError("The signature " + actualType + " does not match the expected signature " + expectedType);
-//            } else {
-//                throw syntaxError("Internal error in handling the conversion from " + expectedType + " to " + actualType);
-//            }
-//        }
-//
-//
-//        Signature expectedSignature = (Signature) expectedType;
-//
-//        if(actualType instanceof OverloadedFunctionType overloadedFunctionType) {
-//            functionIndex = overloadedFunctionType.randomAccessIndex(expectedSignature);
-//            if(functionIndex == -1)
-//                throw syntaxError("No function found with signature " + expectedSignature);
-//
-//            Signature foundSignature = overloadedFunctionType.getSignature(functionIndex);
-//            if(!isIncompleteSignature(foundSignature))
-//                setType(foundSignature);
-//            else {
-//                Signature completedSignature = completedSignature(foundSignature, expectedSignature);
-//                setType(completedSignature);
-//            }
-//        }
     }
-
-//    private boolean isIncompleteSignature(Signature signature) {
-//        return signature.getReturnType() == ANY || signature.getArgsType() == ANY ||
-//                TupleType.typeInTuple(ANY, signature.getReturnType()) ||
-//                TupleType.typeInTuple(ANY, signature.getArgsType()) ||
-//                ObjectType.typeInObject(ANY, signature.getNamedArgsType());
-//    }
 }

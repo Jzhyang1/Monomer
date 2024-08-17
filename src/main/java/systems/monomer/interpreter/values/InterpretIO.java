@@ -3,9 +3,10 @@ package systems.monomer.interpreter.values;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.execution.Constants;
+import systems.monomer.types.Type;
 import systems.monomer.types.system.IOType;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.variables.OverloadedFunction;
+import systems.monomer.variables.Overloadable;
 
 import java.io.*;
 
@@ -67,7 +68,7 @@ public class InterpretIO extends IOType implements InterpretValue {
 
     private void initFields() {
         //io read
-        OverloadedFunction readFunction = new OverloadedFunction();
+        Overloadable readFunction = new Overloadable();
         readFunction.putSupplierInterpretOverload(CHAR, this::readChar);
         readFunction.putSupplierInterpretOverload(STRING, this::readString);
         readFunction.putSupplierInterpretOverload(INT, this::readInt);
@@ -75,11 +76,24 @@ public class InterpretIO extends IOType implements InterpretValue {
         setField("read", readFunction);
 
         //io write
-        OverloadedFunction writeFunction = new OverloadedFunction();
+        Overloadable writeFunction = new Overloadable();
         writeFunction.putSingleInterpretOverload(CHAR, CHAR, this::writeChar);
         writeFunction.putSingleInterpretOverload(STRING, STRING, this::writeString);
         writeFunction.putSingleInterpretOverload(INT, INT, this::writeInt);
         setField("write", writeFunction);
+    }
+
+    @Override
+    public InterpretValue getField(String field) {
+        return (InterpretValue) super.getField(field);
+    }
+
+    @Override
+    public int compareValueTo(InterpretValue other) {
+        if (!(other instanceof InterpretIO otherIO)) {
+            return compareTo(other);
+        }
+        return state.compareTo(otherIO.state);
     }
 
     @Override
@@ -89,7 +103,11 @@ public class InterpretIO extends IOType implements InterpretValue {
 
     @Override
     public InterpretIO clone() {
-        return (InterpretIO) super.clone();
+        try {
+            return (InterpretIO) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw programError("clone failed", ErrorBlock.Reason.OTHER);
+        }
     }
 
     private Reader readIntent() {
@@ -131,7 +149,7 @@ public class InterpretIO extends IOType implements InterpretValue {
         try {
             Reader cachedReader = readIntent();
             //return new InterpretString(reader.read(count.interpretValue()));
-            int number = ((InterpretNumber) countValue).getValue().intValue();
+            int number = countValue.getValue();
             StringBuilder ret = new StringBuilder();
             for (int i = 0; i < number; i++) {
                 ret.append((char) cachedReader.read());
@@ -164,7 +182,7 @@ public class InterpretIO extends IOType implements InterpretValue {
             while ((c = cachedReader.read()) != -1 && c != '\n') {
                 ret.append((char) c);
             }
-            return new InterpretNumber<>(Integer.valueOf(ret.toString()));
+            return new InterpretInt(Integer.valueOf(ret.toString()));
         } catch (IOException e) {
             throw programError(e.getMessage(), ErrorBlock.Reason.RUNTIME);
         }
@@ -175,7 +193,7 @@ public class InterpretIO extends IOType implements InterpretValue {
     private InterpretValue writeInt(InterpretValue iValue) {
 //        if(!INTEGER.typeContains(iValue.getType()))
 //            throw programError("expected " + iValue + " to be int, but was " + iValue.getType(), ErrorBlock.Reason.RUNTIME);
-        int number = ((InterpretNumber) iValue).getValue().intValue();
+        int number = iValue.getValue();
 
         Writer cachedWriter = writeIntent();
         try {
@@ -210,7 +228,7 @@ public class InterpretIO extends IOType implements InterpretValue {
         Writer cachedWriter = writeIntent();
         InterpretString str = (InterpretString) sValue;
         try {
-            cachedWriter.write(str.getValue());
+            cachedWriter.write(str.getValue().toString());
             cachedWriter.flush();
         } catch (IOException e) {
             throw programError(e.getMessage(), ErrorBlock.Reason.RUNTIME);

@@ -3,7 +3,7 @@ package systems.monomer.syntaxtree.operators;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.primative.ObjectType;
+import systems.monomer.types.object.ObjectType;
 import systems.monomer.types.Type;
 import systems.monomer.variables.FieldKey;
 import systems.monomer.variables.Key;
@@ -15,14 +15,8 @@ public class FieldNode extends OperatorNode {
     protected @Nullable FieldKey variableKey;
     protected String fieldName = null;
 
-
     public FieldNode(){
         super("field");
-    }
-    public FieldNode(Node parent, Node field) {
-        this();
-        add(parent);
-        add(field);
     }
 
     public void matchVariables() {
@@ -38,6 +32,7 @@ public class FieldNode extends OperatorNode {
         if(parentKey == null)
             variableKey = null;
         else
+            //TODO use init.fieldKey
             variableKey = new FieldKey(fieldName, parentKey);
     }
 

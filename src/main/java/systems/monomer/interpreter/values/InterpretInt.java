@@ -1,12 +1,14 @@
 package systems.monomer.interpreter.values;
 
+import lombok.Getter;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.primitive.IntType;
 
+@Getter
 public final class InterpretInt extends IntType implements InterpretValue {
-    private final long value;
+    private final Integer value;
 
-    public InterpretInt(long value) {
+    public InterpretInt(int value) {
         this.value = value;
     }
 
@@ -18,5 +20,12 @@ public final class InterpretInt extends IntType implements InterpretValue {
     @Override
     public InterpretInt clone() {
         return new InterpretInt(value);
+    }
+
+    @Override
+    public int compareValueTo(InterpretValue maybeo) {
+        if(!(maybeo instanceof InterpretInt o)) return compareTo(maybeo);
+
+        return Long.compare(value, o.value);
     }
 }

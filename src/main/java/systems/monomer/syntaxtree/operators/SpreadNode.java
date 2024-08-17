@@ -1,7 +1,7 @@
 package systems.monomer.syntaxtree.operators;
 
-import systems.monomer.types.plural.CollectionType;
-import systems.monomer.types.plural.SequenceType;
+import systems.monomer.types.collection.CollectionType;
+import systems.monomer.types.collection.SequenceType;
 import systems.monomer.types.Type;
 
 public class SpreadNode extends OperatorNode {

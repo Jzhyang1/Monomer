@@ -3,7 +3,7 @@ package systems.monomer.interpreter.controls;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.syntaxtree.controls.IfNode;
 
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.variables.InterpretVariable;
 
 import static systems.monomer.interpreter.controls.InterpretControls.InterpretControlResult;
 

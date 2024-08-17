@@ -18,19 +18,4 @@ public class CastNode extends OperatorNode {
         if(getType() != getSecond().getType()) throw syntaxError("Internal error casting simultaneously to " + getFirst().getType() + " and " + getSecond().getType());
         if(!getFirst().getType().typeContains(getSecond().getType())) throw syntaxError("Cannot cast " + getFirst().getType() + " to " + getSecond().getType());
     }
-
-//    public InterpretVariable interpretVariable() {
-//        throw new Error("TODO unimplemented");
-//    }
-//    public InterpretResult interpretValue() {
-//        throw new Error("TODO unimplemented");
-//    }
-//
-//    public Operand compileValue(AssemblyFile file) {
-//        throw new Error("TODO unimplemented");
-//        //TODO idk how to do this
-//    }
-//    public CompileSize compileSize() {
-//        throw new Error("TODO unimplemented");
-//    }
 }

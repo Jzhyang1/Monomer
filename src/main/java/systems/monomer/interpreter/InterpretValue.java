@@ -11,10 +11,6 @@ public interface InterpretValue extends Type, InterpretResult {
         return this;
     }
 
-    default InterpretValue get(String field) {
-        throw programError(this + " is not an object", ErrorBlock.Reason.RUNTIME);
-    }
-
     default InterpretValue call(InterpretValue args, InterpretValue namedArgs) {
         throw programError(this + " is not a function", ErrorBlock.Reason.RUNTIME);
     }
@@ -22,6 +18,12 @@ public interface InterpretValue extends Type, InterpretResult {
     public default <T> T getValue() {
         throw programError(this + " is not a raw value", ErrorBlock.Reason.RUNTIME);
     }
+
+    public default InterpretValue getField(String name) {
+        throw programError("Can not assign to " + this, ErrorBlock.Reason.SYNTAX);
+    }
+
+    public int compareValueTo(InterpretValue other);
 
     public InterpretValue clone();
 }

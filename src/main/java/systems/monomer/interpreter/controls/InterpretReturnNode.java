@@ -2,7 +2,7 @@ package systems.monomer.interpreter.controls;
 
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretResult;
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.interpreter.values.InterpretBreaking;
 import systems.monomer.interpreter.values.InterpretTuple;
 import systems.monomer.syntaxtree.controls.ReturnNode;

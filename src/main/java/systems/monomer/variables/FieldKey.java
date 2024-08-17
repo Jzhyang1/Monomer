@@ -2,15 +2,10 @@ package systems.monomer.variables;
 
 import lombok.Getter;
 import lombok.Setter;
-import systems.monomer.compiler.assembly.Operand;
-import systems.monomer.compiler.CompileSize;
 import systems.monomer.errorhandling.ErrorBlock;
-import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
-import systems.monomer.types.primative.ObjectType;
+import systems.monomer.types.object.ObjectType;
 import systems.monomer.types.Type;
 
-import static systems.monomer.compiler.assembly.Operand.Type.MEMORY;
 import static systems.monomer.errorhandling.ErrorBlock.programError;
 import static systems.monomer.types.pseudo.AnyType.ANY;
 
@@ -27,79 +22,48 @@ public class FieldKey extends Key {
         this.parent = parent;
     }
 
-    @Override
-    public InterpretValue getValue() {
-        return parent.getValue().get(name);
-    }
-    @Override
-    public void setValue(InterpretValue value) {
-        if(parent.getValue() instanceof ObjectType objectType)
-            objectType.setField(name, value);
-        else {
-            throw programError("Can not access field " + name + " of " + parent, ErrorBlock.Reason.RUNTIME);
-        }
-    }
 
     @Override
     public boolean isConstant() {
-        return parent.getField(name).isConstant();
+        return parent.isConstant();
     }
 
     public void setConstant(boolean constant) {
-        ((Key) parent.getField(name)).setConstant(constant);
+        Type parentType = parent.getType();
+        if(!(parentType instanceof ObjectType ot)) {
+            throw programError(parentType + " is not an object", ErrorBlock.Reason.SYNTAX);
+        }
+        ot.getField(name).setConstant(constant);
     }
 
     @Override
     public boolean isLocked() {
-        return ((InterpretVariable) parent.getField(name)).isLocked();
+        return false; //TODO
     }
     @Override
     public void lock() {
-        ((InterpretVariable) parent.getField(name)).lock();
+        //TODO
     }
 
     @Override
     public Type getType() {
-        return parent.getField(name).getType();
+        Type parentType = parent.getType();
+        if(!(parentType instanceof ObjectType ot)) {
+            throw programError(parentType + " is not an object", ErrorBlock.Reason.SYNTAX);
+        }
+        return ot.getField(name);
     }
     @Override
     public void setType(Type type) {
-        if(parent.getType() instanceof ObjectType objectType)
+        Type parentType = parent.getType();
+        if(parentType instanceof ObjectType objectType)
             objectType.setField(name, type);
-        else if(parent.getType() == ANY) {
+        else if(parentType == ANY) {
             ObjectType object = new ObjectType();
             object.setField(name, type);
             parent.setType(object);
         }
         else
-            throw new Error("TODO unimplemented");
-    }
-
-    @Override
-    public Type getField(String field) {
-        return getType().getField(field);
-    }
-
-    @Override
-    public CompileSize compileSize() {
-        return getType().compileSize();
-    }
-
-    @Override
-    public FieldKey clone() {
-        FieldKey key = (FieldKey) super.clone();  //TODO also clone value, etc
-        return key;
-    }
-
-    public Operand getAddress() {
-        Operand parentAddress = parent.getAddress();
-        int childOffset = parent.getType().getFieldOffset(name);
-
-        Operand fieldAddress = new Operand(MEMORY,
-                    parentAddress.register,
-                    parentAddress.offset + childOffset,
-                    0);
-
-        return fieldAddress;
+            throw programError(parentType + " is not an object", ErrorBlock.Reason.SYNTAX);
     }
 }

@@ -1,7 +1,5 @@
 package systems.monomer.syntaxtree.operators;
 
-import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.TypeContext;
 import systems.monomer.types.Type;
 
 import java.util.function.Function;
@@ -29,24 +27,5 @@ public class GenericOperatorNode extends OperatorNode {
         } catch (ProgramErrorException ex) {
             throw rethrowError(ex);
         }
-    }
-
-
-    private static class TypeTestOperatorNode extends OperatorNode {
-        public TypeTestOperatorNode(String name) {
-            super(name);
-        }
-        public TypeTestOperatorNode(String name, Type type) {
-            super(name);
-            super.setType(type);
-        }
-    }
-    @Override
-    public Type testType(TypeContext context) {
-        TypeTestOperatorNode testNode = new TypeTestOperatorNode(getName());
-        for (Node child : getChildren()) {
-            testNode.add(new TypeTestOperatorNode(child.getName(), child.testType(context)));
-        }
-        return typeGenerator.apply(testNode);
     }
 }

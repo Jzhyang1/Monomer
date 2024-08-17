@@ -14,6 +14,7 @@ public class Signature extends PseudoType {
     protected Type param, namedParam;
     protected Type ret;
 
+    protected Signature() {}
     public Signature(Type param, Type namedParam, Type ret) {
         this.param = param;
         this.namedParam = namedParam;
@@ -27,7 +28,7 @@ public class Signature extends PseudoType {
     }
 
     @Override
-    public Type simplify() {
+    public Signature simplify() {
         param = param.simplify();
         namedParam = namedParam.simplify();
         ret = ret.simplify();
@@ -50,9 +51,9 @@ public class Signature extends PseudoType {
     }
 
     @Override
-    public Type testReplace(Map<Type, Type> replacements) {
+    public Signature testReplace(Map<Type, Type> replacements) {
         Type replacement = replacements.get(this);
-        if (replacement != null) return replacement;
+        if (replacement != null) return (Signature) replacement;
 
         return new Signature(param.testReplace(replacements), namedParam.testReplace(replacements), ret.testReplace(replacements));
     }
@@ -81,5 +82,10 @@ public class Signature extends PseudoType {
     @Override
     public String valueString() {
         return namedParam.valueString() + param.valueString() + "->" + ret.valueString();
+    }
+
+    @Override
+    public String toString() {
+        return valueString();
     }
 }

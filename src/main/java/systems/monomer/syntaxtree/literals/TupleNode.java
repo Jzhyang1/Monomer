@@ -1,14 +1,14 @@
 package systems.monomer.syntaxtree.literals;
 
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.plural.TupleType;
 import systems.monomer.types.Type;
+import systems.monomer.types.tuple.TupleType;
 
 import java.util.List;
 
-public class TupleNode extends LiteralNode {
-    public static TupleNode EMPTY = init.tupleNode();
+import static systems.monomer.execution.Handler.init;
 
+public class TupleNode extends LiteralNode {
     public static boolean isTuple(Node node) {
         //TODO this is ugly
         return node.getUsage() == Usage.LITERAL && List.of("block", ",", ";").contains(node.getName());
@@ -29,7 +29,7 @@ public class TupleNode extends LiteralNode {
         if (TupleType.EMPTY.typeContains(type)) {
             List<Node> nodeList = getChildren();
             for (int i = 0; i < nodeList.size(); i++) {
-                nodeList.get(i).setType(((TupleType)type).getType(i));
+                nodeList.get(i).setType(((TupleType)type).get(i));
             }
         }
     }

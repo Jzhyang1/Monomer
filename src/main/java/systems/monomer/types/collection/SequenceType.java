@@ -15,6 +15,10 @@ public class SequenceType extends CollectionType {
         super(elementType);
     }
 
+    @Override
+    public Type indexResult(Type indexType) {
+        return getElementType();
+    }
 
     @Override
     public InterpretValue defaultValue() {

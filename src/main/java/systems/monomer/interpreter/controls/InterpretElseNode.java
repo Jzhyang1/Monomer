@@ -1,7 +1,7 @@
 package systems.monomer.interpreter.controls;
 
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.InterpretVariable;
+import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.syntaxtree.controls.ElseNode;
 import static systems.monomer.interpreter.controls.InterpretControls.InterpretControlResult;
 

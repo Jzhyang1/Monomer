@@ -1,10 +1,13 @@
 package systems.monomer;
 
 import org.junit.Test;
-import systems.monomer.execution.commandline.Interpret;
 import systems.monomer.execution.Constants;
+import systems.monomer.execution.Handler;
 import systems.monomer.ide.Editor;
+import systems.monomer.interpreter.InterpretModuleNode;
+import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretValue;
+import systems.monomer.interpreter.Interpreter;
 import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.tokenizer.Source;
@@ -15,6 +18,8 @@ import systems.monomer.tokenizer.Token;
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * some tests fail because Constants is using static variables
  * TODO fix this
@@ -23,49 +28,35 @@ import java.net.URL;
 public class InterpretTest {
     @Test
     public void testInterpretBasicAdd() {
-        Source source = new SourceString("1+1");
-        Token token = source.parse();
-        Node node = token.toNode();
-        assertEquals("interpret 1+1", "(2)", node.interpretValue().asValue().valueString());
+        assertEquals("printing result of addition", "2",
+                wrapTest("@(1+1)", false));
     }
     @Test
     public void testInterpretDebugPrint() {
-        Source source = new SourceString("@\"hello world\"");
-        Token token = source.parse();
-        Node node = token.toNode();
-        assertEquals("interpret hello world", "(hello world)", node.interpretValue().asValue().valueString());
-    }
-    @Test
-    public void testInterpretParenthesis() {
-        Source source = new SourceString("@(1+1)");
-        Token token = source.parse();
-        Node node = token.toNode();
-        assertEquals("interpret @(1+1)", "(2)", node.interpretValue().asValue().valueString());
+        assertEquals("printing hello world", "hello world",
+                wrapTest("@\"hello world\"", false));
     }
     @Test
     public void testInterpretAssignment() {
-        Source source = new SourceString("@(a=1);@a");
-        Token token = source.parse();
-        Node node = new ModuleNode("module").with(token.toNode());
-        node.matchVariables();
-        node.matchTypes();
-        assertEquals("interpret assign", "((1,1))", node.interpretValue().asValue().valueString());
+        assertEquals("printing result of addition", "1\n1",
+                wrapTest("@(a=1);@a", false));
     }
     @Test
     public void testInterpretFile() {
+        Handler.init = new Interpreter();
         Source source = new SourceFile("samples/operator-sample.m");
         Token token = source.parse();
-        Node node = new ModuleNode("module").with(token.toNode());
+        Node node = new InterpretModuleNode("module").with(token.toNode());
         node.matchVariables();
         node.matchTypes();
-        assertEquals("interpret assign", "((0,1,0,0,1,0))", node.interpretValue().asValue().valueString());
+        assertEquals("interpret assign", "((0,1,0,0,1,0))", ((InterpretNode) node).interpretValue().asValue().valueString());
     }
     @Test
     public void testInterpretChainPrefixes() {
         Source source = new SourceString("@!@?@[1,2,3]");
         Token token = source.parse();
         Node node = token.toNode();
-        assertEquals("interpret some operators and list literal", "(false)", node.interpretValue().asValue().valueString());
+        assertEquals("interpret some operators and list literal", "(false)", ((InterpretNode) node).interpretValue().asValue().valueString());
     }
     @Test
     public void testInterpretIfStatement() {
@@ -73,7 +64,7 @@ public class InterpretTest {
         Token token = source.parse();
         Node node = token.toNode();
         System.out.println(node);
-        assertEquals("interpret some operators and list literal", "(1)", node.interpretValue().asValue().valueString());
+        assertEquals("interpret some operators and list literal", "(1)", ((InterpretNode) node).interpretValue().asValue().valueString());
     }
     @Test
     public void testInterpretMultiwordVariable() {
@@ -81,14 +72,14 @@ public class InterpretTest {
                 "@(a number)");
         Token token = source.parse();
         Node node = token.toNode();
-        ModuleNode global = new ModuleNode(source.getTitle());
+        InterpretModuleNode global = new InterpretModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
         global.matchTypes();
         global.initVariables();
 
         System.out.println(node);
-        assertEquals("interpret multiword variables", "(1,1)", node.interpretValue().asValue().valueString());
+        assertEquals("interpret multiword variables", "(1,1)", ((InterpretNode) node).interpretValue().asValue().valueString());
     }
 
     @Test
@@ -99,14 +90,14 @@ public class InterpretTest {
                 "@a");
         Token token = source.parse();
         Node node = token.toNode();
-        ModuleNode global = new ModuleNode(source.getTitle());
+        InterpretModuleNode global = new InterpretModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
         global.matchTypes();
         global.initVariables();
 
         System.out.println(node);
-        assertEquals("print multiword variable", "(1,2,3,{x=1,y=2,z=3})", node.interpretValue().asValue().valueString());
+        assertEquals("print multiword variable", "(1,2,3,{x=1,y=2,z=3})", ((InterpretNode) node).interpretValue().asValue().valueString());
     }
 
     @Test
@@ -115,14 +106,14 @@ public class InterpretTest {
                 "f(1991)");
         Token token = source.parse();
         Node node = token.toNode();
-        ModuleNode global = new ModuleNode(source.getTitle());
+        InterpretModuleNode global = new InterpretModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
         global.matchTypes();
         global.initVariables();
 
 //        System.out.println(node);
-        assertEquals("print multiword variable", "((),1991)", node.interpretValue().asValue().valueString());
+        assertEquals("print multiword variable", "((),1991)", ((InterpretNode) node).interpretValue().asValue().valueString());
     }
 
     @Test
@@ -134,14 +125,14 @@ public class InterpretTest {
                 "f(3)");
         Token token = source.parse();
         Node node = token.toNode();
-        ModuleNode global = new ModuleNode(source.getTitle());
+        InterpretModuleNode global = new InterpretModuleNode(source.getTitle());
         global.add(node);
         global.matchVariables();
         global.matchTypes();
         global.initVariables();
 
         System.out.println(node);
-        InterpretValue value = node.interpretValue().asValue();
+        InterpretValue value = ((InterpretNode) node).interpretValue().asValue();
         assertEquals("recursion", "((),(3,(2,(1,(0,(),0),1),2),3))", value.valueString());
     }
 
@@ -154,7 +145,7 @@ public class InterpretTest {
         Source source = new SourceString(code);
         if(code.indexOf('@') >= 0) Constants.setOut(out);
 
-        Interpret.interpret(source, defaults, Constants.getListener(), out);
+        Interpreter.interpret(source, defaults, Constants.getListener(), out);
         return out.toString().strip();
     }
 

@@ -2,14 +2,19 @@ package systems.monomer;
 
 import org.junit.Test;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.tokenizer.Source;
-import systems.monomer.tokenizer.SourceFile;
-import systems.monomer.tokenizer.SourceString;
-import systems.monomer.tokenizer.Token;
+import systems.monomer.tokenizer.*;
 
 import static org.junit.Assert.*;
 
 public class TokenTest {
+    @Test
+    public void testToNode0() {
+        int i = Operator.NONE;
+        Token token = new Token(Token.Usage.IDENTIFIER, "x");
+        Node node = token.toNode();
+        assertEquals("identifier token toNode", node.toString(), "IDENTIFIER x");
+    }
+
     @Test
     public void testToNode1() {
         Token token = new Token(Token.Usage.IDENTIFIER, "x");

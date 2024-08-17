@@ -3,14 +3,28 @@ package systems.monomer.types;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.pseudo.AnyType;
-import systems.monomer.util.Util;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import static systems.monomer.errorhandling.ErrorBlock.programError;
 
 public interface Type extends Comparable<Type> {
+    /**
+     * Whether the type is a constant
+     */
+    public default boolean isConstant() {
+        return false;   //TODO make Type an abstract class and store isConstant as a variable with default true
+    }
+
+    /**
+     * sets whether the type is a constant
+     */
+    public default void setConstant(boolean value) {
+        //TODO
+    }
+
     /**
      * replaces all instances (including nested instances) of a type with a new type
      * and returns an IMMUTABLE COPY (which may be equal to this if this does not need
@@ -44,7 +58,7 @@ public interface Type extends Comparable<Type> {
         if (!newT.typeContains(this))
             throw programError("Cannot assign " + newT.valueString() + " to " + valueString(), ErrorBlock.Reason.SYNTAX);
 
-        return Util.EMPTY_MAP;
+        return Collections.EMPTY_MAP;
     }
 
     /**
@@ -56,11 +70,12 @@ public interface Type extends Comparable<Type> {
      * @return the return type from the function-manner call
      */
     default Type returnFor(Type arg, Type namedArg) {
+        //TODO implement for OverloadedFunction
         //create a new OperatedType ret whose types-to-return function
         // searches for a matching overload to the global CALL
         // OverloadedFunctionType and performs a returnFor operation
         // on the SignatureType stored there
-        //TODO
+        //TODO implement for collections
         return AnyType.ANY;
     }
 

@@ -1,6 +1,7 @@
 package systems.monomer.types.collection;
 
 import lombok.Getter;
+import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.types.Type;
 import systems.monomer.types.pseudo.AnyType;
 import systems.monomer.util.RepeatingList;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static systems.monomer.errorhandling.ErrorBlock.programError;
+
 //TODO add methods:
 // index, sort, etc (copy from other languages)
 // exclude length/size and concat because separate operators exist for those already
@@ -17,10 +20,10 @@ import java.util.TreeMap;
 public abstract class CollectionType implements Type {
     private Type elementType = AnyType.ANY;
 
-    public CollectionType() {
+    protected CollectionType() {
     }
 
-    public CollectionType(Type elementType) {
+    protected CollectionType(Type elementType) {
         this.elementType = elementType;
     }
 
@@ -46,20 +49,22 @@ public abstract class CollectionType implements Type {
             return this.getClass().getDeclaredConstructor(Type.class).newInstance(elementType.testReplace(replacements));
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                  InvocationTargetException e) {
-            throw new RuntimeException("Internal error in " + this.getClass().getName());
+            throw programError("Internal error in " + this.getClass().getName(), ErrorBlock.Reason.OTHER);
         }
     }
 
     @Override
     public Map<Type, Type> assign(Type newT) {
         if (!(newT instanceof CollectionType ct))
-            throw new RuntimeException("Can not assign " + newT.valueString() + " to " + valueString());
+            throw programError("Can not assign " + newT.valueString() + " to " + valueString(), ErrorBlock.Reason.SYNTAX);
 
         Map<Type, Type> ret = new TreeMap<>();
         ret.put(elementType, ct.elementType);
 
         return ret;
     }
+
+    public abstract Type indexResult(Type indexType);
 
     @Override
     public List<Type> getChildren() {
