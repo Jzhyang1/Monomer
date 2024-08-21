@@ -2,13 +2,12 @@ package systems.monomer;
 
 import org.junit.Test;
 import systems.monomer.execution.Constants;
-import systems.monomer.execution.Handler;
+import systems.monomer.execution.Initializer;
 import systems.monomer.ide.Editor;
 import systems.monomer.interpreter.InterpretModuleNode;
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.Interpreter;
-import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.SourceFile;
@@ -43,8 +42,8 @@ public class InterpretTest {
     }
     @Test
     public void testInterpretFile() {
-        Handler.init = new Interpreter();
         Source source = new SourceFile("samples/operator-sample.m");
+        source.with(new Interpreter());
         Token token = source.parse();
         Node node = new InterpretModuleNode("module").with(token.toNode());
         node.matchVariables();

@@ -1,16 +1,13 @@
 package systems.monomer.execution.environmentDefaults;
 
 import lombok.experimental.UtilityClass;
-import systems.monomer.execution.Handler;
+import systems.monomer.execution.Initializer;
 import systems.monomer.interpreter.*;
 import systems.monomer.interpreter.values.InterpretIO;
 import systems.monomer.interpreter.values.InterpretURI;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.function.OverloadableType;
 import systems.monomer.types.Type;
 import systems.monomer.types.signature.Signature;
-import systems.monomer.variables.FunctionBody;
-import systems.monomer.variables.Key;
 import systems.monomer.variables.Overloadable;
 import systems.monomer.variables.VariableKey;
 
@@ -27,7 +24,7 @@ public class ConvertDefaults {
     public final String NAME = "convert";
 
     public void initGlobal(Node global) {
-        VariableKey key = Handler.init.variableKey();
+        VariableKey key = Initializer.init.variableKey();
         global.putVariable(NAME, key);
 
         Overloadable overload = new Overloadable();

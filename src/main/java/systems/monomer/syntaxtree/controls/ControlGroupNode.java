@@ -29,11 +29,6 @@ public class ControlGroupNode extends OperatorNode {
         setType(closestType);
     }
 
-    public void add(Node node) {
-        if(node.getUsage() != Usage.LABEL)
-            throw node.syntaxError("Control group can only contain control operators");
-        super.add(node);
-    }
     public ControlOperatorNode get(int index) {
         return (ControlOperatorNode) super.get(index);
     }

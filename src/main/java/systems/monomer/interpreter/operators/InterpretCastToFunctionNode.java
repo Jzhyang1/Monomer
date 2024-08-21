@@ -6,7 +6,6 @@ import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.interpreter.values.InterpretOverloads;
 import systems.monomer.interpreter.variables.InterpretVariable;
 import systems.monomer.syntaxtree.operators.CastToFunctionNode;
-import systems.monomer.variables.Overloadable;
 
 public class InterpretCastToFunctionNode extends CastToFunctionNode implements InterpretNode {
     @Override

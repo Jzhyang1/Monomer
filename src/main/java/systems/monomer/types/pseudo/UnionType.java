@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import static systems.monomer.errorhandling.ErrorBlock.programError;
 
 /**
- * try to use .union whenever possible; UnionType is used primarily to temporarily hold PlaceholderTypes
+ * UnionType is used primarily to temporarily hold PlaceholderTypes
  */
 @Getter
 public class UnionType<T extends Type> extends PseudoType {

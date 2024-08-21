@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 public class TokenTest {
     @Test
     public void testToNode0() {
-        int i = Operator.NONE;
+        int i = Operators.NONE;
         Token token = new Token(Token.Usage.IDENTIFIER, "x");
         Node node = token.toNode();
         assertEquals("identifier token toNode", node.toString(), "IDENTIFIER x");

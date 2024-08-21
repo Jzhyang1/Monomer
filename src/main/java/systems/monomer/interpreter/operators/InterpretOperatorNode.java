@@ -1,6 +1,5 @@
 package systems.monomer.interpreter.operators;
 
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.InterpretResult;
@@ -15,11 +14,6 @@ import java.util.Iterator;
 import java.util.function.Function;
 
 public class InterpretOperatorNode extends GenericOperatorNode implements InterpretNode {
-
-    @Setter
-    private Function<GenericOperatorNode,
-            Function<Iterator<InterpretValue>, ? extends InterpretResult>
-            > interpretGenerator;
     private Function<Iterator<InterpretValue>, ? extends InterpretResult> interpret;
 
     public InterpretOperatorNode(
@@ -32,7 +26,10 @@ public class InterpretOperatorNode extends GenericOperatorNode implements Interp
     @Override
     public void matchTypes() {
         super.matchTypes();
-        interpret = interpretGenerator.apply(this);
+        //TODO this is ugly but passing the type without erasure is hard;
+        // instead, make the signatures for interpret and compile identical to avoid generics
+        interpret = (Function<Iterator<InterpretValue>, ? extends InterpretResult>)
+                env.getOperatorBody(getName()).apply(this);
     }
 
     @Override

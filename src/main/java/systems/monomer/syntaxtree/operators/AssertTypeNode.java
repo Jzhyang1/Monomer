@@ -11,7 +11,6 @@ import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
 
 
-import static systems.monomer.execution.Handler.init;
 import static systems.monomer.types.pseudo.AnyType.ANY;
 
 public class AssertTypeNode extends OperatorNode {
@@ -51,17 +50,24 @@ public class AssertTypeNode extends OperatorNode {
             OverloadsType overloads = (OverloadsType) convertFunc.getType().getExpressed();
             convertBy = overloads.randomAccessIndex(new Signature(from, ObjectType.EMPTY, to));
 
-            if(convertBy >= 0) return this;
+            if(convertBy < 0) throw syntaxError("Cannot convert type from " + from + " to " + to);
+            //this isn't under matchTypes because it shouldn't be treated as a CallNode exactly until all
+            // CallNode-related shenanigans are done
+            //TODO create a CallNode and return that
+            return this;
         }
 
-        if(to.equals(from))
-            return getSecond();
+        if(to.equals(from)) {
+            Node ret = getSecond();
+            ret.setParent(getParent());
+            return ret;
+        }
 
         if(from.typeContains(to)) {
-            CastNode ret = init.castNode();
-            ret.add(getFirst()); ret.add(getSecond());
+            Node ret = env.castNode().with(getFirst()).with(getSecond());
             ret.matchTypes();
             ret.simplify();
+            ret.setParent(getParent());
             return ret;
         }
         else

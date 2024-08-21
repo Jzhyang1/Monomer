@@ -3,42 +3,40 @@ package systems.monomer.interpreter;
 import systems.monomer.compiler.operators.CompileOperatorNode;
 import systems.monomer.compiler.output.CompileOutput;
 import systems.monomer.compiler.output.CompileValue;
-import systems.monomer.execution.Handler;
+import systems.monomer.execution.Initializer;
 import systems.monomer.execution.environmentDefaults.ConvertDefaults;
 import systems.monomer.execution.environmentDefaults.FileDefaults;
 import systems.monomer.execution.environmentDefaults.TypeDefaults;
 import systems.monomer.execution.environmentDefaults.ValueDefaults;
 import systems.monomer.interpreter.controls.*;
+import systems.monomer.interpreter.execution.InterpretUtil;
 import systems.monomer.interpreter.literals.*;
 import systems.monomer.interpreter.operators.*;
 import systems.monomer.interpreter.variables.InterpretFieldKey;
 import systems.monomer.interpreter.variables.InterpretIndexKey;
 import systems.monomer.interpreter.variables.InterpretKey;
-import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.VariableNode;
-import systems.monomer.syntaxtree.controls.*;
-import systems.monomer.syntaxtree.literals.*;
-import systems.monomer.syntaxtree.operators.*;
+import systems.monomer.syntaxtree.operators.GenericOperatorNode;
+import systems.monomer.syntaxtree.operators.IndexNode;
+import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.Token;
 import systems.monomer.types.Type;
-import systems.monomer.variables.FieldKey;
-import systems.monomer.variables.IndexKey;
 import systems.monomer.variables.Key;
-import systems.monomer.variables.VariableKey;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.function.BiFunction;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class Interpreter extends Handler {
+public class Interpreter extends Initializer<Function<GenericOperatorNode, Function<Iterator<InterpretValue>, ? extends InterpretResult>>> {
     public static void interpret(Source source, boolean defaults, InputStream input, OutputStream output) {
-        init = new Interpreter();
+        Initializer init = new Interpreter();
+        source.with(init);
 
         Token body = source.parse();
         Node node = body.toNode();
@@ -60,141 +58,183 @@ public class Interpreter extends Handler {
         global.interpretValue();
     }
 
+    private Map<String, Function<GenericOperatorNode, Function<Iterator<InterpretValue>, ? extends InterpretResult>>> operatorBodies = new HashMap<>();
+    public Interpreter() {
+        //purposefully omitted are the control operators, assignment, cast, convert, and with/then
+        operatorBodies.put("+", InterpretUtil.unBi(InterpretUtil.intFloatUniOp((a)->+a, (b)->+b), InterpretUtil.intFloatOp((a, b) -> a + b, (a, b) -> a + b)));
+        operatorBodies.put("-", InterpretUtil.unBi(InterpretUtil.intFloatUniOp((a)->-a, (b)->-b), InterpretUtil.intFloatOp((a, b) -> a - b, (a, b) -> a - b)));
+        operatorBodies.put("*", InterpretUtil.intFloatOp((a, b) -> a * b, (a, b) -> a * b));
+        operatorBodies.put("/", InterpretUtil.intFloatOp((a, b) -> a / b, (a, b) -> a / b));
+        operatorBodies.put("%", InterpretUtil.intFloatOp((a, b) -> b == 0 ? 0 : a % b, (a, b) -> b == 0 ? 0 : a % b));
+        operatorBodies.put("||", InterpretUtil.intFloatOp((a, b) -> a * b / (a + b), (a, b) -> a * b / (a + b)));
+        operatorBodies.put("**", InterpretUtil.intFloatOp((a, b) -> (int) StrictMath.pow(a, b), StrictMath::pow));
+        operatorBodies.put("*/", InterpretUtil.intFloatOp((a, b) -> (int) StrictMath.pow(a, 1.0 / b), (a, b) -> StrictMath.pow(a, 1.0 / b)));
+
+        operatorBodies.put("!", InterpretUtil.boolOp((a) -> !a));
+        operatorBodies.put("?", InterpretUtil.truthyOp());
+        operatorBodies.put("&", InterpretUtil.intBoolOp((a, b) -> a & b, (a, b) -> a && b));
+        operatorBodies.put("|", InterpretUtil.intBoolOp((a, b) -> a | b, (a, b) -> a || b));
+        operatorBodies.put("^", InterpretUtil.intBoolOp((a, b) -> a ^ b, (a, b) -> a ^ b));
+        operatorBodies.put("~&", InterpretUtil.intBoolOp((a, b) -> ~(a & b), (a, b) -> !(a && b)));
+        operatorBodies.put("~|", InterpretUtil.intBoolOp((a, b) -> ~(a | b), (a, b) -> !(a || b)));
+        operatorBodies.put("~^", InterpretUtil.intBoolOp((a, b) -> ~(a ^ b), (a, b) -> a == b));
+
+        operatorBodies.put("==", InterpretUtil.cmpOp((a, b) -> a == b, (a, b) -> a == b, (a, b) -> a == b, (a, b) -> a.equals(b)));
+        operatorBodies.put("!=", InterpretUtil.cmpOp((a, b) -> a != b, (a, b) -> a != b, (a, b) -> a != b, (a, b) -> !a.equals(b)));
+        operatorBodies.put(">", InterpretUtil.cmpOp((a, b) -> a < b, (a, b) -> a < b, (a, b) -> a && !b, (a, b) -> false /*TODO*/));
+        operatorBodies.put("<", InterpretUtil.cmpOp((a, b) -> a > b, (a, b) -> a > b, (a, b) -> !a && b, (a, b) -> false /*TODO*/));
+        operatorBodies.put(">=", InterpretUtil.cmpOp((a, b) -> a <= b, (a, b) -> a <= b, (a, b) -> a || !b, (a, b) -> false /*TODO*/));
+        operatorBodies.put("<=", InterpretUtil.cmpOp((a, b) -> a >= b, (a, b) -> a >= b, (a, b) -> !a || b, (a, b) -> false /*TODO*/));
+        //operatorBodies.put("?=", null); //TODO
+
+        operatorBodies.put(".", InterpretUtil.colOp((col1, col2)->{
+                col1.addAll(col2);
+                return col1;
+            }));
+        operatorBodies.put("...", InterpretUtil.unBi(InterpretUtil.spreadOp(), InterpretUtil.rangeOp()));
+        operatorBodies.put("in", InterpretUtil.inOp());
+        operatorBodies.put("#", InterpretUtil.sizeOp());
+
+        operatorBodies.put("break", InterpretUtil.breakingOp());
+        operatorBodies.put("continue", InterpretUtil.breakingOp());
+        operatorBodies.put("return", InterpretUtil.breakingOp());
+    }
 
     public Node definedValueNode(Supplier<InterpretResult> interpret) {
-        return new InterpretDefinedValueNode(interpret);
+        return new InterpretDefinedValueNode(interpret).with(this);
     }
 
-    public ControlGroupNode controlGroupNode() {
-        return new InterpretControlGroupNode();
+    public Node controlGroupNode() {
+        return new InterpretControlGroupNode().with(this);
     }
-    public IfNode ifNode() {
-        return new InterpretIfNode();
+    public Node ifNode() {
+        return new InterpretIfNode().with(this);
     }
-    public AllNode allNode() {
-        return new InterpretAllNode();
+    public Node allNode() {
+        return new InterpretAllNode().with(this);
     }
-    public AnyNode anyNode() {
-        return new InterpretAnyNode();
+    public Node anyNode() {
+        return new InterpretAnyNode().with(this);
     }
-    public ElseNode elseNode() {
-        return new InterpretElseNode();
+    public Node elseNode() {
+        return new InterpretElseNode().with(this);
     }
-    public RepeatNode repeatNode() {
-        return new InterpretRepeatNode();
+    public Node repeatNode() {
+        return new InterpretRepeatNode().with(this);
     }
-    public WhileNode whileNode() {
-        return new InterpretWhileNode();
+    public Node whileNode() {
+        return new InterpretWhileNode().with(this);
     }
-    public ForNode forNode() {
-        return new InterpretForNode();
+    public Node forNode() {
+        return new InterpretForNode().with(this);
     }
-    public ReturnNode returnNode() {
-        return new InterpretReturnNode();
+    public Node returnNode() {
+        return new InterpretReturnNode().with(this);
     }
-    public BoolNode boolNode(boolean value) {
-        return new InterpretBoolNode(value);
+    public Node boolNode(boolean value) {
+        return new InterpretBoolNode(value).with(this);
     }
-    public CharNode charNode(Character c) {
-        return new InterpretCharNode(c);
+    public Node charNode(Character c) {
+        return new InterpretCharNode(c).with(this);
     }
-    public FloatNode floatNode(Double f) {
-        return new InterpretFloatNode(f);
+    public Node floatNode(Double f) {
+        return new InterpretFloatNode(f).with(this);
     }
-    public IntNode intNode(Integer i) {
-        return new InterpretIntNode(i);
+    public Node intNode(Integer i) {
+        return new InterpretIntNode(i).with(this);
     }
-    public StringBuilderNode stringBuilderNode(Collection<? extends Node> list) {
-        return new InterpretStringBuilderNode(list);
+    public Node stringBuilderNode(Collection<? extends Node> list) {
+        return new InterpretStringBuilderNode(list).with(this);
     }
-    public StringNode stringNode(String s) {
-        return new InterpretStringNode(s);
+    public Node stringNode(String s) {
+        return new InterpretStringNode(s).with(this);
     }
-    public ListNode listNode() {
-        return new InterpretListNode();
+    public Node listNode() {
+        return new InterpretListNode().with(this);
     }
-    public TupleNode tupleNode() {
-        return new InterpretTupleNode();
+    public Node tupleNode() {
+        return new InterpretTupleNode().with(this);
     }
-    public TupleNode blockNode() {
-        return new InterpretTupleNode("block");
+    public Node blockNode() {
+        return new InterpretTupleNode("block").with(this);
     }
-    public TupleNode linesNode() {
-        return new InterpretTupleNode(";");
+    public Node linesNode() {
+        return new InterpretTupleNode(";").with(this);
     }
-    public StructureNode structureNode() {
-        return new InterpretStructureNode();
+    public Node structureNode() {
+        return new InterpretStructureNode().with(this);
     }
-    public MapNode mapNode() {
-        return new InterpretMapNode();
+    public Node mapNode() {
+        return new InterpretMapNode().with(this);
     }
-    public SetNode setNode() {
+    public Node setNode() {
         throw new RuntimeException("Set has not been implemented");
     }
-    public RangeNode rangeNode(boolean startInclusive, boolean stopInclusive) {
-        return new InterpretRangeNode(startInclusive, stopInclusive);
+    public Node rangeNode(boolean startInclusive, boolean stopInclusive) {
+        return new InterpretRangeNode(startInclusive, stopInclusive).with(this);
     }
-    public AssertTypeNode assertTypeNode() {
-        return new InterpretAssertTypeNode();
+    public Node assertTypeNode() {
+        return new InterpretAssertTypeNode().with(this);
     }
-    public CastNode castNode() {
+    public Node castNode() {
         throw new RuntimeException("Cast has not been implemented");
     }
-    public ConvertNode convertNode() {
+    public Node convertNode() {
         throw new RuntimeException("Convert has not been implemented");
     }
-    public AssignNode assignNode() {
-        return new InterpretAssignNode();
+    public Node assignNode() {
+        return new InterpretAssignNode().with(this);
     }
-    public AssignModifyNode assignModifyNode() {
+    public Node assignModifyNode() {
         throw new RuntimeException("AssignModify has not been implemented");
     }
-    public CallNode callNode() {
-        return new InterpretCallNode();
+    public Node callNode() {
+        return new InterpretCallNode().with(this);
     }
-    public CastToFunctionNode castToFunctionNode() {
-        return new InterpretCastToFunctionNode();
+    public Node castToFunctionNode() {
+        return new InterpretCastToFunctionNode().with(this);
     }
-    public FieldNode fieldNode() {
-        return new InterpretFieldNode();
+    public Node fieldNode() {
+        return new InterpretFieldNode().with(this);
     }
-    public IndexNode indexNode() {
-        return new InterpretIndexNode();
+    public Node indexNode() {
+        return new InterpretIndexNode().with(this);
     }
-    public SpreadNode spreadNode() {
+    public Node spreadNode() {
         throw new RuntimeException("Spread has not been implemented");
     }
-    public WithNode withNode() {
-        return new InterpretWithNode();
+    public Node withNode() {
+        return new InterpretWithNode().with(this);
     }
-    public ThenNode thenNode() {
-        return new InterpretThenNode();
+    public Node thenNode() {
+        return new InterpretThenNode().with(this);
     }
-    public GenericOperatorNode genericOperatorNode(
+    public Node genericOperatorNode(
             String name,
-            Function<OperatorNode, Type> type,
-            Function<GenericOperatorNode, BiFunction<CompileOperatorNode, CompileOutput, CompileValue>> compile,
-            Function<GenericOperatorNode, Function<Iterator<InterpretValue>, ? extends InterpretResult>> interpret
+            Function<OperatorNode, Type> type
     ) {
-        InterpretOperatorNode ret = new InterpretOperatorNode(name, type);
-        ret.setInterpretGenerator(interpret);
-        return ret;
+        return new InterpretOperatorNode(name, type).with(this);
     }
 
-    public ModuleNode moduleNode(String name) {
-        return new InterpretModuleNode(name);
+    public Node moduleNode(String name) {
+        return new InterpretModuleNode(name).with(this);
     }
-    public VariableNode variableNode(String name) {
-        return new InterpretVariableNode(name);
+    public Node variableNode(String name) {
+        return new InterpretVariableNode(name).with(this);
     }
 
-    public VariableKey variableKey() {
-        return new InterpretKey();
+    public Key variableKey() {
+        return new InterpretKey().with(this);
     }
-    public FieldKey fieldKey(String name, Key parent) {
-        return new InterpretFieldKey(name, parent);
+    public Key fieldKey(String name, Key parent) {
+        return new InterpretFieldKey(name, parent).with(this);
     }
-    public IndexKey indexKey(IndexNode owner) {
-        return new InterpretIndexKey(owner);
+    public Key indexKey(IndexNode owner) {
+        return new InterpretIndexKey(owner).with(this);
+    }
+
+    @Override
+    public Function<GenericOperatorNode, Function<Iterator<InterpretValue>, ? extends InterpretResult>> getOperatorBody(String symbol) {
+        return operatorBodies.get(symbol);
     }
 }

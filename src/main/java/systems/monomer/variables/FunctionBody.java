@@ -5,7 +5,6 @@ import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.interpreter.InterpretModuleNode;
 import systems.monomer.interpreter.InterpretNode;
 import systems.monomer.interpreter.literals.InterpretStructureNode;
-import systems.monomer.interpreter.literals.InterpretTupleNode;
 import systems.monomer.interpreter.values.InterpretObject;
 import systems.monomer.interpreter.values.InterpretTuple;
 import systems.monomer.interpreter.InterpretValue;
@@ -27,10 +26,9 @@ import systems.monomer.util.PairList;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 public class FunctionBody extends Signature implements InterpretValue, InterpretFunction {
-    private final TupleNode args;
+    private final Node args;
     private final StructureNode namedArgs;
     private final Node body;
     private final Signature signature;
@@ -41,7 +39,7 @@ public class FunctionBody extends Signature implements InterpretValue, Interpret
     private final ModuleNode parent;
 
     public FunctionBody(Node args, StructureNode namedArgs, Node body, ModuleNode parent) {
-        this.args = TupleNode.asTuple(args);
+        this.args = args;
         this.namedArgs = namedArgs;
         this.body = body;
         this.parent = parent;
@@ -106,7 +104,7 @@ public class FunctionBody extends Signature implements InterpretValue, Interpret
 
         InterpretTuple argsTuple = InterpretTuple.toTuple(args);
         //InterpretTuple paramTuple = new InterpretTuple(this.args.getChildren().stream().map(Node::interpretVariable).toList());
-        ((InterpretTupleNode)this.args).interpretAssign(argsTuple, true);
+        ((InterpretNode) this.args).interpretAssign(argsTuple, true);
 
         assert body instanceof InterpretNode;
 

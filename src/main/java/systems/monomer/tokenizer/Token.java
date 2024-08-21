@@ -5,20 +5,18 @@ import org.jetbrains.annotations.Nullable;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.errorhandling.Index;
 import systems.monomer.syntaxtree.*;
-import systems.monomer.syntaxtree.literals.*;
 import systems.monomer.syntaxtree.operators.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static systems.monomer.execution.Handler.init;
 import static systems.monomer.syntaxtree.literals.TupleNode.isTuple;
-import static systems.monomer.tokenizer.Operator.*;
+import static systems.monomer.tokenizer.Operators.*;
 
 //sub_ are helpers for partial_
 
 @Getter
-public class Token extends ErrorBlock {
+public class Token extends ErrorBlock<Token> {
     public static enum Usage {
         OPERATOR, STRING_BUILDER, STRING, CHARACTER, INTEGER, FLOAT, GROUP, IDENTIFIER,
         CHARACTER_FROM_INT
@@ -35,25 +33,26 @@ public class Token extends ErrorBlock {
     }
     public Token(Usage usage) {
         this.usage = usage;
+        this.value = "/NAMELESS_TOKEN/";
     }
 
-    private static Node subGroupSuffixToNode(Node cur, Token suffixGroup, ListIterator<Token> iter) {
+    private Node subGroupSuffixToNode(Node cur, Token suffixGroup, ListIterator<Token> iter) {
         Node opChildrenNode = suffixGroup.toNode();
 
         Node opNode = switch (suffixGroup.value) {
-            case "()" -> init.callNode().with(cur).with(opChildrenNode);
-            case "[]" -> init.indexNode().with(cur).with(opChildrenNode.get(0));
+            case "()" -> env.callNode().with(cur).with(opChildrenNode);
+            case "[]" -> env.indexNode().with(cur).with(opChildrenNode.get(0));
             case "{}" -> {
                 Token peekToken = iter.next();
                 if(peekToken.usage == Usage.GROUP && "()".equals(peekToken.value)) {
-                    yield init.callNode()
+                    yield env.callNode()
                             .with(cur)
                             .with(peekToken.toNode())
                             .with(opChildrenNode);
                 }
                 else {
                     iter.previous();
-                    yield init.fieldNode().with(cur).with(opChildrenNode);
+                    yield env.fieldNode().with(cur).with(opChildrenNode);
                 }
             }
             default -> throw suffixGroup.syntaxError("Expected (), {}, or []");
@@ -63,11 +62,11 @@ public class Token extends ErrorBlock {
 
     private Node groupToNode(String paren) {
         return switch (paren) {
-            case "()", "block" -> init.tupleNode();
-            case "[]" -> init.listNode();
-            case "{}" -> init.structureNode();
-            case "[)" -> init.rangeNode(true, false);
-            case "(]" -> init.rangeNode(false, true);
+            case "()", "block" -> env.tupleNode();
+            case "[]" -> env.listNode();
+            case "{}" -> env.structureNode();
+            case "[)" -> env.rangeNode(true, false);
+            case "(]" -> env.rangeNode(false, true);
             default -> throw syntaxError("Invalid group type " + paren);
         };
     }
@@ -78,13 +77,13 @@ public class Token extends ErrorBlock {
      * @param iter
      * @return the new expression
      */
-    private static Node partialToNode(Node cur, ListIterator<Token> iter) {    //TODO move this under partialOperator or remember to call after every operation
+    private Node partialToNode(Node cur, ListIterator<Token> iter) {    //TODO move this under partialOperator or remember to call after every operation
         if (!iter.hasNext()) return cur;
 
         Token nextOp = iter.next();
         return switch (nextOp.usage) {
             case IDENTIFIER -> partialToNode(
-                    init.fieldNode()
+                    env.fieldNode()
                             .with(cur).with(nextOp.toNode())
                             .with(cur.getStart(), nextOp.getStop(), cur.getSource()),
                     iter);
@@ -106,7 +105,7 @@ public class Token extends ErrorBlock {
         Node part;
 
         if (endAtColon && token.usage == Usage.OPERATOR && ":".equals(token.value)) {
-            part = init.boolNode(true);
+            part = env.boolNode(true);
         }
         else {
             part = partialOperatorToNode(control, token, iter, stopAt);
@@ -142,7 +141,7 @@ public class Token extends ErrorBlock {
             token = iter.next();
         }
         if(token.usage == Usage.OPERATOR) {
-            if(Operator.isToken(token.value, PREFIX)) {
+            if(env.operators.isToken(token.value, PREFIX)) {
                 Node cur = partialOperatorToNode(prevOp, null, token, iter, stopAt);
                 return partialToNode(cur, iter);
             }
@@ -183,25 +182,25 @@ public class Token extends ErrorBlock {
 
         if (!iter.hasNext()) {
             //check suffix
-            if (Operator.isToken(op.value, SUFFIX)) {
+            if (env.operators.isToken(op.value, SUFFIX)) {
                 if(cur != null)
                     return op.toNode().with(cur);
-                else if(Operator.isToken(op.value, PREFIX))
+                else if(env.operators.isToken(op.value, PREFIX))
                     return op.toNode();
             } else throw op.syntaxError("Expected value after operator");
         }
 
         //check if condition operation (aka "primary control")
-        if(Operator.isToken(op.value, PRIMARY_CONTROL)) {
+        if(env.operators.isToken(op.value, PRIMARY_CONTROL)) {
             assert cur == null;
-            cur = init.controlGroupNode().with(partialControlToNode(op, iter));
+            cur = env.controlGroupNode().with(partialControlToNode(op, iter));
 
             //TODO ugly
             if(!iter.hasNext()) return cur;
             Token peekToken;
             while(iter.hasNext()) {
                 peekToken = iter.next();
-                if(Operator.isToken(peekToken.value, SECONDARY_CONTROL))
+                if(env.operators.isToken(peekToken.value, SECONDARY_CONTROL))
                     cur.add(partialControlToNode(peekToken, iter));
                 else {
                     iter.previous();
@@ -214,7 +213,7 @@ public class Token extends ErrorBlock {
             cur.setContext(start, stop, op.getSource());
 
             if(iter.hasNext())
-                return partialOperatorToNode(prevOp, cur, new Token(Usage.OPERATOR, ";"), iter);
+                return partialOperatorToNode(prevOp, cur, new Token(Usage.OPERATOR, ";").with(env), iter);
             else
                 return cur;
         }
@@ -225,9 +224,9 @@ public class Token extends ErrorBlock {
 
         //check prefixes/suffixes
         if (token.usage == Usage.OPERATOR) {
-            if (Operator.isToken(token.value, PREFIX))
+            if (env.operators.isToken(token.value, PREFIX))
                 next = partialOperatorToNode(op, null, token, iter, stopAt);
-            else if (Operator.isToken(op.value, SUFFIX)) {
+            else if (env.operators.isToken(op.value, SUFFIX)) {
                 next = opNode.with(cur);
             } else throw token.syntaxError("Expected value or prefix");
         } else
@@ -239,7 +238,7 @@ public class Token extends ErrorBlock {
 
         //check for chaining
         if (cur != null) {
-            if (Operator.isChained(cur.getName(), opNode.getName()))
+            if (env.operators.isChained(cur.getName(), opNode.getName()))
                 opNode = cur;
             else if (cur.getUsage() == Node.Usage.CONTROL_GROUP && opNode.getUsage() == Node.Usage.LABEL){
                 cur.add(opNode);
@@ -274,17 +273,17 @@ public class Token extends ErrorBlock {
     public Node toNode() {
         return (switch (usage) {
             case STRING_BUILDER -> {
-                if (children == null) yield init.emptyString();
+                if (children == null) yield env.emptyString();
                 if (children.size() == 1 && children.get(0).usage == Usage.STRING) yield children.get(0).toNode();
-                yield init.stringBuilderNode(children.stream().map(Token::toNode).collect(Collectors.toList()));
+                yield env.stringBuilderNode(children.stream().map(Token::toNode).collect(Collectors.toList()));
             }
-            case STRING -> init.stringNode(value);
-            case CHARACTER -> init.charNode(value.charAt(0));
-            case CHARACTER_FROM_INT -> init.charNode((char) Integer.parseInt(value));
-            case INTEGER -> init.intNode(Integer.valueOf(value));
-            case FLOAT -> init.floatNode(Double.valueOf(value));
-            case IDENTIFIER -> init.variableNode(value);
-            case OPERATOR -> Operator.getOperator(value);
+            case STRING -> env.stringNode(value);
+            case CHARACTER -> env.charNode(value.charAt(0));
+            case CHARACTER_FROM_INT -> env.charNode((char) Integer.parseInt(value));
+            case INTEGER -> env.intNode(Integer.valueOf(value));
+            case FLOAT -> env.floatNode(Double.valueOf(value));
+            case IDENTIFIER -> env.variableNode(value);
+            case OPERATOR -> env.operators.getOperator(value);
             case GROUP -> {
                 Node node = groupToNode(value);
                 if(children == null) yield node;
@@ -292,7 +291,7 @@ public class Token extends ErrorBlock {
                 ListIterator<Token> iter = children.listIterator();
                 Token token = iter.next();
 
-                Node cur = (token.usage == Usage.OPERATOR && Operator.isToken(token.value, PREFIX)) ?
+                Node cur = (token.usage == Usage.OPERATOR && env.operators.isToken(token.value, PREFIX)) ?
                         partialOperatorToNode(null,null, token, iter) : partialToNode(token.toNode(), iter);
 
                 while (iter.hasNext()) {
@@ -303,10 +302,10 @@ public class Token extends ErrorBlock {
 
                 if(OperatorNode.isOperator(cur, "...")) { //also make sure it's range, not spread
                     node = switch (value) {
-                        case "()" -> init.rangeNode(false, false);
-                        case "[)" -> init.rangeNode(true, false);
-                        case "(]" -> init.rangeNode(false, true);
-                        case "[]" -> init.rangeNode(true, true);
+                        case "()" -> env.rangeNode(false, false);
+                        case "[)" -> env.rangeNode(true, false);
+                        case "(]" -> env.rangeNode(false, true);
+                        case "[]" -> env.rangeNode(true, true);
                         default -> throw syntaxError("Invalid range braces " + value);
                     };
                     yield node.with(cur.getChildren()); //.with(cur.getContext());
@@ -340,10 +339,10 @@ public class Token extends ErrorBlock {
     }
 
     public int leftPrec() {
-        return Operator.precedence(value).getFirst();
+        return env.operators.precedence(value).getFirst();
     }
     public int rightPrec() {
-        return Operator.precedence(value).getSecond();
+        return env.operators.precedence(value).getSecond();
     }
 
     public Token with(String value) {
@@ -366,14 +365,14 @@ public class Token extends ErrorBlock {
         int posStart2 = start2.getPosition(), posStop2 = stop2.getPosition();
 
         if(posStop1 > posStart1) {
-            Token firstToken = new Token(usage, value).with(start1, stop1, getSource());
+            Token firstToken = new Token(usage, value).with(env).with(start1, stop1, getSource());
             tokens.add(firstToken);
         }
         for(Token child : children) {
             tokens.addAll(child.markupBlock());
         }
         if(posStop2 > posStart2) {
-            Token secondToken = new Token(usage, value).with(start2, stop2, getSource());
+            Token secondToken = new Token(usage, value).with(env).with(start2, stop2, getSource());
             tokens.add(secondToken);
         }
         return tokens;

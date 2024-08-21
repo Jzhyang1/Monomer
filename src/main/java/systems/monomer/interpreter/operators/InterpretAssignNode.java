@@ -16,6 +16,7 @@ public class InterpretAssignNode extends AssignNode implements InterpretNode {
 
     public InterpretResult interpretValue() {
         if(functionInit != null) {
+
             //TODO
             return InterpretTuple.EMPTY;
         }

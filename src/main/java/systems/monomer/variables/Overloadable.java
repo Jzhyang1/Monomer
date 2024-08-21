@@ -17,7 +17,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static systems.monomer.errorhandling.ErrorBlock.programError;
-import static systems.monomer.execution.Handler.init;
 
 //TODO why is Overloadable a thing? shouldn't it all be OverloadedFunction?
 public class Overloadable extends OverloadableType implements InterpretValue {
@@ -33,8 +32,8 @@ public class Overloadable extends OverloadableType implements InterpretValue {
     }
 
     public void putSingleInterpretOverload(Type argType, Type retType, Function<InterpretValue, InterpretResult> function) {
-        InterpretVariableNode argVar = (InterpretVariableNode) init.variableNode("arg").with(argType);
-        Node body = init.definedValueNode(
+        InterpretVariableNode argVar = (InterpretVariableNode) env.variableNode("arg").with(argType);
+        Node body = env.definedValueNode(
                 ()->function.apply(argVar.interpretValue())
         ).with(retType);
 

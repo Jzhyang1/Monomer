@@ -14,7 +14,6 @@ import systems.monomer.variables.Key;
 
 import java.util.List;
 
-import static systems.monomer.execution.Handler.init;
 import static systems.monomer.types.pseudo.AnyType.ANY;
 
 public class AssignNode extends OperatorNode {
@@ -43,7 +42,7 @@ public class AssignNode extends OperatorNode {
         Node first = getFirst(), second = getSecond();
         if (first instanceof CallNode callNode) {
             Node identifier = callNode.getFirst(), args = callNode.getSecond();
-            Node namedArgs = callNode.size() == 2 ? init.emptyStructure() : callNode.get(2);
+            Node namedArgs = callNode.size() == 2 ? env.emptyStructure() : callNode.get(2);
             if (!(namedArgs instanceof StructureNode)) throw namedArgs.syntaxError("Expected named args, got " + namedArgs);
             StructureNode namedArgsStruct = (StructureNode) namedArgs;
             namedArgsStruct.matchVariables();
@@ -51,7 +50,7 @@ public class AssignNode extends OperatorNode {
             identifier.matchVariables();
             Key identifierKey = identifier.getVariableKey();
 
-            ModuleNode wrapper = init.moduleNode("function");
+            Node wrapper = env.moduleNode("function");
             wrapper.setParent(this);
             for (String fieldName : namedArgsStruct.getFieldNames()) {
                 wrapper.putVariable(fieldName, namedArgsStruct.getVariable(fieldName));
@@ -61,7 +60,7 @@ public class AssignNode extends OperatorNode {
             functionInit = new FunctionInitInfo(
                     identifier, identifierKey,
                     args, (StructureNode) namedArgs, second,
-                    wrapper);
+                    (ModuleNode) wrapper);
             return;
         }
 

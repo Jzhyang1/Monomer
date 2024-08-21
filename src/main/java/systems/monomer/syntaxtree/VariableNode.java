@@ -1,13 +1,9 @@
 package systems.monomer.syntaxtree;
 
 import lombok.Getter;
-import systems.monomer.execution.Handler;
+import systems.monomer.execution.Initializer;
 import systems.monomer.types.Type;
-import systems.monomer.types.pseudo.PlaceholderType;
-import systems.monomer.variables.Key;
 import systems.monomer.variables.VariableKey;
-
-import static systems.monomer.types.pseudo.AnyType.ANY;
 
 @Getter
 public class VariableNode extends Node {
@@ -25,7 +21,7 @@ public class VariableNode extends Node {
     public void matchVariables() {
         VariableKey existing = getVariable(getName());
         if (variableKey == null && existing == null)
-            putVariable(getName(), variableKey = Handler.init.variableKey());
+            putVariable(getName(), variableKey = (VariableKey) env.variableKey());
         else if (existing == null)
             putVariable(getName(), variableKey);
         else

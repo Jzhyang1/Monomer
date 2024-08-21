@@ -5,21 +5,17 @@ import systems.monomer.compiler.literals.*;
 import systems.monomer.compiler.operators.*;
 import systems.monomer.compiler.output.CompileOutput;
 import systems.monomer.compiler.operators.CompileOperatorNode;
+import systems.monomer.compiler.output.CompileUtil;
 import systems.monomer.compiler.output.CompileValue;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.execution.Constants;
-import systems.monomer.execution.Handler;
+import systems.monomer.execution.Initializer;
 import systems.monomer.execution.environmentDefaults.ConvertDefaults;
 import systems.monomer.execution.environmentDefaults.FileDefaults;
 import systems.monomer.execution.environmentDefaults.TypeDefaults;
 import systems.monomer.execution.environmentDefaults.ValueDefaults;
 import systems.monomer.interpreter.InterpretResult;
-import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.VariableNode;
-import systems.monomer.syntaxtree.controls.*;
-import systems.monomer.syntaxtree.literals.*;
 import systems.monomer.syntaxtree.operators.*;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.tokenizer.Token;
@@ -33,15 +29,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-//TODO
-public class Compiler extends Handler {
+import static systems.monomer.compiler.output.CompileUtil.*;
+import static systems.monomer.compiler.output.CompileUtil.asmc;
+
+public class Compiler extends Initializer<Function<GenericOperatorNode, BiFunction<CompileOperatorNode, CompileOutput, CompileValue>>> {
     public static void compile(Source source, boolean defaults, InputStream input, OutputStream output) {
-        init = new Compiler();
+        Initializer init = new Compiler();
+        source.with(init);
 
         Token body = source.parse();
         Node node = body.toNode();
@@ -121,6 +121,44 @@ public class Compiler extends Handler {
     }
 
 
+    private final Map<String, Function<GenericOperatorNode, BiFunction<CompileOperatorNode, CompileOutput, CompileValue>>> operatorBodies = new HashMap<>();
+    public Compiler() {
+        //purposefully omitted are the control operators, assignment, cast, convert, and with/then
+        operatorBodies.put("+", CompileUtil.unBiOp(CompileUtil.intFloatUniOp(asma::posi, asma::posf), CompileUtil.intFloatOp(asma::addi, asma::addf)));
+        operatorBodies.put("-", CompileUtil.unBiOp(CompileUtil.intFloatUniOp(asma::negi, asma::negf), CompileUtil.intFloatOp(asma::subi, asma::subf)));
+        operatorBodies.put("*", CompileUtil.intFloatOp(asma::muli, asma::mulf));
+        operatorBodies.put("/", CompileUtil.intFloatOp(asma::divi, asma::divf));
+        operatorBodies.put("%", CompileUtil.intFloatOp(asma::modi, asma::modf));
+        operatorBodies.put("||", CompileUtil.intFloatOp(asma::plli, asma::pllf));
+        operatorBodies.put("**", CompileUtil.intFloatOp(asma::powi, asma::powf));
+        operatorBodies.put("*/", CompileUtil.intFloatOp(asma::rooti, asma::rootf));
+
+        operatorBodies.put("!", CompileUtil.intBoolOp(asmb::noti, asmb::notb));
+        operatorBodies.put("?", CompileUtil.intFloatBoolColUniOp(asmb::isi, asmb::isf, asmb::isb, asmb::isl));
+        operatorBodies.put("&", CompileUtil.intBoolOp(asmb::andi, asmb::andb));
+        operatorBodies.put("|", CompileUtil.intBoolOp(asmb::ori, asmb::orb));
+        operatorBodies.put("^", CompileUtil.intBoolOp(asmb::xori, asmb::xorb));
+        operatorBodies.put("~&", CompileUtil.intBoolOp(asmb::nandi, asmb::nandb));
+        operatorBodies.put("~|", CompileUtil.intBoolOp(asmb::nori, asmb::norb));
+        operatorBodies.put("~^", CompileUtil.intBoolOp(asmb::nxori, asmb::nxorb));
+
+        operatorBodies.put("==", CompileUtil.intFloatBoolColOp(asmc::eqi, asmc::eqf, asmc::eqb, asmc::eql));
+        operatorBodies.put("!=", CompileUtil.intFloatBoolColOp(asmc::neqi, asmc::neqf, asmc::neqb, asmc::neql));
+        operatorBodies.put(">", CompileUtil.intFloatBoolColOp(asmc::gti, asmc::gtf, asmc::gtb, asmc::gtl));
+        operatorBodies.put("<", CompileUtil.intFloatBoolColOp(asmc::lti, asmc::ltf, asmc::ltb, asmc::ltl));
+        operatorBodies.put(">=", CompileUtil.intFloatBoolColOp(asmc::gteqi, asmc::gteqf, asmc::gteqb, asmc::gteql));
+        operatorBodies.put("<=", CompileUtil.intFloatBoolColOp(asmc::lteqi, asmc::lteqf, asmc::lteqb, asmc::lteql));
+        operatorBodies.put("?=", CompileUtil.intFloatBoolColUniOp(asmc::cmpi, asmc::cmpf, asmc::cmpb, asmc::cmpl));
+
+//        operatorBodies.put(".", null); //TODO all of these need to be implemented
+//        operatorBodies.put("...", null);
+//        operatorBodies.put("in", null);
+//        operatorBodies.put("#", null);
+
+//        operatorBodies.put("break", null); //TODO and these too
+//        operatorBodies.put("continue", null);
+//        operatorBodies.put("return", null);
+    }
 
 
     //TODO have a way of storing the direct compile implementation for the defined value
@@ -130,208 +168,209 @@ public class Compiler extends Handler {
     }
 
     @Override
-    public ControlGroupNode controlGroupNode() {
-        return new CompileControlGroupNode();
+    public Node controlGroupNode() {
+        return new CompileControlGroupNode().with(this);
     }
 
     @Override
-    public IfNode ifNode() {
-        return new CompileIfNode();
+    public Node ifNode() {
+        return new CompileIfNode().with(this);
     }
 
     @Override
-    public AllNode allNode() {
-        return new CompileAllNode();
+    public Node allNode() {
+        return new CompileAllNode().with(this);
     }
 
     @Override
-    public AnyNode anyNode() {
-        return new CompileAnyNode();
+    public Node anyNode() {
+        return new CompileAnyNode().with(this);
     }
 
     @Override
-    public ElseNode elseNode() {
-        return new CompileElseNode();
+    public Node elseNode() {
+        return new CompileElseNode().with(this);
     }
 
     @Override
-    public RepeatNode repeatNode() {
-        return new CompileRepeatNode();
+    public Node repeatNode() {
+        return new CompileRepeatNode().with(this);
     }
 
     @Override
-    public WhileNode whileNode() {
-        return new CompileWhileNode();
+    public Node whileNode() {
+        return new CompileWhileNode().with(this);
     }
 
     @Override
-    public ForNode forNode() {
-        return new CompileForNode();
+    public Node forNode() {
+        return new CompileForNode().with(this);
     }
 
     @Override
-    public ReturnNode returnNode() {
-        return new CompileReturnNode();
+    public Node returnNode() {
+        return new CompileReturnNode().with(this);
     }
 
     @Override
-    public BoolNode boolNode(boolean value) {
-        return new CompileBoolNode(value);
+    public Node boolNode(boolean value) {
+        return new CompileBoolNode(value).with(this);
     }
 
     @Override
-    public CharNode charNode(Character c) {
+    public Node charNode(Character c) {
         return new CompileCharNode(c);
     }
 
     @Override
-    public FloatNode floatNode(Double f) {
-        return new CompileFloatNode(f);
+    public Node floatNode(Double f) {
+        return new CompileFloatNode(f).with(this);
     }
 
     @Override
-    public IntNode intNode(Integer i) {
-        return new CompileIntNode(i);
+    public Node intNode(Integer i) {
+        return new CompileIntNode(i).with(this);
     }
 
     @Override
-    public StringBuilderNode stringBuilderNode(Collection<? extends Node> list) {
-        return new CompileStringBuilderNode(list);
+    public Node stringBuilderNode(Collection<? extends Node> list) {
+        return new CompileStringBuilderNode(list).with(this);
     }
 
     @Override
-    public StringNode stringNode(String s) {
-        return new CompileStringNode(s);
+    public Node stringNode(String s) {
+        return new CompileStringNode(s).with(this);
     }
 
     @Override
-    public ListNode listNode() {
-        return new CompileListNode();
+    public Node listNode() {
+        return new CompileListNode().with(this);
     }
 
     @Override
-    public StructureNode structureNode() {
-        return new CompileStructureNode();
+    public Node structureNode() {
+        return new CompileStructureNode().with(this);
     }
 
     @Override
-    public TupleNode tupleNode() {
-        return new CompileTupleNode();
+    public Node tupleNode() {
+        return new CompileTupleNode().with(this);
     }
 
     @Override
-    public TupleNode blockNode() {
-        return new CompileTupleNode("block");
+    public Node blockNode() {
+        return new CompileTupleNode("block").with(this);
     }
 
     @Override
-    public TupleNode linesNode() {
-        return new CompileTupleNode(";");
+    public Node linesNode() {
+        return new CompileTupleNode(";").with(this);
     }
 
     @Override
-    public MapNode mapNode() {
-        return new CompileMapNode();
+    public Node mapNode() {
+        return new CompileMapNode().with(this);
     }
 
     @Override
-    public SetNode setNode() {
+    public Node setNode() {
         throw new RuntimeException("Set has not been implemented");
     }
 
     @Override
-    public RangeNode rangeNode(boolean startInclusive, boolean stopInclusive) {
-        return new CompileRangeNode(startInclusive, stopInclusive);
+    public Node rangeNode(boolean startInclusive, boolean stopInclusive) {
+        return new CompileRangeNode(startInclusive, stopInclusive).with(this);
     }
 
     @Override
-    public AssertTypeNode assertTypeNode() {
-        return new CompileAssertTypeNode();
+    public Node assertTypeNode() {
+        return new CompileAssertTypeNode().with(this);
     }
 
     @Override
-    public CastNode castNode() {
+    public Node castNode() {
         throw new RuntimeException("Cast has not been implemented");
     }
 
     @Override
-    public ConvertNode convertNode() {
+    public Node convertNode() {
         throw new RuntimeException("Convert has not been implemented");
     }
 
     @Override
-    public AssignNode assignNode() {
-        return new CompileAssignNode();
+    public Node assignNode() {
+        return new CompileAssignNode().with(this);
     }
 
     @Override
-    public AssignModifyNode assignModifyNode() {
+    public Node assignModifyNode() {
         throw new RuntimeException("AssignModify has not been implemented");
     }
 
     @Override
-    public CallNode callNode() {
-        return new CompileCallNode();
+    public Node callNode() {
+        return new CompileCallNode().with(this);
     }
 
     @Override
-    public CastToFunctionNode castToFunctionNode() {
-        return new CompileCastToFunctionNode();
+    public Node castToFunctionNode() {
+        return new CompileCastToFunctionNode().with(this);
     }
 
     @Override
-    public FieldNode fieldNode() {
-        return new CompileFieldNode();
+    public Node fieldNode() {
+        return new CompileFieldNode().with(this);
     }
 
     @Override
-    public IndexNode indexNode() {
-        return new CompileIndexNode();
+    public Node indexNode() {
+        return new CompileIndexNode().with(this);
     }
 
     @Override
-    public SpreadNode spreadNode() {
+    public Node spreadNode() {
         throw new RuntimeException("Convert has not been implemented");
     }
 
     @Override
-    public WithNode withNode() {
-        return new CompileWithNode();
+    public Node withNode() {
+        return new CompileWithNode().with(this);
     }
 
     @Override
-    public ThenNode thenNode() {
-        return new CompileThenNode();
+    public Node thenNode() {
+        return new CompileThenNode().with(this);
     }
 
     @Override
-    public GenericOperatorNode genericOperatorNode(String name, Function<OperatorNode, Type> type,
-                                                   Function<GenericOperatorNode, BiFunction<CompileOperatorNode, CompileOutput, CompileValue>> compile,
-                                                   Function<GenericOperatorNode, Function<Iterator<InterpretValue>, ? extends InterpretResult>> interpret) {
-        CompileOperatorNode ret = new CompileOperatorNode(name, type);
-        ret.setCompileGenerator(compile);
-        return ret;
+    public Node genericOperatorNode(String name, Function<OperatorNode, Type> type) {
+        return new CompileOperatorNode(name, type).with(this);
     }
 
     @Override
-    public ModuleNode moduleNode(String name) {
-        return new CompileModuleNode(name);
+    public Node moduleNode(String name) {
+        return new CompileModuleNode(name).with(this);
     }
 
     @Override
-    public VariableNode variableNode(String name) {
-        return new CompileVariableNode(name);
+    public Node variableNode(String name) {
+        return new CompileVariableNode(name).with(this);
     }
 
 
     //TODO create Compile Equivalents to VariableKey, FieldKey, IndexKey
-    public VariableKey variableKey() {
-        return new VariableKey();
+    public Key variableKey() {
+        return new VariableKey().with(this);
     }
-    public FieldKey fieldKey(String name, Key parent) {
-        return new FieldKey(name, parent);
+    public Key fieldKey(String name, Key parent) {
+        return new FieldKey(name, parent).with(this);
     }
-    public IndexKey indexKey(IndexNode owner) {
-        return new IndexKey(owner);
+    public Key indexKey(IndexNode owner) {
+        return new IndexKey(owner).with(this);
+    }
+
+    @Override
+    public Function<GenericOperatorNode, BiFunction<CompileOperatorNode, CompileOutput, CompileValue>> getOperatorBody(String name) {
+        return operatorBodies.get(name);
     }
 }

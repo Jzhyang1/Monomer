@@ -2,12 +2,13 @@ package systems.monomer.errorhandling;
 
 import lombok.Getter;
 import lombok.Setter;
+import systems.monomer.execution.Initialized;
 import systems.monomer.tokenizer.Source;
 
 import java.util.List;
 
 @Getter
-public class ErrorBlock {
+public class ErrorBlock<T> extends Initialized<T> {
     public enum Reason {
         SYNTAX, RUNTIME, OTHER
     };

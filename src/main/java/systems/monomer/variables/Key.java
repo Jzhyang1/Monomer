@@ -1,9 +1,10 @@
 package systems.monomer.variables;
 
+import systems.monomer.execution.Initialized;
 import systems.monomer.types.Type;
 
 
-public abstract class Key {
+public abstract class Key extends Initialized<Key> {
     public boolean isLocked(){ return false; }
     public void lock(){
         throw new UnsupportedOperationException("Can not lock " + this);

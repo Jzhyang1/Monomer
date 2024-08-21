@@ -3018,6 +3018,10 @@
           <option value="OverlyLongMethod" />
           <option value="ClassWithTooManyMethods" />
           <option value="OverlyCoupledClass" />
+          <option value="ThisEscapedInObjectConstruction" />
+          <option value="OverridableMethodCallDuringObjectConstruction" />
+          <option value="unchecked" />
+          <option value="OverriddenMethodCallDuringObjectConstruction" />
         </list>
       </option>
     </inspection_tool>

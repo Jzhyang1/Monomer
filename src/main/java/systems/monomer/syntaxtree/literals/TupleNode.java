@@ -6,16 +6,11 @@ import systems.monomer.types.tuple.TupleType;
 
 import java.util.List;
 
-import static systems.monomer.execution.Handler.init;
 
 public class TupleNode extends LiteralNode {
     public static boolean isTuple(Node node) {
         //TODO this is ugly
         return node.getUsage() == Usage.LITERAL && List.of("block", ",", ";").contains(node.getName());
-    }
-
-    public static TupleNode asTuple(Node node) {
-        return isTuple(node) ? (TupleNode) node : init.tupleNode(List.of(node));
     }
 
     @Override

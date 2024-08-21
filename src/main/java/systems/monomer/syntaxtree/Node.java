@@ -7,6 +7,7 @@ import systems.monomer.execution.Constants;
 import systems.monomer.errorhandling.Context;
 import systems.monomer.errorhandling.Index;
 import systems.monomer.errorhandling.ErrorBlock;
+import systems.monomer.execution.Initialized;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.types.pseudo.AnyType;
 import systems.monomer.types.Type;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Getter
-public abstract class Node extends ErrorBlock {
+public abstract class Node extends ErrorBlock<Node> {
     public enum Usage {
         OPERATOR, LITERAL, IDENTIFIER, LABEL, CONTROL_GROUP, MODULE
     }
@@ -68,31 +69,31 @@ public abstract class Node extends ErrorBlock {
     public Node get(int i) {
         return children.get(i);
     }
-    protected void set(int i, Node node) {
+    protected final void set(int i, Node node) {
         children.set(i, node);
     }
 
-    public void add(Node node) {
+    public final void add(Node node) {
         children.add(node);
         node.setParent(this);
     }
-    public Node with(Node node) {
+    public final Node with(Node node) {
         add(node);
         return this;
     }
-    public Node with(Collection<? extends Node> nodes) {
+    public final Node with(Collection<? extends Node> nodes) {
         addAll(nodes);
         return this;
     }
-    public Node with(Context context) {
+    public final Node with(Context context) {
         setContext(context);
         return this;
     }
-    public Node with(Index start, Index stop, Source source) {
+    public final Node with(Index start, Index stop, Source source) {
         setContext(start, stop, source);
         return this;
     }
-    public Node with(Type newType) {
+    public final Node with(Type newType) {
         setType(newType);
         return this;
     }

@@ -2,16 +2,17 @@ package systems.monomer.tokenizer;
 
 import lombok.Getter;
 import systems.monomer.errorhandling.Index;
+import systems.monomer.execution.Initialized;
 
 import java.util.*;
 import java.util.stream.IntStream;
 
 import static systems.monomer.execution.Constants.*;
-import static systems.monomer.tokenizer.Operator.BINARY;
-import static systems.monomer.tokenizer.Operator.PREFIX;
+import static systems.monomer.tokenizer.Operators.BINARY;
+import static systems.monomer.tokenizer.Operators.PREFIX;
 
 //TODO needs optimization, especially for matching operators
-public abstract class Source {
+public abstract class Source extends Initialized<Source> {
     protected static class Line {
         static final Map<Character, Integer> SPACE_CHARS = new HashMap<>() {{
 //            put('\n', 0);
@@ -181,7 +182,7 @@ public abstract class Source {
 
 
     public Token parseBlock() {
-        Token ret = new Token(Token.Usage.GROUP, "block");
+        Token ret = new Token(Token.Usage.GROUP, "block").with(env);
         Index start = line.getIndex();
         int startingSpaces = line.startingSpaces();
 
@@ -220,7 +221,7 @@ public abstract class Source {
                 if (nextStarting > startingSpaces) {
                     //child group
                     ret.add(parseBlock());
-                    ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
+                    ret.add(new Token(Token.Usage.OPERATOR, ";").with(env).with(line.getIndex(), line.getIndex(), this));
                     if(line.startingSpaces() < startingSpaces) break;
                 } else if (nextStarting < startingSpaces) {
                     break;
@@ -229,12 +230,12 @@ public abstract class Source {
                     String lastValue = lastToken.getValue();
                     if (!(lastToken.getUsage() == Token.Usage.OPERATOR &&
                             //if ending in a prefix or binary operator, the line is not finished yet
-                            (Operator.isToken(lastValue, PREFIX) || Operator.isToken(lastValue, BINARY)))) {
-                        ret.add(new Token(Token.Usage.OPERATOR, ";").with(line.getIndex(), line.getIndex(), this));
+                            (env.operators.isToken(lastValue, PREFIX) || env.operators.isToken(lastValue, BINARY)))) {
+                        ret.add(new Token(Token.Usage.OPERATOR, ";").with(env).with(line.getIndex(), line.getIndex(), this));
                     }
                 }
             }
-            else if (Operator.signEndDelimiters().contains(peek)) {
+            else if (Operators.signEndDelimiters().contains(peek)) {
                 break;
             }
             else {
@@ -254,7 +255,7 @@ public abstract class Source {
         } catch (Exception e) {
             //TODO clean this up
             Index eofIndex = new Index(0, y, getPosition());
-            return new Token(Token.Usage.GROUP, "block").with(eofIndex, eofIndex, this);
+            return new Token(Token.Usage.GROUP, "block").with(env).with(eofIndex, eofIndex, this);
         }
     }
 
@@ -272,7 +273,7 @@ public abstract class Source {
         int initialStartingSpaces = line.startingSpaces();
         int startingSpaces = initialStartingSpaces + TAB_SIZE;
 
-        Token ret = new Token(Token.Usage.STRING_BUILDER);
+        Token ret = new Token(Token.Usage.STRING_BUILDER).with(env);
         StringBuilder strbuild = new StringBuilder();
         Index currentStartingIndex = line.getIndex();
 
@@ -325,14 +326,14 @@ public abstract class Source {
                         }
                         case 'c' -> {
                             //interpolation via \c(CHARVALUE)
-                            if (!strbuild.isEmpty()) ret.add(new Token(Token.Usage.STRING, strbuild.toString()));
+                            if (!strbuild.isEmpty()) ret.add(new Token(Token.Usage.STRING, strbuild.toString()).with(env));
                             Token interpolate = parseNext();
 
                             if (interpolate.getUsage() != Token.Usage.GROUP) {
                                 throwParseError(interpolate, INTERPOLATION_ERROR);
                             }
 
-                            Token charToken = new Token(Token.Usage.CHARACTER_FROM_INT);
+                            Token charToken = new Token(Token.Usage.CHARACTER_FROM_INT).with(env);
                             charToken.add(interpolate);
                             ret.add(charToken);
                         }
@@ -340,7 +341,7 @@ public abstract class Source {
                             //interpolation via \(VALUE)
                             line.unget();
                             if (!strbuild.isEmpty()) {
-                                ret.add(new Token(Token.Usage.STRING, strbuild.toString())
+                                ret.add(new Token(Token.Usage.STRING, strbuild.toString()).with(env)
                                                 .with(currentStartingIndex, line.getIndex(), this));
                                 currentStartingIndex = line.getIndex();
                                 strbuild.setLength(0);
@@ -381,7 +382,8 @@ public abstract class Source {
 
         line.get();
         if (!strbuild.isEmpty())
-            ret.add(new Token(Token.Usage.STRING, strbuild.toString()).with(currentStartingIndex, line.getIndex(), this));
+            ret.add(new Token(Token.Usage.STRING, strbuild.toString()).with(env)
+                    .with(currentStartingIndex, line.getIndex(), this));
         return ret.with(lineStartingIndex, line.getIndex(), this);
     }
 
@@ -420,6 +422,7 @@ public abstract class Source {
         }
 
         return new Token(hasE || hasDot ? Token.Usage.FLOAT : Token.Usage.INTEGER, strbuild.toString())
+                .with(env)
                 .with(start, line.getIndex(), Source.this);
     }
 
@@ -429,7 +432,7 @@ public abstract class Source {
         while (isIdentifierChar(line.peek())) {
             strbuild.append(line.get());
         }
-        return new Token(Token.Usage.IDENTIFIER, strbuild.toString())
+        return new Token(Token.Usage.IDENTIFIER, strbuild.toString()).with(env)
                 .with(start, line.getIndex(), Source.this);
     }
 
@@ -442,18 +445,20 @@ public abstract class Source {
         Index start = line.getIndex();
         char peek = line.peek();
 
-        String operator = isIdentifierChar(peek) ? line.matchNextWithSpace(Operator.wordOperators(), Operator.startingSymbolOperatorCharacters()) : line.matchNext(Operator.symbolOperators());
+        String operator = isIdentifierChar(peek) ?
+                line.matchNextWithSpace(env.operators.wordOperators(), env.operators.startingSymbolOperatorCharacters()) :
+                line.matchNext(env.operators.symbolOperators());
         if (operator != null) {
-            return new Token(Token.Usage.OPERATOR, operator)
+            return new Token(Token.Usage.OPERATOR, operator).with(env)
                     .with(start, line.getIndex(), Source.this);
         }
 
-        if (Operator.signStartDelimiters().contains(peek)) {
+        if (Operators.signStartDelimiters().contains(peek)) {
             line.get(); //clear start delim
             Token ret = parseBlock();
             char endDelim = line.get(); //clear end delim
             ret.setContext(start, line.getIndex(), Source.this);
-            if (!Operator.signEndDelimiters().contains(endDelim))
+            if (!Operators.signEndDelimiters().contains(endDelim))
                 throwParseError(ret, "Missing end delimiter");
             return ret.with(Character.toString(peek) + Character.toString(endDelim));
         } else if (Character.isDigit(peek) || peek == '.') {
