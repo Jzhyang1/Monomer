@@ -3,10 +3,9 @@ package systems.monomer.interpreter.values;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.errorhandling.ErrorBlock;
 import systems.monomer.execution.Constants;
-import systems.monomer.types.Type;
 import systems.monomer.types.system.IOType;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.variables.Overloadable;
+import systems.monomer.variables.InterpretOverloadable;
 
 import java.io.*;
 
@@ -68,7 +67,7 @@ public class InterpretIO extends IOType implements InterpretValue {
 
     private void initFields() {
         //io read
-        Overloadable readFunction = new Overloadable();
+        InterpretOverloadable readFunction = new InterpretOverloadable();
         readFunction.putSupplierInterpretOverload(CHAR, this::readChar);
         readFunction.putSupplierInterpretOverload(STRING, this::readString);
         readFunction.putSupplierInterpretOverload(INT, this::readInt);
@@ -76,7 +75,7 @@ public class InterpretIO extends IOType implements InterpretValue {
         setField("read", readFunction);
 
         //io write
-        Overloadable writeFunction = new Overloadable();
+        InterpretOverloadable writeFunction = new InterpretOverloadable();
         writeFunction.putSingleInterpretOverload(CHAR, CHAR, this::writeChar);
         writeFunction.putSingleInterpretOverload(STRING, STRING, this::writeString);
         writeFunction.putSingleInterpretOverload(INT, INT, this::writeInt);

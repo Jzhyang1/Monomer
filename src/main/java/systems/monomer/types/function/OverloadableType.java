@@ -6,6 +6,7 @@ import systems.monomer.interpreter.InterpretValue;
 import systems.monomer.types.Type;
 import systems.monomer.types.pseudo.UnionType;
 import systems.monomer.types.signature.Signature;
+import systems.monomer.variables.InterpretOverloadable;
 
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,25 @@ public class OverloadableType implements Type {
         return new OverloadableType(replaced);
     }
 
+    public Type returnsFor(Signature callSig) {
+        UnionType<Type> ret = new UnionType<>();
+
+        Map<Signature, Integer> reducedOptions = options.tailMap(options.lowerKey(callSig), true);
+        for(Signature sig : reducedOptions.keySet()){
+            if(!callSig.typeContains(sig)) break;
+            ret.add(sig.getRet());
+        }
+        return ret.simplify();
+    }
+
+    public int randomAccessIndex(Signature signature) {
+        return options.lowerEntry(signature).getValue();
+    }
+
+    public Map.Entry<Signature, Integer> getEntry(Signature signature) {
+        return options.lowerEntry(signature);
+    }
+
     @Override
     public int serial() {
         return 11_000 - options.size();
@@ -91,7 +111,7 @@ public class OverloadableType implements Type {
 
     @Override
     public InterpretValue defaultValue() {
-        throw programError("Can not get default value of a collection of overloads", ErrorBlock.Reason.RUNTIME);
+        return new InterpretOverloadable(options.size());
     }
 
     @Override

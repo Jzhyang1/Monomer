@@ -18,13 +18,16 @@ import java.util.function.Supplier;
 
 import static systems.monomer.errorhandling.ErrorBlock.programError;
 
-//TODO why is Overloadable a thing? shouldn't it all be OverloadedFunction?
-public class Overloadable extends OverloadableType implements InterpretValue {
+//TODO better to make Overloadable not extend OverloadableType because of fields not needed
+public class InterpretOverloadable extends OverloadableType implements InterpretValue {
     private final ArrayList<FunctionBody> overloads = new ArrayList<>();
 
-    public Overloadable(){}
-    public Overloadable(List<? extends Signature> overloads) {
+    public InterpretOverloadable(){}
+    public InterpretOverloadable(List<? extends Signature> overloads) {
         super(overloads);
+    }
+    public InterpretOverloadable(int size) {
+        for(int i = 0; i < size; ++i) overloads.add(null);
     }
 
     public void putInterpretOverload(Node args, StructureNode namedArgs, Node body, ModuleNode wrapper) {
@@ -54,22 +57,33 @@ public class Overloadable extends OverloadableType implements InterpretValue {
         putInterpretOverload(init.emptyTuple(), init.emptyStructure(), body, wrapper);
     }
 
+    public void setOverload(int randomAccessIndex, FunctionBody body) {
+        overloads.set(randomAccessIndex, body);
+    }
+    public FunctionBody getOverload(int index) {
+        return overloads.get(index);
+    }
 
     @Override
     public InterpretValue getField(String name) {
         throw programError("Can not acccess field in " + this, ErrorBlock.Reason.SYNTAX);
     }
 
+
     @Override
     public int compareValueTo(InterpretValue other) {
-        //TODO
-        return compareTo(other);
+        //it doesn't make sense to compare sets of overloads so an arbitrary comparison is made
+        if (!(other instanceof InterpretOverloadable otherOverloads)) {
+            return compareTo(other);
+        }
+
+        return overloads.size() - otherOverloads.overloads.size();
     }
 
     @Override
-    public Overloadable clone() {
+    public InterpretOverloadable clone() {
         try {
-            return (Overloadable) super.clone();
+            return (InterpretOverloadable) super.clone();
         } catch (CloneNotSupportedException e) {
             throw programError("Unable to clone " + this, ErrorBlock.Reason.OTHER);
         }

@@ -2,8 +2,10 @@ package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.*;
-import systems.monomer.types.function.OverloadsType;
+import systems.monomer.types.function.OverloadableType;
 import systems.monomer.types.signature.Signature;
+
+import java.util.Map;
 
 import static systems.monomer.types.pseudo.AnyType.ANY;
 
@@ -40,12 +42,14 @@ public class CastToFunctionNode extends CastNode {
 
         Signature expectedSignature = (Signature) expectedType;
 
-        if(actualType instanceof OverloadsType overloadsType) {
-            functionIndex = overloadsType.randomAccessIndex(expectedSignature);
-            if(functionIndex == -1)
+        if(actualType instanceof OverloadableType overloadsType) {
+            Map.Entry<Signature, Integer> entry = overloadsType.getEntry(expectedSignature);
+
+            if(entry == null)
                 throw syntaxError("No function found with signature " + expectedSignature);
 
-            Signature foundSignature = (Signature) overloadsType.get(functionIndex);
+            functionIndex = entry.getValue();
+            Signature foundSignature = entry.getKey();
             setType(foundSignature);
             return this;
         } else if(actualType.typeContains(expectedType)) {

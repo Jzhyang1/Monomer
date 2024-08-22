@@ -2,17 +2,14 @@ package systems.monomer.variables;
 
 import systems.monomer.interpreter.InterpretFunction;
 import systems.monomer.interpreter.InterpretValue;
-import systems.monomer.interpreter.values.InterpretObject;
-import systems.monomer.interpreter.values.InterpretOverloads;
 import systems.monomer.types.Type;
-import systems.monomer.types.function.OverloadsType;
 import systems.monomer.types.signature.Signature;
 
 public class FunctionOverload implements InterpretFunction {
-    private InterpretOverloads parent;
+    private InterpretOverloadable parent;
     private int randomAccessIndex;
 
-    public FunctionOverload(InterpretOverloads parent, int randomAccessIndex) {
+    public FunctionOverload(InterpretOverloadable parent, int randomAccessIndex) {
         this.parent = parent;
         this.randomAccessIndex = randomAccessIndex;
     }

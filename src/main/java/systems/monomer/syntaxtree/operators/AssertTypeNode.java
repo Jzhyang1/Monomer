@@ -3,7 +3,7 @@ package systems.monomer.syntaxtree.operators;
 import org.jetbrains.annotations.Nullable;
 import systems.monomer.execution.environmentDefaults.ConvertDefaults;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.types.function.OverloadsType;
+import systems.monomer.types.function.OverloadableType;
 import systems.monomer.types.object.ObjectType;
 import systems.monomer.types.signature.Signature;
 import systems.monomer.types.Type;
@@ -47,7 +47,8 @@ public class AssertTypeNode extends OperatorNode {
 
         VariableKey convertFunc = getVariable(ConvertDefaults.NAME);
         if(convertFunc != null) {
-            OverloadsType overloads = (OverloadsType) convertFunc.getType().getExpressed();
+            //TODO check if overload is exactly the same as given and warn if not (e.g. int->string might not exist but float->string might be found and used instead)
+            OverloadableType overloads = (OverloadableType) convertFunc.getType().getExpressed();
             convertBy = overloads.randomAccessIndex(new Signature(from, ObjectType.EMPTY, to));
 
             if(convertBy < 0) throw syntaxError("Cannot convert type from " + from + " to " + to);

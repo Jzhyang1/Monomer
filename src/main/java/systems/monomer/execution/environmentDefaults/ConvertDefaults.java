@@ -8,7 +8,7 @@ import systems.monomer.interpreter.values.InterpretURI;
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.Type;
 import systems.monomer.types.signature.Signature;
-import systems.monomer.variables.Overloadable;
+import systems.monomer.variables.InterpretOverloadable;
 import systems.monomer.variables.VariableKey;
 
 import java.io.File;
@@ -27,7 +27,7 @@ public class ConvertDefaults {
         VariableKey key = Initializer.init.variableKey();
         global.putVariable(NAME, key);
 
-        Overloadable overload = new Overloadable();
+        InterpretOverloadable overload = new InterpretOverloadable();
         key.setType(overload);
 
         putConvert(overload, STRING, URI, (value) -> new InterpretURI(value.getValue()));
@@ -38,7 +38,7 @@ public class ConvertDefaults {
         });
     }
 
-    private void putConvert(Overloadable overload, Type from, Type to,
+    private void putConvert(InterpretOverloadable overload, Type from, Type to,
                             Function<InterpretValue, InterpretResult> convertFunc) {
         overload.add(new Signature(from, EMPTY, to));
         //TODO right before execution, simplify overload and search and set all convert signatures to convertFunc

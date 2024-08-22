@@ -7,7 +7,6 @@ import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.StructureNode;
 import systems.monomer.types.Type;
 import systems.monomer.types.function.OverloadableType;
-import systems.monomer.types.function.OverloadsType;
 import systems.monomer.types.signature.Signature;
 import systems.monomer.variables.FunctionBody;
 import systems.monomer.variables.Key;
@@ -16,10 +15,11 @@ import java.util.List;
 
 import static systems.monomer.types.pseudo.AnyType.ANY;
 
+//TODO move some things to DeclareNode
 public class AssignNode extends OperatorNode {
     protected static record FunctionInitInfo(Node identifier, Key function, Node args, StructureNode namedArgs, Node body,
                                            ModuleNode parent) {}
-    protected static record FunctionSimplfiedInfo(OverloadsType overloads, int randomAccessIndex, Signature signature){}
+    protected static record FunctionSimplfiedInfo(OverloadableType overloads, int randomAccessIndex, Signature signature){}
 
     protected @Nullable FunctionInitInfo functionInit = null;
     protected FunctionSimplfiedInfo functionSimplified = null;
@@ -138,11 +138,10 @@ public class AssignNode extends OperatorNode {
         if(functionInit != null) {
             //don't simplify OverloadableType by .simplify because that may produce a FunctionBody
             OverloadableType overloadable = (OverloadableType) functionInit.function.getType();
-            OverloadsType overloads = new OverloadsType(overloadable.getOptions());
-            functionInit.function.setType(overloads);
-            int randomAccessIndex = overloads.randomAccessIndex(functionSimplified.signature);
+            functionInit.function.setType(overloadable);
+            int randomAccessIndex = overloadable.randomAccessIndex(functionSimplified.signature);
 
-            functionSimplified = new FunctionSimplfiedInfo(overloads, randomAccessIndex, functionSimplified.signature);
+            functionSimplified = new FunctionSimplfiedInfo(overloadable, randomAccessIndex, functionSimplified.signature);
         }
         return this;
     }
