@@ -4,6 +4,8 @@
 
 This is a documentation of the Java-coded program structure for the Monomer revision of the MERL interpreter and compiler.  This file includes documentation of the Monomer syntax, module structure, class structures, and program flow logic.
 
+For cleaner documentation, please visit [monomer.dev](https://monomer.dev).
+
  - [Use](documentation/Use.md) 
  - [Syntax](documentation/Syntax.md) 
  - [Implementation](documentation/Implementation.md)
