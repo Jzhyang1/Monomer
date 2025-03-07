@@ -16,7 +16,7 @@ export default function DocumentationPage() {
     <>
       <Title>Documentation</Title>
       <div className="flex flex-wrap gap-[10px] m-[20px]">
-        <PageBox title="Command Line" link="cli" />
+        {/* <PageBox title="Command Line" link="cli" /> */}
         <PageBox title="Operators" link="operators" />
         <PageBox title="Control Structures" link="controls" />
         <PageBox title="Types" link="types" />

@@ -4,13 +4,13 @@ import SectionHead from "../../components/SectionHead";
 import Title from "../../components/Title";
 
 const releases = [
-  {
-    href: "https://drive.google.com/uc?export=download&id=1-yhlSnrdMdTKElfvv6Z7sQAXckxJvTJ1",
-    name: "V 1.0.5 (JAR)",
-    type: "universal",
-    date: "3/23/2024",
-    desc: "Updated compiler and interpreter to be more stable. Bug fixes.",
-  },
+  // {
+  //   href: "https://drive.google.com/uc?export=download&id=1-yhlSnrdMdTKElfvv6Z7sQAXckxJvTJ1",
+  //   name: "V 1.0.5 (JAR)",
+  //   type: "universal",
+  //   date: "3/23/2024",
+  //   desc: "Updated compiler and interpreter to be more stable. Bug fixes.",
+  // },
   {
     href: "https://drive.google.com/uc?export=download&id=1pLaVZAJkyG4VipO95OTmGhn4ybEYSv53",
     name: "V 1.0.4 (JAR)",

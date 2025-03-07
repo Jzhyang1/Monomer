@@ -97,7 +97,7 @@ export default function App() {
                 </Route>
                 <Route path="functions" element={<FunctionsPage />} />
                 <Route path="variables" element={<VariablesPage />} />
-                <Route path="cli" element={<CommandLinePage />} />
+                {/* <Route path="cli" element={<CommandLinePage />} /> */}
               </Route>
               <Route exact path="/start" element={<StartPage />} />
               <Route exact path="/install" element={<InstallPage />} />
