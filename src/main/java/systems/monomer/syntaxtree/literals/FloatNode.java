@@ -1,5 +1,6 @@
 package systems.monomer.syntaxtree.literals;
 
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.primitive.FloatType;
 
 public class FloatNode extends LiteralNode {
@@ -11,7 +12,8 @@ public class FloatNode extends LiteralNode {
     }
 
     @Override
-    public void matchTypes() {
+    public Node matchTypes() {
         setType(FloatType.FLOAT);
+        return this;
     }
 }

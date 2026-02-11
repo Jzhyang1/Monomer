@@ -1,6 +1,7 @@
 package systems.monomer.syntaxtree.literals;
 
 import lombok.Getter;
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.object.ObjectType;
 import systems.monomer.variables.Locality;
 import systems.monomer.variables.VariableKey;
@@ -28,12 +29,19 @@ public class StructureNode extends LiteralNode implements Locality {
         putLocalizedVariable(varName, key);
     }
 
-    public void matchTypes() {
+    public Node matchTypes() {
         super.matchTypes();
         ObjectType ret = new ObjectType();
         for(Map.Entry<String, VariableKey> entry : variables.entrySet()) {
             ret.setField(entry.getKey(), entry.getValue().getType());
         }
         setType(ret);
+        return this;
+    }
+
+    @Override
+    public Node simplify() {
+        variables.values().forEach(variable -> variable.setType(variable.getType().simplify()));
+        return super.simplify();
     }
 }

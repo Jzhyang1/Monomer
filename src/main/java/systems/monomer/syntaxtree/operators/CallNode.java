@@ -2,8 +2,11 @@ package systems.monomer.syntaxtree.operators;
 
 import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.object.ObjectType;
+import systems.monomer.types.pseudo.OperatedType;
 import systems.monomer.types.signature.Signature;
 import systems.monomer.types.Type;
+
+import java.util.List;
 
 /**
  * A node representing a function call.
@@ -22,16 +25,26 @@ public class CallNode extends OperatorNode {
     }
 
     @Override
-    public void matchTypes() {
+    public Node matchTypes() {
         super.matchTypes();
         Type argType = getSecond().getType();
         Type returnType = getType();
         Type namedArgType = size() > 2 ? get(2).getType() : new ObjectType();
         Signature signature = new Signature(argType, namedArgType, returnType);
 
-        Node function = env.castToFunctionNode();
-        function.with(getContext()).with(getFirst()).with(signature).matchTypes();
+        Node function = env.castToFunctionNode()
+                .with(getContext())
+                .with(signature)
+                .with(getFirst())
+                .matchTypes();
         set(0, function);
-        setType(((Signature)function.getType()).getRet());
+//        setType(((Signature)function.getType()).getRet());
+
+        //TODO The merit of the below option is that it may handle recursive calls and forward references innately, but it is more expensive
+        // the best option is to check if the full function signature is already known, and if so, use that.
+        // In order to know if the function signature is complete, the CastToFunctionNode's signature might hold some information
+        // e.g. a boolean for if the signature is currently being built, and if it isn't we can use the existing function signature.
+        setType(new OperatedType(List.of(function.getType(), argType, namedArgType), types -> types.get(0).returnFor(types.get(1), types.get(2))));
+        return this;
     }
 }

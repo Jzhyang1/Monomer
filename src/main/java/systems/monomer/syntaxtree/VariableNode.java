@@ -1,8 +1,9 @@
 package systems.monomer.syntaxtree;
 
 import lombok.Getter;
-import systems.monomer.execution.Initializer;
 import systems.monomer.types.Type;
+import systems.monomer.types.pseudo.AnyType;
+import systems.monomer.types.pseudo.PlaceholderType;
 import systems.monomer.variables.VariableKey;
 
 @Getter
@@ -13,55 +14,42 @@ public class VariableNode extends Node {
     public VariableNode(String name) {
         super(name);
     }
+    protected VariableNode(String name, VariableKey key) {
+        super(name);
+        variableKey = key;
+    }
 
     public Usage getUsage() {
         return Usage.IDENTIFIER;
     }
 
-    public void matchVariables() {
+    public Node matchVariables() {
         VariableKey existing = getVariable(getName());
-        if (variableKey == null && existing == null)
-            putVariable(getName(), variableKey = (VariableKey) env.variableKey());
-        else if (existing == null)
-            putVariable(getName(), variableKey);
-        else
-            variableKey = existing;
+        if (variableKey == null && existing == null) putVariable(getName(), variableKey = (VariableKey) env.variableKey());
+        else if (existing == null) putVariable(getName(), variableKey);
+        else variableKey = existing;
+
+        if(isDestination) return this;
+        return new VariableValueNode(getName(), variableKey).matchVariables();
     }
 
-    public void matchTypes() {
-        //handles multiple occurrences of VariableNode
-//        if(isDestination)
-//            setType(variableKey.getType());
-//        else
-//            setType(variableKey.getType().getExpressed());
 
-//        if (getType() == ANY)
-//            setType(variableKey.getType());
-//        else if(variableKey.getType() == ANY)
-//            variableKey.setType(getType());
-    }
+    public Node matchTypes() {
+        //as of right now actualType is not a PlaceHolderType
+        PlaceholderType placeholderType = variableKey.getType();
+        Type expectedType = placeholderType.getExpressed();
+        Type actualType = getType();
 
-    public void setType(Type type) {
-        assert variableKey.getType().getExpressed().typeContains(type);
+        if (expectedType == AnyType.ANY)
+            placeholderType.setExpressed(actualType);
+        else if (actualType != AnyType.ANY && !actualType.typeContains(expectedType))
+            throw syntaxError("Expected type " + expectedType + ", got " + actualType);
 
-        super.setType(type);
-        variableKey.getType().setExpressed(type);
-    }
-
-    @Override
-    public Type getType() {
-        if(isDestination) return variableKey.getType();
-        else return variableKey.getType().getExpressed();
+        setType(placeholderType);
+        return this;
     }
 
     public void setIsDestination(boolean isDestination) {
         this.isDestination = isDestination;
-    }
-
-    @Override
-    public Node simplify() {
-        Type simplified = getType().simplify();
-        setType(simplified);
-        return this;
     }
 }

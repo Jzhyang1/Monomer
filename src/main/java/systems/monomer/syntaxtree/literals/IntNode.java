@@ -1,5 +1,6 @@
 package systems.monomer.syntaxtree.literals;
 
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.primitive.IntType;
 
 public class IntNode extends LiteralNode {
@@ -11,7 +12,8 @@ public class IntNode extends LiteralNode {
     }
 
     @Override
-    public void matchTypes() {
+    public Node matchTypes() {
         setType(IntType.INT);
+        return this;
     }
 }

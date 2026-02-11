@@ -39,4 +39,10 @@ public class ModuleNode extends Node implements Locality {
                         HashMap::new
                 ));
     }
+
+    @Override
+    public Node simplify() {
+        variables.values().forEach(v -> v.setType(v.getType().simplify()));
+        return super.simplify();
+    }
 }

@@ -14,9 +14,10 @@ public class TupleNode extends LiteralNode {
     }
 
     @Override
-    public void matchTypes() {
+    public Node matchTypes() {
         super.matchTypes();
         setType(new TupleType(getChildren().stream().map((e) -> e.getType()).toList()));
+        return this;
     }
 
     public void setType(Type type) {

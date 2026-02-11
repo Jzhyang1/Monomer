@@ -20,9 +20,10 @@ public class RangeNode extends LiteralNode {
     }
 
     @Override
-    public void matchTypes() {
+    public Node matchTypes() {
         super.matchTypes();
         //TODO first and second could be different types
         setType(new RangeType(get(0).getType()));
+        return this;
     }
 }

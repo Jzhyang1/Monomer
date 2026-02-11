@@ -1,5 +1,7 @@
 package systems.monomer.syntaxtree.operators;
 
+import systems.monomer.syntaxtree.Node;
+
 /**
  * ConvertNode is a node that represents a conversion operation
  * which differs from casting in that it creates a copy of the
@@ -16,9 +18,10 @@ public class ConvertNode extends OperatorNode {
         super("to");
     }
 
-    public void matchTypes() {
+    public Node matchTypes() {
         super.matchTypes();
         setType(getSecond().getType());
         getFirst().setType(getType());
+        return this;
     }
 }

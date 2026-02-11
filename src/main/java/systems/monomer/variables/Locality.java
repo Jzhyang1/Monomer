@@ -5,6 +5,7 @@ import systems.monomer.syntaxtree.Node;
 
 import java.util.Map;
 
+//TODO for all Locality ,override simplify to simplify all types of variables
 public interface Locality {
     Map<String, VariableKey> getVariables();
     Node getParent();

@@ -1,5 +1,6 @@
 package systems.monomer.syntaxtree.operators;
 
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.Type;
 
 import java.util.function.Function;
@@ -15,7 +16,7 @@ public class GenericOperatorNode extends OperatorNode {
         this.typeGenerator = typeGenerator;
     }
 
-    public void matchTypes() {
+    public Node matchTypes() {
         super.matchTypes();
         if(typeGenerator == null) {
             throw syntaxError("Unimplemented operator " + getName());
@@ -27,5 +28,6 @@ public class GenericOperatorNode extends OperatorNode {
         } catch (ProgramErrorException ex) {
             throw rethrowError(ex);
         }
+        return this;
     }
 }

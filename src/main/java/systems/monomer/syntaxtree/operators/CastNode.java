@@ -1,5 +1,7 @@
 package systems.monomer.syntaxtree.operators;
 
+import systems.monomer.syntaxtree.Node;
+
 import static systems.monomer.types.pseudo.AnyType.ANY;
 
 /**
@@ -11,11 +13,13 @@ public class CastNode extends OperatorNode {
         super("as");
     }
 
-    public void matchTypes() {
+    public Node matchTypes() {
         super.matchTypes();
         if(getType() == ANY) setType(getSecond().getType());
         if(getSecond().getType() == ANY) getSecond().setType(getType());
         if(getType() != getSecond().getType()) throw syntaxError("Internal error casting simultaneously to " + getFirst().getType() + " and " + getSecond().getType());
         if(!getFirst().getType().typeContains(getSecond().getType())) throw syntaxError("Cannot cast " + getFirst().getType() + " to " + getSecond().getType());
+
+        return this;
     }
 }

@@ -1,5 +1,6 @@
 package systems.monomer.syntaxtree.literals;
 
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.primitive.BoolType;
 
 public class BoolNode extends LiteralNode {
@@ -11,7 +12,8 @@ public class BoolNode extends LiteralNode {
     }
 
     @Override
-    public void matchTypes() {
+    public Node matchTypes() {
         setType(BoolType.BOOL);
+        return this;
     }
 }

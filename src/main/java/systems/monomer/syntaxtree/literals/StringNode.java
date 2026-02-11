@@ -1,5 +1,6 @@
 package systems.monomer.syntaxtree.literals;
 
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.collection.StringType;
 
 public class StringNode extends LiteralNode {
@@ -12,8 +13,9 @@ public class StringNode extends LiteralNode {
     }
 
     @Override
-    public void matchTypes() {
+    public Node matchTypes() {
         setType(StringType.STRING);
+        return this;
     }
 
     @Override

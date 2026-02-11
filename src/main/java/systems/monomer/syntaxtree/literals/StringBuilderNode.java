@@ -13,8 +13,9 @@ public class StringBuilderNode extends LiteralNode {
     }
 
     @Override
-    public void matchTypes() {
+    public Node matchTypes() {
         super.matchTypes();
         setType(StringType.STRING);
+        return this;
     }
 }

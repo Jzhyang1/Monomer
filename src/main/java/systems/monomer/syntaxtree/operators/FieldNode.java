@@ -10,6 +10,7 @@ import systems.monomer.variables.Key;
 
 import static systems.monomer.types.pseudo.AnyType.ANY;
 
+//TODO able to simplify into FieldNode and ArbitraryFieldNode
 public class FieldNode extends OperatorNode {
     @Getter
     protected @Nullable FieldKey variableKey;
@@ -19,7 +20,7 @@ public class FieldNode extends OperatorNode {
         super("field");
     }
 
-    public void matchVariables() {
+    public Node matchVariables() {
         getFirst().matchVariables();
 
         Node fieldNode = getSecond();
@@ -34,10 +35,11 @@ public class FieldNode extends OperatorNode {
         else
             //TODO use init.fieldKey
             variableKey = new FieldKey(fieldName, parentKey);
+        return this;
     }
 
     @Override
-    public void matchTypes() {
+    public Node matchTypes() {
         //add field to parent
         Type parentType = getFirst().getType();
         if(parentType == ANY)
@@ -50,6 +52,7 @@ public class FieldNode extends OperatorNode {
             setType(super.getType());
         else if(super.getType() == ANY)
             super.setType(getType());
+        return this;
     }
 
     @Override

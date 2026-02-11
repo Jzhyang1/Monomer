@@ -1,5 +1,6 @@
 package systems.monomer.syntaxtree.literals;
 
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.types.primitive.CharType;
 
 public class CharNode extends LiteralNode {
@@ -10,7 +11,8 @@ public class CharNode extends LiteralNode {
     }
 
     @Override
-    public void matchTypes() {
+    public Node matchTypes() {
         setType(CharType.CHAR);
+        return this;
     }
 }

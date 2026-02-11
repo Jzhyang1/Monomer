@@ -20,17 +20,16 @@ public class AssertTypeNode extends OperatorNode {
         super(":");
     }
 
-    public void matchTypes() {
+    public final Node matchTypes() {
         getFirst().matchTypes();
         Type type = getFirst().getType();
 
         setType(type);
         Node second = getSecond();
         if(second instanceof CallNode) {
-            //TODO when else is requiresConvert not necessary other than in call?
             second.setType(type);
-            second.matchTypes();
-            return;
+            second.setParent(getParent());
+            return second.matchTypes();
         }
 
         second.matchTypes();
@@ -38,6 +37,8 @@ public class AssertTypeNode extends OperatorNode {
             second.setType(type);
             second.matchTypes();
         }
+
+        return this;
     }
 
     @Override

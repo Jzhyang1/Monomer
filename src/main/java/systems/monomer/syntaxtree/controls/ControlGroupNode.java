@@ -15,7 +15,7 @@ public class ControlGroupNode extends OperatorNode {
         return Usage.CONTROL_GROUP;
     }
 
-    public void matchTypes() {
+    public Node matchTypes() {
         super.matchTypes();
         Type closestType = AnyType.ANY;
         for (int i = 0; i < size(); i++) {
@@ -27,6 +27,7 @@ public class ControlGroupNode extends OperatorNode {
             }
         }
         setType(closestType);
+        return this;
     }
 
     public ControlOperatorNode get(int index) {

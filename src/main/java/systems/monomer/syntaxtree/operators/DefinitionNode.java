@@ -1,8 +1,6 @@
 package systems.monomer.syntaxtree.operators;
 
-import systems.monomer.syntaxtree.ModuleNode;
 import systems.monomer.syntaxtree.Node;
-import systems.monomer.syntaxtree.VariableNode;
 import systems.monomer.syntaxtree.literals.FunctionBodyNode;
 import systems.monomer.syntaxtree.literals.StructureNode;
 import systems.monomer.types.Type;
@@ -18,19 +16,25 @@ import static systems.monomer.types.pseudo.AnyType.ANY;
 //the final form of AssignNode for functions
 public class DefinitionNode extends OperatorNode {
     //2 children: VariableNode, FunctionBodyNode
-    private Node args, namedArgs;   //here for easy access
+    //here for easy access TODO cleanup
+    private Node args;
+    private StructureNode namedArgs;
+    private Node body;
+    private FunctionBodyNode wrapper;
 
-    public DefinitionNode(CallNode head, Node body) {
+    public DefinitionNode(CallNode head, Node def) {
         super("def");
         Node identifier = head.get(0);
 
         args = head.get(1);
         args.setIsDestination(true);
 
-        namedArgs = head.size() == 2 ? env.emptyStructure() : head.get(2);
+        namedArgs = (StructureNode) (head.size() == 2 ? env.emptyStructure() : head.get(2));
         namedArgs.setIsDestination(true);
 
-        Node wrapper = new FunctionBodyNode(args, namedArgs, body); //TODO replace with env.functionBodyNode
+        body = def;
+
+        wrapper = new FunctionBodyNode(args, namedArgs, body); //TODO replace with env.functionBodyNode
         wrapper.setParent(this);
 
         this.add(identifier);
@@ -38,11 +42,12 @@ public class DefinitionNode extends OperatorNode {
     }
 
     @Override
-    public void matchTypes() {
+    //TODO move more functionality into FunctionBodyNode
+    public Node matchTypes() {
         getFirst().matchTypes();
 
-        Key function = getFirst().getVariableKey();
-        if(function == null) throw syntaxError("Expected function identifier, got " + getFirst());
+        Key functionKey = getFirst().getVariableKey();
+        if(functionKey == null) throw syntaxError("Expected function identifier, got " + getFirst());
 
         namedArgs.matchTypes();
         args.matchTypes();
@@ -50,11 +55,11 @@ public class DefinitionNode extends OperatorNode {
         PlaceholderType retType = new PlaceholderType();
         Signature signature = new Signature(args.getType(), namedArgs.getType(), retType);
 
-        Type potentialOverloads = function.getType();
+        Type potentialOverloads = functionKey.getType();
         OverloadableType overloads;
         {
             if (potentialOverloads == ANY)
-                function.setType(overloads = new OverloadableType());
+                functionKey.setType(overloads = new OverloadableType());
             else
                 overloads = (OverloadableType) potentialOverloads;
         }
@@ -63,10 +68,10 @@ public class DefinitionNode extends OperatorNode {
 
         getSecond().matchTypes();
 
-        FunctionBody function = new FunctionBody(args, namedArgs, body, parent);
+        FunctionBody function = new FunctionBody(args, namedArgs, body, wrapper);
 
         //generate Signature from FunctionBody
-        Signature signature = function.getType();
+//        Signature signature = function.getType();
 
         //used for recursion TODO add back support for recursion
 //            Signature tempSignature = new Signature(ANY, argsType, namedArgsType);
@@ -81,6 +86,6 @@ public class DefinitionNode extends OperatorNode {
         overloads.add(function);
         setType(overloads);
 
-        functionSimplified = new AssignNode.FunctionSimplfiedInfo(null, -1, signature);
+        return this;
     }
 }

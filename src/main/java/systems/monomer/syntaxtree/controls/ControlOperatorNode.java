@@ -1,6 +1,7 @@
 package systems.monomer.syntaxtree.controls;
 
 import lombok.Getter;
+import systems.monomer.syntaxtree.Node;
 import systems.monomer.syntaxtree.operators.OperatorNode;
 import systems.monomer.variables.Locality;
 import systems.monomer.variables.VariableKey;
@@ -28,8 +29,9 @@ public abstract class ControlOperatorNode extends OperatorNode implements Locali
         return Usage.LABEL;
     }
 
-    public void matchTypes() {
+    public Node matchTypes() {
         super.matchTypes();
         setType(getSecond().getType());
+        return this;
     }
 }

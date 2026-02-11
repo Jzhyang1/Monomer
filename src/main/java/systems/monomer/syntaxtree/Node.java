@@ -7,7 +7,6 @@ import systems.monomer.execution.Constants;
 import systems.monomer.errorhandling.Context;
 import systems.monomer.errorhandling.Index;
 import systems.monomer.errorhandling.ErrorBlock;
-import systems.monomer.execution.Initialized;
 import systems.monomer.tokenizer.Source;
 import systems.monomer.types.pseudo.AnyType;
 import systems.monomer.types.Type;
@@ -71,6 +70,7 @@ public abstract class Node extends ErrorBlock<Node> {
     }
     protected final void set(int i, Node node) {
         children.set(i, node);
+        node.setParent(this);
     }
 
     public final void add(Node node) {
@@ -106,20 +106,28 @@ public abstract class Node extends ErrorBlock<Node> {
         return children.size();
     }
 
-    public void matchVariables() {
-        for (Node child : children) {
-            child.matchVariables();
-        }
+    /**
+     * sets the VariableKey of this node and all children of this node
+     * in cases where a variable node is used.
+     * Returns the node with the new VariableKey (usually _this_).
+     * If a new node is created that is not _this_, the returned node will still
+     * have the same parent and context as the original node (_this_).
+     */
+    public Node matchVariables() {
+        children.replaceAll(Node::matchVariables);
+        with(getContext()).setParent(parent);
+        return this;
     }
 
     /**
-     * sets the type of this node after
-     * matching the types of the children
+     * sets the type of this node after matching the types of the children;
+     * returns the node with the new type (usually _this_).
+     * If a new node is created that is not _this_, the returned node will still
+     * have the same parent and context as the original node (_this_).
      */
-    public void matchTypes() {
-        for (Node child : children) {
-            child.matchTypes();
-        }
+    public Node matchTypes() {
+        children.replaceAll(Node::matchTypes);
+        return this;
     }
 
     /**
@@ -150,11 +158,14 @@ public abstract class Node extends ErrorBlock<Node> {
      * (i.e. storing the conversion function). In general, anything that
      * requires correct types (simplification, removal of extra nodes,
      * caching, etc) will be written here.
-     * _this_ may be modified
+     * If a new node is created that is not _this_, the returned node will still
+     * have the same parent and context as the original node (_this_).
      * @return usually this, but sometimes the simplified node
      */
     //@Forbid non-simplified type
     public Node simplify() {
+        setType(getType().simplify());
+        with(getContext()).setParent(parent);
         return this;
     }
 
